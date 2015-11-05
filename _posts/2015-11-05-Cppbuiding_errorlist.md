@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [C++, ]
 description: 对碰到的C++问题的汇总
 ---
+
 #LINK : fatal error LNK1123: 转换到 COFF 期间失败: 文件无效或损坏
 
 ##问题说明：
@@ -19,10 +20,12 @@ description: 对碰到的C++问题的汇总
 >这样C:\Windows\Microsoft.NET\Framework\v4.0.30319 (.NET 4.5)中的cvtres.exe文件就可以被VS2010使用。
 
 ### 方案二
+
 >项目\属性\配置属性\清单工具\输入和输出\嵌入清单：原来是“是”，改成“否”。
 >说明：这种方法每个工程均需要修改配置。
 
 ###方案三
+
 >安装：VS2010 SP1. 该版本应该是能使用.NET 4.5的，并配有正确的cvtres.exe版本。
 >注意：安装VS 2010 SP1 时会移除64-bit 编译器. 通过安装 VS 2010 SP1 compiler pack 能够重新获得。
  

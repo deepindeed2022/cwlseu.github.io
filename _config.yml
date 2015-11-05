@@ -1,10 +1,10 @@
 # Site settings
-title: Clython
+title: Clython $\varphi$
 header-img: "img/autumn2.jpg"
 tagline: "喵？"  
-description: "在遙遠的地方 一切虔誠終必相遇"  
+description: "选择这条路，定会遇到阳光与雨露"  
 baseurl: ""
-url: "http://azeril.me"  
+url: "http://cwlseu.github.io"  
 #url: "http://localhost:4000"
 
 # About/contact
@@ -18,7 +18,7 @@ gavatar: http://dreamofbook.qiniudn.com/Az..png
 favicon: img/favicon.ico
 
 github_username: cwlseu  
-zhihu_username: 曹远远  
+zhihu_username: cao-yuan-yuan-96 
 
 # Build settings  
 # use Github Flavored Markdown !important  
