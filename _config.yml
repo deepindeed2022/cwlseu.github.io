@@ -1,0 +1,61 @@
+# Site settings
+title: Clython
+header-img: "img/autumn2.jpg"
+tagline: "喵？"  
+description: "既然選擇遠方，就得一步一個腳印"  
+baseurl: ""
+url: "http://azeril.me"  
+#url: "http://localhost:4000"
+
+# About/contact
+owner: 
+  name: "cwlseu"
+  email: 523814299@qq.com
+  bio: "明朝即長路 惜取此時心"
+
+# Data
+gavatar: http://dreamofbook.qiniudn.com/Az..png
+favicon: img/favicon.ico
+
+github_username: cwlseu  
+zhihu_username: cao-yuan-yuan-92  
+
+# Build settings  
+# use Github Flavored Markdown !important  
+# document: http://jekyllrb.com/docs/configuration/#kramdown  
+markdown: kramdown
+highlighter: pygments
+permalink: pretty
+paginate: 8
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+relative_permalinks: true
+
+# http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: Asia/Beijing
+
+# Defaults for posts
+defaults:
+  -
+    scope: 
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Clython"
+      header-img: "img/fantasy.jpg" # We don't want posts without a header image, that whould mean white on white
+
+# Comments 
+comments :
+  provider : duoshuo
+  duoshuo :
+    short_name : Clython
+  disqus :
+      short_name : Clython
+
+# Analytics and webmaster tools stuff goes here
+google_analytics: UA-66863061-1
+google_verify:
+# https://ssl.bing.com/webmaster/configure/verify/ownership Option 2 content= goes here
+bing_verify:
+
+# Links to include in footer navigation
