@@ -14,7 +14,7 @@ description: 安装boost库
 1. 将源码解压都某个目录下面，如E:\boost_1_59_0,解压过程还是比较缓慢的。
 2. 查找bat文件boostrap.bat,运行bat脚本
 
-
+```bat
 	@ECHO OFF
 
 	REM Copyright (C) 2009 Vladimir Prus
@@ -96,7 +96,7 @@ description: 安装boost库
 	goto :end
 
 	:end
-
+```
 ### bat 的基本语法
 @                      	//关闭单行回显 
 echo off               	//从下一行开始关闭回显 
