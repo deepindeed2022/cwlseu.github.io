@@ -4,7 +4,11 @@ title: "Tools"
 description: "我的小小工具箱"
 header-img: "img/autumn.jpg"
 ---
-
+### Deep Learning Resource
+[Quora](https://www.quora.com/)
+[Deep Learning](http://deeplearning.net/tutorial/)
+[Tutorials](http://yanirseroussi.com/deep-learning-resources/)
+[Notes](http://cs231n.github.io/)
 
 ### Rule
 
