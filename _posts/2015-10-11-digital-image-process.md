@@ -6,7 +6,7 @@ tags: [matlab, DIP]
 description: 学习数字图像处理过程中遇到的问题
 ---
 
-##Matlab 中的图像处理函数
+#Matlab 中的图像处理函数
 1. 
 	`g = imfilter(f, w, filtering mode,boundary options, size options)`用于线性滤波时，要将图像首先转化为高精度，否则会导致图像灰度值溢出
 
@@ -31,3 +31,13 @@ description: 学习数字图像处理过程中遇到的问题
 2. 
 	`C = conv2(A,B)` 计算数组A和B的卷积。如果一个数组描述了一个二维FIR滤波器，则另一个数组被二维滤波。当A的大小为[ma,na],B的大小为[mb,nb]时，C的大小为[ma+mb-1,mb+nb-1]。
 
+#图像增强
+##空间域图像增强
+锐化空间滤波--基于laplace算子的二阶微分的图像增强
+	$g(x,y) = f(x,y) - \delta^2f(x,y)$
+* 明白laplace算子与掩模之间的关系
+* 边缘增强
+* 反锐化掩蔽与提升滤波处理，可以用来去除噪声
+
+##频率域图像增强
+###傅里叶变换--频率域与时域的相互转化

@@ -13,10 +13,8 @@ description: 安装boost库
 ## Build Source Code
 1. 将源码解压都某个目录下面，如E:\boost_1_59_0,解压过程还是比较缓慢的。
 2. 查找bat文件boostrap.bat,运行bat脚本
-
  
 	@ECHO OFF
-
 	REM Copyright (C) 2009 Vladimir Prus
 	REM
 	REM Distributed under the Boost Software License, Version 1.0.
@@ -97,13 +95,12 @@ description: 安装boost库
 
 	:end
 
-
-
 ### bat 的基本语法
-@                      	//关闭单行回显   
-echo off               	//从下一行开始关闭回显   
-@echo off              	//从本行开始关闭回显。一般批处理第一行都是这个   
-echo on                	//从下一行开始打开回显   
-echo                   	//显示当前是 echo off 状态还是 echo on 状态   
-echo.                  	//输出一个”回车换行”，空白行 (同echo, echo; echo+ echo[ echo] echo/ echo")   
-echo %errorlevel% 	   	//每个命令运行结束，可以用这个命令行格式查看返回码,默认值为0，一般命令执行出错会设 errorlevel 为1   
+
+	@                      	//关闭单行回显   
+	echo off               	//从下一行开始关闭回显   
+	@echo off              	//从本行开始关闭回显。一般批处理第一行都是这个   
+	echo on                	//从下一行开始打开回显   
+	echo                   	//显示当前是 echo off 状态还是 echo on 状态   
+	echo.                  	//输出一个”回车换行”，空白行 (同echo, echo; echo+ echo[ echo] echo/ echo")   
+	echo %errorlevel% 	   	//每个命令运行结束，可以用这个命令行格式查看返回码,默认值为0，一般命令执行出错会设 errorlevel 为1   

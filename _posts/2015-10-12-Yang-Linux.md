@@ -88,3 +88,48 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 `ljmp 0 \n\t`这个得查看IA-32手册，就会发现，IA-32架构中允许同种特权级之间相互切换，但是不同特权级之间切换是不允许的。但是0特权级的进程0是如何切换到3特权级的进程1呢？就要引入'门'的概念了。具体参见[手册](http://www.intel.cn/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf).门是允许点到点的，不同特权级之间的切换。
 
 那么当进程1运行过之后，再次由进程0切换到进程1时，由于进程切换都是0特权级，此时，此时就不需要经过什么门了，IA32是允许同特权级之间进行进程切换的。
+
+## switch_to
+	
+	#define switch_to(n) {\
+	struct {long a,b;} __tmp; \
+	__asm__("cmpl %%ecx,_current\n\t" \
+		"je 1f\n\t" \
+		"movw %%dx,%1\n\t" \
+		"xchgl %%ecx,_current\n\t" \
+		"ljmp %0\n\t" \
+		"cmpl %%ecx,_last_task_used_math\n\t" \
+		"jne 1f\n\t" \
+		"clts\n" \
+		"1:" \
+		::"m" (*&__tmp.a),"m" (*&__tmp.b), \
+		"d" (_TSS(n)),"c" ((long) task[n])); \
+	}
+
+这里涉及到TSS的定义和GDT LDT管理结构
+
+	#define _TSS(n) ((((unsigned long) n)<<4)+(FIRST_TSS_ENTRY<<3))
+	#define FIRST_TSS_ENTRY 4
+
+每个描述符占8个字节，第一个状态段是第四个，所以 <<3，得到第一个任务描述符在GDT中的位置，
+而每个任务使用一个tss和ldt，占16字节，所以<<4，两者相加得到任务n的tss在GDT中的位置,写入EDX寄存器。
+另外ECX指向要切换过去的新任务task[n]。
+
+
+现在开始理解代码，首先声明了一个_tmp的结构，这个结构里面包括两个long型，32位机里面long占32位，声明这个结构主要与ljmp这个长跳指令有关，这个指令有两个参数，一个参数是段选择符，另一个是偏移地址，所以这个_tmp就是保存这两个参数。再比较任务n是不是当前任务，如果不是则跳转到标号1，否则交互ecx和current的内容，交换后的结果为ecx指向当前进程，current指向要切换过去的新进程，在执行长跳，%0代表输出输入寄存器列表中使用的第一个寄存器，即"m"(*&__tmp.a)，这个寄存器保存了*&__tmp.a，而_tmp.a存放的是32位偏移(对应EIP)，_tmp.b存放的是新任务的tss段选择符(对应CS)，长跳到段选择符会造成任务切换，这个是x86的硬件原理。"d" (_TSS(n)),"c" ((long) task[n])); 
+
+## 系统调用
+
+	fn_ptr sys_call_table[] = { sys_setup, sys_exit, sys_fork, sys_read,
+	sys_write, sys_open, sys_close, sys_waitpid, sys_creat, sys_link,
+	sys_unlink, sys_execve, sys_chdir, sys_time, sys_mknod, sys_chmod,
+	sys_chown, sys_break, sys_stat, sys_lseek, sys_getpid, sys_mount,
+	sys_umount, sys_setuid, sys_getuid, sys_stime, sys_ptrace, sys_alarm,
+	sys_fstat, sys_pause, sys_utime, sys_stty, sys_gtty, sys_access,
+	sys_nice, sys_ftime, sys_sync, sys_kill, sys_rename, sys_mkdir,
+	sys_rmdir, sys_dup, sys_pipe, sys_times, sys_prof, sys_brk, sys_setgid,
+	sys_getgid, sys_signal, sys_geteuid, sys_getegid, sys_acct, sys_phys,
+	sys_lock, sys_ioctl, sys_fcntl, sys_mpx, sys_setpgid, sys_ulimit,
+	sys_uname, sys_umask, sys_chroot, sys_ustat, sys_dup2, sys_getppid,
+	sys_getpgrp, sys_setsid, sys_sigaction, sys_sgetmask, sys_ssetmask,
+	sys_setreuid,sys_setregid };
