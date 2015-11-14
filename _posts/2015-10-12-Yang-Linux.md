@@ -118,6 +118,79 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 
 现在开始理解代码，首先声明了一个_tmp的结构，这个结构里面包括两个long型，32位机里面long占32位，声明这个结构主要与ljmp这个长跳指令有关，这个指令有两个参数，一个参数是段选择符，另一个是偏移地址，所以这个_tmp就是保存这两个参数。再比较任务n是不是当前任务，如果不是则跳转到标号1，否则交互ecx和current的内容，交换后的结果为ecx指向当前进程，current指向要切换过去的新进程，在执行长跳，%0代表输出输入寄存器列表中使用的第一个寄存器，即"m"(*&__tmp.a)，这个寄存器保存了*&__tmp.a，而_tmp.a存放的是32位偏移(对应EIP)，_tmp.b存放的是新任务的tss段选择符(对应CS)，长跳到段选择符会造成任务切换，这个是x86的硬件原理。"d" (_TSS(n)),"c" ((long) task[n])); 
 
+## 缓冲区
+Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普通读取。
+其中缓冲区的理解要找到如下数据结构：
+1. buffer head
+
+	struct buffer_head {
+		char * b_data;			/* pointer to data block (1024 bytes) */
+		unsigned long b_blocknr;	/* block number */
+		unsigned short b_dev;		/* device (0 = free) */
+		unsigned char b_uptodate;
+		unsigned char b_dirt;		/* 0-clean,1-dirty */
+		unsigned char b_count;		/* users using this block */
+		unsigned char b_lock;		/* 0 - ok, 1 -locked */
+		struct task_struct * b_wait;
+		struct buffer_head * b_prev;
+		struct buffer_head * b_next;
+		struct buffer_head * b_prev_free;
+		struct buffer_head * b_next_free;
+	};
+
+2. hash_table
+
+	struct buffer_head * hash_table[NR_HASH];
+	#define _hashfn(dev,block) (((unsigned)(dev^block))%NR_HASH)
+	#define hash(dev,block) hash_table[_hashfn(dev,block)]
+
+3. request
+
+	/*
+	 * Ok, this is an expanded form so that we can use the same
+	 * request for paging requests when that is implemented. In
+	 * paging, 'bh' is NULL, and 'waiting' is used to wait for
+	 * read/write completion.
+	 */
+	struct request {
+		int dev;		/* -1 if no request */
+		int cmd;		/* READ or WRITE */
+		int errors;
+		unsigned long sector;
+		unsigned long nr_sectors;
+		char * buffer;
+		struct task_struct * waiting;
+		struct buffer_head * bh;
+		struct request * next;
+	};
+
+### READA and WRITEA
+
+	static void make_request(int major,int rw, struct buffer_head * bh)
+	{
+		......
+		/* WRITEA/READA is special case - it is not really needed, so if the */
+		/* buffer is locked, we just forget about it, else it's a normal read */
+		if (rw_ahead = (rw == READA || rw == WRITEA)) {
+			if (bh->b_lock)
+				return;
+			if (rw == READA)
+				rw = READ;
+			else
+				rw = WRITE;
+		}
+		if (rw!=READ && rw!=WRITE)
+			panic("Bad block dev command, must be R/W/RA/WA");
+		lock_buffer(bh);
+		if ((rw == WRITE && !bh->b_dirt) || (rw == READ && bh->b_uptodate)) {
+			unlock_buffer(bh);
+			return;
+		}
+		......
+	}
+
+那么什么是预读预写呢？参考[Linux内核的文件预读](http://github.com/cwlseu/cwlseu.github.io/raw/master/pdf/linux_read_ahead.pdf)
+
 ## 系统调用
 
 	fn_ptr sys_call_table[] = { sys_setup, sys_exit, sys_fork, sys_read,
