@@ -2,7 +2,7 @@
 layout: post
 title: C++ buiding error list
 categories: [blog ]
-tags: [C++, ]
+tags: [C++,编译 ]
 description: 对碰到的C++问题的汇总
 ---
 

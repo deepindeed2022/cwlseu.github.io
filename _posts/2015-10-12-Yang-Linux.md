@@ -5,6 +5,12 @@ categories: [blog ]
 tags: [Linux, 操作系统, OS]
 description: 探究linux 0.11的一些神奇的东西
 ---
+# linux奇妙之旅
+
+
+## linux设计的作者
+[Linus](https://en.wikipedia.org/wiki/Linus_Torvalds)
+[Linux官网](http://www.linux.org/) 
 
 
 ##理解schedule函数的调用
