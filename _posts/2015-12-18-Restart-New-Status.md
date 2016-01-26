@@ -1,11 +1,10 @@
 ---
 layout: post
-title: Internship In NI
+title: 当下，请不要止步
 categories: [blog ]
 tags: [LearningLife, ]
 description: Working hard, Playing hard.
 ---
-## 当下
 
 ### 年轻就应该拼命
 	
