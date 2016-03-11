@@ -1,4 +1,10 @@
-
+---
+layout: post
+title: Linux Common Comment in Practices
+categories: [blog ]
+tags: [Linux, ]
+description: In me the tiger sniffs the rose.
+---
 
 Linux中的命令的确是非常多，但是我们只需要掌握我们最常用的命令就可以了。当然你也可以在使用时去找一下man，他会帮你解决不少的问题。然而每个人玩Linux的目的都不同，所以他们常用的命令也就差异非常大。因为不想在使用是总是东查西找，所以在此总结一下，方便一下以后的查看。不多说，下面就说说我最常用的Linux命令。
 

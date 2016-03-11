@@ -30,3 +30,5 @@ description: Working hard, Playing hard.
 mentor Yijun，Xiang
 Yiqing，Bing， Feng， Qian,Jun ...
 还有我的小伙伴们。
+
+*In me the tiger sniffs the rose.*

@@ -3,7 +3,7 @@ layout: post
 title: DongBo Bu Algorithm
 categories: [blog ]
 tags: [Algorithm, ]
-description: 不同于大学算法，有深度，有应用
+description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
 
 # 课程介绍
