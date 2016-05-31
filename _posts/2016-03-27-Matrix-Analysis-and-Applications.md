@@ -1,10 +1,9 @@
-
 ---
 layout: post
 title: Matrix analysis and application
 categories: [blog ]
 tags: [Math, ]
-description: 矩阵分析、应用与实践
+description: 矩阵分析、应用与实践；主讲教师：Baobin Li
 ---
 矩阵也许就是为了计算机而出现的一门学科吧。虽然以前大学学习矩阵，好像感觉没有什么用处，但是当接触到图像之后发现，数字图像全是矩阵，矩阵成为每天必须面对的话题。
 不管是特征提取还是聚类分析，矩阵的特征值在矩阵的作用尤为突出，那么特征值到底是什么含义呢？此外，矩阵的trace反应了矩阵的什么性质？
@@ -31,7 +30,8 @@ Three possiblities：
 ### 高斯消元法
 将一个复杂的线性系统转化为一个简单的线性系统
 
->>三种基本行变换
+>三种基本行变换
+
 * interchange row i and j
 * replace row i by a nonzero multiple of itself
 * replacerow j by a combination of itself plus a multiple of row i
@@ -54,14 +54,16 @@ Three possiblities：
 ### 高斯-约旦方法
 将每个pivot元素变换为1，而pivot元素的上下位置均为0
 
->>问题
+>问题
+
 由于计算机可表示的数字是离散可数的，而现实计算中为实数空间，导致
 我们计算应用问题的时候，往往出现由于pivot选择不当，使得计算结果不是实际结果，例如
-[]()
+[Partial Pivoting](http://github.com/cwlseu/cwlseu.github.io/raw/master/img/blog/matrix-analysis/1.jpg)
 由于我们选择pivot位置元素，相对于另外其他行来说，会将其他行的数值在进行
 初等行变换之后作为可忽略部分被round操作去掉了，从而造成最终结果的不正确。
 
->>解决方法：
+>解决方法：
+
 合理地选择pivot 元素位置
 
 ### III-Conditioned Systems
@@ -99,12 +101,60 @@ A的基本列为包含主元位置的列的集合。
 *基本变量* 基本列对应位置的变量称为基本变量
 *自由变量* 未知数中对应于非基本列称为自由变量
 因此这个方程中存在着r个基本变量和 n-r个自由变量
-通解为
-x = x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}
+通解为 $x = x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}$
+
+#### 非次线性方程组
+非齐次线性方程组通解为 $x = p+ x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}$
+
+-------------------------------------------------------------------------------
+
+#矩阵代数
+## 矩阵加法
+$[A+B]_{ij} = A_{ij} + B_{ij}$
+Additive inverse of A : (-A) = [-a_{ij}]
+遵循交换律、结合律、加法恒等率
+
+## 数乘
+$[aA]_{ij} = a[A]_{ij}$
+### 数乘的性质
+* 结合律： (ab)A = a(bA)
+* Distributive property: 
+    - a(A + B) = aA + aB
+    - (a + b) A = aA + bA
+* Identity property: 1A = A
+### 转置
+$[A]_{ij} = [A^T]_{ji}$
+(AB)^T = B^TA^T
+### 共轭转置 conjugate transpose
+$A^*$ 是对当矩阵A中存在复数的时候，先对A的每个元素取共轭，然后取复数
+
+### 对称矩阵
+A is a symmetrix matrix whenerver $A^T = A$
+skew-symmetrix matrix whenever $A^T = -A$
+一个矩阵可以表示成为一个对称矩阵和一个反对程矩阵的和
+一个矩阵可以构造对称矩阵和反对称矩阵
+
+## Linear Fucntion
+线性系统满足
+* f(x + y) = f(x) + f(y)
+* f(ax) = af(x)
+例如：过原点的直线f(x) = kx或者过原点的平面
+或者简化为如下一个条件：
+*f(ax + y) = af(x) + f(y)*
+
+## 矩阵乘法
+这个是重点讲解的地方，我们主要从三个方面对这个知识点进行解释：
+$[AB]ij = \sum_{k=0}^{k=n}a_{ik}b_{kj}$
+[AB]i* <=> A的第i行与B的乘积
+[AB]*j <=> A与B的第j列的乘积
+
+>注意:
+    Matrix multiplication isn't commutative:*AB != BA*
 
 
-非齐次线性方程组通解为
-x = p+ x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}
+### 转置矩阵的乘法
+### 分块矩阵の乘法
 
-#### 废弃次线性方程组
+## 矩阵的逆
+### 单位矩阵
 
