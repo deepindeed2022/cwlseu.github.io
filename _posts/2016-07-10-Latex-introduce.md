@@ -5,7 +5,7 @@
 \usepackage{xxxx}
 \begin{chinesetitle}
 \title{Latex入门}
-\author{曹文龙}
+\author{cwlseu}
 \date{}
 \end{chinesetitle}
 \begin{document}

@@ -1,3 +1,11 @@
+---
+layout: post
+title: Paper Report Weekly
+categories: [blog ]
+tags: [DeepLearning, ]
+description: 深度神经网络，知识图谱等内容
+--- 
+
 ## 知识图谱
 ![李孜]
 [Hinton,Representations]{Hinton. Learning distributed representations of concepts.}
@@ -9,10 +17,8 @@
 ### Node2Vector
 使用随机游走方法
 
-
 ## 
 YOLO： You only live once
-##
-![高伟毅]
+
 
 
