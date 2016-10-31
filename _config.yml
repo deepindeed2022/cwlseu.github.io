@@ -1,8 +1,8 @@
 # Site settings
 title: Clython
-header-img: "img/autumn2.jpg"
+header-img: "img/autumn.jpg"
 tagline: "hello"  
-description: "在遙遠的地方 一切虔誠終必相遇"  
+description: "我剩下的时间不多了,就看这一年,加油"  
 baseurl: ""
 url: "http://cwlseu.github.io"  
 #url: "http://localhost:4000"
@@ -11,7 +11,7 @@ url: "http://cwlseu.github.io"
 owner: 
   name: "cwlseu"
   email: cwlseu@qq.com
-  bio: "明朝即長路 惜取此時心"
+  bio: "长空破浪会有时，直挂云帆济沧海"
 
 # Data
 gavatar: http://dreamofbook.qiniudn.com/Az..png
@@ -19,7 +19,7 @@ favicon: img/favicon.ico
 
 
 github_username: cwlseu  
-zhihu_username: caowenlong 
+zhihu_username: cao-wenlong-96
 
 # Build settings  
 # use Github Flavored Markdown !important  

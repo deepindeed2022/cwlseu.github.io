@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "About"
-description: "OMG，你终于来了"
+description: "Welcome to my world!"
 header-img: "img/plane.jpg"
 ---
 

@@ -10,9 +10,8 @@ description: 支持向量机，因其英文名为 Support Vector Machine，故�
 
 
 ## SVM设计原理
-Train data:$(\emph{x_i}, y_i), i = 1,...l, where x_i \belongto R^n and y \belongto {1, -1}^l $
+Train data:
+$ (\emph{x_i}, y_i), i = 1,...l, where x_i \belongto R^n and y \belongto {1, -1}^l $
 优化目标函数
-$$min_{W,b,\epsilon} \frac{1}{2}W^tW + C \sum_{i = 1}^l{\epsilon_i}$$
-subject to: $y_i(W^T\phi(x_i) + b) \geq 1- \epsilon_i$
-
-
+$$ min_{W,b,\epsilon} \frac{1}{2}W^tW + C \sum_{i = 1}^l{\epsilon_i} $$
+subject to: $ y_i(W^T\phi(x_i) + b) \geq 1- \epsilon_i $
