@@ -212,3 +212,24 @@ Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普
 	sys_uname, sys_umask, sys_chroot, sys_ustat, sys_dup2, sys_getppid,
 	sys_getpgrp, sys_setsid, sys_sigaction, sys_sgetmask, sys_ssetmask,
 	sys_setreuid,sys_setregid };
+
+
+
+## 重新编译替换内核
+先看一下当前linux的版本号`uname -a`
+下载linux某个版本的linux内核源代码，如3.19.8,将源代码解压到/usr/src/目录下。
+
+```bash
+cd /usr/src/linux-3.19.8
+# compile
+make 
+# compile moudles
+make modules
+# modules install, all the modules will be set /boot/ directories
+make modules_install
+# install kernel, and move the kernel to /boot.. update grub file
+make install
+```
+
+其中要设置一番，设置过程可以参考[博客](http://blog.sina.com.cn/s/blog_4b14d8190100muj3.html)或者默认就好了。
+最后安装完毕重启，重新执行`uname -a`查看是否内核版本已经更新为你编译安装的版本。

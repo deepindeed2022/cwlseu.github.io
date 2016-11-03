@@ -41,7 +41,7 @@ fi
 
 ## #返回值
 原来shell脚本的返回值不是直接返回啊，而是通过
->linux中shell变量`$#`,`$@`,`$0`,`$1`,`$2`的含义解释: 
+linux中shell变量`$#`,`$@`,`$0`,`$1`,`$2`的含义解释: 
     变量说明: 
     `$$` 
     Shell本身的PID（ProcessID） 
@@ -76,22 +76,21 @@ fi
 
 #### 数字的比较
 
-```
 -eq 相等（equal）
 -ne 不等（not equal）
 -gt 大于（greater than）
 -lt 小于（less than）
 -ge 大于等于 （greater than or equal）
 -le 小于等于 （less than or equal）
-```
+
 #### 字符串的比较
 
-``` 
-[ $str1 = $str2 ] #等于
-[ $str1 != $str2 ] #不等于
-[ -z $str ]  #空字符串返回true
-[ -n $str ]或者[ $str ] #非空字符串返回true
-```
+`[ $str1 = $str2 ]` #等于
+`[ $str1 != $str2 ]` #不等于
+`[ -z $str ]`   #空字符串返回true
+`[ -n $str ]`或者`[ $str ]` #非空字符串返回true
+
+
 OMG， 原来shell里的`>`不是大于号啊，而是表示输入输出，下面就查找了一下关于linux标准文件描述符：
 | 文件描述符| 缩写| 描述|
 |----:|------:|------:|
@@ -132,4 +131,29 @@ function is_sorted()
 
 is_sorted $1
 ``` 
-调用函数的方法为`is_sorted datafilename`或者调用bash脚本`bashfilename.sh datafilename`
+
+
+调用函数的方法为 `is_sorted datafilename` 
+或者调用bash脚本 `bashfilename.sh datafilename`
+
+## LeetCode Shell Test
+### #[Word Frequency](https://leetcode.com/problems/word-frequency/)
+Write a bash script to calculate the frequency of each word in a text file words.txt.
+
+For simplicity sake, you may assume:
+
+words.txt contains only lowercase characters and space ' ' characters.
+Each word must consist of lowercase characters only.
+Words are separated by one or more whitespace characters.
+
+`cat words.txt | tr -s ' ' '\n' | sort | uniq -c | sort -r | awk '{ print $2, $1 }'`
+
+* `tr -s`: truncate the string with target string, but only remaining one instance (e.g. multiple whitespaces)
+* `sort`: To make the same string successive so that uniq could count the same string fully and correctly.
+* `uniq -c`: uniq is used to filter out the repeated lines which are successive, -c means counting
+* `sort -r`: -r means sorting in descending order
+* `awk '{ print $2, $1 }'`: To format the output, see here.
+
+[Linux 中使用awk](https://linux.cn/article-3945-1.html)
+[awk_1line](http://www.pement.org/awk/awk1line.txt)
+[shell基础知识](http://github.com/cwlseu/cwlseu.github.io/raw/master/pdf/#Shell programming.pdf)

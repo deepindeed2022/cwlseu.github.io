@@ -1,5 +1,12 @@
-## Latex入门
-### Latex简介
+---
+layout: post
+title: Latex入门
+categories: [blog ]
+tags: [Latex, ]
+description: 
+---
+
+## Latex简介
 ```
 \documentclass[12pt]{article} %声明要使用的类型为article，或者book
 \usepackage{xxxx}
@@ -34,32 +41,15 @@ This is abstract
 这是Latex册是测试，虽然当前不支持Chinese Charater
 \end{document}
 ```
-### Note
+### 注释
 1.  % 注释，如果想显示%，则 \%
 2.  Document Class 文件类型
 	Predefined Formats(article, report, book)
 3. \footnode{下角标注释}
 4. \newpage
 5. 表格 
-```
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Professional Table
-% LaTeX Template
-% Version 1.0 (11/10/12)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% License:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-% Note: to use this table in another LaTeX document, you will need to copy
-% the \usepackage{booktabs} line to the new document and paste it before 
-% \begin{document}. The table itself can then be pasted anywhere in the new
-% document.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```latex
 \documentclass{article}
 
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables for horizontal lines
@@ -92,10 +82,18 @@ A reference to Table \ref{tab:template}.
 
 \end{document}
 ```
+
  6. 编写公式
- $$A_{ij} = B_{ij} + C_{ij}$$
- $5^2 = 3^2 + 4^2$
- $x = \frac{1+ 4ab}{\sqrt{a^2 + b^2}}$
- $$a^3 + b^4 + 5^7 = a$$
- $$CaCO_3 + 2HCl = CaCl_2 + H_2O + CO_2\uparrow$$
- $$Na_2CO_3 + Ca(OH)_2 = CaCO_3\downarrow +2 NaOH$$
+ * $$A_{ij} = B_{ij} + C_{ij}$$
+ * $5^2 = 3^2 + 4^2$
+ * $x = \frac{1+ 4ab}{\sqrt{a^2 + b^2}}$
+ * $$CaCO_3 + 2HCl = CaCl_2 + H_2O + CO_2\uparrow$$
+ * $$Na_2CO_3 + Ca(OH)_2 = CaCO_3\downarrow +2 NaOH$$
+
+## 一些经验总结
+
+
+## 下载网址
+1. [CTEX](http://www.ctex.org/CTeXDownload)
+2. [中科院毕业论文模板](http://www.ctex.org/PackageCASthesis)
+3. [IEEE 会议论文模板](http://www.ieee.org/conferences_events/conferences/publishing/templates.html)

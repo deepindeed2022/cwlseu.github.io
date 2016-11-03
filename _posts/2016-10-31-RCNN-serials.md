@@ -10,8 +10,11 @@ description: In this paper, we explore three computer vision tasks in increasing
 1. classification： 
 2. localization
 3. detection
+
 ## OverFeat
 
+
+[1]. Sermanet, P., Eigen, D., Zhang, X., Mathieu, M., Fergus, R., & Lecun, Y. (2014). Overfeat: integrated recognition, localization and detection using convolutional networks. Eprint Arxiv.
 ## R-CNN
 
 ## Fast R-CNN
