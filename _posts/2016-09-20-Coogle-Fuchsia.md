@@ -107,8 +107,8 @@ questions.
 Flutter
 Flutter 是可以运行在 Android 和 iOS 上的用户界面开发库，从它的源代码提交和bug跟踪日志中的信息看，目前它的引擎还不能运行在 Fuchsia 上，不过已经很接近可以工作。Flutter 官网声称自己还是一个早期阶段的开源项目，“未来” 操作系统上的程序可能会是什么样子，在[2]中进行了测试（请忽略Android自带黑边和某运营商标志）：
   
-![图 4跑在 Android 手机上的 Flutter Gallery 演示程序1](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/Fuchsia/4.png)
-![@图 4跑在 Android 手机上的 Flutter Gallery 演示程序2](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/Fuchsia/5.png)
+![图 4跑在 Android 手机上的 Flutter Gallery 演示程序1](../images/Fuchsia/4.png)
+![@图 4跑在 Android 手机上的 Flutter Gallery 演示程序2](../images/Fuchsia/5.png)
 Flutter采用 Materal Design 设计语言（规范），该规范定义了用户界面上的元素的用途、外观、展现形式以及形态变化的规范。
 
 从用户可见的角度来看，未来 Fuchsia 操作系统内运行的程序，其中的按钮，对话框，图片框等等界面组件，基本就应该跟上面图片中差不多——当然未来也可能会改变——而那些科幻电影中炫酷亮眼的3D特效、隔空指点、虚拟（增强）现实画面，暂时还不能从演示程序中看到。
