@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [C++, ]
 description:如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。
 ---
+# C++ Programming Tricks
 
 ## C++/C 宏定义（define）中\# \#\# 的含义
 define 中的# ## 一般是用来拼接字符串的，但是实际使用过程中，有哪些细微的差别呢，我们通过几个例子来看看。
