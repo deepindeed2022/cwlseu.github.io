@@ -345,3 +345,238 @@ int main(int argc, char const *argv[])
 2. type_traits
 
 ## 仿函数
+仿函数(functor)，就是使一个类的使用看上去象一个函数。其实现就是类中实现一个
+operator()，这个类就有了类似函数的行为，就是一个仿函数类了。C语言使用函数指针和回调函数来实现仿函数，例如一个用来排序的函数可以这样使用仿函数.在C++里，我们通过在一个类中重载括号运算符的方法使用一个函数对象而不是一个普通函数。
+
+```cpp
+template <typename T>
+struct xxx
+{
+  returnType operator()(const T& x)
+  {
+    return returnType;
+  }
+}
+
+
+template<typename T>  
+class display  
+{  
+public:  
+    void operator()(const T &x)  
+    {  
+        cout<<x<<" ";   
+    }   
+};   
+```
+
+```c
+#include <stdio.h>  
+#include <stdlib.h>  
+//int sort_function( const void *a, const void *b);  
+int sort_function( const void *a, const void *b)  
+{     
+    return *(int*)a-*(int*)b;  
+}  
+  
+int main()  
+{  
+     
+   int list[5] = { 54, 21, 11, 67, 22 };  
+   qsort((void *)list, 5, sizeof(list[0]), sort_function);//起始地址，个数，元素大小，回调函数   
+   int  x;  
+   for (x = 0; x < 5; x++)  
+          printf("%i\n", list[x]);  
+                    
+   return 0;  
+}  
+```
+
+### 仿函数在STL中的定义
+要使用STL内建的仿函数，必须包含<functional>头文件。而头文件中包含的仿函数分类包括
+
+1. 算术类仿函数
+  加：plus<T>
+  减：minus<T>
+  乘：multiplies<T>
+  除：divides<T>
+  模取：modulus<T>
+  否定：negate<T>
+
+```cpp
+#include <iostream>  
+#include <numeric>  
+#include <vector>   
+#include <functional>   
+using namespace std;  
+  
+int main()  
+{  
+    int ia[]={1,2,3,4,5};  
+    vector<int> iv(ia,ia+5);  
+    cout<<accumulate(iv.begin(),iv.end(),1,multiplies<int>())<<endl;   
+      
+    cout<<multiplies<int>()(3,5)<<endl;  
+      
+    modulus<int>  modulusObj;  
+    cout<<modulusObj(3,5)<<endl; // 3   
+    return 0;   
+}   
+```
+2. 关系运算类仿函数
+  等于：equal_to<T>
+  不等于：not_equal_to<T>
+  大于：greater<T>
+  大于等于：greater_equal<T>
+  小于：less<T>
+  小于等于：less_equal<T>
+
+从大到小排序：
+```cpp
+#include <iostream>  
+#include <algorithm>  
+#include <vector>   
+  
+using namespace std;  
+  
+template <class T>   
+class display  
+{  
+public:  
+    void operator()(const T &x)  
+    {  
+        cout<<x<<" ";   
+    }   
+};  
+  
+int main()  
+{  
+    int ia[]={1,5,4,3,2};  
+    vector<int> iv(ia,ia+5);  
+    sort(iv.begin(),iv.end(),greater<int>());  
+    for_each(iv.begin(),iv.end(),display<int>());   
+    return 0;   
+}   
+```
+3. 逻辑运算仿函数
+  逻辑与：logical_and<T>
+  逻辑或：logical_or<T>
+  逻辑否：logical_no<T>
+
+##  gcc `__attribute__`关键字举例之visibility
+看opencv的源代码的时候，发现`CV_EXPORT`的宏定义是
+
+```cpp
+#if (defined WIN32 || defined _WIN32 || defined WINCE || defined __CYGWIN__) && defined CVAPI_EXPORTS
+# define CV_EXPORTS __declspec(dllexport)
+#elif defined __GNUC__ && __GNUC__ >= 4
+# define CV_EXPORTS __attribute__ ((visibility ("default")))
+#else
+# define CV_EXPORTS
+#endif
+```
+我就发现了新大陆似的开始找这个属性的特点。
+### 定义
+visibility用于设置动态链接库中函数的可见性，将变量或函数设置为hidden，则该符号仅在本so中可见，在其他库中则不可见。
+
+g++在编译时，可用参数-fvisibility指定所有符号的可见性(不加此参数时默认外部可见，参考man g++中-fvisibility部分)；若需要对特定函数的可见性进行设置，需在代码中使用`__attribute__`设置visibility属性。
+
+编写大型程序时，可用`-fvisibility=hidden`设置符号默认隐藏，针对特定变量和函数，在代码中使用`__attribute__ ((visibility("default")))`另该符号外部可见，这种方法可用有效避免so之间的符号冲突。
+
+下面是visibility的实例，这里extern “C”可以省略（另外两篇文章 gcc `__attribute__`关键字举例之alias 和 C++覆盖系统函数的方法 中extern "C"不可用省略）。
+
+值得注意的是，visibility2.cc中可以调用fun1，原因是visibility1.o和visibility2.o同属于一个so文件。
+
+    visibility1.cc：
+
+```cpp
+#include <stdio.h>
+extern "C" void fun1()
+{
+  printf("in %s\n",__FUNCTION__);
+}
+
+__attribute__ ((visibility("hidden"))) void fun1();//
+```
+若编译此文件时使用了参数`-fvisibility=hidden`，则此行可以省略
+
+    visibility2.cc：
+
+```cpp
+#include <stdio.h>
+extern "C" void fun1();
+extern "C" void fun2()
+{
+  fun1();
+  printf("in %s\n",__FUNCTION__);
+}
+__attribute__ ((visibility("default"))) void fun2();//若编译此文件时没有使用参数-fvisibility或设置参数-fvisibility=default，则此行可以省略
+```
+
+    main.cpp
+
+```cpp
+extern "C" void fun1();
+extern "C" void fun2();
+int main()
+{
+  fun1();
+  fun2();
+  return 0;
+}
+```
+
+    Makefile：
+
+```Makefile
+all:test
+test:main.o libvisibility.so
+        g++ -o test main.o -lvisibility -L .
+main.o::main.cc
+        g++ -c main.cc
+libvisibility.so:visibility1.o visibility2.o
+        g++ -shared -o libvisibility.so visibility1.o visibility2.o
+visibility1.o:visibility1.cc
+        g++ -fvisibility=hidden -fPIC -c visibility1.cc
+visibility2.o:visibility2.cc
+        g++ -fvisibility=hidden -fPIC -c visibility2.cc
+clean:
+        rm -f *.o *.so test
+```
+编译和输出：
+
+    $ make
+    g++ -c main.cc
+    g++ -fvisibility=hidden -fPIC -c visibility1.cc
+    g++ -fvisibility=hidden -fPIC -c visibility2.cc
+    g++ -shared -o libvisibility.so visibility1.o visibility2.o
+    g++ -o test main.o -lvisibility -L .
+    main.o: In function `main':
+    main.cc:(.text+0x5): undefined reference to `fun1'
+    collect2: ld returned 1 exit status
+    make: *** [test] Error 1
+
+可以看到，`main()`中可以不可用调用`fun1`,可以调用`fun2`，因为`fun1`已经设置为外部不可见，`fun2`设置为外部可见。
+
+使用readelf对各个.o文件分析可以看到，fun1的Vis属性为HIDDEN，fun2的Vis属性为DEFAULT：
+
+$ readelf -s visibility1.o|grep fun
+6: 0000000000000007    5 OBJECT  LOCAL  DEFAULT    6 _ZZ4fun1E12__FUNCTION__
+12: 0000000000000000    30 FUNC    GLOBAL HIDDEN    2 fun1
+
+$ readelf -s visibility2.o|grep fun
+6: 0000000000000007    5 OBJECT  LOCAL  DEFAULT    6 _ZZ4fun2E12__FUNCTION__
+12: 0000000000000000    35 FUNC    GLOBAL DEFAULT    2 fun2
+15: 0000000000000000    0 NOTYPE  GLOBAL DEFAULT  UND fun1
+
+$ readelf -s libvisibility.so|grep fun
+9: 00000000000006ac    35 FUNC    GLOBAL DEFAULT  12 fun2
+41: 000000000000071d    5 OBJECT  LOCAL  DEFAULT  14 _ZZ4fun1E12__FUNCTION__
+43: 0000000000000729    5 OBJECT  LOCAL  DEFAULT  14 _ZZ4fun2E12__FUNCTION__
+48: 000000000000068c    30 FUNC    LOCAL  HIDDEN  12 fun1
+54: 00000000000006ac    35 FUNC    GLOBAL DEFAULT  12 fun2
+
+-- 参考：
+[Function Attributes](https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#Function-Attributes)
+[Visibility Pragmas](https://gcc.gnu.org/onlinedocs/gcc/Visibility-Pragmas.html#Visibility-Pragmas)
+[GCC扩展 __attribute__ ((visibility("hidden")))](http://liulixiaoyao.blog.51cto.com/1361095/814329)
