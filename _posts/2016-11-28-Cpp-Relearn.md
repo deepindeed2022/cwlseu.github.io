@@ -433,6 +433,7 @@ int main()
   小于等于：less_equal<T>
 
 从大到小排序：
+
 ```cpp
 #include <iostream>  
 #include <algorithm>  
@@ -459,6 +460,7 @@ int main()
     return 0;   
 }   
 ```
+
 3. 逻辑运算仿函数
   逻辑与：logical_and<T>
   逻辑或：logical_or<T>
