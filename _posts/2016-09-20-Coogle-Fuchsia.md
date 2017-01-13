@@ -57,12 +57,14 @@ Apple ][ Emulator - A cheezy little Apple ][ emulator I wrote a long time ago fo
 没有历史包袱：完全从头设计的系统，不会有为了兼容考虑的历史包袱——比如 Java 虚拟机的慢速，又比如 Android 较慢的渲染速度。因此也可以把体积做的很小，塞到存储容量很小的设备中。
 
 ###源代码情况
+
 ![@图 1: 各个模块贡献人员的统计图](../images/Fuchsia/sourcecode.jpg)
 
 可以看到参与人数多代码提交比较活跃的，是内核 Magenta 和图形界面层 Flutter 两个项目。Flutter 项目比较特殊，它其实很早就启动了，一直致力于为 Android/iOS 移动设备提供编码统一的开发环境。除了 Flutter 之外，其他所有项目大概都是最近两个月内被启动的。其中目前最活跃的是操作系统内核部分，22 名贡献者中可以看到不少 Google, Chromium 官方成员在提交代码。内核开发极度需要技术和经验，也不是劳动力密集型工种，几名核心工程师已经足够，由此可见目前谷歌对内核项目的干劲还是比较足的，只是其他配套项目关注的人数就稍微少了点。
 
 [Magenta内核代码地址](https://github.com/fuchsia-mirror/magenta)
 [Google source 也有主页](https://fuchsia.googlesource.com/)
+
 ### 参与其中
 
 1.  **参与内核开发**
