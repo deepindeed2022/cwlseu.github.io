@@ -60,8 +60,10 @@ description: 信息检索系课程回顾与课程设计
 ### 实现
 It's preferred to use Python and with python package unittest for unit test to imply the part one while C++ implement is optional.
 
-### Report
-
 ### 总结
 
-
+## 网络爬虫
+### TODO表
+使用Berkely DB实现TODO表
+### 使用布隆过滤器构建Visited表
+经常要判断一个元素是否在一个集合中。这个可以使用HashMap进行存储，速度匹配快。但是费存储空间，尤其是当集合巨大的时候，hash存储效率低的问题就会凸现出来，使得一般的服务器不能够承受巨大的存储。[布隆过滤器](http://www.cnblogs.com/KevinYang/archive/2009/02/01/1381803.html)是1970年由巴顿.布隆提出来的，实际上是一个二进制向量和一系列随机映射函数。
