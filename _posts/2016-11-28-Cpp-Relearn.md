@@ -1,10 +1,11 @@
 ---
 layout: post
-title: 在源码分析中的C++鲜为人知的故事
+title: C++ Programming Tricks
 categories: [blog ]
 tags: [C++, ]
 description:如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。
 ---
+
 # C++ Programming Tricks
 
 ## C++/C 宏定义（define）中\# \#\# 的含义
@@ -583,3 +584,25 @@ $ readelf -s libvisibility.so|grep fun
 [Function Attributes](https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#Function-Attributes)
 [Visibility Pragmas](https://gcc.gnu.org/onlinedocs/gcc/Visibility-Pragmas.html#Visibility-Pragmas)
 [GCC扩展 __attribute__ ((visibility("hidden")))](http://liulixiaoyao.blog.51cto.com/1361095/814329)
+
+
+# 一些C++中的template
+```cpp
+ClassName& operator++()
+{
+    ++cur;
+    if(cur == last)
+    {
+      set_node(node + 1);
+      cur = first;
+    }
+    return *this;
+}
+
+ClassName operator(int)
+{
+   ClassName tmp = *this;
+   ++*this;
+   return tmp;
+}
+``` 
