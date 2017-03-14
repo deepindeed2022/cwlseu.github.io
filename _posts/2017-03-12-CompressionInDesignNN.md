@@ -63,44 +63,9 @@ Inception是捕获图像中小目标和大目标的最具有成效的Building Bl
 2. Inception是网络设计中的用于压缩网络的技巧
 3. 1x1的使用相当于挖掘卷积结果中的冗余信息，从而减少channel个数
 
+## reference
+[1]. [PVANet: Lightweight Deep Neural Networks for Real-time Object Detection](https://www.arxiv.org/pdf/1608.08021v3.pdf)
+[code:https://github.com/sanghoon/pva-faster-rcnn](https://github.com/sanghoon/pva-faster-rcnn)
+[2] [HyperNet: Towards Accurate Region Proposal Generation and Joint](http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Kong_HyperNet_Towards_Accurate_CVPR_2016_paper.pdf)
+[3] [Going Deeper with Convolutions](https://arxiv.org/pdf/1409.4842v1.pdf)
 
-@article{GoogLeNet,
-  author    = {Christian Szegedy and
-               Wei Liu and
-               Yangqing Jia and
-               Pierre Sermanet and
-               Scott E. Reed and
-               Dragomir Anguelov and
-               Dumitru Erhan and
-               Vincent Vanhoucke and
-               Andrew Rabinovich},
-  title     = {Going Deeper with Convolutions},
-  journal   = {CoRR},
-  volume    = {abs/1409.4842},
-  year      = {2014},
-  url       = {http://arxiv.org/abs/1409.4842},
-  timestamp = {Tue, 31 May 2016 18:15:20 +0200},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/SzegedyLJSRAEVR14},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
-}
-@article{HyperNet,
-  author    = {Tao Kong and
-               Anbang Yao and
-               Yurong Chen and
-               Fuchun Sun},
-  title     = {HyperNet: Towards Accurate Region Proposal Generation and Joint Object
-               Detection},
-  journal   = {CoRR},
-  volume    = {abs/1604.00600},
-  year      = {2016},
-  url       = {http://arxiv.org/abs/1604.00600},
-  timestamp = {Mon, 02 May 2016 18:22:52 +0200},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/KongYCS16},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
-}
-@article{hong2016pvanet,
-  title={{PVANet}: Lightweight Deep Neural Networks for Real-time Object Detection},
-  author={Hong, Sanghoon and Roh, Byungseok and Kim, Kye-Hyeon and Cheon, Yeongjae and Park, Minje},
-  journal={arXiv preprint arXiv:1611.08588},
-  year={2016}
-}
