@@ -67,7 +67,7 @@ Inception是捕获图像中小目标和大目标的最具有成效的Building Bl
 ## 整个网络的结构
 ![@The detailed structure of PVANET](../images/pvanet/img/PVANETDetails.jpg)
 从中可以看出，在conv3\_4, conv4\_4, conv5\_4的输出特征通过下采样和上采样技术实现相同的size之后进行级联作为最后的卷积特征。
-![@Comparisons between our network and some state-of-the-arts in the PASCAL VOC2012 leaderboard.](../images/pvanet/img/Result.jpg)
+![@Comparisons between our network and some state-of-the-arts in the PASCAL VOC2012 leaderboard.](../images/pvanet/img/result.jpg)
 
 ## Summary
 
