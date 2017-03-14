@@ -233,7 +233,7 @@ class Grade(object):
 
 那么这样可不可以呢？答案是，很明显不得行啊，至于为什么，就涉及到我们 Python 描述符的机制了，
 
-    描述符指的是实现了描述符协议的特殊的类，三个描述符协议指的是 `__get__ `, `__set__` , `__delete__`以及 Python 3.6 中新增的 `__set_name__` 方法，其中实现了`__get__` 以及 `__set__ / __delete__ / __set_name__` 的是 Data descriptors ，而只实现了 `__get__` 的是 Non-Data descriptor
+>>描述符指的是实现了描述符协议的特殊的类，三个描述符协议指的是 `__get__ `, `__set__` , `__delete__`以及 Python 3.6 中新增的 `__set_name__` 方法，其中实现了`__get__` 以及 `__set__ / __delete__ / __set_name__` 的是 Data descriptors ，而只实现了 `__get__` 的是 Non-Data descriptor
 
 那么有什么区别呢，前面说了， 我们如果调用一个属性，那么其顺序是优先从实例的 `__dict__` 里查找，然后如果没有查找到的话，那么一次查询类字典，父类字典，直到彻底查不到为止。 但是，这里没有考虑描述符的因素进去，如果将描述符因素考虑进去，那么正确的表述应该是我们如果调用一个属性，那么其顺序是优先从实例的 `__dict__` 里查找，然后如果没有查找到的话，那么依次查询类字典，父类字典，直到彻底查不到为止。其中如果在*类实例字典*中的该属性是一个 Data descriptors ，那么无论实例字典中存在该属性与否，无条件走描述符协议进行调用，在类实例字典中的该属性是一个Non-Data descriptors ，那么优先调用实例字典中的属性值而不触发描述符协议，如果实例字典中不存在该属性值，那么触发 Non-Data descriptor的描述符协议。回到之前的问题，我们即使在 `__set__`将具体的属性写入实例字典中，但是由于类字典中存在着 Data descriptors ，因此，我们在调用 math 属性时，依旧会触发描述符协议。
 
@@ -308,174 +308,135 @@ class Grade(object):
 
 试求出以下代码的输出结果。
 
-classInit(object):
+```python
+class Init(object):
+    def __init__(self, value):
+        self.val = value
+        print "init", self.val
 
-def__init__(self,value):
+class Add2(Init):
+    def __init__(self, val):
+        super(Add2, self).__init__(val)
+        print "Add2 Before:", self.val
+        self.val += 2
+        print "Add2", self.val
 
-self.val = value
+class Mul5(Init):
+    def __init__(self, val):
+        super(Mul5, self).__init__(val)
+        print "Mul5 Before:", self.val
+        self.val *= 5
+        print "Mul5", self.val
 
-classAdd2(Init):
+class Pro(Mul5, Add2):
+    pass
 
-def__init__(self,val):
-
-super(Add2,self).__init__(val)
-
-self.val += 2
-
-classMul5(Init):
-
-def__init__(self,val):
-
-super(Mul5,self).__init__(val)
-
-self.val *= 5
-
-classPro(Mul5,Add2):
-
-pass
-
-classIncr(Pro):
-
-csup = super(Pro)
-
-def__init__(self,val):
-
-self.csup.__init__(val)
-
-self.val += 1
+class Incr(Pro):
+    def __init__(self, val):
+        super(Pro, self).__init__(val)
+        self.val += 1
+        print "Incr", self.val
 
 p = Incr(5)
-
 print(p.val)
+```
 
-答案
+    答案
+    输出是 36 ，具体可以参考 New-style Classes , multiple-inheritance
 
-输出是 36 ，具体可以参考 New-style Classes , multiple-inheritance
-
-6. Python 特殊方法
+### Python 特殊方法
 
 描述
-
 我写了一个通过重载 new 方法来实现单例模式的类。
 
-classSingleton(object):
-
-_instance = None
-
-def__new__(cls, *args, **kwargs):
-
-ifcls._instance:
-
-returncls._instance
-
-cls._isntance = cv = object.__new__(cls, *args, **kwargs)
-
-returncv
+```python
+class Singleton(object):
+    _instance = None
+    def __new__(self, *args, **kwargs):
+        if self._instance:
+            return self._instance
+        self._instance = cv = object.__new__(self, *args, **kwargs)
+        return cv
 
 sin1 = Singleton()
-
 sin2 = Singleton()
-
-print(sin1 issin2)
+print(sin1 is sin2)
+print Singleton() is sin2
+```
 
 # output: True
 
 现在我有一堆类要实现为单例模式，所以我打算照葫芦画瓢写一个元类，这样可以让代码复用：
 
-classSingleMeta(type):
+```python
+class SingleMeta(type):
+    def __init__(self, name, bases, dict):
+        self._instance = None
+        __new__o = self.__new__
 
-def__init__(cls,name,bases,dict):
+        @staticmethod
+        def __new__(self, *args, **kwargs):
+            if self._instance:
+                return self._instance
+            self._instance = cv = __new__o(self, *args, **kwargs)
+            return cv
+        self.__new__ = __new__
 
-cls._instance = None
+class A(object):
+    __metaclass__ = SingleMeta
 
-__new__o = cls.__new__
+a1 = A() # what`s the fuck
+```
 
-def__new__(cls, *args, **kwargs):
+哎呀，好气啊，为啥这会报错啊，我明明之前用这种方法给 `__getattribute__ `打补丁的，下面这段代码能够捕获一切属性调用并打印参数
 
-ifcls._instance:
+```python
+class TraceAttribute(type):
+    def __init__(cls, name, bases, dict):
+        __getattribute__o = cls.__getattribute__
 
-returncls._instance
+        def __getattribute__(self, *args, **kwargs):
+            print('__getattribute__:', args, kwargs)
+            return __getattribute__o(self, *args, **kwargs)
+        cls.__getattribute__ = __getattribute__
 
-cls._instance = cv = __new__o(cls, *args, **kwargs)
-
-returncv
-
-cls.__new__ = __new__o
-
-classA(object):
-
-__metaclass__ = SingleMeta
-
-a1 = A()# what`s the fuck
-
-哎呀，好气啊，为啥这会报错啊，我明明之前用这种方法给 __getattribute__ 打补丁的，下面这段代码能够捕获一切属性调用并打印参数
-
-classTraceAttribute(type):
-
-def__init__(cls,name,bases,dict):
-
-__getattribute__o = cls.__getattribute__
-
-def__getattribute__(self, *args, **kwargs):
-
-print('__getattribute__:',args,kwargs)
-
-return__getattribute__o(self, *args, **kwargs)
-
-cls.__getattribute__ = __getattribute__
-
-classA(object):  # Python 3 是 class A(object,metaclass=TraceAttribute):
-
-__metaclass__ = TraceAttribute
-
-a = 1
-
-b = 2
-
+class A(object):  # Python 3 是 class A(object,metaclass=TraceAttribute):
+    __metaclass__ = TraceAttribute
+    a = 1
+    b = 2
 a = A()
-
 a.a
-
-# output: __getattribute__:('a',){}
+a.b
+```
 
 a.b
 
 试解释为什么给 getattribute 打补丁成功，而 new 打补丁失败。
-
 如果我坚持使用元类给 new 打补丁来实现单例模式，应该怎么修改？
 
-答案
+>>答案
+其实这是最气人的一点，类里的`__new__`是一个 staticmethod 因此替换的时候必须以 staticmethod进行替换。答案如下：
 
-其实这是最气人的一点，类里的 __new__ 是一个 staticmethod 因此替换的时候必须以 staticmethod进行替换。答案如下：
+```python
+class SingleMeta(type):
+    def __init__(self, name, bases, dict):
+        self._instance = None
+        __new__o = self.__new__
 
-classSingleMeta(type):
+        @staticmethod
+        def __new__(self, *args, **kwargs):
+            if self._instance:
+                return self._instance
+            self._instance = cv = __new__o(self, *args, **kwargs)
+            return cv
+        self.__new__ = __new__
 
-def__init__(cls,name,bases,dict):
+class A(object):
+    __metaclass__ = SingleMeta
 
-cls._instance = None
+a1 = A() # what`s the fuck
+```
 
-__new__o = cls.__new__
+### 结语
 
-@staticmethod
-
-def__new__(cls, *args, **kwargs):
-
-ifcls._instance:
-
-returncls._instance
-
-cls._instance = cv = __new__o(cls, *args, **kwargs)
-
-returncv
-
-cls.__new__ = __new__o
-
-classA(object):
-
-__metaclass__ = SingleMeta
-
-print(A()isA())# output: True
-
-  结语
-
-感谢师父大人的一套题让我开启新世界的大门，恩，博客上没法艾特，只能传递心意了。说实话 Python 的动态特性可以让其用众多 black magic 去实现一些很舒服的功能，当然这也对我们对语言特性及坑的掌握也变得更严格了，愿各位 Pythoner 没事阅读官方文档，早日达到装逼如风，常伴吾身的境界。
+说实话 Python 的动态特性可以让其用众多黑技术去实现一些很舒服的功能，当然这也对我们对语言特性及坑的掌握也变得更严格了。
