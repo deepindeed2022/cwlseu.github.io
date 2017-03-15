@@ -2,7 +2,6 @@
 layout: page
 title: "About"
 description: "Welcome to my world!"
-header-img: "img/plane.jpg"
 ---
 
 <center>
