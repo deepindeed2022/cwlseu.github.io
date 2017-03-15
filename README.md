@@ -1,47 +1,26 @@
-### 博客地址
+# Clython $\varphi$
 
-Github托管的是以前Jekyll版本的源码，现在博客用Hexo重新搭建
-#### 预览
+This is a blog fork Azeril  which is live at [azeril.me](http://azeril.me/).
 
-* Jekyll版本：EZLippi.github.io
-* Hexo 版本： [www.ezlippi.com](http://www.ezlippi.com)
-* Hexo版本源码：[https://coding.net/u/ezlippi/p/ezlippi/git/tree/coding-pages/](https://coding.net/u/ezlippi/p/ezlippi/git/tree/coding-pages/)
+## Thanks
 
-### 使用Jekyll版本作为博客模板，仅需如下几步：
+The blog used many tool/service,many thanks to:
 
-1. 首先Fork或Download一份本项目代码。 
-2. 修改_config.yaml及about.md文件，以变更个人信息。 
-3. 修改_include目录下相关文件，以配置网站统计(analytics.html)，网友评论(comment.html)，右侧栏目(categories.html),热门文章(hot.html),友情链接(links.html)等。 
-4. 修改CNAME文件，以绑定自己的域名。 
-5. 删除_posts下文章，换成你自己的。 
-6. 去谷歌自定义搜索新建一个你的搜索引擎，把你的Id替换根目录下search.html我的ID
-7. 最后，push到你自己的博客Repo~ 
+* [Github](https://github.com/), all the data based on;
+* [Git](https://git-scm.com/), blogs and code files version control system;
+* [Jekyll](http://jekyllrb.com/), a static site generator;
+* [Clean Blog Theme](https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll), a theme by Start Bootstrap;
+* [Markdown](https://daringfireball.net/projects/markdown/), a beautiful lightweight markup language.
+* [DNSPod](https://www.dnspod.cn/), the DNS service provider who surport the domain name resolution;
+* [Duoshuo](http://duoshuo.com/), a socialization comments plugin.
+* [Google](http://google.com), the one who tell me how to make it.
+* …
 
- *^_^*如果愿意，Star本项目一个吧~ 
+## How To Creat A Jekyll Blog
 
-### 本项目使用了
+[Build-Your-First-GitHub-Pages-Blog](http://azeril.me/blog/2015/10/19/Build-Your-First-GitHub-Pages-Blog/)
 
-1. CNZZ的网站统计服务，官网：http://cnzz.com 
-2. 多说的评论功能，官网:http://duoshuo.com/
+Build your blog Step by step
+## Just write
 
-### 联系方式
-
-联系方式： Email(ouyanglip@gmail.com) 
-
-
-### 使用本项目作模板的博客链接
-
-* http://www.94geek.com  
-* http://www.haidaoxiaofei.me  
-* http://www.malphi.net  
-* http://happyaround.com  
-* http://tencentlocation.github.io  
-* http://wtaps.github.io 
-* http://maoshu.cc
-* http://x-carto.com/
-* (你的位置)  
-
-## 2016-02-25更新
-
-* 本博客由Jekyl迁移到Hexo,博客地址[ezlippi](www.ezlippi.com),源码托管在了国内的[Coding.net](https://coding.net/u/ezlippi/p/ezlippi/git/tree/coding-pages/)
-* 使用Hexo搭建个人博客具体教程参考[Jekyll迁移到Hexo建立个人博客](http://www.ezlippi.com/blog/2016/02/jekyll-to-hexo.html)
+Start writing now！
