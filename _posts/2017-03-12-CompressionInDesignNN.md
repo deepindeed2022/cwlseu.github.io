@@ -33,12 +33,12 @@ Hypernet[2]算是在物体识别任务中的一个多尺度利用特征的里程
 * 同时利用第1， 第3和第5卷积层的输出结果作为分类特征
 * 将有效改变ROI推荐模块中的工作任务，提高了任务处理速度
 
-![HyperNet的网络结构示意图,其中本文中主要利用其中对不同层的卷积特征的联合利用的想法](../images/pvanet/img/HyperNet.jpg)
+![@HyperNet的网络结构示意图,其中本文中主要利用其中对不同层的卷积特征的联合利用的想法](../images/pvanet/img/HyperNet.jpg)
 
 ### Inception
 Inception最早是在NIN中提出来的，但是其中没有1x1卷积核的掺入，导致一些问题。后来在GoogLeNet中重新设计了Inception模块，有效地拓展了当时对卷积结构的认识，使得神经网络向着更深的模型方向发展。Inception最有创造性的是对于同一个输入数据，采用不同尺度的感受野(卷积核)进行处理，将不同尺度的信息通过级联方式进行组合。这种将多尺度特征引用到后面网络层中的方式，受到设计深层网络人的追捧。
 
-![Inception的网络结构示意图,其中的1x1的卷积核主要作用是用于特征降维和感受野设置为1](../images/pvanet/img/Inception.jpg)
+![@Inception的网络结构示意图,其中的1x1的卷积核主要作用是用于特征降维和感受野设置为1](../images/pvanet/img/Inception.jpg)
 
 
 ## Nerual Network Design
@@ -46,7 +46,7 @@ Inception最早是在NIN中提出来的，但是其中没有1x1卷积核的掺�
 
     C.ReLU来源于CNN中间激活模式引发的。观察发现，输出节点倾向于是"配对的"，一个节点激活是另一个节点的相反面。
 
-![C.ReLU的设计结构](../images/pvanet/img/CReLU.jpg)
+![@C.ReLU的设计结构](../images/pvanet/img/CReLU.jpg)
 
 * 求同
     C.ReLU减少一半输出通数量，通过简单的连接相同的输出和negation 使其变成双倍，这使得2倍的速度提升而没有损失精度
@@ -58,16 +58,16 @@ Inception最早是在NIN中提出来的，但是其中没有1x1卷积核的掺�
 Inception是捕获图像中小目标和大目标的最具有成效的Building Blocks之一;
 为了学习捕获大目标的视觉模式，CNN特征应该对应于足够大的感受野，这可以很容易的通过叠加 3x3或者更大的核卷积实现;
 为了捕获小尺寸的物体，输出特征应该对应于足够小的感受野来精确定位小的感兴趣区域。
-![(Left) Our Inception building block. 5x5 convolution is replaced with two 3x3 convolutional layers for efficiency. (Right) Inception for reducing feature map size by half](../images/pvanet/img/PVANET_Inception.jpg)
+![@(Left) Our Inception building block. 5x5 convolution is replaced with two 3x3 convolutional layers for efficiency. (Right) Inception for reducing feature map size by half](../images/pvanet/img/PVANET_Inception.jpg)
 
 1x1的conv扮演了关键的角色，保留上一层的感受野。只是增加输入模式的非线性，它减慢了一些输出特征的感受野的增长，使得可以精确地捕获小尺寸的目标。
 
-![Inception中的感受野的直观表示](../images/pvanet/img/ReceptionField.jpg)
+![@Inception中的感受野的直观表示](../images/pvanet/img/ReceptionField.jpg)
 
 ## 整个网络的结构
-![The detailed structure of PVANET](../images/pvanet/img/PVANETDetails.jpg)
+![@The detailed structure of PVANET](../images/pvanet/img/PVANETDetails.jpg)
 从中可以看出，在conv3\_4, conv4\_4, conv5\_4的输出特征通过下采样和上采样技术实现相同的size之后进行级联作为最后的卷积特征。
-![Comparisons between our network and some state-of-the-arts in the PASCAL VOC2012 leaderboard.](../images/pvanet/img/result.jpg)
+![@Comparisons between our network and some state-of-the-arts in the PASCAL VOC2012 leaderboard.](../images/pvanet/img/Result.jpg)
 
 ## Summary
 
