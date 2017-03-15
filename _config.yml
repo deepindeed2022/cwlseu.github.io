@@ -2,7 +2,7 @@
 title: Clython
 header-img: "img/autumn.jpg"
 tagline: "hello"  
-description: "我剩下的时间不多了,就看这一年,加油"  
+description: "用代码代替野心飞翔，加油"  
 baseurl: ""
 url: "http://cwlseu.github.io"  
 #url: "http://localhost:4000"
@@ -21,26 +21,29 @@ favicon: img/favicon.ico
 github_username: cwlseu  
 zhihu_username: cao-wenlong-96
 
-# Build settings  
-# use Github Flavored Markdown !important  
-# document: http://jekyllrb.com/docs/configuration/#kramdown  
-markdown: kramdown
-kramdown:
-  input: GFM
-highlighter: rouge
 
+markdown: kramdown
+highlights: pygments
 gems: 
 - jekyll-gallery-generator
 - jekyll-paginate
-permalink: none
+permalink: /blog/:year/:month/:title.html 
 paginate: 8
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+paginate_path: "page:num"
+
+include: ['.htaccess']
+exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "CNAME", "Gemfile", "Gemfile.lock"]
 
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 timezone: Asia/Beijing
 
 # Title
-
+kramdown:
+  auto_ids: true,
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  use_coderay: false
 
 # Defaults for posts
 defaults:
@@ -54,18 +57,31 @@ defaults:
       header-img: "img/fantasy.jpg" # We don't want posts without a header image, that whould mean white on white
 
 
-# Comments 
-comments :
-  provider : duoshuo
-  duoshuo :
-    short_name : Azeril
-  disqus :
-      short_name : Azeril
-
 # Analytics and webmaster tools stuff goes here
 google_analytics: UA-86501439-1
-google_verify:
 # https://ssl.bing.com/webmaster/configure/verify/ownership Option 2 content= goes here
-bing_verify:
 
-# Links to include in footer navigation
+
+# url: 
+# cdn_url: 7u2t01.com1.z0.glb.clouddn.com
+# lsi: false
+# safe: true
+# auto: false 
+
+
+# JB :
+#   IMAGE_PATH : http://coolshell.info/images
+
+# # presonal config
+# domain: http://coolshell.info
+# title: Lippi-浮生志
+# description: Draw my life with code
+# author: Lippi.OuYang
+# email: ouyanglip@gmail.com
+# github: LippiOuYang
+
+# config:
+#   js_dir:
+#   img_dir:
+#   css_dir:
+
