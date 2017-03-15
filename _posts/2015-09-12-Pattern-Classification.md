@@ -13,7 +13,7 @@ description: 模式识别与深度学习
 
 # 概念
 **增广样本**  
-	![](http://github.com/cwlseu/cwlseu.github.io/raw/master/img/blog/classifiction-pattern/1.jpg)
+	![](../images/classifiction-pattern/1.jpg)
 
 # 方法论
 ## 贝叶斯决策论
