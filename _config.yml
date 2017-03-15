@@ -1,40 +1,16 @@
-# Site settings
-title: Clython
-header-img: "img/autumn.jpg"
-tagline: "hello"  
-description: "用代码代替野心飞翔，加油"  
-baseurl: ""
-url: "http://cwlseu.github.io"  
-#url: "http://localhost:4000"
-
-# About/contact
-owner: 
-  name: "cwlseu"
-  email: cwlseu@qq.com
-  bio: "长空破浪会有时，直挂云帆济沧海"
-
-# Data
-gavatar: http://dreamofbook.qiniudn.com/Az..png
-favicon: img/favicon.ico
-
-
-github_username: cwlseu  
-zhihu_username: cao-wenlong-96
-
-
-markdown: kramdown
-highlights: pygments
-gems: 
-- jekyll-gallery-generator
-- jekyll-paginate
 permalink: /blog/:year/:month/:title.html 
-paginate: 8
-paginate_path: "page:num"
-
 include: ['.htaccess']
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "CNAME", "Gemfile", "Gemfile.lock"]
+markdown: kramdown
+highlights: pygments
+url: "http://cwlseu.github.io"  
+cdn_url: 7u2t01.com1.z0.glb.clouddn.com
+lsi: false
+safe: true
+auto: false 
 
-# http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+paginate: 8
+paginate_path: "page:num"
 timezone: Asia/Beijing
 
 # Title
@@ -54,34 +30,22 @@ defaults:
     values:
       layout: "post"
       author: "cwlseu"
-      header-img: "img/fantasy.jpg" # We don't want posts without a header image, that whould mean white on white
+      
+# Site settings
+title: Clython
+header-img: "img/autumn.jpg"
+tagline: "hello"  
+description: "用代码代替野心飞翔，加油"  
+# About/contact
+owner: 
+  name: "cwlseu"
+  email: cwlseu@qq.com
+  bio: "长空破浪会有时，直挂云帆济沧海"
+
+# Data
+favicon: img/favicon.ico
 
 
 # Analytics and webmaster tools stuff goes here
 google_analytics: UA-86501439-1
 # https://ssl.bing.com/webmaster/configure/verify/ownership Option 2 content= goes here
-
-
-# url: 
-# cdn_url: 7u2t01.com1.z0.glb.clouddn.com
-# lsi: false
-# safe: true
-# auto: false 
-
-
-# JB :
-#   IMAGE_PATH : http://coolshell.info/images
-
-# # presonal config
-# domain: http://coolshell.info
-# title: Lippi-浮生志
-# description: Draw my life with code
-# author: Lippi.OuYang
-# email: ouyanglip@gmail.com
-# github: LippiOuYang
-
-# config:
-#   js_dir:
-#   img_dir:
-#   css_dir:
-
