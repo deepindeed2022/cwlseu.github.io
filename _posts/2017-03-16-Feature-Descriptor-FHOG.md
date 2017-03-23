@@ -4,6 +4,11 @@ title: "从HOG到FHOG"
 description: "Welcome to my world!"
 ---
 
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [Clython]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+
 # 从HOG到FHOG
 
 ## 从特征描述子说起
