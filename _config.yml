@@ -54,13 +54,13 @@ defaults:
       #header-img: "img/fantasy.jpg" # We don't want posts without a header image, that whould mean white on white
 
 
-# Comments 
-comments :
-  provider : duoshuo
-  duoshuo :
-    short_name : Azeril
-  disqus :
-      short_name : Azeril
+# # Comments 
+# comments :
+#   provider : duoshuo
+#   duoshuo :
+#     short_name : Azeril
+#   disqus :
+#       short_name : Azeril
 
 # Analytics and webmaster tools stuff goes here
 google_analytics: UA-86501439-1
