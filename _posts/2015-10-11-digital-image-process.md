@@ -139,26 +139,20 @@ using namespace cv;
  
 int main(  )
 {
- 
 	//载入原图 
 	Mat image = imread("1.jpg");
- 
 	//创建窗口 
 	namedWindow("【原图】膨胀操作");
 	namedWindow("【效果图】膨胀操作");
- 
 	//显示原图
 	imshow("【原图】膨胀操作", image);
- 
 	//获取自定义核
 	Mat element = getStructuringElement(MORPH_RECT, Size(15, 15));
 	Mat out;
 	//进行膨胀操作
 	dilate(image,out, element);
- 
 	//显示效果图
 	imshow("【效果图】膨胀操作", out);
- 
 	waitKey(0);
 	return 0;
 }
