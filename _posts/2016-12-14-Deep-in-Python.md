@@ -37,8 +37,10 @@ classA(object):
 print(list(A.gen))
 ```
 ### 装饰器
+
 >>描述
 我想写一个类装饰器用来度量函数/方法运行时间
+
 
 ```python
 import time
@@ -87,7 +89,7 @@ if __name__ == '__main__':
 如果我坚持使用类装饰器，应该如何修改？
 
 >>答案
-使用类装饰器后，在调用 `func` 函数的过程中其对应的 instance 并不会传递给 `__call__`方法，造成其 mehtod unbound ,那么解决方法是什么呢？描述符赛高
+使用类装饰器后，在调用 `func` 函数的过程中其对应的 instance 并不会传递给 `__call__`方法，造成其 mehtod unbound ,那么解决方法是什么呢？描述符
 
 ```python
 class Timeit(object):
@@ -283,7 +285,7 @@ if __name__ == '__main__':
 
 weakref 库中的 WeakKeyDictionary 所产生的字典的 key 对于*对象的引用是弱引用类型*，其不会造成内存引用计数的增加，因此不会造成内存泄露。同理，如果我们为了避免 value 对于对象的强引用，我们可以使用 WeakValueDictionary 。
 
-* 第二种：在 Python 3.6 中，实现的PEP 487 提案，为描述符新增加了一个协议`__set_name__`，我们可以用其来绑定对应的对象：
+* 第二种：在**Python 3.6 **中，实现的PEP 487 提案，为描述符新增加了一个协议`__set_name__`，我们可以用其来绑定对应的对象：
 
 ```python
 class Grade(object):
@@ -300,7 +302,11 @@ class Grade(object):
 
 ```
 
-这道题涉及的东西比较多，这里给出一点参考链接，[invoking-descriptors](https://docs.python.org/2/reference/datamodel.html#invoking-descriptors) , [Descriptor HowTo Guide](https://docs.python.org/3/howto/descriptor.html) , [PEP 487](https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order) , [what`s new in Python 3.6](https://docs.python.org/3.6/whatsnew/3.6.html) 。
+这道题涉及的东西比较多，这里给出一点参考链接
+- invoking-descriptors(https://docs.python.org/2/reference/datamodel.html#invoking-descriptors)  
+- Descriptor HowTo Guide(https://docs.python.org/3/howto/descriptor.html)  
+- PEP 487(https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order) 
+- what`s new in Python 3.6(https://docs.python.org/3.6/whatsnew/3.6.html) 
 
 ### Python 继承机制
 
@@ -346,8 +352,8 @@ print(p.val)
 
 ### Python 特殊方法
 
-描述
-我写了一个通过重载 new 方法来实现单例模式的类。
+    描述
+    我写了一个通过重载 new 方法来实现单例模式的类。
 
 ```python
 class Singleton(object):
@@ -362,9 +368,10 @@ sin1 = Singleton()
 sin2 = Singleton()
 print(sin1 is sin2)
 print Singleton() is sin2
-```
 
 # output: True
+```
+
 
 现在我有一堆类要实现为单例模式，所以我打算照葫芦画瓢写一个元类，这样可以让代码复用：
 
@@ -374,7 +381,6 @@ class SingleMeta(type):
         self._instance = None
         __new__o = self.__new__
 
-        @staticmethod
         def __new__(self, *args, **kwargs):
             if self._instance:
                 return self._instance
@@ -388,7 +394,7 @@ class A(object):
 a1 = A() # what`s the fuck
 ```
 
-哎呀，好气啊，为啥这会报错啊，我明明之前用这种方法给 `__getattribute__ `打补丁的，下面这段代码能够捕获一切属性调用并打印参数
+哎，为啥这会报错啊，我明明之前用这种方法给 `__getattribute__ `打补丁的，下面这段代码能够捕获一切属性调用并打印参数
 
 ```python
 class TraceAttribute(type):
@@ -415,7 +421,7 @@ a.b
 如果我坚持使用元类给 new 打补丁来实现单例模式，应该怎么修改？
 
 >>答案
-其实这是最气人的一点，类里的`__new__`是一个 staticmethod 因此替换的时候必须以 staticmethod进行替换。答案如下：
+其实这是最气人的一点，类里的`__new__`是一个 **staticmethod** 因此替换的时候必须以 **staticmethod** 进行替换。答案如下：
 
 ```python
 class SingleMeta(type):
@@ -440,3 +446,10 @@ a1 = A() # what`s the fuck
 ### 结语
 
 说实话 Python 的动态特性可以让其用众多黑技术去实现一些很舒服的功能，当然这也对我们对语言特性及坑的掌握也变得更严格了。
+
+## 引用
+- python is sample?（manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/）
+- invoking-descriptors(https://docs.python.org/2/reference/datamodel.html#invoking-descriptors)  
+- Descriptor HowTo Guide(https://docs.python.org/3/howto/descriptor.html)  
+- PEP 487(https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order) 
+- what`s new in Python 3.6(https://docs.python.org/3.6/whatsnew/3.6.html) 
