@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [优化, ]
 description: 向量化和编译器优化
 ---
+# 实战算法优化
 
 对于这方面的姿势，也是属于意外。在使用Caffe的过程中，需要依赖一个关于矩阵计算的库，可是
 使用atlas或者openblas, 当然有资金支持的话可以使用更快地MKL, 而一个穷小白就只能从开源免费的计算库中选了，就选了OpenBlas。 后来因为缘分，认识了OpenBlas的创始人，从他们公司的工作中了解到还有机器学习算法优化加速的这么个工作。其中涉及到如OpenMP, SIMD, 当然编译器优化也是不容忽视的。在此，总结一下工作中用到的一些函数，免得下次见到不认识了。
@@ -30,7 +31,7 @@ description: 向量化和编译器优化
             dst[i+15:i] := a[i+15:i] + b[i+15:i]
         ENDFOR
 
-从外，函数命名很有规律 `_mm_操作_操作的数据类型`， 数据类型`__m128i` 表示integer类型的向量数组，`__m128`表示当精度类型的向量数组,`__128d`表示双精度类型的向量数组。
+从外，函数命名很有规律 `_mm_操作_操作的数据类型`， 数据类型`__m128i` 表示integer类型的向量数组，`__m128`表示单精度类型的向量数组,`__128d`表示双精度类型的向量数组。
 
 ```cpp
 __m128i _mm_add_epi16 (__m128i a, __m128i b); //Add packed 16-bit integers in a and b
@@ -118,14 +119,14 @@ Create mask from the most significant bit of each 8-bit element in a, and store 
 
 ## 编译器buidin函数
 
-1. `void __builtin___clear_cache (char *begin, char *end)` 
+### `void __builtin___clear_cache (char *begin, char *end)` 
 This function is used to flush the processor’s instruction cache for the region of memory between begin inclusive and end exclusive. Some targets require that the instruction cache be flushed, after modifying memory containing code, in order to obtain deterministic behavior.
 有的时候为了获取确定性的性能测试结果，使用该函数对处理器的指令和数据进行清空操作。
 
 If the target does not require instruction cache flushes, `__builtin___clear_cache` has no effect. Otherwise either instructions are emitted in-line to clear the instruction cache or a call to the `__clear_cache function `in libgcc is made.
 如何设置begin和end的信息，请参见[^5]
 
-2. `void __builtin_prefetch (const void *addr, ...)`
+### `void __builtin_prefetch (const void *addr, ...)`
 This function is used to minimize cache-miss latency by moving data into a cache before it is accessed. You can insert calls to` __builtin_prefetch` into code for which you know addresses of data in memory that is likely to be accessed soon. If the target supports them, data prefetch instructions are generated. If the prefetch is done early enough before the access then the data will be in the cache by the time it is accessed.
 
 The value of addr is the address of the memory to prefetch. There are two optional arguments, rw and locality. The value of rw is a compile-time constant one or zero; one means that the prefetch is preparing for a write to the memory address and zero, the default, means that the prefetch is preparing for a read. The value locality must be a compile-time constant integer between zero and three. A value of zero means that the data has no temporal locality, so it need not be left in the cache after the access. A value of three means that the data has a high degree of temporal locality and should be left in all levels of cache possible. Values of one and two mean, respectively, a low or moderate degree of temporal locality. The default is three.
@@ -146,30 +147,30 @@ Data prefetch does not generate faults if addr is invalid, but the address expre
 If the target does not support data prefetch, the address expression is evaluated if it includes side effects but no other code is generated and GCC does not issue a warning.
 
 
-3. ` int __builtin_clz (unsigned int x)`
+###  ` int __builtin_clz (unsigned int x)`
 Returns the number of leading 0-bits in x, starting at the most significant bit position. If x is 0, the result is undefined.
 返回从左边起第一个1之前的0个个数
 
-4. `int __builtin_ctz (unsigned int x)`
+### `int __builtin_ctz (unsigned int x)`
 Returns the number of trailing 0-bits in x, starting at the least significant bit position. If x is 0, the result is undefined.
 返回从右边其第一个1之后的0个个数
 
-5. `int __builtin_clz (unsigned int x)`
+###  `int __builtin_clz (unsigned int x)`
 
 Returns the number of leading 0-bits in x, starting at the most significant bit position. If x is 0, the result is undefined.
 返回左起第一个‘1’之前0的个数。
 
-6. `int __builtin_ffs (unsigned int x)`
+### `int __builtin_ffs (unsigned int x)`
 
 Returns one plus the index of the least significant 1-bit of x, or if x is zero, returns zero.
 返回右起第一个‘1’的位置。
 
-7. `int __builtin_popcount (unsigned int x)`
+###  `int __builtin_popcount (unsigned int x)`
 Returns the number of 1-bits in x.
 返回‘1’的个数。
 
 
-8. `int __builtin_parity (unsigned int x)`
+### `int __builtin_parity (unsigned int x)`
 Returns the parity of x, i.e. the number of 1-bits in x modulo 2.
 返回‘1’的个数的奇偶性。
 
@@ -321,11 +322,11 @@ if defined(__GNUC__) || defined(__GNUG__)
 
 ## Reference
 
-[^1Wikipedia名词解释]:https://en.wikipedia.org/wiki/Intrinsic_function
-[^2Intel官网文档]:https://software.intel.com/sites/landingpage/IntrinsicsGuide
-[^3微软提供的文档]:https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx
-[^4 GCC buildin]:https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-[^5 How does __builtin___clear_cache work?]:http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work
+[1]:https://en.wikipedia.org/wiki/Intrinsic_function
+[2]:https://software.intel.com/sites/landingpage/IntrinsicsGuide
+[3]:https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx
+[4]:https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+[5]:http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work
 
 
 

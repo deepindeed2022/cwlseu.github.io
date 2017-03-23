@@ -159,9 +159,17 @@ def main():
     print "min distance in pairs is: %s" % mindistance
 ```
 3. 矩阵乘法
-4. 快速傅里叶变换
-5. 生成全排列
+* 分块
+* 计算
+* combine结果
 
+矩阵乘法主要是受计算复杂度主定理启发，将乘法计算的次数由8->7，从而减少计算复杂度。
+[strassen算法](https://github.com/cwlseu/Algorithm/tree/master/BuAlgorithm/Divide_And_Conquer/matrixmultip)
+更多信息,参考(http://www.cnblogs.com/zhoutaotao/p/3963048.html)
+
+4. 快速傅里叶变换
+
+5. 生成全排列
 
 >   Heap's algorithm
     Heap's algorithm generates all possible permutations of n objects. 
@@ -246,11 +254,51 @@ if __name__ == '__main__':
 
 
 ## 动态规划
-动态规划算法通常用于求解具有某种最优性质的问题。在这类问题中，可能会有许多可行解。每一个解都对应于一个值，我们希望找到具有最优值的解。动态规划算法分解得到子问题往往*不是互相独立*的。若用分治法来解这类问题，则分解得到的子问题数目太多，有些子问题被重复计算了很多次。如果我们能够保存已解决的子问题的答案，而在需要时再找出已求得的答案，这样就可以避免大量的重复计算，节省时间。我们可以用一个表来记录所有已解的子问题的答案。不管该子问题以后是否被用到，只要它被计算过，就将其结果填入表中。这就是动态规划法的基本思路。具体的动态规划算法多种多样，但它们具有相同的填表格式。
-1.找出最优解的性质，并刻画其结构特征；
-2.递归地定义最优值（写出动态规划方程）；
-3.以*自底向上*的方式计算出最优值；
-4.根据计算最优值时得到的信息，构造一个最优解。
+动态规划算法通常用于求解具有某种最优性质的问题。在这类问题中，可能会有许多可行解。每一个解都对应于一个值，我们希望找到具有最优值的解。动态规划算法分解得到子问题往往**不是互相独立**的。若用分治法来解这类问题，则分解得到的子问题数目太多，有些子问题被重复计算了很多次。如果我们能够保存已解决的子问题的答案，而在需要时再找出已求得的答案，这样就可以避免大量的重复计算，节省时间。我们可以用一个表来记录所有已解的子问题的答案。不管该子问题以后是否被用到，只要它被计算过，就将其结果填入表中。这就是动态规划法的基本思路。具体的动态规划算法多种多样，但它们具有相同的填表格式。
+* 找出最优解的性质，并刻画其结构特征；
+* 递归地定义最优值（写出动态规划方程）；
+* 以**自底向上**的方式计算出最优值；
+* 根据计算最优值时得到的信息，构造一个最优解。
+
+1.  最小编辑距离
+    Given two words word1 and word2, find the minimum number of steps required to convert word1 to
+    word2. (each operation is counted as 1 step.)
+    You have the following 3 operations permied on a word:
+    • Insert a character
+    • Delete a character
+    • Replace a characte
+
+```python
+#!/usr/bin/python 
+# -*- coding: utf-8 -*- 
+
+
+def minDistance(word1, word2):
+    '''由于我们在DP过程中仅仅是对上一行的数据操作获得下一行的数据，
+    我们完全可以考虑将不重用的数据空间提前释放或者申请适量的数据空间
+    而不是申请一个二维数组空间进行存储数据
+    '''
+    if(len(word1) < len(word2)):
+        return minDistance(word2, word1)
+    l = len(word1)
+    
+    # 初始化动态规划数组空间，相当于对于word2 == 0的时候，对于word1不同位置
+    # 的时候对应的编辑距离， 因此，结果应该存储在f[l]的位置
+    f = [i for i in range(l+1)]
+    
+    # DP获取最小编辑距离
+    for i in range(1, l+1):
+        upper_left = f[0] # save the f[i-1][j-1]
+        f[0] = i
+        for j in range(1, l+1):
+            upper = f[j]
+            if word1[i-1] == word2[j-1]:
+                f[j] = upper_left
+            else:
+                f[j] = 1 + min(upper_left, min(f[j], f[j-1]))
+            upper_left = upper
+    return f[l]
+```
 ## 贪心
 
 ## LP线性规划
