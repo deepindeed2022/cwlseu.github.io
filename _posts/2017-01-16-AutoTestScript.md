@@ -1,5 +1,15 @@
+---
+layout: post
+title: AutoIt
+categories: [blog ]
+tags: [Testing]
+description: 
+---
 
-# AutoIt
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [Clython]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
 
 ## 简介
 Autoit是一个使用脚本语言的免费软件,它设计用于Windows GUI(图形用户界面)中进行自动化操作。它利用脚本模拟键盘按键，鼠标移动和窗口/控件的组合来实现自动化任务。
