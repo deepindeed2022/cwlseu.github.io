@@ -6,6 +6,11 @@ tags: [DeepLearning, Object Detection]
 description: In this paper, we explore three computer vision tasks in increasing order of difficulty: 1. classification, 2. localization, and 3. detection. Each task is a sub-task of the next.
 --- 
 
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [Clython]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+
 ##计算机视觉的三大任务
 1. classification： 
 2. localization

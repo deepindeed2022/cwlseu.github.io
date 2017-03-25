@@ -1,4 +1,16 @@
-#malloc学习教程
+---
+layout: post
+title: malloc如何实现
+categories: [blog ]
+tags: [malloc]
+description: 基础原理的实现
+---
+
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [Clython]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+# malloc学习教程
 ## 简介
 对于刚刚开始学习C 和Unix环境的人来说可能是知道这个名字的，但是*malloc*到底是什么呢，是一个语言的关键词还是仅仅是一个系统调用。其实这个名字的背后隐藏着很多计算机哲学，其中不乏计算机实际的的资源管理。
 今天我将通过学习实现一个基本的malloc函数，作为C语言的一个练习，同时学习理解在堆的管理。

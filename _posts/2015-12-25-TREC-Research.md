@@ -42,13 +42,13 @@
 
 ### 实验结果：
 
-![不同文档集合各检索引擎开销](https://github.com/Riozhcd/TREC-Research/blob/master/img/indexer.jpg)
+![不同文档集合各检索引擎开销](../images/ir/indexer.jpg)
 1. ht://Dig， Lucene和XMLSearch会有固定大小的内存开销，并且前两者的内存开销与数据集的大小没有关系(30MB~120MB);IXE，MG4J，Swish-E， Swish++ 和Terrier内存开销大，呈现线性增长；针对大的数据集合要1G以上的内存开销。
 
-![不同搜索引擎生成文件大小](https://github.com/Riozhcd/TREC-Research/blob/master/img/indexersize.jpg)
+![不同搜索引擎生成文件大小](../images/ir/indexersize.jpg)
 2. Lucene, MG4J, Swish-E, Swish++, XMLSearch 和Zettair的索引大小为数据集大小的25%~35%。Terrier建立索引文件大小为原来的50%。其他还增大了。
 
-![WT10G实验结果](https://github.com/Riozhcd/TREC-Research/blob/master/img/WT10G.jpg)
+![WT10G实验结果](../images/ir/WT10G.jpg)
 3. 在数据集合非常的时候，只有Indri, IXE, MTerrier和Zettair的索引性能不会大幅度下降，而Swish-E， Swish++ 在给定系统参数下，根本不能够对大数据集合进行索引。
 
 总结：

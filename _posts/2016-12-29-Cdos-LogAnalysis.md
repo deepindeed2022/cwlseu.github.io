@@ -6,6 +6,11 @@ tags: [数据可视化, ]
 description: 使用html5技术实现数据可视化，主要使用过ajax动态请求的技术，使用现成的数据可视化js框架echarts, 实现测试log的可视化。
 ---
 
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [Clython]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+
 ## Javascript框架调研
 
 组里说要做一个操作系统不同版本的测试log的管理工具，我就先调研了一下如何实现测试log的可视化。原来在最近几年js发展的非常惊人，[这里有一些好的可视化框架](http://www.36dsj.com/archives/19522)，大家拿走不谢。

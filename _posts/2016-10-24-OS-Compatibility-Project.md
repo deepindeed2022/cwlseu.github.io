@@ -4,7 +4,12 @@ title: The weekly meeting
 categories: [blog ]
 tags: [New Domain, ]
 description: 每周都要开会，开会的内容有时有趣，有时乏味
---- 
+---
+
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [Clython]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+ 
 
 ## 问题概述
 IE发展落后于浏览器技术的发展，但是由于历史原因，网银等软件被IE技术挟持，导致我们现在如果要继续发展，兼容性问题的价值很突出。
