@@ -4,6 +4,8 @@ title: "Tools"
 description: "我的小小工具箱"
 header-img: "img/autumn.jpg"
 ---
+### Linux Manual
+[LinuxManual](http://man7.org/linux/man-pages/dir_section_1.html)
 
 ### 绘制实验结果
 

@@ -8,10 +8,12 @@ description: "Welcome to my world!"
     <p><img src="http://dreamofbook.qiniudn.com/Zero.png" align="center"></p>
 </center>
 
-Ok, let me introduce myself first.
+我是曹文龙， 大学就读于[东南大学](http://www.seu.edu.cn/)软件工程专业。大学期间参加[I++俱乐部](http://ippclub.org)，是最另我难忘的经历。期间做得最多的是javaweb项目，《我爱我师》、《最有影响力的毕业生》、《校史知识竞赛现场版系统》等等。小伙伴们当时干劲十足，整天熬夜也靠的住。
+后来，大四的时候去一家非常棒的[外企](http://www.ni.com/zh-cn.html)实习，当时遇到了一批牛掰又有趣的人。期间也渐渐丢掉了java，转向python和喜家家。
 
-My Name is Clython. You may find me in sites like douban.com / quora.com / zhihu.com , so on and so forth. It’s easy to know me. My short name is $\varphi$, quite easy to remember, right?
+后来，我就掉进了机器视觉的漩涡中，在这里挣扎，漩涡里的风景还是有的，只是现在无暇去观赏罢了。等我抵达漩涡之心得时候再跟大家详细介绍。
 
-我是喜欢折腾的伪宅，喜欢看点电视剧，喜欢看《海贼王》；日常生活中，总是喜欢"惹事生非"，有副热心肠，可是偶尔也会拔凉拔凉的。我就是我，做更好的我。
+平时，运动方面我喜欢跑跑步，打打羽毛球，乒乓球啥的; 此外，篮球足球都是业余选手的板凳客。
+如果比较富裕的假期，就去爬爬山或者来个Hiking.边走边拍还是蛮不错的。
 ——Clython
 
