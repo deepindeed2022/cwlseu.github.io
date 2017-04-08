@@ -1,3 +1,11 @@
+---
+layout: post
+title: 当下，请不要止步
+categories: [blog ]
+tags: [信息检索系统]
+description: Working hard, Playing hard.
+---
+
 # TREC-Research
 
 关于TREC数据集合构建索引查询分析的实验

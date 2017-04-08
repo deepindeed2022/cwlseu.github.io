@@ -2,7 +2,7 @@
 layout: post
 title: 从OverFeat 到Faster R-CNN
 categories: [blog ]
-tags: [DeepLearning, Object Detection]
+tags: [机器视觉]
 description: In this paper, we explore three computer vision tasks in increasing order of difficulty: 1. classification, 2. localization, and 3. detection. Each task is a sub-task of the next.
 --- 
 

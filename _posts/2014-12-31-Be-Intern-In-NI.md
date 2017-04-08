@@ -2,7 +2,7 @@
 layout: post
 title: Internship In NI
 categories: [blog ]
-tags: [internship, ]
+tags: [随笔, ]
 description: Working hard, Playing hard.
 ---
 

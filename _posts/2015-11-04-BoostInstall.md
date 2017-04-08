@@ -2,7 +2,7 @@
 layout: post
 title: install boost library in windows 7
 categories: [blog ]
-tags: [C++,boost]
+tags: [C++开发]
 description: 安装boost库
 ---
 

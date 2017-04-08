@@ -2,7 +2,7 @@
 layout: post
 title: Markdown 简明语法参考
 categories: [blog ]
-tags: [Tool, ]
+tags: [工具, ]
 description: 这是一份基本版的 Markdown 语法清单
 ---
 

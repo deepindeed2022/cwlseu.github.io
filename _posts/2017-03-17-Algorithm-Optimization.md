@@ -2,7 +2,7 @@
 layout: post
 title: "算法优化的一些技巧"
 categories: [blog ]
-tags: [优化, ]
+tags: [算法优化, ]
 description: 向量化和编译器优化
 ---
 

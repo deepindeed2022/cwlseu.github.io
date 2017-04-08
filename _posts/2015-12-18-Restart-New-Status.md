@@ -2,7 +2,7 @@
 layout: post
 title: 当下，请不要止步
 categories: [blog ]
-tags: [LearningLife, ]
+tags: [随笔]
 description: Working hard, Playing hard.
 ---
 

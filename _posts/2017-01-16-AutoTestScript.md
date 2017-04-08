@@ -2,7 +2,7 @@
 layout: post
 title: AutoIt
 categories: [blog ]
-tags: [Testing]
+tags: [Test]
 description: 
 ---
 

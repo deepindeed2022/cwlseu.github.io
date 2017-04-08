@@ -2,7 +2,7 @@
 layout: post
 title: 图像处理基础
 categories: [blog ]
-tags: [图像处理]
+tags: [数字图像处理]
 description: 学习数字图像处理过程中遇到的问题
 ---
 声明：本博客欢迎转发，但请保留原作者信息! 

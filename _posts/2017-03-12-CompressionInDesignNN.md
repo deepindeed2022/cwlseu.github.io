@@ -2,7 +2,7 @@
 layout: post
 title: PVANET
 categories: [blog ]
-tags: [CV, 深度学习]
+tags: [机器视觉, 深度学习]
 description: 
 ---
 

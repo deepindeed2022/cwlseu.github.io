@@ -1,6 +1,7 @@
 ---
 layout: blog
 title: "从HOG到FHOG"
+tags: [机器视觉]
 description: "Welcome to my world!"
 ---
 

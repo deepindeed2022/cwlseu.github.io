@@ -2,7 +2,7 @@
 layout: post
 title: Digital Image Processing
 categories: [blog ]
-tags: [数字图像处理，机器视觉，二值化，阈值]
+tags: [数字图像处理，机器视觉]
 description: 机器视觉中阈值获取
 ---
 

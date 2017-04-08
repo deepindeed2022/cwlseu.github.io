@@ -2,7 +2,7 @@
 layout: post
 title: 基于SVM的人脸识别
 categories: [blog ]
-tags: [SVM, Support Vector Machine]
+tags: [SVM, 人脸分类]
 description: 通过SVM分类的方法，进行人脸识别
 ---
 

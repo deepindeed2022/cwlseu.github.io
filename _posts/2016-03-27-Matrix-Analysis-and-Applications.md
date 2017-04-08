@@ -2,7 +2,7 @@
 layout: post
 title: Matrix analysis and application
 categories: [blog ]
-tags: [Math, ]
+tags: [矩阵分析, ]
 description: 矩阵分析、应用与实践；主讲教师：Baobin Li
 ---
 矩阵也许就是为了计算机而出现的一门学科吧。虽然以前大学学习矩阵，好像感觉没有什么用处，但是当接触到图像之后发现，数字图像全是矩阵，矩阵成为每天必须面对的话题。

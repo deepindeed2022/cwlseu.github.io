@@ -2,7 +2,7 @@
 layout: post
 title: Elasticsearch
 categories: [blog,]
-tags: [Elasticsearch, Docker]
+tags: [Elasticsearch]
 description: 
 ---
 

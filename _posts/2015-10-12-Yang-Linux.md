@@ -2,7 +2,7 @@
 layout: post
 title: 探究Linux的奇妙之旅
 categories: [blog ]
-tags: [Linux, 操作系统, OS]
+tags: [Linux, 操作系统]
 description: 探究linux 0.11的一些神奇的东西
 ---
 # linux奇妙之旅

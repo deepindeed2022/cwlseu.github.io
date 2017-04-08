@@ -2,7 +2,7 @@
 layout: post
 title: Latex入门
 categories: [blog ]
-tags: [Latex, ]
+tags: [工具 ]
 description: 
 ---
 

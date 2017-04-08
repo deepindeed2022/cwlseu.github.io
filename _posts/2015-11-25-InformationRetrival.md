@@ -2,7 +2,7 @@
 layout: post
 title: IR的设计
 categories: [blog ]
-tags: [IR, 信息检索系统]
+tags: [信息检索系统]
 description: 信息检索系课程回顾与课程设计
 ---
 

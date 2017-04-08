@@ -2,7 +2,7 @@
 layout: post
 title: Thinking all the time
 categories: [blog ]
-tags: [idea, ]
+tags: [随笔]
 description: 平时闲来没事，胡思乱想
 ---
 # 平庸是魔鬼的温床

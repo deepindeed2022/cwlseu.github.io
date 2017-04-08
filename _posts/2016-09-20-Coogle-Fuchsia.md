@@ -2,7 +2,7 @@
 layout: post
 title: Google Fuchsia
 categories: [blog ]
-tags: [OS, ]
+tags: [操作系统, ]
 description: Google Fuchsia OS
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: malloc如何实现
 categories: [blog ]
-tags: [malloc]
+tags: [Linux开发, C++开发]
 description: 基础原理的实现
 ---
 

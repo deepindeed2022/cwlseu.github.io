@@ -1,8 +1,8 @@
 ---
 layout: post
-title: NLP Machine Translation
+title: "自然语言处理--机器翻译方法"
 categories: [blog ]
-tags: [NLP, ]
+tags: [自然语言处理, ]
 description: 自然语言处理--机器翻译方法
 ---
 
