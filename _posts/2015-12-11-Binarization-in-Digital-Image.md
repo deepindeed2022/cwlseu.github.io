@@ -5,6 +5,9 @@ categories: [blog ]
 tags: [数字图像处理，机器视觉]
 description: 机器视觉中阈值获取
 ---
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [Clython]
+博客： <https://cwlseu.github.io/>
 
 # 机器视觉二值化问题
 ## 意义与作用

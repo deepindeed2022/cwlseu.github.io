@@ -5,6 +5,9 @@ categories: [blog ]
 tags: [SVM, 人脸分类]
 description: 通过SVM分类的方法，进行人脸识别
 ---
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [Clython]
+博客： <https://cwlseu.github.io/>
 
 ## #数据说明
 > LFW全称为Labeled Faces in the Wild, 是一个应用于人脸识别问题的数据库，更多内容查看官方网站：http://vis-www.cs.umass.edu/lfw

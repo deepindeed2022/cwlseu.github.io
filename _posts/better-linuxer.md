@@ -1,4 +1,14 @@
+---
+layout: post
+title: "Linux命令"
+categories: [blog ]
+tags: [Linux, ]
+description: 向量化和编译器优化
+---
 
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [Clython]
+博客： <https://cwlseu.github.io/>
 ## 文件及目录的管理
 
 1. 查找当前文件夹下文件的个数
@@ -21,9 +31,6 @@
     34  XFastTrie.h
     35  YFastTrie.h
 ```
-
-
-
 
 ## 文本处理
 本节将介绍Linux下使用Shell处理文本时最常用的工具： find、grep、xargs、sort、uniq、tr、cut、paste、wc、sed、awk； 提供的例子和参数都是常用的； 我对shell脚本使用的原则是命令单行书写，尽量不要超过2行； 如果有更为复杂的任务需求，还是考虑python吧；

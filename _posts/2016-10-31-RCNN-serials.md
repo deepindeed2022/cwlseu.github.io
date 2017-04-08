@@ -31,4 +31,3 @@ description: In this paper, we explore three computer vision tasks in increasing
 1.[YOLO](http://www.cnblogs.com/venus024/p/5699633.html)
 2.[Overfeat](http://blog.csdn.net/mao_kun/article/details/50571766)
 3.[Overfeat](http://blog.csdn.net/u011534057/article/details/51274907)
-

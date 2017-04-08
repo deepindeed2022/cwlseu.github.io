@@ -1,6 +1,6 @@
 ---
 layout: post
-title: NLP Introduction
+title: NLP 语料处理
 categories: [blog ]
 tags: [自然语言处理, ]
 description: 自然语言处理需要大量语料进行学习，而语料的集合往往被称为语料库。

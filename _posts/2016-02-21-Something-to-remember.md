@@ -1,10 +1,13 @@
 ---
 layout: post
-title: 2015年流水账
+title: 新年
 categories: [blog ]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [Clython]
+博客： <https://cwlseu.github.io/>
 
 # 2016年计划
 2016年必将是我的转折一年。
