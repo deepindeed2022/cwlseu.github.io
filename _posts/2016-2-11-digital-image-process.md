@@ -2,11 +2,13 @@
 layout: post
 title: 图像处理基础
 categories: [blog ]
-tags: [数字图像处理]
+tags: [数字图像处理, Matlab]
 description: 学习数字图像处理过程中遇到的问题
 ---
 声明：本博客欢迎转发，但请保留原作者信息! 
+
 作者: [Clython]
+
 博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
 
 
@@ -14,42 +16,52 @@ description: 学习数字图像处理过程中遇到的问题
 matlab中有toolbox是关于图像处理的，很容易上手。当然，要是opencv用的很熟悉的话，也可以使用opencv.
 
 ### 基本的图像处理
-	`g = imfilter(f, w, filtering mode,boundary options, size options)`用于线性滤波时，要将图像首先转化为高精度，否则会导致图像灰度值溢出
+`g = imfilter(f, w, filtering mode,boundary options, size options) `用于线性滤波时，要将图像首先转化为高精度，否则会导致图像灰度值溢出
 
+```matlab
 		f = imread('fig.tif');  
 		f = im2double(f);  
 		w = ones(31);  
 		gf =imfilter(f,w);  
 		imshow(gf,[]);  
+```
+![filter效果图](http://github.com/cwlseu/cwlseu.github.io/raw/master/img/blog/digital-img-process/1.jpg)
 
-	![filter效果图](http://github.com/cwlseu/cwlseu.github.io/raw/master/img/blog/digital-img-process/1.jpg)
-		
+```matlab
 		f = imread('fig.tif');  
 		%f = im2double(f);  %delete im2double
 		w = ones(31);  
 		gf =imfilter(f,w);  
 		imshow(gf,[]); 
+```
+![filter灰度值溢出后效果图](http://github.com/cwlseu/cwlseu.github.io/raw/master/img/blog/digital-img-process/2.jpg)
 
-	![filter灰度值溢出后效果图](http://github.com/cwlseu/cwlseu.github.io/raw/master/img/blog/digital-img-process/2.jpg)
+当然，这个函数的参数还有很多，更多信息，请看博客(http://blog.sina.com.cn/s/blog_5d14765801014fi7.html)。
+如果自己想动手实现以下，可以参考[implementing-imfilter-in-matlab](http://stackoverflow.com/questions/10672184/implementing-imfilter-in-matlab)
 
-	当然，这个函数的参数还有很多，更多信息，请看博客(http://blog.sina.com.cn/s/blog_5d14765801014fi7.html)。
-	如果自己想动手实现以下，可以参考[implementing-imfilter-in-matlab](http://stackoverflow.com/questions/10672184/implementing-imfilter-in-matlab)
 ### 卷积的理解
-	`C = conv2(A,B)` 计算数组A和B的卷积。如果一个数组描述了一个二维FIR滤波器，则另一个数组被二维滤波。当A的大小为[ma,na],B的大小为[mb,nb]时，C的大小为[ma+mb-1,mb+nb-1]。
+` C = conv2(A,B)` 计算数组A和B的卷积。如果一个数组描述了一个二维FIR滤波器，则另一个数组被二维滤波。当A的大小为[ma,na],B的大小为[mb,nb]时，C的大小为[ma+mb-1,mb+nb-1]。
 但是要知道，在当前神经网络中的卷积和这里定义的卷积操作是不一样的。当前卷积神经网络中的卷积相当于掩码操作似的。数学上的卷积定义比这个复杂得多。
+
 ## 图像滤波
+
 处理一幅图像使得结果比原图像更适合于某种特定的应用 ，是一种基于局部运算的图像处理方法
+
 #### 方法：
 - 空域滤波：直接对图像的像素进行的滤波运算
 - 频域滤波：在傅立叶变换域的滤波运算
+
 #### 目的
+
 - 平滑：去噪
 - 锐化：增强图像的边缘及灰度变化的部分（一般先去噪）
 
 #### 噪声与图像的关系
 - 加性噪声
 - 乘性噪声
+
 #### 常见噪声种类
+
 - 高斯噪声
 - 椒盐噪声
 
@@ -87,7 +99,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 
 # 形态学
 
-形态学（Mathematical morphology） 是一门建立在格论和拓扑学基础之上的图像分析学科，是数学形态学图像处理的基本理论。其基本的运算包括：二值腐蚀和膨胀、二值开闭运算、骨架抽取、极限腐蚀、击中击不中变换、形态学梯度、Top-hat变换、颗粒分析、流域变换、灰值腐蚀和膨胀、灰值开闭运算、灰值形态学梯度等。
+>形态学（Mathematical morphology） 是一门建立在格论和拓扑学基础之上的图像分析学科，是数学形态学图像处理的基本理论。其基本的运算包括：二值腐蚀和膨胀、二值开闭运算、骨架抽取、极限腐蚀、击中击不中变换、形态学梯度、Top-hat变换、颗粒分析、流域变换、灰值腐蚀和膨胀、灰值开闭运算、灰值形态学梯度等。
 
 简单来讲，形态学操作就是基于形状的一系列图像处理操作。OpenCV为进行图像的形态学变换提供了快捷、方便的函数。最基本的形态学操作有二种，他们是：膨胀与腐蚀(Dilation与Erosion)。
 
@@ -101,6 +113,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 可以发现erode和dilate这两个函数内部就是调用了一下morphOp，只是他们调用morphOp时，第一个参数标识符不同，一个为MORPH_ERODE（腐蚀），一个为MORPH_DILATE（膨胀）。
 
 morphOp函数的源码在…\opencv\sources\modules\imgproc\src\morph.cpp
+
 ```cpp
 /* 
 第一个参数，InputArray类型的src，输入图像，即源图像，填Mat类的对象即可。图像通道的数量可以是任意的，但图像深度应为CV_8U，CV_16U，CV_16S，CV_32F或 CV_64F其中之一。
