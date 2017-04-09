@@ -2,7 +2,7 @@
 layout: post
 title: "算法优化的一些技巧"
 categories: [blog ]
-tags: [算法优化, ]
+tags: [算法优化, SIMD]
 description: 向量化和编译器优化
 ---
 
@@ -51,6 +51,7 @@ __m128i _mm_subs_epu16 (__m128i a, __m128i b)
 ```
 
 ## 设置\初始化向量数组
+
 ```cpp
 __m128i _mm_set_epi16 (short e7, short e6, short e5, short e4, short e3, short e2, short e1, short e0);
 __m128i _mm_set_epi32 (int e3, int e2, int e1, int e0);
@@ -306,11 +307,12 @@ int findStartContourPoint(const uchar *src_data,int width, int j)
 }
 ```
 
-其中 trailingZeros就是调用编译器的内置函数实现的。
+其中`trailingZeros`就是调用编译器的内置函数实现的。
 
 ```cpp
 #if CV_SSE_4_2
-inline unsigned int trailingZeros(unsigned int value) {
+inline unsigned int trailingZeros(unsigned int value) 
+{
     assert(value != 0); // undefined for zero input (https://en.wikipedia.org/wiki/Find_first_set)
 if defined(__GNUC__) || defined(__GNUG__)
     return __builtin_ctz(value);
@@ -336,6 +338,3 @@ if defined(__GNUC__) || defined(__GNUG__)
 3. [微软对intrinsics的文档https://msdn.microsoft.com/zh-cn/library/](https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx)
 4. [GCC编译器文档https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html](https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
 5. [stackoverflow关于`buildin_clear_cache` 的讨论：http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work](http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work)
-
-
-
