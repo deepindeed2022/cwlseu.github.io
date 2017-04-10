@@ -5,7 +5,12 @@ layout: default
 <body>
   <div class="index-wrapper">
     <div class="aside">
+       <div class="info-card">
+        <h1>BeiYuu</h1>
+        <a href="https://www.linkedin.com/in/cao-wenlong-7b691262/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="" width="25"/></a>
+        <a href="https://www.quora.com/profile/Charles-Cao-7" target="_blank"><img src="https://www.quora.com/favicon.ico" alt="" width="22"/></a>
 
+      </div>
       <div id="particles-js"></div>
     </div>
 
