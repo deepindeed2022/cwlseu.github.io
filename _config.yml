@@ -25,9 +25,16 @@ zhihu_username: cao-wenlong-96
 # use Github Flavored Markdown !important  
 # document: http://jekyllrb.com/docs/configuration/#kramdown  
 markdown: kramdown
-kramdown:
-  input: GFM
+
 highlighter: rouge
+kramdown:
+  auto_ids:       true
+  entity_output:  as_char
+  toc_levels:     1..6
+  smart_quotes:   lsquo,rsquo,ldquo,rdquo
+  input:          GFM
+  hard_wrap:      false
+  footnote_nr:    1
 
 gems: 
 - jekyll-gallery-generator

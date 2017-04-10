@@ -34,11 +34,14 @@ description: "Welcome to my world!"
 ### 算法步骤
 HOG特征提取方法就是将一个image（你要检测的目标或者扫描窗口):
 ![@HOG特征提取算法的实现过程](../images/fhog/process.jpg)
-1. 灰度化（将图像看做一个x,y,h（灰度）的三维图像）；
-2. 采用Gamma校正法对输入图像进行**颜色空间的标准化（归一化）**
+
+
+
+##### 灰度化（将图像看做一个x,y,h（灰度）的三维图像）；
+##### 采用Gamma校正法对输入图像进行**颜色空间的标准化（归一化）**
 目的是调节图像的对比度，降低图像局部的阴影和光照变化所造成的影响，同时可以抑制噪音的干扰；
 为了减少光照因素的影响，首先需要将整个图像进行规范化（归一化）。在图像的纹理强度中，局部的表层曝光贡献的比重较大，所以，这种压缩处理能够有效地降低图像局部的阴影和光照变化。因为颜色信息作用不大，通常先转化为灰度图；$$I(x, y) = I(x, y)^ gramma$$通常gamma取0.5
-3. 计算图像每个像素的梯度（包括大小和方向）；主要是为了捕获轮廓信息，同时进一步弱化光照的干扰。
+##### 计算图像每个像素的梯度（包括大小和方向）；主要是为了捕获轮廓信息，同时进一步弱化光照的干扰。
 图像中像素点的梯度：
 
 ```latex
@@ -48,18 +51,47 @@ G(x, y) = \sqrt{G_x(x, y)^2 + G_y(x, y)^2}
 \alpha(x, y) = tan^{-1}{\frac{G_y(x, y)}{G_x(x, y)}}
 ```
 
-4. 将图像划分成小`cells`（例如6*6像素/cell）；
-5. 统计每个cell的梯度直方图（不同梯度的个数），即可形成每个cell的descriptor；
-6. 将每几个cell组成一个block（例如3*3个cell/block），一个block内所有cell的特征descriptor串联起来便得到该block的HOG特征descriptor。
-7. 将图像image内的所有block的HOG特征descriptor串联起来就可以得到该image（你要检测的目标）的HOG特征descriptor了。这个就是最终的可供分类使用的特征向量了。
+##### 将图像划分成小`cells`（例如16*16像素/cell）；
+![@](../images/fhog/cell.jpg)
+每一个点的梯度角度可能是0~180度之间的任意值，而程序中将其离散化为9个bin，即每个bin占20度。所以滑动窗口中每个像素点的梯度角度如果要离散化到这9个bin中，则一般它都会有2个相邻的bin(如果恰好位于某个bin的中心，则可认为对该bin的权重为1即可)。从源码中可以看到梯度的幅值是用来计算梯度直方图时权重投票的，所以每个像素点的梯度幅值就分解到了其角度相邻的2个bin了，越近的那个bin得到的权重越大。因此幅度图像用了2个通道，每个通道都是原像素点幅度的一个分量。同理，不难理解，像素点的梯度角度也用了2个通道，每个通道中存储的是它相邻2个bin的bin序号。序号小的放在第一通道。
+![@每个cell中的像素梯度最后离散化为9个bin中，其中的bins统计各个bin中hist信息](../images/fhog/bin.png)
+其中，假设那3条半径为离散化后bin的中心，红色虚线为像素点O(像素点在圆心处)的梯度方向，梯度幅值为A，该梯度方向与最近的相邻bin为bin0,这两者之间的夹角为a.这该像素点O处存储的梯度幅值第1通道为A*(1-a),第2通道为A*a;该像素点O处存储的角度第1通道为0(bin的序号为0)，第2通道为1(bin的序号为1)。
+另外在计算图像的梯度图和相位图时，如果该图像时3通道的，则3通道分别取梯度值，并且取梯度最大的那个通道的值为该点的梯度幅值。
+
+##### 统计每个cell的梯度直方图（不同梯度的个数），即可形成每个cell的descriptor；
+
+##### 将每几个cell组成一个block（例如2*2个cell/block）
+![@cell与block之间的关系](../images/fhog/cell2block.png)，一个block内所有cell的特征descriptor串联起来便得到该block的HOG特征descriptor。这个在OpenCV中有HogCache中getBlock进行实现的。
+如图所示，黑色框代表1个block，红实线隔开的为4个cell，每个cell用绿色虚线隔开的我们称之为4个区域，所以该block中共有16个区域，分别为A、B、C、…、O、P。
+将这16个区域分为4组：
+第1组：A、D、M、P;该组内的像素点计算梯度方向直方图时只对其所在的cell有贡献。
+第2组：B、C、N、O;该组内的像素点计算梯度直方图时对其所在的左右cell有贡献。
+第3组：E、I、H、L;该组内的像素点计算梯度直方图时对其所在的上下cell有贡献。
+第4组：F、G、J、K;该组内的像素点对其上下左右的cell计算梯度直方图时都有贡献。
+
+那到底是怎么对cell贡献的呢？举个例子来说，E区域内的像素点对cell0和cell2有贡献。本来1个block对滑动窗口贡献的向量维数为36维，即每个cell贡献9维，其顺序分别为cell0,cell1,cell2,cell3.而E区域内的像素由于同时对cell0和cell2有贡献，所以在计算E区域内的像素梯度投票时，不仅要投向它本来的cell0，还要投向下面的cell2，即投向cell0和cell2有一个权重，该权重与该像素点所在位置与cell0，cell2中心位置的距离有关。具体的关系可以去查看源码。
+
+##### 将图像image内的所有block的HOG特征descriptor串联起来就可以得到该image（你要检测的目标）的HOG特征descriptor了。这个就是最终的可供分类使用的特征向量了。
+
+![@HOG算法名词之间的关系结构图](../images/fhog/cell-block-window-image.png)
 
 >实际实现的时候，首先用[-1,0,1]梯度算子对原图像做卷积运算，得到x方向（水平方向，以向右为正方向）的梯度分量gradscalx，然后用[1,0,-1]T梯度算子对原图像做卷积运算，得到y方向（竖直方向，以向上为正方向）的梯度分量gradscaly。然后再用以上公式计算该像素点的梯度大小和方向。
 
-[^HOG更加详细的解释](http://blog.csdn.net/liulina603/article/details/8291093)
-源代码在OpenCV中有源代码。其中<http://www.cnblogs.com/tornadomeet/archive/2012/08/15/2640754.html>对行人检测任务进行了详细分析，此外还对OpenCV中的源代码进行了分析。
+### HOG源码分析
 
-在读源码时，由于里面用到了intel的ipp库，优化了算法的速度。
-头文件中有关于一些参数的默认设置：
+在读源码时，由于里面用到了intel的ipp库，优化了算法的速度。为了学习方便，我对OpenCV中关于加速的
+部分进行了删减，只剩下算法的精要部分。
+![@OpenCV中关于HogDescriptor的实现](../images/fhog/opencv-hog.png)
+
+	头文件中有关于一些参数的默认设置：
+	检测窗口大小为128*64;
+	Block大小为16*16；
+	Cell大小为8*8；
+	Block在检测窗口中上下移动尺寸为8*8；
+	1个cell的梯度直方图化成9个bin；
+	滑动窗口在检测图片中滑动的尺寸为8*8；
+
+#### 头文件
 
 ```cpp
 //HOG (Histogram-of-Oriented-Gradients) Descriptor and Object Detector //
@@ -150,6 +182,8 @@ public:
 
 //! @} objdetect
 ```
+
+### 源文件
 
 ```cpp
 
@@ -405,6 +439,9 @@ void HOGDescriptor::computeGradient(const Mat& img, Mat& grad, Mat& qangle,
 
 struct HOGCache
 {
+	// 1个BlockData结构体是对应的一个block数据。
+	// 其中histOfs表示为该block对整个滑动窗口内hog描述算子的贡献那部分向量的起始位置；
+	// imgOffset为该block在滑动窗口图片中的坐标(当然是指左上角坐标)
     struct BlockData
     {
         BlockData() :
@@ -414,7 +451,12 @@ struct HOGCache
         int histOfs;
         Point imgOffset;
     };
-
+    // PixData结构体是对应的block中1个像素点的数据。
+    // 其中gradOfs表示该点的梯度幅度在滑动窗口图片梯度幅度图中的位置坐标；
+    // qangleOfs表示该点的梯度角度在滑动窗口图片梯度角度图中的位置坐标；
+    // histOfs[]表示该像素点对1个或2个或4个cell贡献的hog描述子向量的起始位置坐标（比较抽象，需要看源码才懂）。
+    // histWeight[]表示该像素点对1个或2个或4个cell贡献的权重。
+    // gradWeight表示该点本身由于处在block中位置的不同因而对梯度直方图贡献也不同，其权值按照二维高斯分布(以block中心为二维高斯的中心)来决定。
     struct PixData
     {
         size_t gradOfs, qangleOfs;
@@ -537,7 +579,14 @@ void HOGCache::init(const HOGDescriptor* _descriptor,
                 weights(i,j) = std::exp(-(_di[i] + _dj[j])*scale);
     }
 
+	// vector<BlockData> blockData;而BlockData为HOGCache的一个结构体成员
+	// nblocks.width*nblocks.height表示一个检测窗口中block的个数，
+	// 而cacheSize.width*cacheSize.heigh表示一个已经扩充的图片中的block的个数
     blockData.resize(nblocks.width*nblocks.height);
+    // vector<PixData> pixData; 同理，Pixdata也为HOGCache中的一个结构体成员
+    // rawBlockSize表示每个block中像素点的个数
+    // resize表示将其转换成列向量
+    // rawBlockSize*3表示的是存储同时对1个cell，2个cell，4个cell的贡献
     pixData.resize(rawBlockSize*3);
 
     // Initialize 2 lookup tables, pixData & blockData.
@@ -557,7 +606,7 @@ void HOGCache::init(const HOGDescriptor* _descriptor,
     //         inside we compute the current search window using getWindow() method.
     //         Yes, it involves some overhead (function call + couple of divisions),
     //         but it's tiny in fact.
-    //   2. loop over the blocks is also unrolled. Inside we use pre-computed blockData[j]
+    //   2. loop over the blocks is also unrolled. Inside we use **pre-computed** blockData[j]
     //         to set up gradient and histogram pointers.
     //   3. loops over cells and pixels in each cell are merged
     //       (since there is no overlap between cells, each pixel in the block is processed once)
@@ -565,7 +614,7 @@ void HOGCache::init(const HOGDescriptor* _descriptor,
     //      update the histogram
     //
 
-    // count1,count2,count4分别表示block中同时对1个cell，2个cell，4个cell有贡献的像素点的个数。
+    // count1, count2, count4分别表示block中同时对1个cell，2个cell，4个cell有贡献的像素点的个数。
     count1 = count2 = count4 = 0;
     for( j = 0; j < blockSize.width; j++ )
         for( i = 0; i < blockSize.height; i++ )
@@ -667,7 +716,7 @@ void HOGCache::init(const HOGDescriptor* _descriptor,
             data.imgOffset = Point(j*blockStride.width,i*blockStride.height);
         }
 }
-
+// 计算一个block中的特征子
 const float* HOGCache::getBlock(Point pt, float* buf)
 {
     float* blockHist = buf;
@@ -707,7 +756,7 @@ const float* HOGCache::getBlock(Point pt, float* buf)
     memset(blockHist, 0, sizeof(float) * blockHistogramSize);
 
     const PixData* _pixData = &pixData[0];
-
+    // 统计各个cell中的bin信息
     for( k = 0; k < C1; k++ )
     {
         const PixData& pk = _pixData[k];
@@ -775,7 +824,7 @@ const float* HOGCache::getBlock(Point pt, float* buf)
         t1 = hist[h1] + a1*w;
         hist[h0] = t0; hist[h1] = t1;
     }
-
+    // 归一化 block中的Hist
     normalizeBlockHistogram(blockHist);
 
     return blockHist;
@@ -783,50 +832,16 @@ const float* HOGCache::getBlock(Point pt, float* buf)
 
 void HOGCache::normalizeBlockHistogram(float* _hist) const
 {
-    float* hist = &_hist[0], sum = 0.0f, partSum[4];
+    float* hist = &_hist[0], sum = 0.0f;
     size_t i = 0, sz = blockHistogramSize;
 
-    partSum[0] = 0.0f;
-    partSum[1] = 0.0f;
-    partSum[2] = 0.0f;
-    partSum[3] = 0.0f;
-    for ( ; i <= sz - 4; i += 4)
-    {
-        partSum[0] += hist[i] * hist[i];
-        partSum[1] += hist[i+1] * hist[i+1];
-        partSum[2] += hist[i+2] * hist[i+2];
-        partSum[3] += hist[i+3] * hist[i+3];
-    }
-
-    float t0 = partSum[0] + partSum[1];
-    float t1 = partSum[2] + partSum[3];
-    sum = t0 + t1;
-    for ( ; i < sz; ++i)
+    for (i = 0 ; i < sz; ++i)
         sum += hist[i]*hist[i];
 
     float scale = 1.f/(std::sqrt(sum)+sz*0.1f), thresh = (float)descriptor->L2HysThreshold;
-    i = 0, sum = 0.0f;
+    sum = 0.0f;
 
-    partSum[0] = 0.0f;
-    partSum[1] = 0.0f;
-    partSum[2] = 0.0f;
-    partSum[3] = 0.0f;
-    for( ; i <= sz - 4; i += 4)
-    {
-        hist[i] = std::min(hist[i]*scale, thresh);
-        hist[i+1] = std::min(hist[i+1]*scale, thresh);
-        hist[i+2] = std::min(hist[i+2]*scale, thresh);
-        hist[i+3] = std::min(hist[i+3]*scale, thresh);
-        partSum[0] += hist[i]*hist[i];
-        partSum[1] += hist[i+1]*hist[i+1];
-        partSum[2] += hist[i+2]*hist[i+2];
-        partSum[3] += hist[i+3]*hist[i+3];
-    }
-
-    t0 = partSum[0] + partSum[1];
-    t1 = partSum[2] + partSum[3];
-    sum = t0 + t1;
-    for( ; i < sz; ++i)
+    for(i = 0; i < sz; ++i)
     {
         hist[i] = std::min(hist[i]*scale, thresh);
         sum += hist[i]*hist[i];
@@ -865,317 +880,6 @@ static inline int gcd(int a, int b)
     return a;
 }
 
-#ifdef HAVE_OPENCL
-
-static bool ocl_compute_gradients_8UC1(int height, int width, InputArray _img, float angle_scale,
-                                       UMat grad, UMat qangle, bool correct_gamma, int nbins)
-{
-    ocl::Kernel k("compute_gradients_8UC1_kernel", ocl::objdetect::objdetect_hog_oclsrc);
-    if(k.empty())
-        return false;
-
-    UMat img = _img.getUMat();
-
-    size_t localThreads[3] = { NTHREADS, 1, 1 };
-    size_t globalThreads[3] = { (size_t)width, (size_t)height, 1 };
-    char correctGamma = (correct_gamma) ? 1 : 0;
-    int grad_quadstep = (int)grad.step >> 3;
-    int qangle_elem_size = CV_ELEM_SIZE1(qangle.type());
-    int qangle_step = (int)qangle.step / (2 * qangle_elem_size);
-
-    int idx = 0;
-    idx = k.set(idx, height);
-    idx = k.set(idx, width);
-    idx = k.set(idx, (int)img.step1());
-    idx = k.set(idx, grad_quadstep);
-    idx = k.set(idx, qangle_step);
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(img));
-    idx = k.set(idx, ocl::KernelArg::PtrWriteOnly(grad));
-    idx = k.set(idx, ocl::KernelArg::PtrWriteOnly(qangle));
-    idx = k.set(idx, angle_scale);
-    idx = k.set(idx, correctGamma);
-    idx = k.set(idx, nbins);
-
-    return k.run(2, globalThreads, localThreads, false);
-}
-
-static bool ocl_computeGradient(InputArray img, UMat grad, UMat qangle, int nbins, Size effect_size, bool gamma_correction, bool signedGradient)
-{
-    float angleScale = signedGradient ? (float)(nbins/(2.0*CV_PI)) : (float)(nbins/CV_PI);
-
-    return ocl_compute_gradients_8UC1(effect_size.height, effect_size.width, img,
-         angleScale, grad, qangle, gamma_correction, nbins);
-}
-
-#define CELL_WIDTH 8
-#define CELL_HEIGHT 8
-#define CELLS_PER_BLOCK_X 2
-#define CELLS_PER_BLOCK_Y 2
-
-static bool ocl_compute_hists(int nbins, int block_stride_x, int block_stride_y, int height, int width,
-                              UMat grad, UMat qangle, UMat gauss_w_lut, UMat block_hists, size_t block_hist_size)
-{
-    ocl::Kernel k("compute_hists_lut_kernel", ocl::objdetect::objdetect_hog_oclsrc);
-    if(k.empty())
-        return false;
-    bool is_cpu = cv::ocl::Device::getDefault().type() == cv::ocl::Device::TYPE_CPU;
-    cv::String opts;
-    if(is_cpu)
-       opts = "-D CPU ";
-    else
-        opts = cv::format("-D WAVE_SIZE=%d", k.preferedWorkGroupSizeMultiple());
-    k.create("compute_hists_lut_kernel", ocl::objdetect::objdetect_hog_oclsrc, opts);
-    if(k.empty())
-        return false;
-
-    int img_block_width = (width - CELLS_PER_BLOCK_X * CELL_WIDTH + block_stride_x)/block_stride_x;
-    int img_block_height = (height - CELLS_PER_BLOCK_Y * CELL_HEIGHT + block_stride_y)/block_stride_y;
-    int blocks_total = img_block_width * img_block_height;
-
-    int qangle_elem_size = CV_ELEM_SIZE1(qangle.type());
-    int grad_quadstep = (int)grad.step >> 2;
-    int qangle_step = (int)qangle.step / qangle_elem_size;
-
-    int blocks_in_group = 4;
-    size_t localThreads[3] = { (size_t)blocks_in_group * 24, 2, 1 };
-    size_t globalThreads[3] = {((img_block_width * img_block_height + blocks_in_group - 1)/blocks_in_group) * localThreads[0], 2, 1 };
-
-    int hists_size = (nbins * CELLS_PER_BLOCK_X * CELLS_PER_BLOCK_Y * 12) * sizeof(float);
-    int final_hists_size = (nbins * CELLS_PER_BLOCK_X * CELLS_PER_BLOCK_Y) * sizeof(float);
-
-    int smem = (hists_size + final_hists_size) * blocks_in_group;
-
-    int idx = 0;
-    idx = k.set(idx, block_stride_x);
-    idx = k.set(idx, block_stride_y);
-    idx = k.set(idx, nbins);
-    idx = k.set(idx, (int)block_hist_size);
-    idx = k.set(idx, img_block_width);
-    idx = k.set(idx, blocks_in_group);
-    idx = k.set(idx, blocks_total);
-    idx = k.set(idx, grad_quadstep);
-    idx = k.set(idx, qangle_step);
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(grad));
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(qangle));
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(gauss_w_lut));
-    idx = k.set(idx, ocl::KernelArg::PtrWriteOnly(block_hists));
-    idx = k.set(idx, (void*)NULL, (size_t)smem);
-
-    return k.run(2, globalThreads, localThreads, false);
-}
-
-static int power_2up(unsigned int n)
-{
-    for(unsigned int i = 1; i<=1024; i<<=1)
-        if(n < i)
-            return i;
-    return -1; // Input is too big
-}
-
-static bool ocl_normalize_hists(int nbins, int block_stride_x, int block_stride_y,
-                                int height, int width, UMat block_hists, float threshold)
-{
-    int block_hist_size = nbins * CELLS_PER_BLOCK_X * CELLS_PER_BLOCK_Y;
-    int img_block_width = (width - CELLS_PER_BLOCK_X * CELL_WIDTH + block_stride_x)
-        / block_stride_x;
-    int img_block_height = (height - CELLS_PER_BLOCK_Y * CELL_HEIGHT + block_stride_y)
-        / block_stride_y;
-    int nthreads;
-    size_t globalThreads[3] = { 1, 1, 1  };
-    size_t localThreads[3] = { 1, 1, 1  };
-
-    int idx = 0;
-    bool is_cpu = cv::ocl::Device::getDefault().type() == cv::ocl::Device::TYPE_CPU;
-    cv::String opts;
-    ocl::Kernel k;
-    if ( nbins == 9 )
-    {
-        k.create("normalize_hists_36_kernel", ocl::objdetect::objdetect_hog_oclsrc, "");
-        if(k.empty())
-            return false;
-        if(is_cpu)
-           opts = "-D CPU ";
-        else
-            opts = cv::format("-D WAVE_SIZE=%d", k.preferedWorkGroupSizeMultiple());
-        k.create("normalize_hists_36_kernel", ocl::objdetect::objdetect_hog_oclsrc, opts);
-        if(k.empty())
-            return false;
-
-        int blocks_in_group = NTHREADS / block_hist_size;
-        nthreads = blocks_in_group * block_hist_size;
-        int num_groups = (img_block_width * img_block_height + blocks_in_group - 1)/blocks_in_group;
-        globalThreads[0] = nthreads * num_groups;
-        localThreads[0] = nthreads;
-    }
-    else
-    {
-        k.create("normalize_hists_kernel", ocl::objdetect::objdetect_hog_oclsrc, "-D WAVE_SIZE=32");
-        if(k.empty())
-            return false;
-        if(is_cpu)
-           opts = "-D CPU ";
-        else
-            opts = cv::format("-D WAVE_SIZE=%d", k.preferedWorkGroupSizeMultiple());
-        k.create("normalize_hists_kernel", ocl::objdetect::objdetect_hog_oclsrc, opts);
-        if(k.empty())
-            return false;
-
-        nthreads = power_2up(block_hist_size);
-        globalThreads[0] = img_block_width * nthreads;
-        globalThreads[1] = img_block_height;
-        localThreads[0] = nthreads;
-
-        if ((nthreads < 32) || (nthreads > 512) )
-            return false;
-
-        idx = k.set(idx, nthreads);
-        idx = k.set(idx, block_hist_size);
-        idx = k.set(idx, img_block_width);
-    }
-    idx = k.set(idx, ocl::KernelArg::PtrReadWrite(block_hists));
-    idx = k.set(idx, threshold);
-    idx = k.set(idx, (void*)NULL,  nthreads * sizeof(float));
-
-    return k.run(2, globalThreads, localThreads, false);
-}
-
-static bool ocl_extract_descrs_by_rows(int win_height, int win_width, int block_stride_y, int block_stride_x, int win_stride_y, int win_stride_x,
-                                       int height, int width, UMat block_hists, UMat descriptors,
-                                       int block_hist_size, int descr_size, int descr_width)
-{
-    ocl::Kernel k("extract_descrs_by_rows_kernel", ocl::objdetect::objdetect_hog_oclsrc);
-    if(k.empty())
-        return false;
-
-    int win_block_stride_x = win_stride_x / block_stride_x;
-    int win_block_stride_y = win_stride_y / block_stride_y;
-    int img_win_width = (width - win_width + win_stride_x) / win_stride_x;
-    int img_win_height = (height - win_height + win_stride_y) / win_stride_y;
-    int img_block_width = (width - CELLS_PER_BLOCK_X * CELL_WIDTH + block_stride_x) /
-        block_stride_x;
-
-    int descriptors_quadstep = (int)descriptors.step >> 2;
-
-    size_t globalThreads[3] = { (size_t)img_win_width * NTHREADS, (size_t)img_win_height, 1 };
-    size_t localThreads[3] = { NTHREADS, 1, 1 };
-
-    int idx = 0;
-    idx = k.set(idx, block_hist_size);
-    idx = k.set(idx, descriptors_quadstep);
-    idx = k.set(idx, descr_size);
-    idx = k.set(idx, descr_width);
-    idx = k.set(idx, img_block_width);
-    idx = k.set(idx, win_block_stride_x);
-    idx = k.set(idx, win_block_stride_y);
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(block_hists));
-    idx = k.set(idx, ocl::KernelArg::PtrWriteOnly(descriptors));
-
-    return k.run(2, globalThreads, localThreads, false);
-}
-
-static bool ocl_extract_descrs_by_cols(int win_height, int win_width, int block_stride_y, int block_stride_x, int win_stride_y, int win_stride_x,
-                                       int height, int width, UMat block_hists, UMat descriptors,
-                                       int block_hist_size, int descr_size, int nblocks_win_x, int nblocks_win_y)
-{
-    ocl::Kernel k("extract_descrs_by_cols_kernel", ocl::objdetect::objdetect_hog_oclsrc);
-    if(k.empty())
-        return false;
-
-    int win_block_stride_x = win_stride_x / block_stride_x;
-    int win_block_stride_y = win_stride_y / block_stride_y;
-    int img_win_width = (width - win_width + win_stride_x) / win_stride_x;
-    int img_win_height = (height - win_height + win_stride_y) / win_stride_y;
-    int img_block_width = (width - CELLS_PER_BLOCK_X * CELL_WIDTH + block_stride_x) /
-        block_stride_x;
-
-    int descriptors_quadstep = (int)descriptors.step >> 2;
-
-    size_t globalThreads[3] = { (size_t)img_win_width * NTHREADS, (size_t)img_win_height, 1 };
-    size_t localThreads[3] = { NTHREADS, 1, 1 };
-
-    int idx = 0;
-    idx = k.set(idx, block_hist_size);
-    idx = k.set(idx, descriptors_quadstep);
-    idx = k.set(idx, descr_size);
-    idx = k.set(idx, nblocks_win_x);
-    idx = k.set(idx, nblocks_win_y);
-    idx = k.set(idx, img_block_width);
-    idx = k.set(idx, win_block_stride_x);
-    idx = k.set(idx, win_block_stride_y);
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(block_hists));
-    idx = k.set(idx, ocl::KernelArg::PtrWriteOnly(descriptors));
-
-    return k.run(2, globalThreads, localThreads, false);
-}
-
-static bool ocl_compute(InputArray _img, Size win_stride, std::vector<float>& _descriptors, int descr_format, Size blockSize,
-                        Size cellSize, int nbins, Size blockStride, Size winSize, float sigma, bool gammaCorrection, double L2HysThreshold, bool signedGradient)
-{
-    Size imgSize = _img.size();
-    Size effect_size = imgSize;
-
-    UMat grad(imgSize, CV_32FC2);
-    int qangle_type = ocl::Device::getDefault().isIntel() ? CV_32SC2 : CV_8UC2;
-    UMat qangle(imgSize, qangle_type);
-
-    const size_t block_hist_size = getBlockHistogramSize(blockSize, cellSize, nbins);
-    const Size blocks_per_img = numPartsWithin(imgSize, blockSize, blockStride);
-    UMat block_hists(1, static_cast<int>(block_hist_size * blocks_per_img.area()) + 256, CV_32F);
-
-    Size wins_per_img = numPartsWithin(imgSize, winSize, win_stride);
-    UMat labels(1, wins_per_img.area(), CV_8U);
-
-    float scale = 1.f / (2.f * sigma * sigma);
-    Mat gaussian_lut(1, 512, CV_32FC1);
-    int idx = 0;
-    for(int i=-8; i<8; i++)
-        for(int j=-8; j<8; j++)
-            gaussian_lut.at<float>(idx++) = std::exp(-(j * j + i * i) * scale);
-    for(int i=-8; i<8; i++)
-        for(int j=-8; j<8; j++)
-            gaussian_lut.at<float>(idx++) = (8.f - fabs(j + 0.5f)) * (8.f - fabs(i + 0.5f)) / 64.f;
-
-    if(!ocl_computeGradient(_img, grad, qangle, nbins, effect_size, gammaCorrection, signedGradient))
-        return false;
-
-    UMat gauss_w_lut;
-    gaussian_lut.copyTo(gauss_w_lut);
-    if(!ocl_compute_hists(nbins, blockStride.width, blockStride.height, effect_size.height,
-        effect_size.width, grad, qangle, gauss_w_lut, block_hists, block_hist_size))
-        return false;
-
-    if(!ocl_normalize_hists(nbins, blockStride.width, blockStride.height, effect_size.height,
-        effect_size.width, block_hists, (float)L2HysThreshold))
-        return false;
-
-    Size blocks_per_win = numPartsWithin(winSize, blockSize, blockStride);
-    wins_per_img = numPartsWithin(effect_size, winSize, win_stride);
-
-    int descr_size = blocks_per_win.area()*(int)block_hist_size;
-    int descr_width = (int)block_hist_size*blocks_per_win.width;
-
-    UMat descriptors(wins_per_img.area(), static_cast<int>(blocks_per_win.area() * block_hist_size), CV_32F);
-    switch (descr_format)
-    {
-    case DESCR_FORMAT_ROW_BY_ROW:
-        if(!ocl_extract_descrs_by_rows(winSize.height, winSize.width,
-            blockStride.height, blockStride.width, win_stride.height, win_stride.width, effect_size.height,
-            effect_size.width, block_hists, descriptors, (int)block_hist_size, descr_size, descr_width))
-            return false;
-        break;
-    case DESCR_FORMAT_COL_BY_COL:
-        if(!ocl_extract_descrs_by_cols(winSize.height, winSize.width,
-            blockStride.height, blockStride.width, win_stride.height, win_stride.width, effect_size.height, effect_size.width,
-            block_hists, descriptors, (int)block_hist_size, descr_size, blocks_per_win.width, blocks_per_win.height))
-            return false;
-        break;
-    default:
-        return false;
-    }
-    descriptors.reshape(1, (int)descriptors.total()).getMat(ACCESS_READ).copyTo(_descriptors);
-    return true;
-}
-#endif //HAVE_OPENCL
 
 void HOGDescriptor::compute(InputArray _img, std::vector<float>& descriptors,
     Size winStride, Size padding, const std::vector<Point>& locations) const
@@ -1194,13 +898,9 @@ void HOGDescriptor::compute(InputArray _img, std::vector<float>& descriptors,
     padding.height = (int)alignSize(std::max(padding.height, 0), cacheStride.height);
     Size paddedImgSize(imgSize.width + padding.width*2, imgSize.height + padding.height*2);
 
-    CV_OCL_RUN(_img.dims() <= 2 && _img.type() == CV_8UC1 && _img.isUMat(),
-        ocl_compute(_img, winStride, descriptors, DESCR_FORMAT_COL_BY_COL, blockSize,
-        cellSize, nbins, blockStride, winSize, (float)getWinSigma(), gammaCorrection, L2HysThreshold, signedGradient))
-
     Mat img = _img.getMat();
     HOGCache cache(this, img, padding, padding, nwindows == 0, cacheStride);
-
+    // 获取图片中windows的个数
     if( !nwindows )
         nwindows = cache.windowsInImage(paddedImgSize, winStride).area();
 
@@ -1227,7 +927,6 @@ void HOGDescriptor::compute(InputArray _img, std::vector<float>& descriptors,
         else
         {
             pt0 = cache.getWindow(paddedImgSize, winStride, (int)i).tl() - Point(padding);
-//            CV_Assert(pt0.x % cacheStride.width == 0 && pt0.y % cacheStride.height == 0);
         }
 
         for( int j = 0; j < nblocks; j++ )
@@ -1237,8 +936,7 @@ void HOGDescriptor::compute(InputArray _img, std::vector<float>& descriptors,
 
             float* dst = descriptor + bj.histOfs;
             const float* src = cache.getBlock(pt, dst);
-            if( src != dst )
-                memcpy(dst, src, blockHistogramSize * sizeof(float));
+            if( src != dst ) memcpy(dst, src, blockHistogramSize * sizeof(float));
         }
     }
 }
@@ -1305,11 +1003,7 @@ void HOGDescriptor::detect(const Mat& img,
 
             const float* vec = cache.getBlock(pt, &blockHist[0]);
 
-            for( k = 0; k <= blockHistogramSize - 4; k += 4 )
-                s += vec[k]*svmVec[k] + vec[k+1]*svmVec[k+1] +
-                    vec[k+2]*svmVec[k+2] + vec[k+3]*svmVec[k+3];
-
-            for( ; k < blockHistogramSize; k++ )
+            for(k = 0 ; k < blockHistogramSize; k++ )
                 s += vec[k]*svmVec[k];
         }
         if( s >= hitThreshold )
@@ -1329,8 +1023,7 @@ void HOGDescriptor::detect(const Mat& img, std::vector<Point>& hits, double hitT
     detect(img, hits, weightsV, hitThreshold, winStride, padding, locations);
 }
 
-class HOGInvoker :
-    public ParallelLoopBody
+class HOGInvoker : public ParallelLoopBody
 {
 public:
     HOGInvoker( const HOGDescriptor* _hog, const Mat& _img,
@@ -1405,202 +1098,6 @@ private:
     Mutex* mtx;
 };
 
-#ifdef HAVE_OPENCL
-
-static bool ocl_classify_hists(int win_height, int win_width, int block_stride_y, int block_stride_x,
-                               int win_stride_y, int win_stride_x, int height, int width,
-                               const UMat& block_hists, UMat detector,
-                               float free_coef, float threshold, UMat& labels, Size descr_size, int block_hist_size)
-{
-    int nthreads;
-    bool is_cpu = cv::ocl::Device::getDefault().type() == cv::ocl::Device::TYPE_CPU;
-    cv::String opts;
-
-    ocl::Kernel k;
-    int idx = 0;
-    switch (descr_size.width)
-    {
-    case 180:
-        nthreads = 180;
-        k.create("classify_hists_180_kernel", ocl::objdetect::objdetect_hog_oclsrc, "-D WAVE_SIZE=32");
-        if(k.empty())
-            return false;
-        if(is_cpu)
-           opts = "-D CPU ";
-        else
-            opts = cv::format("-D WAVE_SIZE=%d", k.preferedWorkGroupSizeMultiple());
-        k.create("classify_hists_180_kernel", ocl::objdetect::objdetect_hog_oclsrc, opts);
-        if(k.empty())
-            return false;
-        idx = k.set(idx, descr_size.width);
-        idx = k.set(idx, descr_size.height);
-        break;
-
-    case 252:
-        nthreads = 256;
-        k.create("classify_hists_252_kernel", ocl::objdetect::objdetect_hog_oclsrc, "-D WAVE_SIZE=32");
-        if(k.empty())
-            return false;
-        if(is_cpu)
-           opts = "-D CPU ";
-        else
-            opts = cv::format("-D WAVE_SIZE=%d", k.preferedWorkGroupSizeMultiple());
-        k.create("classify_hists_252_kernel", ocl::objdetect::objdetect_hog_oclsrc, opts);
-        if(k.empty())
-            return false;
-        idx = k.set(idx, descr_size.width);
-        idx = k.set(idx, descr_size.height);
-        break;
-
-    default:
-        nthreads = 256;
-        k.create("classify_hists_kernel", ocl::objdetect::objdetect_hog_oclsrc, "-D WAVE_SIZE=32");
-        if(k.empty())
-            return false;
-        if(is_cpu)
-           opts = "-D CPU ";
-        else
-            opts = cv::format("-D WAVE_SIZE=%d", k.preferedWorkGroupSizeMultiple());
-        k.create("classify_hists_kernel", ocl::objdetect::objdetect_hog_oclsrc, opts);
-        if(k.empty())
-            return false;
-        idx = k.set(idx, descr_size.area());
-        idx = k.set(idx, descr_size.height);
-    }
-
-    int win_block_stride_x = win_stride_x / block_stride_x;
-    int win_block_stride_y = win_stride_y / block_stride_y;
-    int img_win_width = (width - win_width + win_stride_x) / win_stride_x;
-    int img_win_height = (height - win_height + win_stride_y) / win_stride_y;
-    int img_block_width = (width - CELLS_PER_BLOCK_X * CELL_WIDTH + block_stride_x) /
-        block_stride_x;
-
-    size_t globalThreads[3] = { (size_t)img_win_width * nthreads, (size_t)img_win_height, 1 };
-    size_t localThreads[3] = { (size_t)nthreads, 1, 1 };
-
-    idx = k.set(idx, block_hist_size);
-    idx = k.set(idx, img_win_width);
-    idx = k.set(idx, img_block_width);
-    idx = k.set(idx, win_block_stride_x);
-    idx = k.set(idx, win_block_stride_y);
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(block_hists));
-    idx = k.set(idx, ocl::KernelArg::PtrReadOnly(detector));
-    idx = k.set(idx, free_coef);
-    idx = k.set(idx, threshold);
-    idx = k.set(idx, ocl::KernelArg::PtrWriteOnly(labels));
-
-    return k.run(2, globalThreads, localThreads, false);
-}
-
-static bool ocl_detect(InputArray img, std::vector<Point> &hits, double hit_threshold, Size win_stride,
-                       const UMat& oclSvmDetector, Size blockSize, Size cellSize, int nbins, Size blockStride, Size winSize,
-                       bool gammaCorrection, double L2HysThreshold, float sigma, float free_coef, bool signedGradient)
-{
-    hits.clear();
-    if (oclSvmDetector.empty())
-        return false;
-
-    Size imgSize = img.size();
-    Size effect_size = imgSize;
-    UMat grad(imgSize, CV_32FC2);
-    int qangle_type = ocl::Device::getDefault().isIntel() ? CV_32SC2 : CV_8UC2;
-    UMat qangle(imgSize, qangle_type);
-
-    const size_t block_hist_size = getBlockHistogramSize(blockSize, cellSize, nbins);
-    const Size blocks_per_img = numPartsWithin(imgSize, blockSize, blockStride);
-    UMat block_hists(1, static_cast<int>(block_hist_size * blocks_per_img.area()) + 256, CV_32F);
-
-    Size wins_per_img = numPartsWithin(imgSize, winSize, win_stride);
-    UMat labels(1, wins_per_img.area(), CV_8U);
-
-    float scale = 1.f / (2.f * sigma * sigma);
-    Mat gaussian_lut(1, 512, CV_32FC1);
-    int idx = 0;
-    for(int i=-8; i<8; i++)
-        for(int j=-8; j<8; j++)
-            gaussian_lut.at<float>(idx++) = std::exp(-(j * j + i * i) * scale);
-    for(int i=-8; i<8; i++)
-        for(int j=-8; j<8; j++)
-            gaussian_lut.at<float>(idx++) = (8.f - fabs(j + 0.5f)) * (8.f - fabs(i + 0.5f)) / 64.f;
-
-    if(!ocl_computeGradient(img, grad, qangle, nbins, effect_size, gammaCorrection, signedGradient))
-        return false;
-
-    UMat gauss_w_lut;
-    gaussian_lut.copyTo(gauss_w_lut);
-    if(!ocl_compute_hists(nbins, blockStride.width, blockStride.height, effect_size.height,
-        effect_size.width, grad, qangle, gauss_w_lut, block_hists, block_hist_size))
-        return false;
-
-    if(!ocl_normalize_hists(nbins, blockStride.width, blockStride.height, effect_size.height,
-        effect_size.width, block_hists, (float)L2HysThreshold))
-        return false;
-
-    Size blocks_per_win = numPartsWithin(winSize, blockSize, blockStride);
-
-    Size descr_size((int)block_hist_size*blocks_per_win.width, blocks_per_win.height);
-
-    if(!ocl_classify_hists(winSize.height, winSize.width, blockStride.height,
-        blockStride.width, win_stride.height, win_stride.width,
-        effect_size.height, effect_size.width, block_hists, oclSvmDetector,
-        free_coef, (float)hit_threshold, labels, descr_size, (int)block_hist_size))
-        return false;
-
-    Mat labels_host = labels.getMat(ACCESS_READ);
-    unsigned char *vec = labels_host.ptr();
-    for (int i = 0; i < wins_per_img.area(); i++)
-    {
-        int y = i / wins_per_img.width;
-        int x = i - wins_per_img.width * y;
-        if (vec[i])
-        {
-            hits.push_back(Point(x * win_stride.width, y * win_stride.height));
-        }
-    }
-    return true;
-}
-
-static bool ocl_detectMultiScale(InputArray _img, std::vector<Rect> &found_locations, std::vector<double>& level_scale,
-                                              double hit_threshold, Size win_stride, double group_threshold,
-                                              const UMat& oclSvmDetector, Size blockSize, Size cellSize,
-                                              int nbins, Size blockStride, Size winSize, bool gammaCorrection,
-                                              double L2HysThreshold, float sigma, float free_coef, bool signedGradient)
-{
-    std::vector<Rect> all_candidates;
-    std::vector<Point> locations;
-    UMat image_scale;
-    Size imgSize = _img.size();
-    image_scale.create(imgSize, _img.type());
-
-    for (size_t i = 0; i<level_scale.size() ; i++)
-    {
-        double scale = level_scale[i];
-        Size effect_size = Size(cvRound(imgSize.width / scale), cvRound(imgSize.height / scale));
-        if (effect_size == imgSize)
-        {
-            if(!ocl_detect(_img, locations, hit_threshold, win_stride, oclSvmDetector, blockSize, cellSize, nbins,
-                blockStride, winSize, gammaCorrection, L2HysThreshold, sigma, free_coef, signedGradient))
-                return false;
-        }
-        else
-        {
-            resize(_img, image_scale, effect_size);
-            if(!ocl_detect(image_scale, locations, hit_threshold, win_stride, oclSvmDetector, blockSize, cellSize, nbins,
-                blockStride, winSize, gammaCorrection, L2HysThreshold, sigma, free_coef, signedGradient))
-                return false;
-        }
-        Size scaled_win_size(cvRound(winSize.width * scale),
-            cvRound(winSize.height * scale));
-        for (size_t j = 0; j < locations.size(); j++)
-            all_candidates.push_back(Rect(Point2d(locations[j]) * scale, scaled_win_size));
-    }
-    found_locations.assign(all_candidates.begin(), all_candidates.end());
-    groupRectangles(found_locations, (int)group_threshold, 0.2);
-    clipObjects(imgSize, found_locations, 0, 0);
-
-    return true;
-}
-#endif //HAVE_OPENCL
 
 void HOGDescriptor::detectMultiScale(
     InputArray _img, std::vector<Rect>& foundLocations, std::vector<double>& foundWeights,
@@ -1669,139 +1166,7 @@ void HOGDescriptor::detectMultiScale(InputArray img, std::vector<Rect>& foundLoc
                 padding, scale0, finalThreshold, useMeanshiftGrouping);
 }
 
-template<typename _ClsName> struct RTTIImpl
-{
-public:
-    static int isInstance(const void* ptr)
-    {
-        static _ClsName dummy;
-        static void* dummyp = &dummy;
-        union
-        {
-            const void* p;
-            const void** pp;
-        } a, b;
-        a.p = dummyp;
-        b.p = ptr;
-        return *a.pp == *b.pp;
-    }
-    static void release(void** dbptr)
-    {
-        if(dbptr && *dbptr)
-        {
-            delete (_ClsName*)*dbptr;
-            *dbptr = 0;
-        }
-    }
-    static void* read(CvFileStorage* fs, CvFileNode* n)
-    {
-        FileNode fn(fs, n);
-        _ClsName* obj = new _ClsName;
-        if(obj->read(fn))
-            return obj;
-        delete obj;
-        return 0;
-    }
 
-    static void write(CvFileStorage* _fs, const char* name, const void* ptr, CvAttrList)
-    {
-        if(ptr && _fs)
-        {
-            FileStorage fs(_fs, false);
-            ((const _ClsName*)ptr)->write(fs, String(name));
-        }
-    }
-
-    static void* clone(const void* ptr)
-    {
-        if(!ptr)
-            return 0;
-        return new _ClsName(*(const _ClsName*)ptr);
-    }
-};
-
-typedef RTTIImpl<HOGDescriptor> HOGRTTI;
-
-CvType hog_type( CV_TYPE_NAME_HOG_DESCRIPTOR, HOGRTTI::isInstance,
-    HOGRTTI::release, HOGRTTI::read, HOGRTTI::write, HOGRTTI::clone);
-
-std::vector<float> HOGDescriptor::getDefaultPeopleDetector()
-{
-    static const float detector[] = {
-        0.05359386f, -0.14721455f, -0.05532170f, 0.05077307f,
-        0.11547081f, -0.04268804f, .....};
-    return std::vector<float>(detector, detector + sizeof(detector)/sizeof(detector[0]));
-}
-
-// This function renurn 1981 SVM coeffs obtained from daimler's base.
-// To use these coeffs the detection window size should be (48,96)
-std::vector<float> HOGDescriptor::getDaimlerPeopleDetector()
-{
-    static const float detector[] = {
-        0.294350f, -0.098796f, -0.129522f, 0.078753f,
-        0.387527f, 0.261529f, 0.145939f, ....};
-    return std::vector<float>(detector, detector + sizeof(detector)/sizeof(detector[0]));
-}
-
-class HOGConfInvoker :
-    public ParallelLoopBody
-{
-public:
-    HOGConfInvoker( const HOGDescriptor* _hog, const Mat& _img,
-        double _hitThreshold, const Size& _padding,
-        std::vector<DetectionROI>* locs,
-        std::vector<Rect>* _vec, Mutex* _mtx )
-    {
-        hog = _hog;
-        img = _img;
-        hitThreshold = _hitThreshold;
-        padding = _padding;
-        locations = locs;
-        vec = _vec;
-        mtx = _mtx;
-    }
-
-    void operator()( const Range& range ) const
-    {
-        CV_INSTRUMENT_REGION()
-
-        int i, i1 = range.start, i2 = range.end;
-
-        Size maxSz(cvCeil(img.cols/(*locations)[0].scale), cvCeil(img.rows/(*locations)[0].scale));
-        Mat smallerImgBuf(maxSz, img.type());
-        std::vector<Point> dets;
-
-        for( i = i1; i < i2; i++ )
-        {
-            double scale = (*locations)[i].scale;
-
-            Size sz(cvRound(img.cols / scale), cvRound(img.rows / scale));
-            Mat smallerImg(sz, img.type(), smallerImgBuf.ptr());
-
-            if( sz == img.size() )
-                smallerImg = Mat(sz, img.type(), img.data, img.step);
-            else
-                resize(img, smallerImg, sz);
-
-            hog->detectROI(smallerImg, (*locations)[i].locations, dets, (*locations)[i].confidences, hitThreshold, Size(), padding);
-            Size scaledWinSize = Size(cvRound(hog->winSize.width*scale), cvRound(hog->winSize.height*scale));
-            mtx->lock();
-            for( size_t j = 0; j < dets.size(); j++ )
-                vec->push_back(Rect(cvRound(dets[j].x*scale),
-                                    cvRound(dets[j].y*scale),
-                                    scaledWinSize.width, scaledWinSize.height));
-            mtx->unlock();
-        }
-    }
-
-    const HOGDescriptor* hog;
-    Mat img;
-    double hitThreshold;
-    std::vector<DetectionROI>* locations;
-    Size padding;
-    std::vector<Rect>* vec;
-    Mutex* mtx;
-};
 
 void HOGDescriptor::detectROI(const cv::Mat& img, const std::vector<cv::Point> &locations,
     CV_OUT std::vector<cv::Point>& foundLocations, CV_OUT std::vector<double>& confidences,
@@ -1864,11 +1229,7 @@ void HOGDescriptor::detectROI(const cv::Mat& img, const std::vector<cv::Point> &
             // need to devide this into 4 parts!
             const float* vec = cache.getBlock(pt, &blockHist[0]);
 
-            for( k = 0; k <= blockHistogramSize - 4; k += 4 )
-                s += vec[k]*svmVec[k] + vec[k+1]*svmVec[k+1] +
-                        vec[k+2]*svmVec[k+2] + vec[k+3]*svmVec[k+3];
-
-            for( ; k < blockHistogramSize; k++ )
+            for(k = 0 ; k < blockHistogramSize; k++ )
                 s += vec[k]*svmVec[k];
         }
         confidences.push_back(s);
@@ -1896,88 +1257,19 @@ void HOGDescriptor::detectMultiScaleROI(const cv::Mat& img,
     cv::groupRectangles(foundLocations, groupThreshold, 0.2);
 }
 
-
-void HOGDescriptor::groupRectangles(std::vector<cv::Rect>& rectList, std::vector<double>& weights, int groupThreshold, double eps) const
-{
-    CV_INSTRUMENT_REGION()
-
-    if( groupThreshold <= 0 || rectList.empty() )
-    {
-        return;
-    }
-
-    CV_Assert(rectList.size() == weights.size());
-
-    std::vector<int> labels;
-    int nclasses = partition(rectList, labels, SimilarRects(eps));
-
-    std::vector<cv::Rect_<double> > rrects(nclasses);
-    std::vector<int> numInClass(nclasses, 0);
-    std::vector<double> foundWeights(nclasses, -std::numeric_limits<double>::max());
-    int i, j, nlabels = (int)labels.size();
-
-    for( i = 0; i < nlabels; i++ )
-    {
-        int cls = labels[i];
-        rrects[cls].x += rectList[i].x;
-        rrects[cls].y += rectList[i].y;
-        rrects[cls].width += rectList[i].width;
-        rrects[cls].height += rectList[i].height;
-        foundWeights[cls] = max(foundWeights[cls], weights[i]);
-        numInClass[cls]++;
-    }
-
-    for( i = 0; i < nclasses; i++ )
-    {
-        // find the average of all ROI in the cluster
-        cv::Rect_<double> r = rrects[i];
-        double s = 1.0/numInClass[i];
-        rrects[i] = cv::Rect_<double>(cv::saturate_cast<double>(r.x*s),
-            cv::saturate_cast<double>(r.y*s),
-            cv::saturate_cast<double>(r.width*s),
-            cv::saturate_cast<double>(r.height*s));
-    }
-
-    rectList.clear();
-    weights.clear();
-
-    for( i = 0; i < nclasses; i++ )
-    {
-        cv::Rect r1 = rrects[i];
-        int n1 = numInClass[i];
-        double w1 = foundWeights[i];
-        if( n1 <= groupThreshold )
-            continue;
-        // filter out small rectangles inside large rectangles
-        for( j = 0; j < nclasses; j++ )
-        {
-            int n2 = numInClass[j];
-
-            if( j == i || n2 <= groupThreshold )
-                continue;
-
-            cv::Rect r2 = rrects[j];
-
-            int dx = cv::saturate_cast<int>( r2.width * eps );
-            int dy = cv::saturate_cast<int>( r2.height * eps );
-
-            if( r1.x >= r2.x - dx &&
-                r1.y >= r2.y - dy &&
-                r1.x + r1.width <= r2.x + r2.width + dx &&
-                r1.y + r1.height <= r2.y + r2.height + dy &&
-                (n2 > std::max(3, n1) || n1 < 3) )
-                break;
-        }
-
-        if( j == nclasses )
-        {
-            rectList.push_back(r1);
-            weights.push_back(w1);
-        }
-    }
-}
 }
 
 ```
+![@我的手工笔记](../images/fhog/notes.jpg)
+[源码下载](../images/fhog/hog.cpp)
+
+
 ### FHOG
 源代码下载：<http://www.codeforge.com/read/465952/FHOG.cpp__html>
+FHOG是在HOG基础上，将冗余计算去除之后改进的算法。下面进行介绍
+
+## 参考资料
+
+[hog中快速算法的三线插值将得很详细]<http://hi.baidu.com/susongzhi/item/3a3c758d7ff5cbdc5e0ec172>
+[HOG更加详细的解释]<http://blog.csdn.net/liulina603/article/details/8291093>
+[对行人检测任务进行了详细分析，此外还对OpenCV中的源代码进行了分析]<http://www.cnblogs.com/tornadomeet/archive/2012/08/15/2640754.html>
