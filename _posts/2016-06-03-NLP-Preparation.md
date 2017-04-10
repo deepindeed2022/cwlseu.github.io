@@ -1,13 +1,18 @@
 ---
 layout: post
-title: NLP Introduction
+title: NLP 语料处理
 categories: [blog ]
-tags: [NLP, ]
+tags: [自然语言处理, ]
 description: 自然语言处理需要大量语料进行学习，而语料的集合往往被称为语料库。
-
 ---
 
-# 语料库
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
+
+## 语料库
 @(自然语言处理)[自然语言处理|信息检索]
 ## 基本概念
 ###语言数据库或知识库：

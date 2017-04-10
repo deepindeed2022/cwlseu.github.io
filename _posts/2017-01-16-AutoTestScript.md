@@ -2,13 +2,17 @@
 layout: post
 title: AutoIt
 categories: [blog ]
-tags: [Testing]
+tags: [Test]
 description: 
 ---
 
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [Clython]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+
+作者: 曹文龙
+
+博客： <https://cwlseu.github.io/>
 
 
 ## 简介

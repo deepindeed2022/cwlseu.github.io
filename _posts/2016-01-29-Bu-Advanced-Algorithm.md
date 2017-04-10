@@ -1,10 +1,16 @@
 ---
 layout: post
-title: DongBo Bu Algorithm
+title: 算法学习大纲
 categories: [blog ]
 tags: [Algorithm, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
+
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
 
 # 课程介绍
 卜老师上课热情，兴奋，通过实际案例抛出问题解决方案。通过介绍算法，讲算法应用的实际应用中的授课方式，让我们在今后的教学、整理论文框架等都有知道作用的。
@@ -37,6 +43,7 @@ description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 
 ### 平滑复杂度
 平滑复杂度分析是针对更加特殊，时间消耗类似噪声毛刺一般的算法时间复杂度分析。平滑分析主要是针对LP过程中进行讨论的。一般认为ILP规划是线性的，因为在实际的应用中效率实在是太高了，我们一直认为是多项式时间的。但是后来[smoothedcomplexity](http://bioinfo.ict.ac.cn/~dbu/AlgorithmCourses/Lectures/Lec8-smoothedcomplexity.pdf)来解释了ILP是NP问题。
+
 ## 分治D&C
 1.一个问题的解可以分成多个部分求解，每个部分之间是相互独立的
 2.通过子问题的解通过*combine*就可以组成整个解
@@ -255,6 +262,14 @@ if __name__ == '__main__':
 
 ## 动态规划
 动态规划算法通常用于求解具有某种最优性质的问题。在这类问题中，可能会有许多可行解。每一个解都对应于一个值，我们希望找到具有最优值的解。动态规划算法分解得到子问题往往**不是互相独立**的。若用分治法来解这类问题，则分解得到的子问题数目太多，有些子问题被重复计算了很多次。如果我们能够保存已解决的子问题的答案，而在需要时再找出已求得的答案，这样就可以避免大量的重复计算，节省时间。我们可以用一个表来记录所有已解的子问题的答案。不管该子问题以后是否被用到，只要它被计算过，就将其结果填入表中。这就是动态规划法的基本思路。具体的动态规划算法多种多样，但它们具有相同的填表格式。
+
+### 适用情况
+- 最优子结构性质。如果问题的最优解所包含的子问题的解也是最优的，我们就称该问题具有最优子结构性质（即满足最优化原理）。最优子结构性质为动态规划算法解决问题提供了重要线索。
+- 无后效性。即子问题的解一旦确定，就不再改变，不受在这之后、包含它的更大的问题的求解决策影响。
+- 子问题重叠性质。子问题重叠性质是指在用递归算法自顶向下对问题进行求解时，每次产生的子问题并不总是新问题，有些子问题会被重复计算多次。动态规划算法正是利用了这种子问题的重叠性质，对每一个子问题只计算一次，然后将其计算结果保存在一个表格中，当再次需要计算已经计算过的子问题时，只是在表格中简单地查看一下结果，从而获得较高的效率。
+
+### 思路
+
 * 找出最优解的性质，并刻画其结构特征；
 * 递归地定义最优值（写出动态规划方程）；
 * 以**自底向上**的方式计算出最优值；
@@ -299,6 +314,88 @@ def minDistance(word1, word2):
             upper_left = upper
     return f[l]
 ```
+
+2. 背包问题
+
+3. 最长公共子序列
+
+4. Floyd-Warshall算法
+
+```cpp
+#include <cassert>
+#include <climits>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+#define MAX_LEN 101
+#define MAX_VAL 1000
+int e_graph[MAX_LEN][MAX_LEN]; // 
+
+void floyd_warshall(const int V)
+{
+   for(int k = 1; k <= V; ++k)
+      for(int i = 1; i<= V; ++i)
+         for(int j = 1; j <= V; ++j)
+            if(e_graph[i][j] > e_graph[i][k] + e_graph[k][j])
+               e_graph[i][j] = e_graph[i][k] + e_graph[k][j];
+}
+void init_graph(int e[][MAX_LEN], const int n, const int value)
+{
+   for(int i = 0; i <= n; i++)
+   for(int j = 0; j <= n; j++)
+      e[i][j] = value;
+}
+// 注意：
+// 无向图的表示中，初始化要对两条边同时初始化
+// 有向图中只需要对其中一条边进行初始化即可
+// 
+int main(int argc, char const *argv[])
+{
+   // desclearation the parameter
+   FILE *f;
+   f = fopen("floyd_warshall.txt", "r");
+   int V, E;
+
+   // scanf the input data
+   fscanf(f, "%d %d", &V, &E);
+   init_graph(e_graph, V, MAX_VAL);
+   for (int i = 1; i <= V; ++i) e_graph[i][i] = 0;
+
+   int s, e, w;
+   for (int i = 1; i <= E; ++i)
+   {
+      fscanf(f, "%d %d %d", &s, &e, &w);
+      e_graph[s][e] = w;
+      //e_graph[e][s] = w;
+   }
+
+   // confirm the input value
+   assert(E < MAX_LEN && V < MAX_LEN);
+   printf("The orignal map:\n");
+   for (int i = 1; i <= V; i++)
+   {
+      for (int j = 1; j <= V; j++) printf("%d ", e_graph[i][j]);
+      printf("\n");
+   }
+   floyd_warshall(V);
+
+   // OUTPUT RESULT
+   printf("\nV: %d  E: %d\n\n", V, E);
+
+   for(int i = 1; i <= V; ++i)
+   {
+      for(int j = 1; j <= V; ++j)
+         printf("%d ", e_graph[i][j]);
+      printf("\n");
+   }
+   return 0;
+}
+```
+5. Viterbi算法
+这个算法是在接触马尔科夫随机过程中接触到的。它用于寻找最有可能产生观测事件序列的维特比路径——隐含状态序列，特别是在马尔可夫信息源上下文和隐马尔可夫模型中。[wikipedia](https://zh.wikipedia.org/wiki/%E7%BB%B4%E7%89%B9%E6%AF%94%E7%AE%97%E6%B3%95)
+
 ## 贪心
 
 ## LP线性规划
@@ -469,5 +566,3 @@ if __name__ == '__main__':
 ## NP
 
 ## APP
-
-

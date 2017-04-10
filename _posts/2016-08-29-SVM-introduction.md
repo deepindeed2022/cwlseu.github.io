@@ -2,9 +2,18 @@
 layout: post
 title: 支持向量机的学习与理解
 categories: [blog ]
-tags: [SVM, Support Vector Machine]
+tags: [SVM]
 description: 支持向量机，因其英文名为 Support Vector Machine，故一般简称 SVM，通俗来讲，它是一种二类分类模型，其基本模型定义为特征空间上的间隔最大的线 性分类器，其学习策略便是间隔最大化，最终可转化为一个凸二次规划问题的求解。
 ---
+
+
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: 曹文龙
+博客： <https://cwlseu.github.io/>
+
+
 ## SVM介绍
 支持向量机，因其英文名为 Support Vector Machine，故一般简称 SVM，通俗来讲，它是一种二类分类模型，其基本模型定义为特征空间上的间隔最大的线 性分类器，其学习策略便是间隔最大化，最终可转化为一个凸二次规划问题的求解。
 

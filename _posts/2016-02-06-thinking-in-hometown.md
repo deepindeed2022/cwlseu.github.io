@@ -1,12 +1,18 @@
 ---
 layout: post
-title: 2015年流水账
+title: 过年
 categories: [blog ]
-tags: [记忆, ]
+tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
 
-#当“过年”成为历史文化遗产
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
+
+## 当“过年”成为历史文化遗产
 
 过年，是我们小时候最期盼的事情了。现在，已经工作，当在回到老家过年，已经是另外一番景象，我不禁思绪万千，年会一直被过下去吗？
 

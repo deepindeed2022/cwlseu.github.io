@@ -2,13 +2,15 @@
 layout: post
 title: "算法优化的一些技巧"
 categories: [blog ]
-tags: [优化, ]
+tags: [算法优化, SIMD]
 description: 向量化和编译器优化
 ---
 
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [Clython]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
 
 
 # 实战算法优化
@@ -17,6 +19,7 @@ description: 向量化和编译器优化
 使用atlas或者openblas, 当然有资金支持的话可以使用更快地MKL, 而一个穷小白就只能从开源免费的计算库中选了，就选了OpenBlas。 后来因为缘分，认识了OpenBlas的创始人，从他们公司的工作中了解到还有机器学习算法优化加速的这么个工作。其中涉及到如OpenMP, SIMD, 当然编译器优化也是不容忽视的。在此，总结一下工作中用到的一些函数，免得下次见到不认识了。
 
 ## Intrinsic function[^1]
+![@intrinsics snapshot from intel](../images/optimization/intrinsics.png)
 我对这个的理解就是在汇编的基础上进行向量化的封装的一些宏或者函数, 同时可以操作很多个数据，如使用SSE可以操作128位的数据，可以使4个int类型，也可以使用8个short类型也可以是16个char类型的数据。
 
 从intrinsic guide[^2]中就可以看出Intel关于SIMD方面的发展历程。MMX(主要是16位指令)到后面的SSE2 SSE4.2(32位指令)等等。 查阅文档的时候后可以按照计算的类别：
@@ -48,6 +51,7 @@ __m128i _mm_subs_epu16 (__m128i a, __m128i b)
 ```
 
 ## 设置\初始化向量数组
+
 ```cpp
 __m128i _mm_set_epi16 (short e7, short e6, short e5, short e4, short e3, short e2, short e1, short e0);
 __m128i _mm_set_epi32 (int e3, int e2, int e1, int e0);
@@ -258,7 +262,7 @@ int main(int argc, char const *argv[])
 ```cpp
 int findStartContourPoint(const uchar *src_data,int width, int j) 
 {
-#if  PERFCV_SSE_4_2
+#if  CV_SSE_4_2
         __m128i v_zero = _mm_setzero_si128();
         int v_size = width - 32;
 
@@ -303,11 +307,12 @@ int findStartContourPoint(const uchar *src_data,int width, int j)
 }
 ```
 
-其中 trailingZeros就是调用编译器的内置函数实现的。
+其中`trailingZeros`就是调用编译器的内置函数实现的。
 
 ```cpp
-#if PERFCV_SSE_4_2
-inline unsigned int trailingZeros(unsigned int value) {
+#if CV_SSE_4_2
+inline unsigned int trailingZeros(unsigned int value) 
+{
     assert(value != 0); // undefined for zero input (https://en.wikipedia.org/wiki/Find_first_set)
 if defined(__GNUC__) || defined(__GNUG__)
     return __builtin_ctz(value);
@@ -328,11 +333,8 @@ if defined(__GNUC__) || defined(__GNUG__)
 
 ## Reference
 
-[1]:https://en.wikipedia.org/wiki/Intrinsic_function
-[2]:https://software.intel.com/sites/landingpage/IntrinsicsGuide
-[3]:https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx
-[4]:https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
-[5]:http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work
-
-
-
+1. [定义https://en.wikipedia.org/wiki/Intrinsic_function](https://en.wikipedia.org/wiki/Intrinsic_function)
+2. [指令集API文档 https://software.intel.com/sites/landingpage/IntrinsicsGuide](https://software.intel.com/sites/landingpage/IntrinsicsGuide)
+3. [微软对intrinsics的文档https://msdn.microsoft.com/zh-cn/library/](https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx)
+4. [GCC编译器文档https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html](https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+5. [stackoverflow关于`buildin_clear_cache` 的讨论：http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work](http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work)

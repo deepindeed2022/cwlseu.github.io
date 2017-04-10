@@ -2,12 +2,19 @@
 layout: post
 title: Latex入门
 categories: [blog ]
-tags: [Latex, ]
+tags: [工具 ]
 description: 
 ---
 
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [Clython]
+博客： <https://cwlseu.github.io/>
+
 ## Latex简介
-```
+
+```latex
 \documentclass[12pt]{article} %声明要使用的类型为article，或者book
 \usepackage{xxxx}
 \begin{chinesetitle}
@@ -41,6 +48,7 @@ This is abstract
 这是Latex册是测试，虽然当前不支持Chinese Charater
 \end{document}
 ```
+
 ### 注释
 1.  % 注释，如果想显示%，则 \%
 2.  Document Class 文件类型

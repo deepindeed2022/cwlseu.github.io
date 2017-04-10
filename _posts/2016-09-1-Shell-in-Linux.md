@@ -1,18 +1,22 @@
 ---
 layout: post
-title: Shell on the roads
+title: Shell 学习之路
 categories: [blog ]
 tags: [Shell, ]
 description: linux下的shell脚本的学习与使用
 --- 
 
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [Clython]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
 
-# Shell 学习之路
 
-##  #简单介绍
+声明：本博客欢迎转发，但请保留原作者信息!
+
+作者: [cwlseu]
+
+博客： <https://cwlseu.github.io/>
+
+
+
+##  简单介绍
 你能不能用shell判断一个文件中的数字是否有序啊？想想这不挺简单的吗，就开始动手写了，然后就有了这个版本。
 
 ```bash

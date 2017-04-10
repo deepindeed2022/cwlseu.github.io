@@ -1,16 +1,17 @@
 ---
 layout: post
-title: Pattern Classification
+title: 模式识别入门算法
 categories: [blog ]
 tags: [模式识别]
 description: 模式识别
 ---
 
+
+
 声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [Clython]
+作者: [cwlseu]
 博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
 
-# 模式识别入门算法概述
 
 ## 概述
 

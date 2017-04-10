@@ -2,11 +2,15 @@
 layout: post
 title: 探究Linux的奇妙之旅
 categories: [blog ]
-tags: [Linux, 操作系统, OS]
+tags: [Linux, 操作系统]
 description: 探究linux 0.11的一些神奇的东西
 ---
-# linux奇妙之旅
 
+
+
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [cwlseu]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
 
 ## linux设计的作者
 [Linus](https://en.wikipedia.org/wiki/Linus_Torvalds)

@@ -1,25 +1,28 @@
 ---
 layout: post
-title: The weekly meeting
+title: Wine项目
 categories: [blog ]
 tags: [New Domain, ]
 description: 每周都要开会，开会的内容有时有趣，有时乏味
 ---
 
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [Clython]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
  
 
 ## 问题概述
 IE发展落后于浏览器技术的发展，但是由于历史原因，网银等软件被IE技术挟持，导致我们现在如果要继续发展，兼容性问题的价值很突出。
 当前兼容采用双核的解决方案，仅仅在windows
+
 ## 历史
 2001 IE6支持CSS1和DOM1标准，2002年市场占有率90%，安全隐患逐渐被关注。
 IE7采用另外一个进程进行ActiveX的处理，使得安全性得到比较好的使用。
 IE11，由于对一些过时插件的屏蔽和更改标记名称，使得很多应用不能在IE上运行。
-## 标准差异
 
+## 标准差异
 getElementbyId
 IE支持嵌入VB类型脚本，该脚本由vbscript.dll负责执行
 特有的属性和方法
