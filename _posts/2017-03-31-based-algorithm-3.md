@@ -12,7 +12,7 @@ description: 算法是编程的基础框架，就像是建房子的砖头，生�
 作者: [cwlseu]
 博客： <https://cwlseu.github.io/>
 
-# 图的表示方法
+## 图的表示方法
 
 ## 图的邻接矩阵存储方法
 
