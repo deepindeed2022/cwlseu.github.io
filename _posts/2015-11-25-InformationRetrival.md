@@ -5,9 +5,12 @@ categories: [blog ]
 tags: [信息检索系统]
 description: 信息检索系课程回顾与课程设计
 ---
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [Clython]
-博客： <https://cwlseu.github.io/>
+
+
+
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [cwlseu]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
 
 ## 课程概要
 

@@ -6,11 +6,13 @@ tags: [Linux开发, C++开发]
 description: 基础原理的实现
 ---
 
-声明：本博客欢迎转发，但请保留原作者信息! 
 
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
 作者: [Clython]
+博客： <https://cwlseu.github.io/>
 
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
 
 # malloc学习教程
 ## 简介

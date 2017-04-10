@@ -6,11 +6,11 @@ tags: [算法优化, SIMD]
 description: 向量化和编译器优化
 ---
 
+
+
 声明：本博客欢迎转发，但请保留原作者信息!
-
-作者: [Clython]
-
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
 
 
 # 实战算法优化

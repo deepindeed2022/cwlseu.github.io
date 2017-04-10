@@ -5,11 +5,15 @@ categories: [blog ]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
+
+
+
 声明：本博客欢迎转发，但请保留原作者信息!
-作者: [Clython]
+作者: [cwlseu]
 博客： <https://cwlseu.github.io/>
 
-# 2016年计划
+
+## 2016年计划
 2016年必将是我的转折一年。
 过去的三年，可以说是浑浑噩噩，没有目标，如一个无头苍蝇，漫无目的地寻找着裂缝的鸡蛋。可是，有缝的鸡蛋早已经被淘汰，接下来就是要淘汰无头苍蝇了。
 

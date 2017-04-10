@@ -6,7 +6,13 @@ tags: [信息检索系统]
 description: Working hard, Playing hard.
 ---
 
-# TREC-Research
+
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
+
+## TREC-Research
 
 关于TREC数据集合构建索引查询分析的实验
 

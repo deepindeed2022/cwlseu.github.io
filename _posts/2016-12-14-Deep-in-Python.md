@@ -7,6 +7,11 @@ description: Python入门简单，但是无论哪种语言，都有语言设计�
 ---
 
 
+
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [cwlseu]
+博客： <https://cwlseu.github.io/>
+
 链接：manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/
 
 ## 前言

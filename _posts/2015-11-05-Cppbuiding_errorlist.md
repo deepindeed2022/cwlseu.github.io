@@ -6,7 +6,13 @@ tags: [C++开发]
 description: 对碰到的C++问题的汇总
 ---
 
-#LINK : fatal error LNK1123: 转换到 COFF 期间失败: 文件无效或损坏
+
+
+声明：本博客欢迎转发，但请保留原作者信息! 
+作者: [cwlseu]
+博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+
+##LINK : fatal error LNK1123: 转换到 COFF 期间失败: 文件无效或损坏
 
 ##问题说明：
 
@@ -35,4 +41,3 @@ description: 对碰到的C++问题的汇总
  
  我刚开始使用了方案二，可是后来当关闭vs之后，再想打开这个项目的时候，会出现问题。所以最终选择方案三彻底解决问题。
 
- #
