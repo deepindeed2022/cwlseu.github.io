@@ -14,18 +14,18 @@ description: 在Linux下工作，常常对log信息或者一些文本信息进�
 
 ## 文件及目录的管理
 
-1. 查找当前文件夹下文件的个数
+#### 查找当前文件夹下文件的个数
 `find ./ | wc -l`
 该命令是采用递归统计文件的个数的方式，如果是文件则计数，如果是
 文件夹则计数的基础上+ 文件夹中文件的个数。
 
-2. 递归当前目录及子目录删除所有.o文件:
+#### 递归当前目录及子目录删除所有.o文件:
 `find ./ -name "*.o" -exec rm {} \;`
 
-3. 创建符号软连接，删除源，另一个无法使用
+#### 创建符号软连接，删除源，另一个无法使用
 `ln -s source  新建的名字`
 
-4. 带编号的列出文件内容：`ls | cat -n`
+#### 带编号的列出文件内容：`ls | cat -n`
 
 ```shell
     1  AdjacencyLists.h
@@ -37,15 +37,15 @@ description: 在Linux下工作，常常对log信息或者一些文本信息进�
 
 ## 文本处理
 本节将介绍Linux下使用Shell处理文本时最常用的工具： find、grep、xargs、sort、uniq、tr、cut、paste、wc、sed、awk； 提供的例子和参数都是常用的； 我对shell脚本使用的原则是命令单行书写，尽量不要超过2行； 如果有更为复杂的任务需求，还是考虑python吧；
-![http://linuxtools-rst.readthedocs.io/zh_CN/latest/base/03_text_processing.html?highlight=awk](http://linuxtools-rst.readthedocs.io/zh_CN/latest/base/03_text_processing.html?highlight=awk)
+<http://linuxtools-rst.readthedocs.io/zh_CN/latest/base/03_text_processing.html?highlight=awk>
 ###  find 文件查找
-* 查找txt和pdf文件:
+####  查找txt和pdf文件:
 `find . \( -name "*.txt" -o -name "*.pdf" \) -print`
-* 正则方式查找.txt和pdf:
+#### 正则方式查找.txt和pdf:
 `find . -iregex ".*\(\(\.json\)\|\(\.md\)\)$"` 
 `-iregex`： 忽略大小写的正则。到那时这种方式不太好使，可能是我初学没有掌握其中的奥秘吧。
 
-* 否定参数 ,查找所有非txt文本:
+#### 否定参数 ,查找所有非txt文本:
 `find . ! -name "*.txt" -print`
 指定搜索深度,打印出当前目录的文件（深度为1）:
 
@@ -53,7 +53,7 @@ description: 在Linux下工作，常常对log信息或者一些文本信息进�
 
 ### 定制搜索
 
-1. 按类型搜索
+####  按类型搜索
 
 ```shell
 find . -type d -print  ##只列出所有目录
@@ -67,11 +67,11 @@ redis-cli: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically link
 `$file redis.pid  # 文本文件` 
 redis.pid: ASCII text
 
-2. 可以用以下命令组合来**实现查找本地目录下的所有二进制文件**:
+#### 可以用以下命令组合来**实现查找本地目录下的所有二进制文件**:
 
 `ls -lrt | awk '{print $9}'|xargs file|grep  ELF| awk '{print $1}'|tr -d ':'`
 
-3. 按时间搜索
+#### 按时间搜索
 `-atime` 访问时间 (单位是天，分钟单位则是-amin，以下类似）
 `-mtime` 修改时间 （内容被修改）
 `-ctime` 变化时间 （元数据或权限变化）
@@ -85,7 +85,7 @@ redis.pid: ASCII text
 - 查询**7天前**被访问过的所有文件:
 `find . -atime +7 type f -print`
 
-4. 按大小搜索：
+#### 按大小搜索：
 - w字 k M G 寻找大于2k的文件:
 `find . -type f -size +2k`
 - 按权限查找:
@@ -94,19 +94,19 @@ redis.pid: ASCII text
 `find . -type f -user weber -print`// 找用户weber所拥有的文件
 
 ### 找到后的后续动作
-1. 删除
+#### 删除
 - 删除当前目录下所有的swp文件:
 `find . -type f -name "*.swp" -delete`
 - 另一种语法:
 `find . type f -name "*.swp" | xargs rm`
 
-2. 执行动作（强大的exec）
+#### 执行动作（强大的exec）
 将当前目录下的所有权变更为weber:
 
 `find . -type f -user root -exec chown weber {} \;` 
 注：{}是一个特殊的字符串，对于每一个匹配的文件，{}会被替换成相应的文件名；
 
-3. 将找到的文件全都copy到另一个目录:
+#### 将找到的文件全都copy到另一个目录:
 
 `find . -type f -mtime +10 -name "*.txt" -exec cp {} OLD \;`
 结合多个命令
@@ -120,7 +120,7 @@ redis.pid: ASCII text
 -print0 使用’\0’作为文件的定界符，这样就可以搜索包含空格的文件；
 
 ## grep 文本搜索
-1. `grep match_patten file` // 默认访问匹配行
+#### `grep match_patten file` // 默认访问匹配行
 
 >常用参数
     -o 只输出匹配的文本行 VS -v 只输出没有匹配的文本行
@@ -131,13 +131,13 @@ redis.pid: ASCII text
     -l 只打印文件名
 在多级目录中对文本递归搜索(程序员搜代码的最爱）:`grep "class" . -R -n`
 
-2. 匹配多个模式:
+#### 匹配多个模式:
 `grep -e "class" -e "vitural" file`
 
-3. grep输出以0作为结尾符的文件名（-z）:
+#### grep输出以0作为结尾符的文件名（-z）:
 `grep "test" file* -lZ| xargs -0 rm`
 
-4. 综合应用：
+#### 综合应用：
 * 将日志中的所有带where条件的sql查找查找出来:
 
 `cat LOG.* | tr a-z A-Z | grep "FROM " | grep "WHERE" > b`
@@ -191,17 +191,17 @@ sort -bd data // 忽略像空格之类的前导空白字符
 
 ## 用tr进行转换
 
-1. 通用用法
+#### 通用用法
 `echo 12345 | tr '0-9' '9876543210'` //加解密转换，替换对应字符
 `cat text| tr '\t' ' ' ` //制表符转空格
 
-2. tr删除字符
+#### tr删除字符
 `cat file | tr -d '0-9'` // 删除所有数字
 
-3. `-c` 求补集
+#### `-c` 求补集
 `cat file | tr -c '0-9'` //获取文件中所有数字
 `cat file | tr -d -c '0-9 \n' `  //删除非数字数据
-4. `tr`压缩字符
+#### `tr`压缩字符
 `tr -s`压缩文本中出现的重复字符；最常用于压缩多余的空格:
 cat file | tr -s ' '
 
@@ -219,10 +219,10 @@ cat file | tr -s ' '
 
 ## cut 按列切分文本,按列切分
 
-1. 截取文件的第2列和第4列
+#### 截取文件的第2列和第4列
 `cut -f2,4 filename`
 
-2. 去文件除第3列的所有列
+#### 去文件除第3列的所有列
 `cut -f3 --complement filename`
 -d 指定定界符
 `cat -f2 -d";" filename`
@@ -247,7 +247,7 @@ $echo string | cut -c5-7
 
 ## paste 按列拼接文本
 
-1. 将两个文本按列拼接到一起
+#### 将两个文本按列拼接到一起
 
 step 1: 查看file1中内容`cat file1`
 
@@ -272,35 +272,35 @@ step 3: 拼接两个文件 `paste file1 file2`
 
 ##  wc 统计行和字符的工具
 
-1. 统计行数 `wc -l file`
+#### 统计行数 `wc -l file`
 
-2. 统计单词数目 `wc -w file`
+#### 统计单词数目 `wc -w file`
 
-3. 统计字符数目 `wc -c file`
+#### 统计字符数目 `wc -c file`
 
 ## sed 文本替换利器
-1. 首处替换
+#### 首处替换
 替换每一行的第一处匹配的text
 `sed 's/text/replace_text/' file`   
 
-2. 全局替换
+#### 全局替换
 `sed 's/text/replace_text/g' file`
 在vi中常常使用类似的参数进行全局替换
 
 默认替换后，**输出**替换后的内容，如果需要直接替换原文件,使用`-i`:
 `sed -i 's/text/repalce_text/g' file`
-3. 移除空白行
+#### 移除空白行
 `sed '/^$/d' file`
 变量转换
 已匹配的字符串通过标记&来引用.
 
 `echo this is en example | sed 's/\w+/[&]/g'`
 $>[this]  [is] [en] [example]
-4. 子串匹配标记
+#### 子串匹配标记
 第一个匹配的括号内容使用标记 1 来引用
 
 `sed 's/hello\([0-9]\)/\1/'`
-5. 双引号求值
+#### 双引号求值
 sed通常用单引号来引用；也可使用双引号，使用双引号后，双引号会对表达式求值:
 
 `sed 's/$var/HLLOE/'`
@@ -324,9 +324,9 @@ $>line con a replaced
 awk脚本结构
 `awk ' BEGIN{ statements } statements2 END{ statements } '`
 工作方式
-1.执行begin中语句块；
-2.从文件或stdin中读入一行，然后执行statements2，重复这个过程，直到文件全部被读取完毕；
-3.执行end语句块；
+* 执行begin中语句块；
+* 从文件或stdin中读入一行，然后执行statements2，重复这个过程，直到文件全部被读取完毕；
+* 执行end语句块；
 
 ### print 打印当前行
 
@@ -437,11 +437,11 @@ END{ for(;lno>-1;lno--){print lifo[lno];}
 
 ### awk实现head、tail命令
 
-1. head
+#### head
 
 `awk 'NR<=10{print}' filename`
 
-2. tail
+#### tail
 
 ```sh
 awk '{buffer[NR%10] = $0;} END{for(i=0;i<11;i++){ \
@@ -450,17 +450,17 @@ print buffer[i %10]} } ' filename
 
 ### 打印指定列
 
-1. awk方式实现
+#### awk方式实现
 `ls -lrt | awk '{print $6}'`
 
-2. cut方式实现
+#### cut方式实现
 `ls -lrt | cut -f6`
 
 ### 打印指定文本区域
-1. 确定行号
+#### 确定行号
 `seq 100| awk 'NR==4,NR==6{print}'`
 
-2.确定文本
+####确定文本
 打印处于start_pattern 和end_pattern之间的文本:
 
 `awk '/start_pattern/, /end_pattern/' filename`
@@ -476,7 +476,7 @@ print buffer[i %10]} } ' filename
 
 ### 迭代文件中的每一行
 
-1. while 循环法
+#### while 循环法
 
 ```sh
 while read line;
@@ -485,10 +485,10 @@ echo $line;
 done < file.txt
 ```
 
-2. 改成子shell:
+#### 改成子shell:
 `cat file.txt | (while read line;do echo $line;done)`
 
-3. awk法
+#### awk法
 `cat file.txt| awk '{print}'`
 
 
