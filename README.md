@@ -8,14 +8,21 @@
 * 个人随笔
 
 特别声明：本博客内容不作为商业出版所用，如有参考，请注明。
+<>
+## Tools
 
-## Thanks
+### 绘制图片
+[在线神经网路结构](http://ethereon.github.io/netscope/#/editor)
+[在线绘制实验结果vega](http://vega.github.io/vega-editor/)
+[matplot](http://matplotlib.org/gallery.html)
+[gnuplot](http://www.gnuplot.info/)
 
-The blog used many tool/service,many thanks to:
+### Deep Learning Resource
 
-* [Github](https://github.com/), all the data based on;
-* [Git](https://git-scm.com/), blogs and code files version control system;
-* [Jekyll](http://jekyllrb.com/), a static site generator;
-* [Clean Blog Theme](https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll), a theme by Start Bootstrap;
-* [Markdown](https://daringfireball.net/projects/markdown/), a beautiful lightweight markup language.
-* [Google](http://google.com), the one who tell me how to make it.
+[Deep Learning](http://deeplearning.net/tutorial/)
+[Tutorials](http://yanirseroussi.com/deep-learning-resources/)
+[Notes](http://cs231n.github.io/)
+
+### Linux Manual
+[Linux快速入门](http://linuxtools-rst.readthedocs.io/zh_CN/latest/)
+[Linux Manual](http://man7.org/linux/man-pages/dir_section_1.html)
