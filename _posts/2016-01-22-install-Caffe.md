@@ -14,26 +14,6 @@ description: Caffe install in Ubuntu
 
 建议直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
 
-### 查看机器参数是否满足CUDA计算的最低要求
-lspci | grep -i nvidia
-01:00.0 3D controller: NVIDIA Corporation GF117M [GeForce 610M/710M/820M / GT 620M/625M/630M/720M] (rev a1)
-参照nvidia [往年发布的gpus](http://developer.nvidia.com/cuda-gpus)
-我的机器为Compute Capability 2.1，是可以使用CUDA加速的。：）
-
-### CUDA 
-我当前尝试安装[version-7.5 CUDA](http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda-repo-ubuntu1404-7-5-local_7.5-18_amd64.deb)
-
-`sudo dpkg -i cuda-repo-ubuntu1404-7-5-local_7.5-18_amd64.deb`
-`sudo apt-get update`
-`sudo apt-get install cuda`
-
-
-### The basic dependencies
-sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler 
-
-sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev 
-
-
 ### 安装BLAS
 BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://www.wdong.org/wordpress/blog/2013/08/30/mkl-vs-atlas-vs-openblas/)
 发现这个mkl是不错的，但是要[收费](https://software.intel.com/en-us/intel-mkl/)
@@ -95,60 +75,12 @@ source boot
     return 0;
     }
 ```
-### 安装 Caffe
-
-Optional dependencies:
-
-    OpenCV >= 2.4 including 3.0
-    IO libraries: lmdb, leveldb (note: leveldb requires snappy)
-    cuDNN for GPU acceleration (v3)
-
-
-### 安装 OpenCV
-wget https://github.com/Itseez/opencv/archive/3.1.0.zip
-
-### install cuDNN
-PREREQUISITES
-    CUDA 7.0 and a GPU of compute capability 3.0 or higher are required.
-Extract the cuDNN archive to a directory of your choice, referred to below as <installpath>.Then follow the platform-specific instructions as follows.
-
-LINUX
-
-    cd <installpath>
-    export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH
-
-    Add <installpath> to your build and link process by adding -I<installpath> to your compile
-    line and -L<installpath> -lcudnn to your link line.
-
-WINDOWS
-
-    Add <installpath> to the PATH environment variable.
-
-    In your Visual Studio project properties, add <installpath> to the Include Directories 
-    and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dependencies.
-
-
-### In ubuntu 14.04, we can use the following commend to sample our install steps.
-sudo apt-get install nvidia-cuda-toolkit
-
-###安装Boost
-* preinstall boost should install following software
-
-* compile the source code 
-下载源代码，当前最新版本为version 1.60
-wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.gz
-boost 1.60
-
-
 ### Ubuntu 14.04 && CUDA 7.5
 打开安装了CUDA的ubuntu14.04发现，开机的过程中一直停止在开机等待界面，无法进入。
 
 通过选择recovery mode进行恢复之后，然后重启，重启之后才能正常进入。然而，这不是一劳永逸的。等下一次再次开机重新进入的时候，又遇到了同样的问题，让我不得其解。
 
 后来经过调研和重新格式化系统进行安装之后发现，原来是CUDA7.5 的.deb对Ubuntu 14.04 的支持性不好，导致显示驱动程序有问题，从而无法正常进入系统。而且有人建议采用.run的toolkit进行安装。可是又有新的问题出现。
-
-### 不是所有Nvida显卡都支持Cudnn的
-折腾了很久的cudnn安装，后来才发现是自己的显卡太low了，不支持Cudnn，因为Compute Capability 才2.1，要支持Cudnn， Capability >= 3.0，[查看自己显卡的计算能力](https://developer.nvidia.com/cuda-gpus)
 
 ### 从7.5之后安装的方法简单得多
 `sudo apt-get --purge remove nvidia-*`
@@ -163,6 +95,37 @@ boost 1.60
 ```
 完成，cuda和显卡驱动就都装好了；其他的什么都不用动
 而网上大部分中文和英文的参考教程都是过时的，折腾几个小时不说还容易装不成。
+
+### 查看机器参数是否满足CUDA计算的最低要求
+lspci | grep -i nvidia
+01:00.0 3D controller: NVIDIA Corporation GF117M [GeForce 610M/710M/820M / GT 620M/625M/630M/720M] (rev a1)
+参照nvidia [往年发布的gpus](http://developer.nvidia.com/cuda-gpus)
+我的机器为Compute Capability 2.1，是可以使用CUDA加速的。：）
+
+### 不是所有Nvida显卡都支持Cudnn的
+折腾了很久的cudnn安装，后来才发现是自己的显卡太low了，不支持Cudnn，因为Compute Capability 才2.1，要支持Cudnn， Capability >= 3.0，[查看自己显卡的计算能力](https://developer.nvidia.com/cuda-gpus)
+
+### install cuDNN
+PREREQUISITES
+CUDA 7.0 and a GPU of compute capability 3.0 or higher are required.
+Extract the cuDNN archive to a directory of your choice, referred to below as <installpath>.Then follow the platform-specific instructions as follows.
+
+>LINUX
+
+```sh
+    cd <installpath>
+    export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH
+
+    Add <installpath> to your build and link process by adding -I<installpath> to your compile
+    line and -L<installpath> -lcudnn to your link line.
+```
+>WINDOWS
+
+Add <installpath> to the PATH environment variable.
+
+In your Visual Studio project properties, add <installpath> to the Include Directories 
+and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dependencies.
+
 
 ## 非GPU的自动安装脚本
 [Install Caffe Script](https://github.com/cwlseu/script-ubuntu-debian/blob/master/install-caffe.sh)
@@ -218,6 +181,9 @@ GPU: Tesla K20c
 ### 系统安装
 
 安装Ubuntu的过程自行搜索吧，教程很多，在此不说了。
+### 选择正确的源
+
+此处采用[mirror.aliyun.com](mirror.aliyun.com)
 
 ### 安装NVIDIA Driver
 
@@ -315,6 +281,63 @@ $ sudo ln -sf /usr/local/lib/libcudnn.so.5 /usr/local/lib/libcudnn.so
 $ sudo ldconfig -v
 ```
 
+## Prepare Dependencies
+[Before install caffe]<https://github.com/cwlseu/recipes/blob/master/script/install-caffe.sh>
+
+## Install OpenCV
+自行进行官网查询或者采用如下脚本进行安装。
+[Install OpenCV scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
+当然cmake可以采用最基本的：`cmake ..`进行。
+
+## 问题总结
+
+### hdf5.h没有找到
+
+```cpp
+CXX src/caffe/layer_factory.cpp
+CXX src/caffe/util/insert_splits.cpp
+CXX src/caffe/util/db.cpp
+CXX src/caffe/util/upgrade_proto.cpp
+In file included from src/caffe/util/upgrade_proto.cpp:10:0:
+./include/caffe/util/io.hpp:8:18: fatal error: hdf5.h: no such file or directory
+ #include "hdf5.h"
+                  ^
+compilation terminated.
+Makefile:512: recipe for target '.build_release/src/caffe/util/upgrade_proto.o' failed
+make: *** [.build_release/src/caffe/util/upgrade_proto.o] Error 1
+make: *** 正在等待未完成的任务....
+In file included from ./include/caffe/common_layers.hpp:10:0,
+                 from ./include/caffe/vision_layers.hpp:10,
+                 from src/caffe/layer_factory.cpp:6:
+./include/caffe/data_layers.hpp:9:18: fatal error: hdf5.h: no such file or directory
+ #include "hdf5.h"
+                  ^
+compilation terminated.
+Makefile:512: recipe for target '.build_release/src/caffe/layer_factory.o' failed
+make: *** [.build_release/src/caffe/layer_factory.o] Error 1
+```
+参看[caffe issues](https://github.com/NVIDIA/DIGITS/issues/156)
+
+#### 方案一：
+
+```sh
+cd /usr/lib/x86_64-linux-gnu
+sudo ln -s libhdf5_serial.so.8.0.2 libhdf5.so
+sudo ln -s libhdf5_serial_hl.so.8.0.2 libhdf5_hl.so
+```
+
+#### 方案二
+just modify the Makefile.config
+INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial/
+LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/hdf5/serial/
+[issues 2690](https://github.com/BVLC/caffe/issues/2690)
+
+### python package缺失
+
+```sh
+cd caffe/python
+for req in $(cat requirements.txt); do pip install $req; done
+```
 
 ## 参考
 
@@ -323,3 +346,5 @@ $ sudo ldconfig -v
 3.[二、CUDA安装和测试](http://blog.csdn.net/u012235003/article/details/54575758)                
 4.[import TensorFlow提示Unable to load cuDNN DSO](http://blog.csdn.net/jk123vip/article/details/50361951)                        
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
+
+6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)

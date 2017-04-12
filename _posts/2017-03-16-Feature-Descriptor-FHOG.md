@@ -21,6 +21,18 @@ description: "Welcome to my world!"
 在行人检测中获得极大成功。HOG+SVM的行人检测方法2005年提出来之后，如今很多
 行人检测算法都是以此为思路的。
 
+### 基本的一些特征检测方法
+
+- [Sharpening](http://fourier.eng.hmc.edu/e161/lectures/gradient/node1.html)
+- [High-boost filtering](http://fourier.eng.hmc.edu/e161/lectures/gradient/node2.html)
+- [The Gradient Operator](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+- [Digital Gradient](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+- [Compass Gradient Operations](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+- [Edge Detection](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+- [The Laplace Operator](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+- [Laplacian of Gaussian (LoG)](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+- [Difference of Gaussian (DoG)](http://fourier.eng.hmc.edu/e161/lectures/gradient/node3.html)
+
 ## HOG特征描述子有什么特性
   
 在一副图像中，局部目标的表象和形状（appearance and shape）能够被梯度或边缘的方向密度分布很好地描述。（本质：梯度的统计信息，而梯度主要存在于边缘的地方）

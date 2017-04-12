@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Python 真的那么简单吗？
+title: "Python中的tricks"
 categories: [blog ]
 tags: [Python, ]
 description: Python入门简单，但是无论哪种语言，都有语言设计者赋予其中的特殊意义的东西，可能是为了方便，可能是为了得到高的level,无论出发点是什么，都是值得我学习探究的。
@@ -12,7 +12,6 @@ description: Python入门简单，但是无论哪种语言，都有语言设计�
 作者: [cwlseu]
 博客： <https://cwlseu.github.io/>
 
-链接：manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/
 
 ## 前言
 
@@ -451,10 +450,19 @@ a1 = A() # what`s the fuck
 ### 结语
 
 说实话 Python 的动态特性可以让其用众多黑技术去实现一些很舒服的功能，当然这也对我们对语言特性及坑的掌握也变得更严格了。
+[参考连接]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple>
 
-## 引用
-- python is sample?（manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/）
-- invoking-descriptors(https://docs.python.org/2/reference/datamodel.html#invoking-descriptors)  
-- Descriptor HowTo Guide(https://docs.python.org/3/howto/descriptor.html)  
-- PEP 487(https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order) 
-- what`s new in Python 3.6(https://docs.python.org/3.6/whatsnew/3.6.html) 
+## 更多python技巧
+[我的python小吃](https://github.com/cwlseu/recipes/tree/master/pyrecipes)
+
+## 参考文献
+
+- <https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/>
+
+- [invoking-descriptors]<https://docs.python.org/2/reference/datamodel.html#invoking-descriptors>  
+
+- [Descriptor HowTo Guide]<https://docs.python.org/3/howto/descriptor.html>
+  
+- [PEP 487]<https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order> 
+ 
+- [what`s new in Python 3.6]<https://docs.python.org/3.6/whatsnew/3.6.html> 
