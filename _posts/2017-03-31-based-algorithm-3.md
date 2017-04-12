@@ -426,8 +426,9 @@ def Dijkstra(Graph, source):
 ```
 
 ### 复杂度总结
+
 |         | Floyd     | Dijkstra    | Bellman Ford | Bellman Ford Proiority |
-|:-------:|:---------:|:-----------:|:----------:|:---------------------:|
+|:-------:|:---------:|:-----------:|:----------:|:------------:|
 | 空间复杂度 |  O(V^2) |  O(E) |    O(E)   | O(E) |
 | 时间复杂度 |  O(V^3) | O((V+E)lgV)| O(VE)| 最坏O(VE)|
 | 适应情景  |稠密图和顶点关系密切|稠密图和顶点关系密切|稀疏图和边关系密切|稀疏图和边关系密切|
@@ -437,4 +438,5 @@ def Dijkstra(Graph, source):
 
 ## 参考
 1.[aha!算法](http://www.ahalei.com/)
+
 2.[wikipedia- Dijstra算法](https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95)
