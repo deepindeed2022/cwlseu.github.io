@@ -19,7 +19,61 @@ description: 数据增强技术在CV研究中对于提高Performance是重要的
 ## SSD(Single Shot MultiBox Detector)
 
 ## 源代码分析
-example/ssd/ssd_pascal.py
+
+### anno_type_
+`has_anno_type_ = anno_datum.has_type() || anno_data_param.has_anno_type();` 最后的结果是什么？其中`anno_data_param.has_anno_type()` 结果是false, 关键看anno_datum中有没有了。这个里面有没有要去看你运行`create_data.sh`的时候对数据进行了什么操作。在本文中是对其中写了`AnnotatedDatum_AnnotationType_BBOX`类型
+
+```cpp
+    ······
+    else if (anno_type == "detection") {
+      // 数据转化过程中写入的类型
+      labelname = root_folder + boost::get<std::string>(lines[line_id].second);
+      status = ReadRichImageToAnnotatedDatum(filename, labelname, resize_height,
+          resize_width, min_dim, max_dim, is_color, enc, type, label_type,
+          name_to_label, &anno_datum);
+      anno_datum.set_type(AnnotatedDatum_AnnotationType_BBOX);
+    }
+    ······
+```
+
+因此此处`has_anno_type`就是true。
+
+### 过程概述
+
+
+for i in batch_size:
+  1. 先对图片Expand操作或者Distort操作进行处理
+    - 首先从数据队里中获取img，但是不进行删除。接着对这个image进行拓展\distort操作
+    - Expand过程中是在随机生成一个拓增后的大小图片expand_img
+    - 采用平均值填充图片
+    - 将图片向拓增后的图片进行copy
+    - 该操作结束之后，就生成了expand_img，后面在expand_img基础上进行操作
+  2. 生成采样 
+    - 入口`GenerateBatchSamples(*expand_datum, batch_samplers_, &sampled_bboxes);`
+    - 其中需要注意的是生成了若干个sampled_bboxes,但是只是从中随机选择了一个进行裁剪;否则直接使用原来的expand后的的数据
+  3. 对sampled_datum进行resize
+    - 调用Data_transformer进行转化
+    - 其中包括对AnnotationData中的Datum进行转化
+    - Annotation的转化
+      + 其中包括resize和重新映射等操作
+      + 需要重新映射标注中Bounding Box的大小
+      + expaned_image中的annotation进行annotation转化之后返回数据类型
+   
+    vector<AnnotationGroup>
+        |-- AnnotationGroup
+               |-- group_label
+               |-- Annotation多个
+                      |-- bbox
+                      |-- instance_id
+                  
+  4. 对采样后的数据重新编码到blob中
+  5. 将处理后的数据push到batch数据流中
+  `reader_.free().push(const_cast<AnnotatedDatum*>(&anno_datum));`
+endfor
+
+6. 重新处理annotation数据
+  最后的top_label数据shape为：1 x 1 x num_boxs x 8
+
 
 ### 数据增强入口
 ```python
@@ -58,7 +112,7 @@ def CreateAnnotatedDataLayer(source, batch_size=32, backend=P.Data.LMDB,
         ntop=ntop, **kwargs)
 ```
 
-### 参数
+### 参数说明
 
 ```python
 # // Sample a bbox in the normalized space [0, 1] with provided constraints.
@@ -107,7 +161,7 @@ def CreateAnnotatedDataLayer(source, batch_size=32, backend=P.Data.LMDB,
 # sample data parameter
 batch_sampler = [
     {
-    	# use_original_image : true,
+      # use_original_image : true,
         'sampler': {
         },
         'max_trials': 1,
@@ -126,7 +180,7 @@ batch_sampler = [
         'max_trials': 50,
         'max_sample': 1,
     },
-   	......
+    ......
 ]
 
 # // Message that stores parameters used to apply transformation
@@ -205,7 +259,180 @@ train_transform_param = {
 }
 ```
 
-进入Annotated_data_layer.cpp
+进入Annotated_data_layer.cpp 进入cpp调用阶段。
+
+### ExpandImage
+
+首先根据max_expand_radio和读取的数据进行生成具有expand_radio的expand_datum和一个expand_bbox
+
+```cpp
+template<typename Dtype>
+void DataTransformer<Dtype>::ExpandImage(const AnnotatedDatum& anno_datum,
+                                         AnnotatedDatum* expanded_anno_datum) {
+
+  const ExpansionParameter& expand_param = param_.expand_param();
+  const float expand_prob = expand_param.prob();
+  float prob;
+  caffe_rng_uniform(1, 0.f, 1.f, &prob);
+  if (prob > expand_prob) {
+    expanded_anno_datum->CopyFrom(anno_datum);
+    return;
+  }
+  // 如果进行expand图片的话，获取expand的大小
+  const float max_expand_ratio = expand_param.max_expand_ratio();
+  if (fabs(max_expand_ratio - 1.) < 1e-2) {
+    expanded_anno_datum->CopyFrom(anno_datum);
+    return;
+  }
+  float expand_ratio;
+  caffe_rng_uniform(1, 1.f, max_expand_ratio, &expand_ratio);
+  // Expand the datum.
+  NormalizedBBox expand_bbox;
+  ExpandImage(anno_datum.datum(), expand_ratio, &expand_bbox,
+              expanded_anno_datum->mutable_datum());
+  expanded_anno_datum->set_type(anno_datum.type());
+
+  // Transform the annotation according to crop_bbox.
+  const bool do_resize = false;
+  const bool do_mirror = false;
+  TransformAnnotation(anno_datum, do_resize, expand_bbox, do_mirror,
+                      expanded_anno_datum->mutable_annotation_group());
+}
+```
+### 生成采样
+
+#### 入口
+
+```cpp
+    if (batch_samplers_.size() > 0) {
+        // Generate sampled bboxes from expand_datum.
+        vector<NormalizedBBox> sampled_bboxes;
+        //进入关键函数
+        // 
+        GenerateBatchSamples(*expand_datum, batch_samplers_, &sampled_bboxes);
+        if (sampled_bboxes.size() > 0) {
+          // Randomly pick a sampled bbox and crop the expand_datum.
+          int rand_idx = caffe_rng_rand() % sampled_bboxes.size();
+          sampled_datum = new AnnotatedDatum();
+          this->data_transformer_->CropImage(*expand_datum,
+                                             sampled_bboxes[rand_idx],
+                                             sampled_datum);
+          has_sampled = true;
+        } else {
+          sampled_datum = expand_datum;
+        }
+      } else {
+        sampled_datum = expand_datum;
+      }
+```
+  
+
+####具体调用过程
+
+```cpp
+
+  // // An extension of Datum which contains "rich" annotations.
+  // message AnnotatedDatum {
+  //   enum AnnotationType {
+  //     BBOX = 0;
+  //   }
+  //   optional Datum datum = 1;
+  //   // If there are "rich" annotations, specify the type of annotation.
+  //   // Currently it only supports bounding box.
+  //   // If there are no "rich" annotations, use label in datum instead.
+  //   optional AnnotationType type = 2;
+  //   // Each group contains annotation for a particular class.
+  //   repeated AnnotationGroup annotation_group = 3;
+  // }
+
+  void GenerateBatchSamples(const AnnotatedDatum& anno_datum,
+                            const vector<BatchSampler>& batch_samplers,
+                            vector<NormalizedBBox>* sampled_bboxes) {
+    sampled_bboxes->clear();
+    vector<NormalizedBBox> object_bboxes;
+    //将所有的objectbox重新存储在object_bboxes
+    GroupObjectBBoxes(anno_datum, &object_bboxes);
+    for (int i = 0; i < batch_samplers.size(); ++i) {
+      if (batch_samplers[i].use_original_image()) {
+        NormalizedBBox unit_bbox;
+        unit_bbox.set_xmin(0);
+        unit_bbox.set_ymin(0);
+        unit_bbox.set_xmax(1);
+        unit_bbox.set_ymax(1);
+        GenerateSamples(unit_bbox, object_bboxes, batch_samplers[i],
+                        sampled_bboxes);
+      }
+    }
+  }
+  void GenerateSamples(const NormalizedBBox& source_bbox,
+                     const vector<NormalizedBBox>& object_bboxes,
+                     const BatchSampler& batch_sampler,
+                     vector<NormalizedBBox>* sampled_bboxes) {
+    int found = 0;
+    for (int i = 0; i < batch_sampler.max_trials(); ++i) 
+    {
+      // 每次最多采样batch_sampler.max_sample()
+      if (batch_sampler.has_max_sample() &&
+          found >= batch_sampler.max_sample()) {
+        break;
+      }
+      // Generate sampled_bbox in the normalized space [0, 1].
+      NormalizedBBox sampled_bbox;
+      SampleBBox(batch_sampler.sampler(), &sampled_bbox);
+      // Transform the sampled_bbox w.r.t. source_bbox.
+      LocateBBox(source_bbox, sampled_bbox, &sampled_bbox);
+      // Determine if the sampled bbox is positive or negative by the constraint.
+      if (SatisfySampleConstraint(sampled_bbox, object_bboxes,
+                                  batch_sampler.sample_constraint())) {
+        ++found;
+        sampled_bboxes->push_back(sampled_bbox);
+      }
+    }
+  }
+  void SampleBBox(const Sampler& sampler, NormalizedBBox* sampled_bbox) {
+    // Get random scale.
+    // CHECK_GE(sampler.max_scale(), sampler.min_scale());
+    // CHECK_GT(sampler.min_scale(), 0.);
+    // CHECK_LE(sampler.max_scale(), 1.);
+    float scale;
+    caffe_rng_uniform(1, sampler.min_scale(), sampler.max_scale(), &scale);
+
+    // Get random aspect ratio.
+    // CHECK_GE(sampler.max_aspect_ratio(), sampler.min_aspect_ratio());
+    // CHECK_GT(sampler.min_aspect_ratio(), 0.);
+    // CHECK_LT(sampler.max_aspect_ratio(), FLT_MAX);
+    float aspect_ratio;
+    float min_aspect_ratio = std::max<float>(sampler.min_aspect_ratio(),
+                                             std::pow(scale, 2.));
+    float max_aspect_ratio = std::min<float>(sampler.max_aspect_ratio(),
+                                             1 / std::pow(scale, 2.));
+    caffe_rng_uniform(1, min_aspect_ratio, max_aspect_ratio, &aspect_ratio);
+
+    // Figure out bbox dimension.
+    float bbox_width = scale * sqrt(aspect_ratio);
+    float bbox_height = scale / sqrt(aspect_ratio);
+
+    // Figure out top left coordinates.
+    float w_off, h_off;
+    caffe_rng_uniform(1, 0.f, 1 - bbox_width, &w_off);
+    caffe_rng_uniform(1, 0.f, 1 - bbox_height, &h_off);
+
+    sampled_bbox->set_xmin(w_off);
+    sampled_bbox->set_ymin(h_off);
+    sampled_bbox->set_xmax(w_off + bbox_width);
+    sampled_bbox->set_ymax(h_off + bbox_height);
+  }
+```
+
+
+```cpp
+  cv::Rect bbox_roi(w_off, h_off, img_width, img_height);
+  img.copyTo((*expand_img)(bbox_roi));
+```
+
+example/ssd/ssd_pascal.py
+
+## 回顾调用路线
 
 ```cpp
 // This function is called on prefetch thread
@@ -368,43 +595,5 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 }
 ```
 
-### ExpandImage
-
-首先根据max_expand_radio和读取的数据进行生成具有expand_radio的expand_datum和一个expand_bbox
-
-```cpp
-template<typename Dtype>
-void DataTransformer<Dtype>::ExpandImage(const AnnotatedDatum& anno_datum,
-                                         AnnotatedDatum* expanded_anno_datum) {
-
-  const ExpansionParameter& expand_param = param_.expand_param();
-  const float expand_prob = expand_param.prob();
-  float prob;
-  caffe_rng_uniform(1, 0.f, 1.f, &prob);
-  if (prob > expand_prob) {
-    expanded_anno_datum->CopyFrom(anno_datum);
-    return;
-  }
-  // 如果进行expand图片的话，获取expand的大小
-  const float max_expand_ratio = expand_param.max_expand_ratio();
-  if (fabs(max_expand_ratio - 1.) < 1e-2) {
-    expanded_anno_datum->CopyFrom(anno_datum);
-    return;
-  }
-  float expand_ratio;
-  caffe_rng_uniform(1, 1.f, max_expand_ratio, &expand_ratio);
-  // Expand the datum.
-  NormalizedBBox expand_bbox;
-  ExpandImage(anno_datum.datum(), expand_ratio, &expand_bbox,
-              expanded_anno_datum->mutable_datum());
-  expanded_anno_datum->set_type(anno_datum.type());
-
-  // Transform the annotation according to crop_bbox.
-  const bool do_resize = false;
-  const bool do_mirror = false;
-  TransformAnnotation(anno_datum, do_resize, expand_bbox, do_mirror,
-                      expanded_anno_datum->mutable_annotation_group());
-}
-```
 ## 参考文献
 1. [ssd源代码]<https://github.com/weiliu89/caffe.git>
