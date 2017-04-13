@@ -20,6 +20,8 @@
 
 [gnuplot](http://www.gnuplot.info/)
 
+[手工绘制图片的工具](https://www.autodraw.com/)
+
 ### Deep Learning Resource
 
 [Deep Learning](http://deeplearning.net/tutorial/)
