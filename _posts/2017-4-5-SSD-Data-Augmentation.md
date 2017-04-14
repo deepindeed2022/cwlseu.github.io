@@ -80,11 +80,7 @@ endfor
 # Create train net.
 # NOTE: Where the data from
 net = caffe.NetSpec()
-net.data, net.label = CreateAnnotatedDataLayer(train_data, batch_size=batch_size_per_device,
-                                               train=True, output_label=True, label_map_file=label_map_file,
-                                               transform_param=train_transform_param, batch_sampler=batch_sampler)
-
-
+net.data, net.label = CreateAnnotatedDataLayer(train_data, batch_size=batch_size_per_device,train=True, output_label=True, label_map_file=label_map_file,transform_param=train_transform_param, batch_sampler=batch_sampler)
 def CreateAnnotatedDataLayer(source, batch_size=32, backend=P.Data.LMDB,
         output_label=True, train=True, label_map_file='', anno_type=None,
         transform_param={}, batch_sampler=[{}]):
@@ -114,50 +110,88 @@ def CreateAnnotatedDataLayer(source, batch_size=32, backend=P.Data.LMDB,
 
 ### 参数说明
 
-```python
-# // Sample a bbox in the normalized space [0, 1] with provided constraints.
-# message Sampler {
-#   // Minimum scale of the sampled bbox.
-#   optional float min_scale = 1 [default = 1.];
-#   // Maximum scale of the sampled bbox.
-#   optional float max_scale = 2 [default = 1.];
-#   // Minimum aspect ratio of the sampled bbox.
-#   optional float min_aspect_ratio = 3 [default = 1.];
-#   // Maximum aspect ratio of the sampled bbox.
-#   optional float max_aspect_ratio = 4 [default = 1.];
-# }
-# // Constraints for selecting sampled bbox.
-# message SampleConstraint {
-#   // Minimum Jaccard overlap between sampled bbox and all bboxes in
-#   // AnnotationGroup.
-#   optional float min_jaccard_overlap = 1;
-#   // Maximum Jaccard overlap between sampled bbox and all bboxes in
-#   // AnnotationGroup.
-#   optional float max_jaccard_overlap = 2;
-#   // Minimum coverage of sampled bbox by all bboxes in AnnotationGroup.
-#   optional float min_sample_coverage = 3;
-#   // Maximum coverage of sampled bbox by all bboxes in AnnotationGroup.
-#   optional float max_sample_coverage = 4;
-#   // Minimum coverage of all bboxes in AnnotationGroup by sampled bbox.
-#   optional float min_object_coverage = 5;
-#   // Maximum coverage of all bboxes in AnnotationGroup by sampled bbox.
-#   optional float max_object_coverage = 6;
-# }
-# // Sample a batch of bboxes with provided constraints.
-# message BatchSampler {
-#   // Use original image as the source for sampling.
-#   optional bool use_original_image = 1 [default = true];
-#   // Constraints for sampling bbox.
-#   optional Sampler sampler = 2;
-#   // Constraints for determining if a sampled bbox is positive or negative.
-#   optional SampleConstraint sample_constraint = 3;
-#   // If provided, break when found certain number of samples satisfing the
-#   // sample_constraint.
-#   optional uint32 max_sample = 4;
-#   // Maximum number of trials for sampling to avoid infinite loop.
-#   optional uint32 max_trials = 5 [default = 100];
-# }
+#### 一个sampler的参数说明
+    // Sample a bbox in the normalized space [0, 1] with provided constraints.
+    message Sampler {
+    // 最大最小scale数
+    optional float min_scale = 1 [default = 1.];
+    optional float max_scale = 2 [default = 1.];
+    // 最大最小采样长宽比，真实的长宽比在这两个数中间取值
+    optional float min_aspect_ratio = 3 [default = 1.];
+    optional float max_aspect_ratio = 4 [default = 1.];
+    }
 
+#### 对于选择的sample_box的限制条件
+    // Constraints for selecting sampled bbox.
+    message SampleConstraint {
+      // Minimum Jaccard overlap between sampled bbox and all bboxes in
+      // AnnotationGroup.
+      optional float min_jaccard_overlap = 1;
+      // Maximum Jaccard overlap between sampled bbox and all bboxes in
+      // AnnotationGroup.
+      optional float max_jaccard_overlap = 2;
+      // Minimum coverage of sampled bbox by all bboxes in AnnotationGroup.
+      optional float min_sample_coverage = 3;
+      // Maximum coverage of sampled bbox by all bboxes in AnnotationGroup.
+      optional float max_sample_coverage = 4;
+      // Minimum coverage of all bboxes in AnnotationGroup by sampled bbox.
+      optional float min_object_coverage = 5;
+      // Maximum coverage of all bboxes in AnnotationGroup by sampled bbox.
+      optional float max_object_coverage = 6;
+    }
+我们们往往只用max_jaccard_overlap
+
+#### 对于一个batch进行采样的参数设置
+    // Sample a batch of bboxes with provided constraints.
+    message BatchSampler {
+      // 是否使用原来的图片
+      optional bool use_original_image = 1 [default = true];
+      // sampler的参数
+      optional Sampler sampler = 2;
+      // 对于采样box的限制条件，决定一个采样数据positive or negative
+      optional SampleConstraint sample_constraint = 3;
+      // 当采样总数满足条件时，直接结束
+      optional uint32 max_sample = 4;
+      // 为了避免死循环，采样最大try的次数.
+      optional uint32 max_trials = 5 [default = 100];
+    }
+
+#### 转存datalayer数据的参数
+
+    message TransformationParameter {
+      // 对于数据预处理，我们可以仅仅进行scaling和减掉预先提供的平均值。
+      // 需要注意的是在scaling之前要先减掉平均值
+      optional float scale = 1 [default = 1];
+      // 是否随机镜像操作
+      optional bool mirror = 2 [default = false];
+      // 是否随机crop操作
+      optional uint32 crop_size = 3 [default = 0];
+      optional uint32 crop_h = 11 [default = 0];
+      optional uint32 crop_w = 12 [default = 0];
+      // 提供mean_file的路径，但是不能和mean_value同时提供
+      // if specified can be repeated once (would substract it from all the 
+      // channels) or can be repeated the same number of times as channels
+      // (would subtract them from the corresponding channel)
+      optional string mean_file = 4;
+      repeated float mean_value = 5;
+      // Force the decoded image to have 3 color channels.
+      optional bool force_color = 6 [default = false];
+      // Force the decoded image to have 1 color channels.
+      optional bool force_gray = 7 [default = false];
+      // Resize policy
+      optional ResizeParameter resize_param = 8;
+      // Noise policy
+      optional NoiseParameter noise_param = 9;
+      // Distortion policy
+      optional DistortionParameter distort_param = 13;
+      // Expand policy
+      optional ExpansionParameter expand_param = 14;
+      // Constraint for emitting the annotation after transformation.
+      optional EmitConstraint emit_constraint = 10;
+    }
+
+#### SSD中的数据转换和采样参数设置
+```python
 # sample data parameter
 batch_sampler = [
     {
@@ -183,41 +217,7 @@ batch_sampler = [
     ......
 ]
 
-# // Message that stores parameters used to apply transformation
-# // to the data layer's data
-# message TransformationParameter {
-#   // For data pre-processing, we can do simple scaling and subtracting the
-#   // data mean, if provided. Note that the mean subtraction is always carried
-#   // out before scaling.
-#   optional float scale = 1 [default = 1];
-#   // Specify if we want to randomly mirror data.
-#   optional bool mirror = 2 [default = false];
-#   // Specify if we would like to randomly crop an image.
-#   optional uint32 crop_size = 3 [default = 0];
-#   optional uint32 crop_h = 11 [default = 0];
-#   optional uint32 crop_w = 12 [default = 0];
 
-#   // mean_file and mean_value cannot be specified at the same time
-#   optional string mean_file = 4;
-#   // if specified can be repeated once (would substract it from all the channels)
-#   // or can be repeated the same number of times as channels
-#   // (would subtract them from the corresponding channel)
-#   repeated float mean_value = 5;
-#   // Force the decoded image to have 3 color channels.
-#   optional bool force_color = 6 [default = false];
-#   // Force the decoded image to have 1 color channels.
-#   optional bool force_gray = 7 [default = false];
-#   // Resize policy
-#   optional ResizeParameter resize_param = 8;
-#   // Noise policy
-#   optional NoiseParameter noise_param = 9;
-#   // Distortion policy
-#   optional DistortionParameter distort_param = 13;
-#   // Expand policy
-#   optional ExpansionParameter expand_param = 14;
-#   // Constraint for emitting the annotation after transformation.
-#   optional EmitConstraint emit_constraint = 10;
-# }
 ## 考虑添加inv数据
 train_transform_param = {
     'mirror': True,
