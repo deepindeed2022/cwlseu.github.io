@@ -3,7 +3,7 @@ layout: post
 title: C++ Programming Tricks
 categories: [blog ]
 tags: [C++开发, ]
-description:如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。
+description: 如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。
 ---
 
 
