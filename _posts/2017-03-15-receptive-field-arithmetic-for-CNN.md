@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "A guide to receptive field arithmetic for Convolutional Neural Networks"
+title: "神经网络中的卷积感受野"
 categories: [blog ]
 tags: [CNN]
 description: 
