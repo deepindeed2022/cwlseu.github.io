@@ -61,7 +61,7 @@ $(document).ready(function(){
         }
     };
 
-    $('pre').addClass('prettyprint'); //添加Google code Hight需要的class
+    $('pre').addClass('prettyprint linenums'); //添加Google code Hight需要的class
 
 
     window.disqus_shortname = 'cwlseu'; // required: replace example with your forum shortname
