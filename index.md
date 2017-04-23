@@ -6,7 +6,7 @@ layout: default
   <div class="index-wrapper">
     <div class="aside">
        <div class="info-card">
-        <h1>cwl</h1>
+        <h1>Wenlong</h1>
         <a href="https://www.linkedin.com/in/cao-wenlong-7b691262/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="" width="25"/></a>
         <a href="https://www.quora.com/profile/Charles-Cao-7" target="_blank"><img src="https://www.quora.com/favicon.ico" alt="" width="22"/></a>
 
@@ -18,7 +18,7 @@ layout: default
       <ul class="artical-list">
         {% for post in site.categories.blog %}
         <li>
-          <a href="{{ post.url }}" class="title">{{ post.title }}</a>
+          <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
           <div class="title-desc">{{ post.description }}</div>
         </li>
         {% endfor %}
