@@ -3,7 +3,7 @@ layout: post
 title: "Linux开发中的问题录"
 categories: [blog ]
 tags: [Linux开发]
-description: 
+description:  开发中的问题记录，当前主要为安装问题
 ---
 
 
