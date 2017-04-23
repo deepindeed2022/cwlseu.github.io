@@ -72,4 +72,4 @@ Generalized Linear Model使用的前提是假设语义空间是线性可分的�
 
 [^3]: [Inception v3]<https://www.arxiv.org/abs/1512.00567>
 
-[^4]: [Inception v4]<https://arxiv.org/abs/1602.07261![@MLPConv and Linear Conv](../images/inception/NINBlock.jpg): 
+[^4]: [Inception v4]<https://arxiv.org/abs/1602.07261>

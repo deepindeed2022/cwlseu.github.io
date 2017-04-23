@@ -87,3 +87,4 @@ http://stackoverflow.com/questions/32405035/caffe-installation-opencv-libpng16-s
 ```
 
 [cudalegacy-not-compile-nppigraphcut-missing](http://answers.opencv.org/question/95148/cudalegacy-not-compile-nppigraphcut-missing/)
+这个问题在opencv中已经fix掉了。
