@@ -273,6 +273,7 @@ $ make
 sudo cp include/cudnn.h /usr/local/include
 sudo cp lib64/libcudnn.so* /usr/local/lib
 ```
+
 3.创建链接
 
 ```bash
@@ -288,9 +289,24 @@ $ sudo ldconfig -v
 自行进行官网查询或者采用如下脚本进行安装。
 [Install OpenCV scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
 当然cmake可以采用最基本的：`cmake ..`进行。
+安装结束之后，请务必添加OpenCV lib所在的路径添加到`LD_LIBRARY_PATH`
+
+```sh
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/cuda/lib:$LD_LIBRARY_PATH
+```
+
+## Install Python dependencies
+
+```sh 
+sudo apt-get install -y python-pip
+cd $CAFFE_ROOT/python
+for pack in $(cat requirements.txt); do sudo pip install $pack; done
+```
+等待python依赖的库安装完毕。
+ok， 现在应该就可以运行example/下的某些例子了。
 
 ## 问题总结
-
 ### hdf5.h没有找到
 
 ```cpp
@@ -332,12 +348,37 @@ INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial/
 LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/hdf5/serial/
 [issues 2690](https://github.com/BVLC/caffe/issues/2690)
 
-### python package缺失
+### 编译OpenCV  syntax error: identifier 'NppiGraphcutState'
+![@build opencv using cuda](../images/linux/opencv-cuda.png)
 
 ```sh
-cd caffe/python
-for req in $(cat requirements.txt); do pip install $req; done
+1>------ Build started: Project: opencv_cudalegacy, Configuration: Debug x64 ------
+1>  graphcuts.cpp
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(120): error C2061: syntax error: identifier 'NppiGraphcutState'
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(135): error C2833: 'operator NppiGraphcutState' is not a recognized operator or type
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(135): error C2059: syntax error: 'newline'
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(136): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C2143: syntax error: missing ';' before '*'
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C2238: unexpected token(s) preceding ';'
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(127): error C2065: 'pState': undeclared identifier
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(132): error C2065: 'pState': undeclared identifier
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(132): error C3861: 'nppiGraphcutFree': identifier not found
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(174): error C3861: 'nppiGraphcutGetSize': identifier not found
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(182): error C2065: 'nppiGraphcutInitAlloc': undeclared identifier
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(190): error C3861: 'nppiGraphcut_32s8u': identifier not found
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(195): error C3861: 'nppiGraphcut_32f8u': identifier not found
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(246): error C3861: 'nppiGraphcut8GetSize': identifier not found
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(254): error C2065: 'nppiGraphcut8InitAlloc': undeclared identifier
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(264): error C3861: 'nppiGraphcut8_32s8u': identifier not found
+1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(271): error C3861: 'nppiGraphcut8_32f8u': identifier not found
+2>------ Build started: Project: opencv_cudaoptflow, Configuration: Debug x64 ------
+2>LINK : warning LNK4044: unrecognized option '/LV:/NVIDIA GPU Computing Toolkit/Cuda8/lib/x64'; ignored
+2>LINK : fatal error LNK1104: cannot open file '..\..\lib\Debug\opencv_cudalegacy310d.lib'
 ```
+
+[cudalegacy-not-compile-nppigraphcut-missing](http://answers.opencv.org/question/95148/cudalegacy-not-compile-nppigraphcut-missing/)
+这个问题在opencv中已经fix掉了。
 
 ## 参考
 
