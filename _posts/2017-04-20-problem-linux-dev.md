@@ -53,38 +53,6 @@ usr/bin/ld: warning: libpng16.so.16, needed by /home/andrei/anaconda/lib/libopen
 /home/andrei/anaconda/lib/libopencv_highgui.so: undefined reference to 'png_write_image'
 ```
 
-http://stackoverflow.com/questions/32405035/caffe-installation-opencv-libpng16-so-16-linkage-issues
+[caffe-installation-opencv-libpng16-so-16-linkage-issues](http://stackoverflow.com/questions/32405035/caffe-installation-opencv-libpng16-so-16-linkage-issues)
 
-
-
-## 
-![@build opencv using cuda](../images/linux/opencv-cuda.png)
-
-```sh
-1>------ Build started: Project: opencv_cudalegacy, Configuration: Debug x64 ------
-1>  graphcuts.cpp
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(120): error C2061: syntax error: identifier 'NppiGraphcutState'
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(135): error C2833: 'operator NppiGraphcutState' is not a recognized operator or type
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(135): error C2059: syntax error: 'newline'
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(136): error C2334: unexpected token(s) preceding '{'; skipping apparent function body
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C2143: syntax error: missing ';' before '*'
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C2238: unexpected token(s) preceding ';'
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(127): error C2065: 'pState': undeclared identifier
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(132): error C2065: 'pState': undeclared identifier
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(132): error C3861: 'nppiGraphcutFree': identifier not found
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(174): error C3861: 'nppiGraphcutGetSize': identifier not found
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(182): error C2065: 'nppiGraphcutInitAlloc': undeclared identifier
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(190): error C3861: 'nppiGraphcut_32s8u': identifier not found
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(195): error C3861: 'nppiGraphcut_32f8u': identifier not found
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(246): error C3861: 'nppiGraphcut8GetSize': identifier not found
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(254): error C2065: 'nppiGraphcut8InitAlloc': undeclared identifier
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(264): error C3861: 'nppiGraphcut8_32s8u': identifier not found
-1>V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(271): error C3861: 'nppiGraphcut8_32f8u': identifier not found
-2>------ Build started: Project: opencv_cudaoptflow, Configuration: Debug x64 ------
-2>LINK : warning LNK4044: unrecognized option '/LV:/NVIDIA GPU Computing Toolkit/Cuda8/lib/x64'; ignored
-2>LINK : fatal error LNK1104: cannot open file '..\..\lib\Debug\opencv_cudalegacy310d.lib'
-```
-
-[cudalegacy-not-compile-nppigraphcut-missing](http://answers.opencv.org/question/95148/cudalegacy-not-compile-nppigraphcut-missing/)
-这个问题在opencv中已经fix掉了。
+在编译Makefile或者CMake文件中添加`opencv_highgui`的链接信息，确认opencv 的lib路径是否已经添加到LD_LIBRARY_PATH中
