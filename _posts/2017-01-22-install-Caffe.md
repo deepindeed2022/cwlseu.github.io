@@ -1,15 +1,15 @@
 ---
 layout: post
-title: Caffe framework 
+title: "玩转caffe之安装"
 categories: [blog ]
 tags: [Caffe, ]
 description: Caffe install in Ubuntu
 ---
 
-
-
 声明：本博客欢迎转发，但请保留原作者信息!
+
 作者: [cwlseu]
+
 博客： <https://cwlseu.github.io/>
 
 建议直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
@@ -75,6 +75,7 @@ source boot
     return 0;
     }
 ```
+
 ### Ubuntu 14.04 && CUDA 7.5
 打开安装了CUDA的ubuntu14.04发现，开机的过程中一直停止在开机等待界面，无法进入。
 
@@ -139,7 +140,7 @@ and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dep
 这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，
 
 ## 综合一个安装Caffe的教程
-直接从<https://gwyve.github.io/>博客中拷贝过来的。
+可以参考<https://gwyve.github.io/>博客。
 
 ## 引言      
 
@@ -222,9 +223,9 @@ Ctrl+Alt+F1
 
 `sudo ./NVIDIA-Linux-x86_64-375.39.run –no-x-check –no-nouveau-check –no-opengl-files`  
 
-- no-x-check 安装驱动时关闭X服务
-- no-nouveau-check 安装驱动时禁用nouveau
-- no-opengl-files 只安装驱动文件，不安装OpenGL文件
+    - no-x-check 安装驱动时关闭X服务
+    - no-nouveau-check 安装驱动时禁用nouveau
+    - no-opengl-files 只安装驱动文件，不安装OpenGL文件
 
 7.重启，不出现循环登录问题
 
@@ -252,7 +253,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib:$LD_LIBRARY_PATH
 4.测试samples                      
 这部分参考[参考3](http://blog.csdn.net/u012235003/article/details/54575758)
            
-进入 NVIDIA_CUDA-8.0-Samples/
+进入 `NVIDIA_CUDA-8.0-Samples/` 
 ```bash
 $ make
 ```
@@ -380,6 +381,30 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 [cudalegacy-not-compile-nppigraphcut-missing](http://answers.opencv.org/question/95148/cudalegacy-not-compile-nppigraphcut-missing/)
 这个问题在opencv中已经fix掉了。
 
+将opencv\sources\modules\cudalegacy\src\graphcuts.cpp中的
+
+```
+#include "precomp.hpp"
+#if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)
+```
+修改为：
+
+```
+#include "precomp.hpp"
+
+#if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)  || (CUDART_VERSION >= 8000)
+```
+
+### 循环登陆界面
+
+1. 卸掉nvidia-driver
+`sudo apt-get remove --purge nvidia*`
+2. 看看能不能登陆guest，可以的话
+删除home/user/目录下的 `.Xauthority  .xsession-errors`
+3. reboot
+
+或者，如果能够进入grub启动界面，可是使用advance 启动方式，进行修复界面。
+
 ## 参考
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
@@ -387,5 +412,4 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 3.[二、CUDA安装和测试](http://blog.csdn.net/u012235003/article/details/54575758)                
 4.[import TensorFlow提示Unable to load cuDNN DSO](http://blog.csdn.net/jk123vip/article/details/50361951)                        
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
-
 6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
