@@ -4,3 +4,5 @@ title: cwlseu
 url: http://cwlseu.github.io
 feed: /atom.xml
 author_info: <a href="http://cwlseu.github.io/">cwlseu</a>
+
+theme: jekyll-theme-time-machine
