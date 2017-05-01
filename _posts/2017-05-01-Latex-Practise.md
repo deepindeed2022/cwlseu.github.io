@@ -104,6 +104,8 @@ A reference to Table \ref{tab:template}.
  * $x = \frac{1+ 4ab}{\sqrt{a^2 + b^2}}$
  * $$CaCO_3 + 2HCl = CaCl_2 + H_2O + CO_2\uparrow$$
  * $$Na_2CO_3 + Ca(OH)_2 = CaCO_3\downarrow +2 NaOH$$
+ 
+[Mathematics](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
 
 ## 一些经验总结
 
@@ -129,7 +131,13 @@ A reference to Table \ref{tab:template}.
 ```
 引用的时候`\ref{fig:b}`或者`\ref{sec:training}`就可以了。
 
+### 符号资料
+[Algorithms](https://en.wikibooks.org/wiki/LaTeX/Algorithms)
+[Color](https://en.wikibooks.org/wiki/LaTeX/Colors)
+[Source Code List](https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings)
+
 ## 下载网址
 1. [CTEX](http://www.ctex.org/CTeXDownload)
 2. [中科院毕业论文模板](http://www.ctex.org/PackageCASthesis)
 3. [IEEE 会议论文模板](http://www.ieee.org/conferences_events/conferences/publishing/templates.html)
+4. [Latex 网上book](https://en.wikibooks.org/wiki/LaTeX)
