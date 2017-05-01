@@ -1282,6 +1282,8 @@ FHOG是在HOG基础上，将冗余计算去除之后改进的算法。下面进�
 
 ## 参考资料
 
-[hog中快速算法的三线插值将得很详细]<http://hi.baidu.com/susongzhi/item/3a3c758d7ff5cbdc5e0ec172>
-[HOG更加详细的解释]<http://blog.csdn.net/liulina603/article/details/8291093>
-[对行人检测任务进行了详细分析，此外还对OpenCV中的源代码进行了分析]<http://www.cnblogs.com/tornadomeet/archive/2012/08/15/2640754.html>
+1. [hog中快速算法的三线插值将得很详细]<http://hi.baidu.com/susongzhi/item/3a3c758d7ff5cbdc5e0ec172>
+
+2. [HOG更加详细的解释]<http://blog.csdn.net/liulina603/article/details/8291093>
+
+3. [对行人检测任务进行了详细分析，此外还对OpenCV中的源代码进行了分析]<http://www.cnblogs.com/tornadomeet/archive/2012/08/15/2640754.html>
