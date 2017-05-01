@@ -6,11 +6,9 @@ tags: [C++开发]
 description: 对碰到的C++问题的汇总
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [cwlseu]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ##LINK : fatal error LNK1123: 转换到 COFF 期间失败: 文件无效或损坏
 

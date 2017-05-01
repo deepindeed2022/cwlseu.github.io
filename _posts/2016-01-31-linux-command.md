@@ -6,13 +6,9 @@ tags: [Linux基础, ]
 description: In me the tiger sniffs the rose.
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息!
-
-作者: [cwlseu]
-
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 Linux中的命令的确是非常多，但是我们只需要掌握我们最常用的命令就可以了。当然你也可以在使用时去找一下man，他会帮你解决不少的问题。然而每个人玩Linux的目的都不同，所以他们常用的命令也就差异非常大。因为不想在使用是总是东查西找，所以在此总结一下，方便一下以后的查看。不多说，
 
@@ -274,5 +270,23 @@ real：实际时间，从command命令行开始执行到运行终止的消逝时
 
 ## 系统信息
 1. uname
-Usage: uname [OPTION]...
-Print certain system information.  With no OPTION, same as -s.
+
+    Usage: uname [OPTION]...
+    Print certain system information.  With no OPTION, same as -s.
+
+      -a, --all                print all information, in the following order,
+                                 except omit -p and -i if unknown:
+      -s, --kernel-name        print the kernel name
+      -n, --nodename           print the network node hostname
+      -r, --kernel-release     print the kernel release
+      -v, --kernel-version     print the kernel version
+      -m, --machine            print the machine hardware name
+      -p, --processor          print the processor type (non-portable)
+      -i, --hardware-platform  print the hardware platform (non-portable)
+      -o, --operating-system   print the operating system
+          --help     display this help and exit
+          --version  output version information and exit
+如`uname -p` 将得到处理器类型为`x86_64`
+2. nvidia-smi -l 1
+循环显示当前显卡状态
+![@nvidia显示示例图](../images/linux/nvidia-smi.JPG)

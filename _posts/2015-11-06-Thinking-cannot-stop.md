@@ -6,11 +6,9 @@ tags: [随笔]
 description: 平时闲来没事，胡思乱想
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: 曹文龙
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ## 平庸是魔鬼的温床
 平庸是魔鬼的温床，出色是天使的摇篮。

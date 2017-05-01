@@ -3,14 +3,12 @@ layout: post
 title: C++ Programming Tricks
 categories: [blog ]
 tags: [C++开发, ]
-description: 如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。
+description: "如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。"
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [cwlseu]
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 
 

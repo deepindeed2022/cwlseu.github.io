@@ -6,11 +6,9 @@ tags: [数据可视化, ]
 description: 使用html5技术实现数据可视化，主要使用过ajax动态请求的技术，使用现成的数据可视化js框架echarts, 实现测试log的可视化。
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [cwlseu]
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 
 

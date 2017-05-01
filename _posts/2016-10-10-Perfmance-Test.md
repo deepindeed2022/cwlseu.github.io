@@ -1,10 +1,16 @@
 ---
 layout: post
-title: Performance Test中常用的工具和技巧总结
+title: Performance Test中时间测试
 categories: [blog ]
 tags: [Perfmance Test, ]
-description: 在项目中或者研究中，经常需要对系统性能进行测试，今天将对我在项目中或者研究中用到的性能测试的有关东西进行总结
+description: "在项目中或者研究中，经常需要对系统性能进行测试，今天将对我在项目中或者研究中用到的性能测试的有关东西进行总结"
 ---
+
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
+
+在项目中或者研究中，经常需要对系统性能进行测试，今天将对我在项目中或者研究中用到的性能测试的有关东西进行总结
 
 ## 程序运行时间
 

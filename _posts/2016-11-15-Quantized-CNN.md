@@ -3,8 +3,13 @@ layout: post
 title: Quantized Convolutional Neural Networks for Mobile Devices
 categories: [blog ]
 tags: [Math, ]
-description: CNN在很多计算机视觉任务中取得了显著的成果，然而高性能硬件对于CNN模型来说不可或缺。因为CNN模型具有计算复杂繁琐，使得其拓展成为困难。
+description: "CNN在很多计算机视觉任务中取得了显著的成果，然而高性能硬件对于CNN模型来说不可或缺。因为CNN模型具有计算复杂繁琐，使得其拓展成为困难。"
 ---
+
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
+
 ## 论文作者信息
 
 [Jiaxiang Wu, Cong Leng, Yuhang Wang, Qinghao Hu, Jian Cheng](National Laboratory of Patter Recognition Institute of Automation, Chinese Academy of Sciences)

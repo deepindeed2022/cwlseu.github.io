@@ -5,7 +5,9 @@ categories: [blog ]
 tags: [CNN]
 description: "看这篇博客之前希望对CNN的基本概念有所了解，尤其是卷积和pooling操作。也可以看 <https://arxiv.org/pdf/1603.07285.pdf>来回顾一下. 这篇博客和该文章是想通的。 "
 ---
-
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ## 原文地址
 翻译来源：[A guide to receptive field arithmetic for Convolutional Neural Networks](https://medium.com/@nikasa1889/a-guide-to-receptive-field-arithmetic-for-convolutional-neural-networks-e0f514068807)

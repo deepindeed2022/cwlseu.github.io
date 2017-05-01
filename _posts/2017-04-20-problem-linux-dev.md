@@ -6,6 +6,9 @@ tags: [Linux开发]
 description:  开发中的问题记录，当前主要为安装问题
 ---
 
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ## fatal error: metis.h: No such file or directory
 ### NOT sudo user

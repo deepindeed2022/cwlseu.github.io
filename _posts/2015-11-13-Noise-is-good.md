@@ -6,11 +6,9 @@ tags: [Matlab, 病态系统]
 description: Smoothed Analysis
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [cwlseu]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ##由来
 噪声是信号处理和图像处理中很让人厌烦的东西，往往我们想方设法去消除噪声或者减弱噪声，恢复原来的信号或者图像。可是，在矩阵运算过程中，

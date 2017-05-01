@@ -6,11 +6,9 @@ tags: [Caffe, ]
 description: Caffe install in Ubuntu
 ---
 
-声明：本博客欢迎转发，但请保留原作者信息!
-
-作者: [cwlseu]
-
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 建议直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
 

@@ -6,11 +6,9 @@ tags: [Algorithm, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [cwlseu]
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 # 课程介绍
 卜老师上课热情，兴奋，通过实际案例抛出问题解决方案。通过介绍算法，讲算法应用的实际应用中的授课方式，让我们在今后的教学、整理论文框架等都有知道作用的。
