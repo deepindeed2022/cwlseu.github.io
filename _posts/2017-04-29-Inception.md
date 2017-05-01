@@ -4,7 +4,6 @@ title: "Inception Architecture for Computer Vision"
 categories: [blog ]
 tags: [CV论文笔记]
 description: Inception是在NIN中提出的一个神经网络模块，后来随着googLeNet中的成功被人们视为深度网络的法宝。
-后来人们在原来Inception的基础上进行组件替换和添加实现了Inception的进化。
 ---
 
 声明：本博客欢迎转发，但请保留原作者信息!
