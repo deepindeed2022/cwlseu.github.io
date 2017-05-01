@@ -3,14 +3,21 @@ layout: post
 title: Latex入门
 categories: [blog ]
 tags: [工具 ]
-description: 
+description: 最近在写论文，用到latex进行编写，latex真是编辑神器，科研工作者 必备啊，在这向唐纳德先生致敬。
 ---
 
-
-
 声明：本博客欢迎转发，但请保留原作者信息!
-作者: [Clython]
+
+作者: [曹文龙]
+
 博客： <https://cwlseu.github.io/>
+
+## 引言
+
+最近在写论文，用到latex进行编写，latex真是编辑神器，科研工作者 必备啊，在这向唐纳德*克努斯先生致敬。当年先生写《计算机程序设计的艺术》，感觉这排版工具用得太不爽了，就手撸一把,Tex就被撸出来了，而且版本号为数字PI的截断表示，听着更牛掰的是悬赏bug, 指数级悬赏bug，还带签名哦。
+
+## 环境搭建
+安装采用[CTEX]<http://www.ctex.org/CTeXDownload> 或者其他版本的都行，编辑采用Sublime Text 3， 同时安装Markdown Preview、MarkdownEditing、MarkdownHightlighting等插件，让我编辑Markdown的过程中感觉很舒适。
 
 ## Latex简介
 
@@ -100,6 +107,27 @@ A reference to Table \ref{tab:template}.
 
 ## 一些经验总结
 
+### 双栏带编号的公式
+```latex
+\begin{align}
+& \hat{g}^{cx}_j =\frac{(g_j^{cx} - d_i^{cx})}{d_i^w} & \hat{g}^{cy}_j =\frac{(g_j^{cy} - d_i^{cy})}{d_i^h} & \\
+& \hat{g}^{w}_j =\log(\frac{g_j^w}{d_i^w}) & \hat{g}^{h}_j =\log(\frac{g_j^h}{d_i^h}) & 
+\end{align}
+```
+显示出来是这样子的![@](../images/latex/align.png)
+
+### label让交叉引用更方便
+```latex
+\subsection{Training}
+\label{sec:training}
+或者
+\begin{figure}[htb]        
+   \center{\includegraphics[width=\textwidth]{images/b.png}}      
+   \caption{}
+   \label{fig:b}
+\end{figure}
+```
+引用的时候`\ref{fig:b}`或者`\ref{sec:training}`就可以了。
 
 ## 下载网址
 1. [CTEX](http://www.ctex.org/CTeXDownload)
