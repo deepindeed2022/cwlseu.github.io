@@ -14,7 +14,7 @@ description: "神经网络量化、二值化、设计package的神经网络模�
 面对神经网络over-parametrization和enormous parameters, 工作者在这者方面下了不少功夫。我们也想在这方面分的一杯羹, 当前主要的方向有：
 - shallow network
 - compressing pre-trained network
-- designed compact layers：可以去看看HyperNet
+- designed compact layers：可以去看看[PVANet](http://cwlseu.github.io/PVANet)
 - quantizing parameters
 - network binarization
 
