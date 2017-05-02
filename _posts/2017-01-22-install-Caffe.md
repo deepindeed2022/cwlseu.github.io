@@ -13,7 +13,7 @@ description: Caffe install in Ubuntu
 建议直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
 
 ### 安装BLAS
-BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://www.wdong.org/wordpress/blog/2013/08/30/mkl-vs-atlas-vs-openblas/)
+BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://stackoverflow.com/questions/7596612/benchmarking-python-vs-c-using-blas-and-numpy)
 发现这个mkl是不错的，但是要[收费](https://software.intel.com/en-us/intel-mkl/)
 最后选择默认的[Atlas](http://sourceforge.net/settings/mirror_choices?projectname=math-atlas&filename=Stable/3.10.2/atlas3.10.2.tar.bz2)
 
@@ -26,7 +26,7 @@ BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://www.wdong.o
 
     Maximum number of threads configured as  4
     probe_pmake.o: In function `ATL_tmpnam':
-    /home/charles/Repo/ATLAS//CONFIG/include/atlas_sys.h:224: warning: the use of `tmpnam' is dangerous, better use `mkstemp'
+    /home/charles/Repo/ATLAS//CONFIG/include/atlas_sys.h:224: warning: the use of `tmpnam` is dangerous, better use `mkstemp`
     Parallel make command configured as '$(MAKE) -j 4'
     CPU Throttling apparently enabled!
     It appears you have cpu throttling enabled, which makes timings
@@ -40,25 +40,20 @@ switch to root admin
 apt-get install gnome-applets
 cpufreq-selector -g performance -c 0
 
-sudo apt-get install libatlas-base-dev 
-
-Unpacking libatlas-base-dev (3.10.1-4) ...
-Setting up libgfortran3:amd64 (4.8.4-2ubuntu1~14.04) ...
-Setting up libatlas3-base (3.10.1-4) ...
-Setting up libblas3 (1.2.20110419-7) ...
-Setting up libblas-dev (1.2.20110419-7) ...
-Setting up libatlas-dev (3.10.1-4) ...
-Setting up libatlas-base-dev (3.10.1-4) ...
+`sudo apt-get install libatlas-base-dev`
 
 ### 安装Boost
 * preinstall boost should install following software
 * compile the source code 
 下载源代码，当前最新版本为version 1.60
+
+```sh
 wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.gz
 unpacking boost 1.60.tar.gz
 source boot
 ./b2
 ./b2 install --prefix=/usr/local
+```
 
 ```cpp
     #include <boost/lexical_cast.hpp>
@@ -73,13 +68,10 @@ source boot
     return 0;
     }
 ```
+ 
+或者直接`apt-get install libboost-all-dev`
 
-### Ubuntu 14.04 && CUDA 7.5
-打开安装了CUDA的ubuntu14.04发现，开机的过程中一直停止在开机等待界面，无法进入。
 
-通过选择recovery mode进行恢复之后，然后重启，重启之后才能正常进入。然而，这不是一劳永逸的。等下一次再次开机重新进入的时候，又遇到了同样的问题，让我不得其解。
-
-后来经过调研和重新格式化系统进行安装之后发现，原来是CUDA7.5 的.deb对Ubuntu 14.04 的支持性不好，导致显示驱动程序有问题，从而无法正常进入系统。而且有人建议采用.run的toolkit进行安装。可是又有新的问题出现。
 
 ### 从7.5之后安装的方法简单得多
 `sudo apt-get --purge remove nvidia-*`
@@ -137,8 +129,8 @@ and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dep
 **Note**
 这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，
 
-## 综合一个安装Caffe的教程
-可以参考<https://gwyve.github.io/>博客。
+## 综合一个安装cuda的教程
+可以参考<https://gwyve.github.io/>博客，为了方便把gwyve的cuda 安装部分blog放到这里，
 
 ## 引言      
 
@@ -225,8 +217,7 @@ Ctrl+Alt+F1
     - no-nouveau-check 安装驱动时禁用nouveau
     - no-opengl-files 只安装驱动文件，不安装OpenGL文件
 
-7.重启，不出现循环登录问题
-
+7.重启，不出现循环登录问题,如果出现循环登陆, 请看后面的问题。
 
 ### 安装cuda
 
@@ -252,9 +243,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib:$LD_LIBRARY_PATH
 这部分参考[参考3](http://blog.csdn.net/u012235003/article/details/54575758)
            
 进入 `NVIDIA_CUDA-8.0-Samples/` 
-```bash
-$ make
-```
+`make`
 运行NVIDIA_CUDA-8.0-Samples/bin/x86_64/linux/release/deviceQuery
 
 
@@ -273,7 +262,7 @@ sudo cp include/cudnn.h /usr/local/include
 sudo cp lib64/libcudnn.so* /usr/local/lib
 ```
 
-3.创建链接
+3.创建cudnn的软链接
 
 ```bash
 $ sudo ln -sf /usr/local/lib/libcudnn.so.5.1.10 /usr/local/lib/libcudnn.so.5
@@ -281,14 +270,15 @@ $ sudo ln -sf /usr/local/lib/libcudnn.so.5 /usr/local/lib/libcudnn.so
 $ sudo ldconfig -v
 ```
 
-## Prepare Dependencies
-[Before install caffe]<https://github.com/cwlseu/recipes/blob/master/script/install-caffe.sh>
+## Caffe install  Prepare Dependencies
+[安装caffe之前，自动化安装的各种依赖脚本](https://github.com/cwlseu/recipes/blob/master/script/install-caffe.sh)
 
-## Install OpenCV
+## Install OpenCV from Source
 自行进行官网查询或者采用如下脚本进行安装。
 [Install OpenCV scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
-当然cmake可以采用最基本的：`cmake ..`进行。
-安装结束之后，请务必添加OpenCV lib所在的路径添加到`LD_LIBRARY_PATH`
+当然cmake可以采用最基本的：`cmake ..`进行就完全ok
+
+    安装结束之后，请务必添加OpenCV lib所在的路径添加到`LD_LIBRARY_PATH`，因为OpenCV 默认安装路径`/usr/local/lib`并不在`LD_LIBRARY_PATH`中。
 
 ```sh
 export PATH=/usr/local/cuda/bin:$PATH
@@ -393,21 +383,36 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 #if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)  || (CUDART_VERSION >= 8000)
 ```
 
+### ld链接失败，或者.o没有生成
+
+![caffe make-j8 recipe failed](../images/linux/caffe-make.png)
+如果你使用的是`make -j8`进行编译的，并且你需要的lib已经都加到`LD_LIBRARY_PATH`中了，那么你可以再试一遍`make -j8`或者使用`make -j4` or `make -j`，最保险的情况就是使用`make`进行编译，虽然慢点但是不会出现各种依赖找不到的情况。
+    
+    因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。
+
 ### 循环登陆界面
 
+#### 方案一
 1. 卸掉nvidia-driver
 `sudo apt-get remove --purge nvidia*`
 2. 看看能不能登陆guest，可以的话
 删除home/user/目录下的 `.Xauthority  .xsession-errors`
 3. reboot
 
-或者，如果能够进入grub启动界面，可是使用advance 启动方式，进行修复界面。
+#### 方案二
+1. 卸掉nvidia-driver
+`sudo apt-get remove --purge nvidia*`
+2. 进入grub启动界面，可是使用advance 启动方式，进行修复界面。通过选择`recovery mode`进行恢复之后，然后重启。
+
+    后来经过调研和重新格式化系统进行安装之后发现，原来是CUDA7.5 的`.deb`对Ubuntu 14.04 的支持性不好，导致显示驱动程序有问题，从而无法正常进入系统。而且有人建议采用`.run`的toolkit进行安装, 所以后面使用`.run`进行安装
+
+## [双显卡的一些坑](https://github.com/gwyve/) 
 
 ## 参考
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
 2.[NVIDIA CUDA Installation Guide for Linux](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu)         
-3.[二、CUDA安装和测试](http://blog.csdn.net/u012235003/article/details/54575758)                
+3.[CUDA安装和测试](http://blog.csdn.net/u012235003/article/details/54575758)
 4.[import TensorFlow提示Unable to load cuDNN DSO](http://blog.csdn.net/jk123vip/article/details/50361951)                        
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
 6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
