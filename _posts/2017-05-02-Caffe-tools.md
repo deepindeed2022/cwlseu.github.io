@@ -106,9 +106,9 @@ time LeNet training on CPU for 10 iterations
 ![@inference time result](../images/linux/inference_time.JPG)
 
 ## Reference
-1. [caffe](https://github.com/cwlseu/caffe/tree/ssdplus)
-2. [estimate Inference time from average forward pass time in caffe](http://stackoverflow.com/questions/36867591/how-to-estimate-inference-time-from-average-forward-pass-time-in-caffe)
-3. [caffe interface](http://caffe.berkeleyvision.org/tutorial/interfaces.html)
+1. [caffe]<https://github.com/cwlseu/caffe/tree/ssdplus>
+2. [estimate Inference time from average forward pass time in caffe]<http://stackoverflow.com/questions/36867591/how-to-estimate-inference-time-from-average-forward-pass-time-in-caffe>
+3. [caffe interface manual]<http://caffe.berkeleyvision.org/tutorial/interfaces.html>
 
 
 
