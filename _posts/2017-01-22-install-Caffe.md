@@ -408,6 +408,15 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 
 ## [双电源供电的一些坑](http://gwyve.com/blog/2017/05/02/double-power.html) 
 
+## 没有sudu权限，安装caffe
+
+1. 下载[caffe 依赖包](链接：http://pan.baidu.com/s/1kUZoq7H 密码：aumh)，解压到某个路径下。如果失活了, emailto:<caowenlong92@gmail.com>
+2. 添加caffelib/lib的绝对路径到~/.bashrc 中
+`export LD_LIBRARY_PATH=/home/.../caffelib/lib$LD_LIBRARY_PATH`
+3. 在Makefile.config中`INCLUDE_DIRS`中添加caffelib/include的绝对路径；`LIBRARY_DIRS`中添加添加caffelib/lib的绝对路径
+4. cuda啥的一般管理员就帮你搞定了，实在不行咱自己安装到某个路径下，在Makefile.config中配置一下路径就ok了
+5. python 依赖可以通过`virtualenv`解决掉的，[如何使用`virtualenv`](https://virtualenv.pypa.io/en/stable/userguide/)可以看官网
+
 ## 参考
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
@@ -416,3 +425,4 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 4.[import TensorFlow提示Unable to load cuDNN DSO](http://blog.csdn.net/jk123vip/article/details/50361951)                        
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
 6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
+7.[virtualenv user guide](https://virtualenv.pypa.io/en/stable/userguide/)
