@@ -10,8 +10,9 @@ description: 向量化和编译器优化
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
+[TOC]
 
-# 实战算法优化
+## 实战算法优化
 
 对于这方面的姿势，也是属于意外。在使用Caffe的过程中，需要依赖一个关于矩阵计算的库，可是
 使用atlas或者openblas, 当然有资金支持的话可以使用更快地MKL, 而一个穷小白就只能从开源免费的计算库中选了，就选了OpenBlas。 后来因为缘分，认识了OpenBlas的创始人，从他们公司的工作中了解到还有机器学习算法优化加速的这么个工作。其中涉及到如OpenMP, SIMD, 当然编译器优化也是不容忽视的。在此，总结一下工作中用到的一些函数，免得下次见到不认识了。
@@ -336,3 +337,4 @@ if defined(__GNUC__) || defined(__GNUG__)
 3. [微软对intrinsics的文档https://msdn.microsoft.com/zh-cn/library/](https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx)
 4. [GCC编译器文档https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html](https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
 5. [stackoverflow关于`buildin_clear_cache` 的讨论：http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work](http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work)
+6. [intel-advanced-vector-extensions](https://software.intel.com/zh-cn/articles/introduction-to-intel-advanced-vector-extensions)
