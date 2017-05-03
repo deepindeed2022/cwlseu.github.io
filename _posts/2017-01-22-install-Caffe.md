@@ -406,7 +406,7 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 
     后来经过调研和重新格式化系统进行安装之后发现，原来是CUDA7.5 的`.deb`对Ubuntu 14.04 的支持性不好，导致显示驱动程序有问题，从而无法正常进入系统。而且有人建议采用`.run`的toolkit进行安装, 所以后面使用`.run`进行安装
 
-## [双显卡的一些坑](https://github.com/gwyve/) 
+## [双电源供电的一些坑](http://gwyve.com/blog/2017/05/02/double-power.html) 
 
 ## 参考
 
