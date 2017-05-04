@@ -21,7 +21,8 @@ description:  使用caffe框架进行实验过程中的一些心得
 步长的选择：你走的距离长短，越短当然不会错过，但是耗时间。步长的选择比较麻烦。步长越小，越容易得到局部最优化（到了比较大的山谷，就出不去了），而大了会全局最优。一般来说，如ResNet前32k步，很大，0.1；到了后面，迭代次数增高，下降0.01，再多，然后再小一些。 
 ![@lr 随着epoch的增加变化曲线](../images/linux/lr.png)
 ### caffe训练时Loss变为nan的原因
-1. 由小变大易出nan
+
+#### 由小变大易出nan
 **原因**：有小变大过程中，某个梯度值变得特别大，使得学习过程难以为继
 
 例如：`10x10x256`的输入，输出如果是`20x20x256`或者`10x10x512`，如果是使用Inception-ResNet-v2或者直接进行卷积操作，很容易出现nan的情况。
@@ -30,11 +31,11 @@ description:  使用caffe框架进行实验过程中的一些心得
 - 参考[Inception的设计原则](http://cwlseu.github.io/Inception)重新设计网络
 - 添加Batch normalization试试
 
-2. 使用ResNet-Block或者Inception技术，最后的结果通过Bitwise Operation进行组合，而不是采用按channel Concatenate进行的。
+#### 使用ResNet-Block或者Inception技术，最后的结果通过Bitwise Operation进行组合，而不是采用按channel Concatenate进行的。
 
 > 尤其是BitWise multi进行组合的时候，往往会产生很大的数据悬殊，会导致梯度爆炸现象从而出现Loss 为nan
 
-3. 梯度爆炸
+#### 梯度爆炸
 
 **原因**：梯度变得非常大，使得学习过程难以继续
 
@@ -44,7 +45,7 @@ description:  使用caffe框架进行实验过程中的一些心得
 - 减小solver.prototxt中的`base_lr`，至少减小一个数量级。如果有多个`loss layer`，需要找出哪个损失层导致了梯度爆炸，并在train_val.prototxt中减小该层的`loss_weight`，而非是减小通用的`base_lr`。
 - 设置`clip gradient`，用于限制过大的`diff`
 
-4. 不当的损失函数
+#### 不当的损失函数
 
 **原因**：有时候损失层中loss的计算可能导致NaN的出现。比如，给InfogainLoss层（信息熵损失）输入没有归一化的值，使用带有bug的自定义损失层等等。
 
@@ -53,7 +54,7 @@ description:  使用caffe框架进行实验过程中的一些心得
 **措施**：看看你是否能重现这个错误，在loss layer中加入一些输出以进行调试。
 示例：有一次我使用的loss归一化了batch中label错误的次数。如果某个label从未在batch中出现过，loss就会变成NaN。在这种情况下，可以用足够大的batch来尽量避免这个错误。
 
-5. 不当的输入
+#### 不当的输入
 
 **原因**：输入中就含有NaN。
 
