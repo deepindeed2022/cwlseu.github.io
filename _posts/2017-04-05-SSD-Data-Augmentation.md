@@ -12,9 +12,9 @@ description: 数据增强技术在CV研究中对于提高Performance是重要的
 
 本文是Wei Liu在2016年的一篇成果. 采用VOC2007 Dataset, Nvidia Titan X上：
 
-	mAP： 74.3% 
-	59FPS
-	使用数据增强技术可以达到77.2%
+>mAP： 74.3% 
+>59FPS
+>使用数据增强技术可以达到77.2%
 
 ## SSD(Single Shot MultiBox Detector)
 

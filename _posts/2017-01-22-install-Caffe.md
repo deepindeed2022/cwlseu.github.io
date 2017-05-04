@@ -10,7 +10,13 @@ description: Caffe install in Ubuntu
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
-建议直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
+## 引言
+做深度学习，没用玩过深度学习框架caffe就有点说不过去了。虽然自己的小机器显卡能力不行，但是希望在cuda上跑caffe的心却没有停止过。从ubuntu12.04一直折腾到16.04，cuda从6.5也release到了8.0，中间走过的弯路很多。
+- cuda与系统的适配能力问题
+- ubuntu系统的问题
+- caffe的框架的问题
+经过这几年的发展，现在caffe的安装已经变得异常简单便捷。在此记录一下曾经的坑。
+建议: 直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
 
 ### 安装BLAS
 BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://stackoverflow.com/questions/7596612/benchmarking-python-vs-c-using-blas-and-numpy)
@@ -417,6 +423,17 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 4. cuda啥的一般管理员就帮你搞定了，实在不行咱自己安装到某个路径下，在Makefile.config中配置一下路径就ok了
 5. python 依赖可以通过`virtualenv`解决掉的，[如何使用`virtualenv`](https://virtualenv.pypa.io/en/stable/userguide/)可以看官网
 
+
+## Quarto Fx580
+查看显卡型号`lspci | grep "VGA"` 
+
+    01:00.0 VGA compatible controller: NVIDIA Corporation G96GL [Quadro FX 580] (rev a1)
+
+[驱动下载](http://www.nvidia.com/content/DriverDownload-March2009/confirmation.php?url=/XFree86/Linux-x86_64/340.102/NVIDIA-Linux-x86_64-340.102.run&lang=us&type=geforcem)
+
+[查看GPU卡是否支持cuda](https://developer.nvidia.com/cuda-gpus)
+哦哦，并不支持，好吧，换卡吧。
+
 ## 参考
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
@@ -426,3 +443,5 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
 6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
 7.[virtualenv user guide](https://virtualenv.pypa.io/en/stable/userguide/)
+8.[查看GPU卡是否支持cuda](https://developer.nvidia.com/cuda-gpus)
+9.[cuda各个版本库](https://developer.nvidia.com/cuda-toolkit-archive)

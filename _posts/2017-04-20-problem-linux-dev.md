@@ -26,6 +26,20 @@ Work with cmake. Adding `include_directories("/home/xxx/metis/include")`
 ### sudo user
 参看[stack-overflow](http://stackoverflow.com/questions/36046189/how-to-install-metis-on-ubuntu/41336362#41336362)
 
+### 查看机器cpu信息
+
+1. 查看物理CPU的个数
+`cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l`
+ 
+2. 查看逻辑CPU的个数
+`cat /proc/cpuinfo | grep "processor" | wc -l`
+ 
+3. 查看CPU是几核
+`cat /proc/cpuinfo | grep "cores" | uniq`
+ 
+4. 查看CPU的主频
+`cat /proc/cpuinfo | grep MHz | uniq`
+
 ## caffe installation : opencv libpng16.so.16 linkage issues
 
 ```sh
