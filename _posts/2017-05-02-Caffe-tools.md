@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Caffe tools的实战心得"
+title: "玩转caffe之工具篇"
 categories: [blog ]
 tags: [工具 ]
 description: "为了展示模型的效果，结合caffe中的tools进行可视化"
