@@ -95,19 +95,19 @@ A reference to Table \ref{tab:template}.
 ```
 ![@table](../images/latex/table2.png)
 
- 6. 编写公式
- * $$A_{ij} = B_{ij} + C_{ij}$$
- * $5^2 = 3^2 + 4^2$
- * $x = \frac{1+ 4ab}{\sqrt{a^2 + b^2}}$
- * $$CaCO_3 + 2HCl = CaCl_2 + H_2O + CO_2\uparrow$$
- * $$Na_2CO_3 + Ca(OH)_2 = CaCO_3\downarrow +2 NaOH$$
+6. 编写公式
 
-\begin{align}
-& \hat{g}^{cx}_j =\frac{(g_j^{cx} - d_i^{cx})}{d_i^w} & \hat{g}^{cy}_j =\frac{(g_j^{cy} - d_i^{cy})}{d_i^h} & \\
-& \hat{g}^{w}_j =\log(\frac{g_j^w}{d_i^w}) & \hat{g}^{h}_j =\log(\frac{g_j^h}{d_i^h}) & 
-\end{align}
- 
-[Mathematics](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
+```latex
+    \begin{align}
+    & \hat{g}^{cx}_j =\frac{(g_j^{cx} - d_i^{cx})}{d_i^w} & \hat{g}^{cy}_j =\frac{(g_j^{cy} - d_i^{cy})}{d_i^h} & \\
+    & \h pre
+    at{g}^{w}_j =\log(\frac{g_j^w}{d_i^w}) & \hat{g}^{h}_j =\log(\frac{g_j^h}{d_i^h}) & 
+    \end{align}
+ ```
+公式显示结果
+![@公式显示结果](../images/latex/math.png)
+
+更多参考信息[Mathematics](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
 
 ## 一些经验总结
 
