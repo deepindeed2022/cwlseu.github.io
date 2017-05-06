@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "行人检测任务之FHOG算子"
+categories: [blog ]
 tags: [机器视觉]
 description: Hog特征结合分类算法广泛应用于图像识别中，尤其是行人检测中获得极大成功。
 
