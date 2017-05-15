@@ -18,7 +18,7 @@ for example. (Here `gpu` can be substituted for `cpu`, but to keep the readme si
 
 Note that the GPU standalone requires a CUDA 8.0 capable driver to be installed on the system and [nvidia-docker] for running the Docker containers. Here it is generally sufficient to use `nvidia-docker` instead of `docker` in any of the commands mentioned.
 
-# Running Caffe using the docker image
+## Running Caffe using the docker image
 
 In order to test the Caffe image, run:
 `docker run -ti caffe:cpu caffe --version`
@@ -62,6 +62,27 @@ docker -run -ti --volume=$(pwd):/workspace caffe:cpu /bin/bash
 ```
 
 解析：`--volume=$(pwd):/workspace`是挂载本机目录到容器中，`--volume or -v`是docker的挂载命令，`=$(pwd):/workspace`是挂载信息，是将`$(pwd)`即本机当前目录，:是挂载到哪，`/workspace`是容器中的目录，就是把容器中的`workspace`目录换成本机的当前目录，这样就可以在本机与容器之间进行交互了，本机当前目录可以编辑，容器中同时能看到。容器中的workspace目录的修改也直接反应到了本机上。`$()`是Linux中的命令替换，即将$()中的命令内容替换为参数，pwd是Linux查看当前目录，我的本机当前目录为cafferoot，`--volume=$(pwd):/workspace`就等于`--volume=/Users/***/cafferoot:/workspace`，`/Users/***/cafferoot`为`pwd`的执行结果，$()是将pwd的执行结果作为参数执行。
+
+## 一些有用的命令
+1. 基于image `nvidia/cuda`运行某条命令`nvidia-smi`
+`nvidia-docker run  nvidia/cuda nvidia-smi`
+2. 查看当前有哪些镜像
+`sudo nvidia-docker images`
+3. 查看当前有哪些运行中的实例
+`sudo nvidia-docker ps -l`
+4. 运行某个镜像的实例
+`sudo nvidia-docker run -it nvidia/cuda`
+5. 链接运行中的镜像
+`sudo nvidia-docker attach d641ab33bec2`
+6. 跳出运行中的image镜像，但是不退出
+`ctrl+p`, `ctrl+q`
+
+7. 使用linux命令对镜像实例进行操作
+`sudo nvidia-docker cp zeyu/VOCtrainval_11-May-2012.tar  e6a0961ab4cf:/workspace/data`
+`sudo nvidia-docker run -it -t nvidia/cuda nvidia-smi`
+
+8. 在host机器上启动新的bash
+`sudo nvidia-docker exec -it d641ab33bec2 bash`
 
 ## reference
 
