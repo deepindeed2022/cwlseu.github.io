@@ -396,6 +396,19 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
     
     因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。
 
+### Opencv库找不到问题
+```
+CXX/LD -o .build_release/tools/extract_features.bin
+.build_release/lib/libcaffe.so: undefined reference to `cv::imread(cv::String const&, int)'
+.build_release/lib/libcaffe.so: undefined reference to `cv::imencode(cv::String const&, cv::_InputArray const&, std::vector<unsigned char, std::allocator<unsigned char> >&, std::vector<int, std::allocator<int> > const&)'
+.build_release/lib/libcaffe.so: undefined reference to `cv::imdecode(cv::_InputArray const&, int)'
+collect2: error: ld returned 1 exit status
+Makefile:562: recipe for target '.build_release/tools/extract_features.bin' failed
+make: *** [.build_release/tools/extract_features.bin] Error 1
+```
+
+在Makefile中LIBRARES中添加 opencv_imgcodecs项
+
 ### 循环登陆界面
 
 #### 方案一
