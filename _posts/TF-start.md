@@ -37,6 +37,6 @@ pip install --upgrade $TF_BINARY_URL
 `python -c 'import os; import inspect; import tensorflow; print(os.path.dirname(inspect.getfile(tensorflow)))'`
 
 `python -m tensorflow.models.image.mnist.convolutional`
-[Tensorflow install](https://www.tensorflow.org/versions/r0.12/get_started/os_setup.html#overview)
 
 ## 参考资料
+[Tensorflow install](https://www.tensorflow.org/versions/r0.12/get_started/os_setup.html#overview)
