@@ -55,9 +55,8 @@ Here you can find a set of new timings obtained using **cuDNNv4** on a **single 
 |   Setting  | Gradient (ms) AE1 | Gradient (ms) AE2 | Gradient (ms) AE3 | Gradient (ms) Total pre-training | Gradient (ms) SE | Forward (ms) SE |
 |:----------:|:-----------------:|:-----------------:|:-----------------:|:--------------------------------:|:----------------:|:---------------:|
 | Caffe |         0.9     |      1.2     |        1.7      |          3.8       |     1.9        |       0.9       |
-| Neon |    1.2         |   1.6      | 2.3             |    5.1         |  2.0            |       1.0     |
+| Neon |    1.2         |   1.6      | 2.3             |    5.1         |  2.0            |       1.0   
+  |
 | Tensorflow |        0.9        |        1.1        |        1.6        |                3.6               |        2.1       |       0.7       |
 |   Theano   |        0.7        |        1.0        |        1.8        |                3.5               |        **1.2**       |       **0.6**       |
 |    Torch   |        0.7        |        0.9        |        1.4        |                **3.0**               |        1.4       |      **0.6**       |
-
-2. 
