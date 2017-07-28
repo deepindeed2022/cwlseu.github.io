@@ -21,6 +21,15 @@ struct TreeNode {
 			val(x), left(NULL), right(NULL) {
 	}
 };
+
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};
+
 ```
 ## 一些比较trick的问题
 
@@ -86,5 +95,33 @@ public:
         }
         return root;
     }
+};
+```
+
+## 从链表中查找倒数Kth个
+
+本题的思路就是通过两个指针，一个快一个慢，中间相差k个，当其中快指针指向结尾的时候，慢指针指向的位置就是所求。
+
+```cpp
+class Solution {
+public:
+    ListNode* FindKthToTail(ListNode* pListHead, unsigned int k) {  
+    	ListNode* fast = pListHead;
+    	int i = k;
+    	while(fast && i > 0)
+    	{
+    		fast = fast->next;
+    		i--;
+    	}
+    	if(i != 0) return NULL;
+
+    	ListNode* slow = pListHead;
+    	while(fast && slow)
+    	{
+    		fast  = fast->next;
+    		slow = slow->next;
+    	}
+    	return slow;
+    }
 };
 ```
