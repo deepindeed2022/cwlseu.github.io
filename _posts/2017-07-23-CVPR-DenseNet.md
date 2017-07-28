@@ -12,8 +12,9 @@ description:
 
 ## 文章来源
 
-[arxiv](https://arxiv.org/abs/1608.06993)
-[代码地址](https://github.com/liuzhuang13/DenseNet)
+[arxiv](https://arxiv.org/abs/1608.06993)          
+[torch代码地址](https://github.com/liuzhuang13/DenseNet)           
+[caffe模型地址](https://github.com/shicai/DenseNet-Caffe)                         
 
 ## 突出贡献
 
@@ -26,12 +27,18 @@ through summation before they are passed into a layer; instead, we combine featu
 
 
 ![DenseNet的组成结构](../images/cvpr2017/densenet/Table1.jpg)
-ResNet
+对其中的121层的模型进行显示，如下图所示。为了显示得更多，我对其中第二个DenseBlock变为只剩头和尾的部分，第三层的也是如同处理。
+![Layer 121的组成结构](../images/cvpr2017/densenet/121-short.jpg)
 
-Dense Connectivity
+### 残差网关键技术
+关键是ResBlock的理解。传统卷积网络就是l层向前卷积，结果作为l+1层的输入。ResNet中添加了一个skip-connnection连接l层和l+1层。如下共计算公式：
 
-Growth rate
+![ResBlock](../images/cvpr2017/densenet/ResBlock.jpg)
+### 稠密网关键技术
 
+![ResBlock](../images/cvpr2017/densenet/DenseConn.jpg)
+### Growth rate
+稠密网中的每个denseblock单元中，每层产生特征的个数为k的话，那么第l层将有kx(l-1) + k0个输入特征。
 
 ## 效果
 DenseNet有如下优点： 
