@@ -2,7 +2,7 @@
 layout: post
 title: "Densely Connected CNN"
 categories: [blog ]
-tags: [CNN, ]
+tags: [CNN, DenseNet]
 description: 
 ---
 声明：本博客欢迎转发，但请保留原作者信息!                            
