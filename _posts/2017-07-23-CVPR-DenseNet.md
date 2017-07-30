@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Densely Connected Convolutional Networks"
+title: "Densely Connected CNN"
 categories: [blog ]
 tags: [CNN, ]
 description: 

@@ -17,7 +17,7 @@ description: Python入门简单，但是无论哪种语言，都有语言设计�
 
 ### 列表生成器
 
->>描述:
+> 描述:
 
     下面的代码会报错，为什么？
 ```python
@@ -28,7 +28,8 @@ classA(object):
 print(list(A.gen))
 ```
 
->>答案
+> 答案
+
 这个问题是变量作用域问题，在 gen=(x for _ in xrange(10)) 中 gen 是一个 generator ,在 generator中变量有自己的一套作用域，与其余作用域空间相互隔离。因此，将会出现这样的 NameError: name 'x' is not defined 的问题，那么解决方案是什么呢？答案是：用 lambda 。
 
 ```python
@@ -40,7 +41,8 @@ print(list(A.gen))
 ```
 ### 装饰器
 
->>描述
+> 描述
+
 我想写一个类装饰器用来度量函数/方法运行时间
 
 
@@ -90,7 +92,8 @@ if __name__ == '__main__':
 
 如果我坚持使用类装饰器，应该如何修改？
 
->>答案
+> 答案
+
 使用类装饰器后，在调用 `func` 函数的过程中其对应的 instance 并不会传递给 `__call__`方法，造成其 mehtod unbound ,那么解决方法是什么呢？描述符
 
 ```python
@@ -122,7 +125,8 @@ if __name__ == '__main__':
 
 ### Python 调用机制
 
->>描述
+> 描述
+
 我们知道 `__call__`方法可以用来重载圆括号调用，好的，以为问题就这么简单？Naive！
 
 ```python
@@ -137,18 +141,18 @@ if __name__ == "__main__":
 
 现在我们可以看到 a() 似乎等价于 `a.__call__()`  ,看起来很 Easy 对吧，好的，我现在想作死，又写出了如下的代码，
 
-a.__call__ = lambda: "invoking __call__ from lambda"
+`a.__call__ = lambda: "invoking __call__ from lambda"`
+`a.__call__()`
 
-a.__call__()
+\# output:invoking __call__ from lambda
 
-# output:invoking __call__ from lambda
+`a()`
 
-a()
-
-# output:invoking __call__ from A!
+\# output:invoking __call__ from A!
 
 请大佬们解释下，为什么 a() 没有调用出 `a.__call__()` (此题由 USTC 王子博前辈提出)
->>答案
+> 答案
+
 原因在于，在 Python 中，新式类（ new class )的内建特殊方法，和实例的属性字典是相互隔离的，具体可以看看 Python 官方文档对于这一情况的说明
 
     For new-style classes, implicit invocations of special methods are only guaranteed to work correctly if defined on an object’s type, not in the object’s instance dictionary. That behaviour is the reason why the following code raises an exception (unlike the equivalent example with old-style classes):
@@ -176,7 +180,8 @@ print len(c)
 
 ### 描述符
 
->>描述
+> 描述
+
 我想写一个 Exam 类，其属性 math 为 [0,100] 的整数，若赋值时不在此范围内则抛出异常，我决定用描述符来实现这个需求。
 
 ```python
@@ -231,13 +236,13 @@ class Grade(object):
 
 不过这样会导致更大的问题，请问该怎么解决这个问题？
 
->>答案
+> 答案
 
 1. 第一个问题的其实很简单，如果你再运行一次 print(niche.math) 你就会发现，输出值是 75 ，那么这是为什么呢？这就要先从 Python的调用机制说起了。我们如果调用一个属性，那么其顺序是优先从实例的 `__dict__` 里查找，然后如果没有查找到的话，那么依次查询类字典，父类字典，直到彻底查不到为止。好的，现在回到我们的问题，我们发现，在我们的类 Exam 中，其`self.math`的调用过程是，首先在实例化后的实例的`__dict__`中进行查找，没有找到，接着往上一级，在我们的类 Exam 中进行查找，好的找到了，返回。那么这意味着，我们对于 self.math 的所有操作都是对于类变量 math的操作。因此造成变量污染的问题。那么该则怎么解决呢？很多同志可能会说，恩，在 `__set__` 函数中将值设置到具体的实例字典不就行了。
 
 那么这样可不可以呢？答案是，很明显不得行啊，至于为什么，就涉及到我们 Python 描述符的机制了，
 
->>描述符指的是实现了描述符协议的特殊的类，三个描述符协议指的是 `__get__ `, `__set__` , `__delete__`以及 Python 3.6 中新增的 `__set_name__` 方法，其中实现了`__get__` 以及 `__set__ / __delete__ / __set_name__` 的是 Data descriptors ，而只实现了 `__get__` 的是 Non-Data descriptor
+> 描述符指的是实现了描述符协议的特殊的类，三个描述符协议指的是 `__get__ `, `__set__` , `__delete__`以及 Python 3.6 中新增的 `__set_name__` 方法，其中实现了`__get__` 以及 `__set__ / __delete__ / __set_name__` 的是 Data descriptors ，而只实现了 `__get__` 的是 Non-Data descriptor
 
 那么有什么区别呢，前面说了， 我们如果调用一个属性，那么其顺序是优先从实例的 `__dict__` 里查找，然后如果没有查找到的话，那么一次查询类字典，父类字典，直到彻底查不到为止。 但是，这里没有考虑描述符的因素进去，如果将描述符因素考虑进去，那么正确的表述应该是我们如果调用一个属性，那么其顺序是优先从实例的 `__dict__` 里查找，然后如果没有查找到的话，那么依次查询类字典，父类字典，直到彻底查不到为止。其中如果在*类实例字典*中的该属性是一个 Data descriptors ，那么无论实例字典中存在该属性与否，无条件走描述符协议进行调用，在类实例字典中的该属性是一个Non-Data descriptors ，那么优先调用实例字典中的属性值而不触发描述符协议，如果实例字典中不存在该属性值，那么触发 Non-Data descriptor的描述符协议。回到之前的问题，我们即使在 `__set__`将具体的属性写入实例字典中，但是由于类字典中存在着 Data descriptors ，因此，我们在调用 math 属性时，依旧会触发描述符协议。
 
@@ -312,7 +317,7 @@ class Grade(object):
 
 ### Python 继承机制
 
-描述
+> 描述
 
 试求出以下代码的输出结果。
 
@@ -349,7 +354,8 @@ p = Incr(5)
 print(p.val)
 ```
 
-    答案
+> 答案
+
     输出是 36 ，具体可以参考 New-style Classes , multiple-inheritance
 
 ### Python 特殊方法
@@ -422,7 +428,8 @@ a.b
 试解释为什么给 getattribute 打补丁成功，而 new 打补丁失败。
 如果我坚持使用元类给 new 打补丁来实现单例模式，应该怎么修改？
 
->>答案
+> 答案
+
 其实这是最气人的一点，类里的`__new__`是一个 **staticmethod** 因此替换的时候必须以 **staticmethod** 进行替换。答案如下：
 
 ```python
@@ -444,6 +451,82 @@ class A(object):
 
 a1 = A() # what`s the fuck
 ```
+### 多线程是真的多线程吗？
+> Effective Python 第37条：可以使用线程来执行阻塞式IO，但是不要用它做平行计算。
+
+```python
+#! /usr/bin/env python2.7
+import threading
+from time import sleep, ctime
+
+loops = [4, 4]
+class ThreadFunc(object):
+    def __init__(self, func, args, name=''):
+        self.name = name 
+        self.func = func
+        self.args = args 
+    def __call__(self):
+        apply(self.func, self.args)
+
+def loop(nloop, nsec):
+    print "start loop ", nloop, "at:", ctime()
+    a = 0
+    for i in xrange(30000000):
+        a += i
+    print a
+    print "loop ", nloop, "done at:", ctime()
+
+
+def main_with_muilt_thread():
+    threads = []
+    nloops = range(len(loops))
+    for i in nloops:
+        t = threading.Thread(target=ThreadFunc(loop,(i, loops[i]),loop.__name__))
+        threads.append(t)
+    print "starting at:", ctime()
+    for i in nloops:
+        threads[i].start()
+    for i in nloops:
+        threads[i].join()
+    print "all DONE at:", ctime()
+def main_with_one_thread():
+    threads = []
+    nloops = range(len(loops))
+    for i in nloops:
+        t = threading.Thread(target=ThreadFunc(loop,(i, loops[i]),loop.__name__))
+        threads.append(t)
+    print "starting at:",ctime()
+    for i in nloops:
+        loop(i, loops[i])
+    print "all DONE at:",ctime()
+if __name__ == '__main__':
+    main_with_one_thread()
+    main_with_muilt_thread()
+
+```
+
+> output
+
+    starting at: Sun Jul 30 20:05:28 2017
+    start loop  0 at: Sun Jul 30 20:05:28 2017
+    449999985000000
+    loop  0 done at: Sun Jul 30 20:05:30 2017
+    start loop  1 at: Sun Jul 30 20:05:30 2017
+    449999985000000
+    loop  1 done at: Sun Jul 30 20:05:32 2017
+    all DONE at: Sun Jul 30 20:05:32 2017
+    starting at: Sun Jul 30 20:05:32 2017
+    start loop  0 at: Sun Jul 30 20:05:32 2017start loop 
+    1 at: Sun Jul 30 20:05:32 2017
+    449999985000000
+    loop  0 done at: Sun Jul 30 20:05:40 2017
+    449999985000000
+    loop  1 done at: Sun Jul 30 20:05:40 2017
+    all DONE at: Sun Jul 30 20:05:40 2017
+
+从中看出，使用单线程顺序执行时使用了4s，但是使用多线程执行了8s。本来使用多线程应该是原的两倍才对啊，但是现在多线程竟然比但想成还慢。因为**标准CPython解释器中的多线程受到了GIL的影响，同一时刻只能有一个线程得到执行**。但是为啥还要支持多线程呢？
+1. 程序看上去可以同时执行很多个事情，免去了手工管理任务的切换操作
+2. 处理阻塞式IO操作。Python执行某些系统调用时，会触发阻塞式操作。读写文件，在网络间通讯，显示器与设计之间交互都属于阻塞式IO。为了响应阻塞式请求，开发者可以借助线程，把python程序与这些耗时IO操作隔离开来。
 
 ### 结语
 
@@ -454,13 +537,8 @@ a1 = A() # what`s the fuck
 [我的python小吃](https://github.com/cwlseu/recipes/tree/master/pyrecipes)
 
 ## 参考文献
-
-- <https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/>
-
+- [Someone-tell-me-that-you-think-Python-is-simple]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/>
 - [invoking-descriptors]<https://docs.python.org/2/reference/datamodel.html#invoking-descriptors>  
-
 - [Descriptor HowTo Guide]<https://docs.python.org/3/howto/descriptor.html>
-  
 - [PEP 487]<https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order> 
- 
 - [what`s new in Python 3.6]<https://docs.python.org/3.6/whatsnew/3.6.html> 
