@@ -58,13 +58,13 @@ Gramian矩阵是通过计算一组特征向量的内积进行生成的，包含�
 
 ## 实验
 
->**Fast Optimization**
+### **Fast Optimization**
 ![DenseNet的组成结构](../images/cvpr2017/kd/Fast.JPG)
 
 从结果中可以看出student network比teacher network 收敛速度更快。 大概快了3倍。
->**Network Minimization**
+###  **Network Minimization**
 
->**Transfer Learning**
+###  **Transfer Learning**
 
 ## 评测标准
 >Recognition rates
