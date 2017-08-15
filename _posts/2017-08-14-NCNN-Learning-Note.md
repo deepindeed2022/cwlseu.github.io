@@ -552,6 +552,105 @@ static void conv3x3s1_sse(const Mat& bottom_blob, Mat& top_blob, const Mat& _ker
 
 ```
 
+### Pooling
+
+Pooling的实现与Convolution的实现很相似，这里就不做解释了。Pooling主要实现了全局MaxPooling, 全局AvePooling, 局部Max Pooling与局部AvePooling.局部Pooling包含边缘Padding的处理。
+具体padding的处理可以看
+`void copy_make_border(...)`如何实现的。
+
+### Softmax
+采用omp parallel for的方式，进行如下操作：
+    value = exp( value - global max value )
+    sum all value
+    value = value / sum 
+在ARM平台上，进一步通过SIMD技术加速优化，这里不再赘述。
+
+![@其他一些激活函数](../images/cnn/active.jpg)
+当然，Sigmoid在ARM上也进行了类似SoftMax的优化，Sigmod比Softmax实现简单得多，这里就不说了。
+
+### Batch Normalization
+BatchNorm层有点不一样，仅仅看forward是看不明白的，需要看`load_model`中的一些操作。
+
+    a = bias - slope * mean / sqrt(var)
+    b = slope / sqrt(var)
+    value = b * value + a
+
+一般解释的时候slope就是当做1进行解释的。
+
+```cpp
+int BatchNorm::load_model(const unsigned char*& mem)
+{
+    slope_data = Mat(channels, (float*)mem);
+    mem += channels * sizeof(float);
+
+    mean_data = Mat(channels, (float*)mem);
+    mem += channels * sizeof(float);
+
+    var_data = Mat(channels, (float*)mem);
+    mem += channels * sizeof(float);
+
+    bias_data = Mat(channels, (float*)mem);
+    mem += channels * sizeof(float);
+
+    a_data.create(channels);
+    if (a_data.empty())
+        return -100;
+    b_data.create(channels);
+    if (b_data.empty())
+        return -100;
+    const float* slope_data_ptr = slope_data;
+    const float* mean_data_ptr = mean_data;
+    const float* var_data_ptr = var_data;
+    const float* bias_data_ptr = bias_data;
+    float* a_data_ptr = a_data;
+    float* b_data_ptr = b_data;
+    for (int i=0; i<channels; i++)
+    {
+        float sqrt_var = sqrt(var_data_ptr[i]);
+        a_data_ptr[i] = bias_data_ptr[i] - slope_data_ptr[i] * mean_data_ptr[i] / sqrt_var;
+        b_data_ptr[i] = slope_data_ptr[i] / sqrt_var;
+    }
+
+    return 0;
+}
+
+int BatchNorm::forward(const Mat& bottom_blob, Mat& top_blob) const
+{
+    // a = bias - slope * mean / sqrt(var)
+    // b = slope / sqrt(var)
+    // value = b * value + a
+
+    int w = bottom_blob.w;
+    int h = bottom_blob.h;
+    int size = w * h;
+
+    top_blob.create(w, h, channels);
+    if (top_blob.empty())
+        return -100;
+
+    const float* a_data_ptr = a_data;
+    const float* b_data_ptr = b_data;
+    #pragma omp parallel for
+    for (int q=0; q<channels; q++)
+    {
+        const float* ptr = bottom_blob.channel(q);
+        float* outptr = top_blob.channel(q);
+
+        float a = a_data_ptr[q];
+        float b = b_data_ptr[q];
+
+        for (int i=0; i<size; i++)
+        {
+            outptr[i] = b * ptr[i] + a;
+        }
+    }
+
+    return 0;
+}
+
+```
+如果对BatchNormalization不明白，可看看后面的参考文献[3][4]。
+
 ## 积淀姿势
 
 > 几个有用的内存管理对齐方案，这个在OpenCV里见过，放在这里再次表示其重要性，为什么这么实现，可以搜索[OpenCV内存管理](http://blog.csdn.net/imrat/article/details/10005471)
@@ -597,6 +696,13 @@ static inline void fastFree(void* ptr)
 }
 ```
 
+## 小结
+
+剩下的就是去看intel的intrinsics文档了。
+
 ## 参考文献
 1. [android cmake入门指导](https://github.com/taka-no-me/android-cmake)
 2. [SMP Symmetric Multi-Processor](https://www.ibm.com/developerworks/cn/linux/l-linux-smp/index.html)  
+3. [Batch Normalization 学习笔记](http://blog.csdn.net/hjimce/article/details/50866313)
+4. [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167v3.pdf)
+5. [Intel Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
