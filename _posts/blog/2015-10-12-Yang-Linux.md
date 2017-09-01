@@ -6,11 +6,9 @@ tags: [Linux, 操作系统]
 description: 探究linux 0.11的一些神奇的东西
 ---
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息! 
-作者: [cwlseu]
-博客： [https://cwlseu.github.io/](https://cwlseu.github.io/)
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ## linux设计的作者
 [Linus](https://en.wikipedia.org/wiki/Linus_Torvalds)

@@ -7,11 +7,9 @@ description: 使用NuGet
 ---
 
 
-
-
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [cwlseu]
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 在window上使用caffe深度学习框架，安装路程艰辛，不过也是很有乐趣的。
 ## NuGet
