@@ -143,3 +143,4 @@ A reference to Table \ref{tab:template}.
 2. [中科院毕业论文模板](http://www.ctex.org/PackageCASthesis)
 3. [IEEE 会议论文模板](http://www.ieee.org/conferences_events/conferences/publishing/templates.html)
 4. [Latex 网上book](https://en.wikibooks.org/wiki/LaTeX)
+5. [数学符号](https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols)
