@@ -96,6 +96,9 @@ Rects(void* _rects)
 这样就可以实现在python中调用`rects = Rects(detectface(mat, model_path))`就可以获得结果。
 
 # 生成代码 & 测试
+## 依赖库
+使用的swig生成的_pyxxxxx.so文件是依赖原来的C++ lib的，因此，这个lib放置的位置需要让_pyxxxxx.so能够找到。
+否则会出现连接lib找不到的问题。因此，最方便的方法就是直接进行编译C++库的时候，将库安装到系统路径下。
 
 ## swig生成代码
 
@@ -299,6 +302,7 @@ if __name__ == '__main__':
 ![@facedet](../../images/python/facedet.jpg)
 
 ![@visual detection](../../images/python/facedetresult.jpg)
+
 
 ## 参考文献
 [1]. Interfacing C/C++ and Python with SWIG <http://www.swig.org/papers/PyTutorial98/PyTutorial98.pdf>
