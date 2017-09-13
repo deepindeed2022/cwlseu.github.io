@@ -68,6 +68,17 @@ $$F(m, n)=\frac{\frac{Y_1}{m}}{\frac{Y_2}{n}}$$
 
 ### 单个正态总体中统计量的分布
 
+总体分布$X \sim N(\mu, \sigma^2)$, $（X_1, ... X_n）是来自总体X$的容量为n的简单随机样本， 样本均值
+$\bar X = \frac{1}{n}\sum_{i=1}^n{X_i}$
+样本方差为：$S^2 = \frac{1}{n-1}\sum_{i=1}^{n}(X_i - \bar X)^2$
+则：
+
+* $U = \frac{\bar X -\mu}{\sigma}\sqrt{n} \sim N (0, 1)$
+* $\bar X$与$S^2$相互独立
+* $\frac{(n-1)S^2}{\sigma^2} = \sum_{i=1}^{n}(\frac{X_i - \bar X}{\sigma})^2 \sim \chi^2(n-1)$ 
+* $T = \frac{\bar{X} - \mu}{S}\sqrt{n} \sim t(n-1)$
+
+
 ### 两个正态总体中的统计量的分布
 
 
