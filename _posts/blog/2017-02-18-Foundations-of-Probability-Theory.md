@@ -20,16 +20,49 @@ $ N(\mu, \sigma^2)$正态分分布，若n个相互独立的随机变量ξ₁、�
 
 ### 卡方分布
 
-1. 可加性
-$\chi^2_1\~\chi^2(m)$ 和 $\chi^2_2\~\chi^2(n)$且相互独立，则
-$\chi^2_1 + \chi^2_2 \~ \chi^2(n+m)$
-2. 若$\chi^2\~\chi^2(n)$， 则$E\chi^2 = n, D\chi^2 = 2n$
+> 可加性
+
+$\chi^2_1\sim\chi^2(m)$ 和 $\chi^2_2\sim\chi^2(n)$且相互独立，则
+$\chi^2_1 + \chi^2_2 \sim \chi^2(n+m)$
+
+> 期望和方差 
+
+若$\chi^2\sim\chi^2(n)$， 则$E\chi^2 = n, D\chi^2 = 2n$
 
 http://www.cnblogs.com/baiboy/p/tjx11.html
 
+### t-分布
 t-分布是一个正态分布除以(一个卡方分布除以它的**自由度**然后开根号);
+$X \sim N(0, 1)$ Y服从自由度为n的卡方分布$Y \sim\chi^2(n)$
+我们称随机变量
+$$T = \frac{X}{\sqrt{\frac{Y}{n}}}$$
+所服从的分布为自由度为n的t-分布，记为$T \sim t(n)$
 
-F-分布是两个卡方分布分布除以他们各自的**自由度**再相除
+> 极限逼近正态
+
+t-分布的极限分布为标准正态分布。
+
+> $\alpha$-分位点
+
+假设$T\sim t(n), 0 \lt \alpha \lt 1, t_{\alpha}(n)$满足
+$$P(T \ge t_\alpha(n)) = \alpha$$
+
+另外 $t_{1- \alpha}(n) = - t_\alpha(n)$
+例如：$t_{0.95}(15) = - t_{0.05}(15)$
+
+### F-分布
+设随机变量$X \sim \chi^2(m)$, $Y \sim \chi^2(n)$， 且$X, Y$相互独立。则称：
+$$F = \frac{X}{Y}\frac{n}{m}$$
+所服从的分布为自由度为m，n的F-分布，记为$F\sim F(m,n)$
+
+假设$F\sim F(m, n)$, $F_{\alpha}(m, n)$满足
+$$P(F \ge F_\alpha(m, n)) = \alpha$$
+则称$F_{\alpha}(m, n)$是自由度为m, n的F-分布的上侧$\alpha$-分位点。
+
+
+## 正态总体中统计量的分布
+### 单个正态总体中统计量的分布
+### 两个正态总体中的统计量的分布
 
 比如X是一个正态分布分布, $X \sim N(\mu, \sigma^2)  $
 $$X \sim \frac{1}{\sqrt{2\pi}\sigma}exp(-\frac{(x - \mu)^2}{2\sigma^2})$$
