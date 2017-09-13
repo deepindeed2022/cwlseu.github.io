@@ -3,19 +3,15 @@ layout: post
 title: "概率论基础"
 categories: [blog ]
 tags: [概率论, ]
-description: 
+description:概率论中的基本概念，做机器学习相关的内容，不得不知的知识。 
 ---
 
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [cwlseu]
+- 博客： <https://cwlseu.github.io/>
 
 
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [cwlseu]
-博客： <https://cwlseu.github.io/>
-
-
-# 概率论基础
-
-## 几种常见分布的概念
+## 概率论基础
 $ N(\mu, \sigma^2)$正态分分布，若n个相互独立的随机变量ξ₁、ξ₂、……、ξn ，**均服从标准正态分布**（也称**独立同分布于标准正态分布**），则这n个服从标准正态分布的随机变量的平方和构成一新的随机变量，其分布规律称为卡方分布（$\chi^2$ chi-square distribution）, 其中参数n称为自由度
 
 ### 卡方分布
@@ -32,6 +28,7 @@ $\chi^2_1 + \chi^2_2 \sim \chi^2(n+m)$
 http://www.cnblogs.com/baiboy/p/tjx11.html
 
 ### t-分布
+
 t-分布是一个正态分布除以(一个卡方分布除以它的**自由度**然后开根号);
 $X \sim N(0, 1)$ Y服从自由度为n的卡方分布$Y \sim\chi^2(n)$
 我们称随机变量
@@ -59,10 +56,7 @@ $$F = \frac{X}{Y}\frac{n}{m}$$
 $$P(F \ge F_\alpha(m, n)) = \alpha$$
 则称$F_{\alpha}(m, n)$是自由度为m, n的F-分布的上侧$\alpha$-分位点。
 
-
-## 正态总体中统计量的分布
-### 单个正态总体中统计量的分布
-### 两个正态总体中的统计量的分布
+### 小结
 
 比如X是一个正态分布分布, $X \sim N(\mu, \sigma^2)  $
 $$X \sim \frac{1}{\sqrt{2\pi}\sigma}exp(-\frac{(x - \mu)^2}{2\sigma^2})$$
@@ -70,6 +64,14 @@ $$X \sim \frac{1}{\sqrt{2\pi}\sigma}exp(-\frac{(x - \mu)^2}{2\sigma^2})$$
 $$Y(n) = \chi^2(n)=X_1^2+X_2^2+……+X_n^2$$,这里每个$X_n$都是一个标准正态分布分布，
 $$t(n)=\frac{X}{\sqrt{\frac{Y}{n}}} $$
 $$F(m, n)=\frac{\frac{Y_1}{m}}{\frac{Y_2}{n}}$$
+
+
+## 正态总体中统计量的分布
+
+### 单个正态总体中统计量的分布
+
+### 两个正态总体中的统计量的分布
+
 
 ##  各个分布的应用
 
