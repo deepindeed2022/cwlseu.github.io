@@ -21,9 +21,9 @@ $ N(\mu, \sigma^2)$正态分分布，若n个相互独立的随机变量ξ₁、�
 ### 卡方分布
 
 1. 可加性
-$\chi^2_1~\chi^2(m)$ 和 $\chi^2_2~\chi^2(n)$且相互独立，则
-$\chi^2_1 + \chi^2_2 ~ \chi^2(n+m)$
-2. 若$\chi^2~\chi^2(n)$， 则$E\chi^2 = n, D\chi^2 = 2n$
+$\chi^2_1\~\chi^2(m)$ 和 $\chi^2_2\~\chi^2(n)$且相互独立，则
+$\chi^2_1 + \chi^2_2 \~ \chi^2(n+m)$
+2. 若$\chi^2\~\chi^2(n)$， 则$E\chi^2 = n, D\chi^2 = 2n$
 
 http://www.cnblogs.com/baiboy/p/tjx11.html
 
