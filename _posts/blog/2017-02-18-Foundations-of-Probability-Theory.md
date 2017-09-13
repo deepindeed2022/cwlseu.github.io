@@ -2,8 +2,8 @@
 layout: post
 title: "概率论基础"
 categories: [blog ]
-tags: [概率论, ]
-description:概率论中的基本概念，做机器学习相关的内容，不得不知的知识。 
+tags: [概率论]
+description: 概率论中的基本概念，做机器学习相关的内容，不得不知的知识。 
 ---
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
@@ -24,8 +24,6 @@ $\chi^2_1 + \chi^2_2 \sim \chi^2(n+m)$
 > 期望和方差 
 
 若$\chi^2\sim\chi^2(n)$， 则$E\chi^2 = n, D\chi^2 = 2n$
-
-http://www.cnblogs.com/baiboy/p/tjx11.html
 
 ### t-分布
 
@@ -88,3 +86,8 @@ $$F(m, n)=\frac{\frac{Y_1}{m}}{\frac{Y_2}{n}}$$
     相关系数的平方等于判定系数。其中相关系数的符号与X的参数相同。相关系数是仅被用来描述两个变量之间的线性关系的，但判定系数的适用范围更广，可以用于描述非线性或者有两个及两个以上自变量的相关关系。
 
 ## 特征选择
+
+
+
+## 参考文献
+[1]. http://www.cnblogs.com/baiboy/p/tjx11.html
