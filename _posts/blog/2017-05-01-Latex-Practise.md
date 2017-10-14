@@ -133,6 +133,67 @@ A reference to Table \ref{tab:template}.
 ```
 引用的时候`\ref{fig:b}`或者`\ref{sec:training}`就可以了。
 
+
+### 算法模块
+
+```latex
+\usepackage[ruled]{algorithm2e}         
+\usepackage[ruled,vlined]{algorithm2e} 
+\usepackage[linesnumbered,boxed]{algorithm2e}
+```
+
+
+```latex
+\renewcommand{\algorithmcfname}{算法}
+\begin{algorithm}[H]
+%\SetAlgoNoLine
+\SetKwInOut{KIN}{输入}
+\SetKwInOut{KOUT}{输出}
+%\BlankLine  %空一行
+    \caption{标准DE算法 }
+    \label{DE_algo} %
+    \KIN{Population: $ M$; Dimension: $ D $; Genetation: $ T $ }
+    \KOUT{The best vector (solution)  $ \varDelta $ }
+    $ t \leftarrow 1 (initialization) $\;
+    \For{$i=1$ to $ M $    }
+    {\For{$j=1$ to $ D $}
+        {
+            $  {x}_{i,t}^j=x_{min}^j + rand(0,1)\cdotp (x_{max}^j-x_{min}^j) $\;
+        }
+    }        
+    %--------------------------------------------------    
+\While{$(|f(\varDelta)| \geq\varepsilon )$      or     $(t \leq T )$}
+    {
+        \For{$ i=1$  to $M$}
+        {
+\emph{$ \blacktriangleright $ (Mutation and Crossover)}\\            
+%\textit{ $ \blacktriangleright $ (Mutation and Crossover) }\\
+            \For{$j=1$ to $ D $}
+            {    
+                $ v_{i,t}^j =Mutation(x_{i,t}^j)$\;    
+                $ u_{i,t}^j =Crossover(x_{i,t}^j,v_{i,t}^j)$\;
+            }
+\emph{$ \blacktriangleright $ (Greedy Selection)}\\
+            %\textit{ $ \blacktriangleright $ (Greedy Selection) }\\
+            \eIf{$ f(\textbf{u}_{i,t}) <  f(\textbf{x}_{i,t}) $}
+            {
+                $  \textbf{x}_{i,t} \leftarrow\textbf{u}_{i,t}$\;    
+                \If{$  f(\textbf{x}_{i,t}) < f(\varDelta)$}
+                {
+                    $ \varDelta \leftarrow \textbf{x}_{i,t}$ \;
+                }
+            }
+            {
+                $  \textbf{x}_{i,t} \leftarrow \textbf{x}_{i,t} $\;
+            }
+        }
+        $ t \leftarrow t+1 $\;    
+    }    %While        
+    \Return the best vector  $\varDelta$\;
+\end{algorithm}
+```
+
+
 ### 符号资料
 [Algorithms](https://en.wikibooks.org/wiki/LaTeX/Algorithms)
 [Color](https://en.wikibooks.org/wiki/LaTeX/Colors)
@@ -144,3 +205,4 @@ A reference to Table \ref{tab:template}.
 3. [IEEE 会议论文模板](http://www.ieee.org/conferences_events/conferences/publishing/templates.html)
 4. [Latex 网上book](https://en.wikibooks.org/wiki/LaTeX)
 5. [数学符号](https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols)
+6. [LaTeX 算法代码排版 --latex2e范例总结](http://www.cnblogs.com/tsingke/p/5833221.html)
