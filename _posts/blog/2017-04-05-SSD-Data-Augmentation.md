@@ -18,6 +18,16 @@ description: 数据增强技术在CV研究中对于提高Performance是重要的
 
 ## SSD(Single Shot MultiBox Detector)
 
+## 模型关键词
+使用前向反馈CNN网络，产生固定数目的bounding box， 然后再这些bounding box中进行打分。
+
+non-maximum suppression step
+Non-Maximum Suppression就是根据score和box的坐标信息，从中找到置信度比较高的bounding box。
+- 首先，根据score进行排序，把score最大的bounding box拿出来。
+- 计算其余bounding box与这个box的IoU，然后去除IoU大于设定的阈值的bounding box。
+- 重复上面的过程，直至候选bounding box为空。
+说白了就是要在一堆矩阵里面找出一些**局部最大值**，所以要把和这些局部最大值所代表矩阵IoU比较大的去除掉，这样就能得到一些权值很大，而且IoU又比较小的bounding box。
+
 ## 源代码分析
 
 ### anno_type_
