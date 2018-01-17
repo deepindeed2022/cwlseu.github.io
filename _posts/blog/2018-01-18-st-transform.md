@@ -1,11 +1,12 @@
 ---
 layout: post
-title: CUDA并行编程学习笔记
+title: 笔记：OpenCV中的算法--透视和仿射变换
 categories: [blog ]
-tags: [GPU编程]
-description: CUDA并行编程指南
+tags: [OpenCV, 图像处理]
+description: 图像处理的基本概念与算法
 ---
 
+# 图像处理
 ## warpPerspective 和 affineTransform的转换矩阵的区别
 1. affineTransform保持平行性，而warpPerspective不能保证
 2. warpPerspective至少4个点对，而 affineTransform至少三个点对
@@ -109,6 +110,22 @@ cv::Mat cv::getAffineTransform( const Point2f src[], const Point2f dst[] )
 
 如果我们要自己实现这个函数，其实关键就是在于如何求解AX=B的问题。当然，我们可以直接调用库函数，如`eigen`.
 
+### 问题：这个函数如果要自己实现，如何测试正确性？
+* 方案1：
+采用引入opencv作为第三方库，然后相同的输入结果与opencv中进行对比。这种方法简单，但是需要引入庞大的第三方库opencv
 
-更多信息可以参考
-https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/warp_affine/warp_affine.html
+* 方案2：
+采用两次变换，例如测试`warp_perspective`其中第一次将`src_img`经过`warp_perspective`变换为`dst_img`，其中转换矩阵为M;
+然后将`dst_img`经过`warp_perspective`变换为`dst_warp`，其中转换矩阵为`M‘`为`M`的逆矩阵;
+最后比较`dst_warp`和`src`中进行逐个像素对照，统计diff的像素个数count， return count <= thresh_value.
+这种方法的缺点就是需要设置thresh_value，同时需要求M的逆矩阵
+
+* 方案3：
+如果不能将opencv作为第三方库引入，那么我们可以这样，将opencv的输入参数和结果作为hard code的方式，进行测试。这种方法尤其是
+再嵌入式开发中很常见。
+
+
+## 更多信息可以参考
+[1] https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/warp_affine/warp_affine.html
+
+[2] gTest的原理： http://cwlseu.github.io/st-CMAKE-and-gTest/
