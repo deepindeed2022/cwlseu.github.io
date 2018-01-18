@@ -310,6 +310,9 @@ TestCase* UnitTestImpl::GetTestCase(const char* test_case_name,
 ```
 
 ### Disable COPY和ASSIGN操作的方法， 将赋值函数和拷贝构造函数显示作为private下
+
+> 方案 1
+
 ```cpp
 // A macro to disallow copy constructor and operator=
 // This should be used in the private: declarations for a class.
@@ -324,6 +327,18 @@ private:
 }
 
 ```
+
+> 方案2
+
+```cpp
+class P {
+public:
+    P(const P &) = delete;
+    P &operator =（const P &p) = delete;
+};
+```
+以上两个delete声明禁止复制
+能够通过明确的方式显式限定这些特殊方法有助于增强代码的可读性和可维护性
 
 ## Reference
 [1]gtest测试相关: http://blog.csdn.net/breaksoftware/article/details/50948239
