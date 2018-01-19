@@ -7,11 +7,15 @@ description: 图像处理的基本概念与算法
 ---
 
 # 图像处理
+
 ## warpPerspective 和 affineTransform的转换矩阵的区别
+
 1. affineTransform保持平行性，而warpPerspective不能保证
 2. warpPerspective至少4个点对，而 affineTransform至少三个点对
 下面是opencv中关于这两个变换矩阵的求解过程。
+
 ```cpp
+
 /* Calculates coefficients of perspective transformation
  * which maps (xi,yi) to (ui,vi), (i=1,2,3,4):
  *
@@ -63,6 +67,7 @@ cv::Mat cv::getPerspectiveTransform( const Point2f src[], const Point2f dst[] )
   return M;
 }
 
+
 /* Calculates coefficients of affine transformation
  * which maps (xi,yi) to (ui,vi), (i=1,2,3):
  *
@@ -111,6 +116,7 @@ cv::Mat cv::getAffineTransform( const Point2f src[], const Point2f dst[] )
 如果我们要自己实现这个函数，其实关键就是在于如何求解AX=B的问题。当然，我们可以直接调用库函数，如`eigen`.
 
 ### 问题：这个函数如果要自己实现，如何测试正确性？
+
 * 方案1：
 采用引入opencv作为第三方库，然后相同的输入结果与opencv中进行对比。这种方法简单，但是需要引入庞大的第三方库opencv
 
@@ -126,6 +132,7 @@ cv::Mat cv::getAffineTransform( const Point2f src[], const Point2f dst[] )
 
 
 ## 更多信息可以参考
+
 [1] https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/warp_affine/warp_affine.html
 
 [2] gTest的原理： http://cwlseu.github.io/st-CMAKE-and-gTest/
