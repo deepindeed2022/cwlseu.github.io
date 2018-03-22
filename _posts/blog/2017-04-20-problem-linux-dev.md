@@ -73,3 +73,22 @@ usr/bin/ld: warning: libpng16.so.16, needed by /home/andrei/anaconda/lib/libopen
 [caffe-installation-opencv-libpng16-so-16-linkage-issues](http://stackoverflow.com/questions/32405035/caffe-installation-opencv-libpng16-so-16-linkage-issues)
 
 在编译Makefile或者CMake文件中添加`opencv_highgui`的链接信息，确认opencv 的lib路径是否已经添加到LD_LIBRARY_PATH中
+
+## 误删/var/lib/dpkg/
+
+首先创建一些文件
+`sudo mkdir -p /var/lib/dpkg/{alternatives,info,parts,triggers,updates} `
+从备份数据中恢复
+`sudo cp /var/backups/dpkg.status.0 /var/lib/dpkg/status `
+
+Now, lets see if your dpkg is working (start praying):
+`apt-get download dpkg`
+`sudo dpkg -i dpkg*.deb` 
+
+修复base files
+`apt-get download base-files`
+`sudo dpkg -i base-files*.deb `
+
+试试可以更新了不
+`sudo apt-get update`
+`sudo apt-get check`
