@@ -11,8 +11,10 @@ description:  使用caffe框架进行实验过程中的一些心得
 数据处理，模型文件编写，预训练模型的选择等等。
 
 ## ImageNet的数据预处理
+
 1. 常见image list
-```sh
+
+```shell
 #!/bin/bash
 
 root_dir=$HOME/data/VOCdevkit/
@@ -67,7 +69,8 @@ done
 ```
 
 2. 生成backend为leveldb或者lmdb
-```sh
+
+```shell
 #!/usr/bin/env sh
 # Create the imagenet lmdb inputs
 # N.B. set the path to the imagenet train + val data dirs
