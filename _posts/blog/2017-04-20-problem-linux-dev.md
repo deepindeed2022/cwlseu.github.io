@@ -89,6 +89,12 @@ Now, lets see if your dpkg is working (start praying):
 `apt-get download base-files`
 `sudo dpkg -i base-files*.deb `
 
+要选Y，要选Y要选Y，否则就会出现
+`Setting up grub-pc (2.02~beta2-36ubuntu3.17) ...
+Setting up unattended-upgrades (0.90ubuntu0.9) ...
+`
+这两关过不了的情况。
+
 试试可以更新了不
 `sudo apt-get update`
 `sudo apt-get check`
