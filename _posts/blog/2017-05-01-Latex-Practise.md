@@ -15,6 +15,7 @@ description: 最近在写论文，用到latex进行编写，latex真是编辑神
 最近在写论文，用到latex进行编写，latex真是编辑神器，科研工作者 必备啊，在这向唐纳德*克努斯先生致敬。当年先生写《计算机程序设计的艺术》，感觉这排版工具用得太不爽了，就手撸一把,Tex就被撸出来了，而且版本号为数字PI的截断表示，听着更牛掰的是悬赏bug, 指数级悬赏bug，还带签名哦。
 
 ## 环境搭建
+
 安装采用[CTEX]<http://www.ctex.org/CTeXDownload> 或者其他版本的都行，编辑采用Sublime Text 3， 同时安装Markdown Preview、MarkdownEditing、MarkdownHightlighting等插件，让我编辑Markdown的过程中感觉很舒适。
 
 ## Latex简介
@@ -55,11 +56,17 @@ This is abstract
 ```
 
 ### 注释
+
 1.  % 注释，如果想显示%，则 \%
+
 2.  Document Class 文件类型
+
 	Predefined Formats(article, report, book)
+
 3. \footnode{下角标注释}
+
 4. \newpage
+
 5. 表格 
 
 ```latex
@@ -121,6 +128,7 @@ A reference to Table \ref{tab:template}.
 显示出来是这样子的![@](../images/latex/align.png)
 
 ### label让交叉引用更方便
+
 ```latex
 \subsection{Training}
 \label{sec:training}
@@ -193,6 +201,29 @@ A reference to Table \ref{tab:template}.
 \end{algorithm}
 ```
 
+### ???的问题
+
+```latex
+    \begin{figure*}
+        \centering
+        \includegraphics[width=0.48\linewidth]{../Img/research/AlexNetLayerCompression.jpg}
+        \includegraphics[width=0.48\linewidth]{../Img/research/AlexNetLayerCompressionFlops.jpg}
+        \caption{AlexNet各网络层参数裁剪前后的参数数量}
+        \label{AlexNetCpression}
+    \end{figure*}
+```
+
+```latex
+    \begin{figure*}
+        \label{AlexNetCpression}
+        \centering
+        \includegraphics[width=0.48\linewidth]{../Img/research/AlexNetLayerCompression.jpg}
+        \includegraphics[width=0.48\linewidth]{../Img/research/AlexNetLayerCompressionFlops.jpg}
+        \caption{AlexNet各网络层参数裁剪前后的参数数量}
+    \end{figure*}
+```
+上面两段代码的区别在于label的位置，这两个代码看上去应该没有什么问题，但是当你`\cite{AlexNetCpression}`的
+时候你就会发现，下面那种容易导致出现`cite`的位置是`??`，根本不知道去哪里找原因。真是一个自己挖的好坑啊。
 
 ### 符号资料
 [Algorithms](https://en.wikibooks.org/wiki/LaTeX/Algorithms)
