@@ -447,14 +447,31 @@ make: *** [.build_release/tools/extract_features.bin] Error 1
 [查看GPU卡是否支持cuda](https://developer.nvidia.com/cuda-gpus)
 哦哦，并不支持，好吧，换卡吧。
 
+## error: ‘kEmptyString’ is not a member of ‘google::protobuf::internal’
+这个比较玄，有的人使用protobuf 2.5就OK，有的人使用这个版本就爆出这个错误。我是使用libprotoc 2.5.0版本，当
+使用`make`进行编译的时候就会出现该问题。当时如果采用make -j
+https://blog.csdn.net/ahbbshenfeng/article/details/52065676
+
 ## 参考
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
-2.[NVIDIA CUDA Installation Guide for Linux](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu)         
+2.[NVIDIA CUDA Installation Guide for Linux](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu)    
+
 3.[CUDA安装和测试](http://blog.csdn.net/u012235003/article/details/54575758)
+
 4.[import TensorFlow提示Unable to load cuDNN DSO](http://blog.csdn.net/jk123vip/article/details/50361951)                        
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
+
 6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
+
 7.[virtualenv user guide](https://virtualenv.pypa.io/en/stable/userguide/)
+
 8.[查看GPU卡是否支持cuda](https://developer.nvidia.com/cuda-gpus)
+
 9.[cuda各个版本库](https://developer.nvidia.com/cuda-toolkit-archive)
+
+10.[IBM的google protocol buffer的介绍链接](http://www.ibm.com/developerworks/cn/linux/l-cn-gpb/)
+
+11.[protobuf-on-ubuntu-not-compiling](https://stackoverflow.com/questions/37983310/protobuf-on-ubuntu-not-compiling)
+
+12.[googleprotobufinternalkemptystring](https://stackoverflow.com/questions/36360188/c-protobuf-error-googleprotobufinternalkemptystring-error)
