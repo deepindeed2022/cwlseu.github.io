@@ -1,12 +1,10 @@
 ---
 layout: post
-title: 基于SVM的人脸识别
+title: 机器学习：基于SVM的人脸识别
 categories: [blog ]
 tags: [SVM, 人脸分类]
 description: 通过SVM分类的方法，进行人脸识别
 ---
-
-
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]

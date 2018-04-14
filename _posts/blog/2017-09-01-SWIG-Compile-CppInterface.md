@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "SWIG编译C++接口笔记"
+title: "Python：SWIG编译C++接口"
 categories: [blog ]
 tags: [cmake, C++接口, SeetaFace]
 description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三个核心模块。为了使用方便，决定使用swig编译python接口进行使用。

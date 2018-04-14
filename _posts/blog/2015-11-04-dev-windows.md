@@ -18,7 +18,7 @@ description: windows下开发常见问题
 当安装VS2012之后，原来的.NET 4.0会被替换为.NET 4.5。卸载VS2012时，不会恢复.NET 4.0。当VS2012安装后，VS2010的cvtres.exe就无法使用了。如果你的PATH环境变量中VS2010的工具路径第一个出现，而且链接器需要将.res文件转换为COFF 对象格式，就会导致LNK1123错误。
 当VS生成PE文件头时，使用的cvtres.exe版本错误，不能与当前的.NET平台兼容。
 
-### 解决方案：
+### 解决方案
 
 [link-fatal-error](http://stackoverflow.com/questions/10888391/link-fatal-error-lnk1123-failure-during-conversion-to-coff-file-invalid-or-c)
 因为是cvtres.exe版本错误导致的结果，所以凡是能使VS链接器找到正确的cvtres.exe版本的方法都可以解决该问题。或者使VS链接器不生成COFF的方法都可以。

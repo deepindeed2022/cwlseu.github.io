@@ -1,7 +1,7 @@
 ---
 layout: post
-title: 笔记：Eigen开源库的应用
-categories: [blog ]
+title: 开发笔记：Eigen开源库的应用
+categories: [blog]
 tags: [开源]
 description: Eigen开源库的入门
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Python开发中的问题（二）"
+title: "Python:Python开发中的问题（一）"
 categories: [blog ]
 tags: [Python, ]
 description: Python开发中的问题记录。

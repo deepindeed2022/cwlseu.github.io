@@ -11,7 +11,8 @@ description: 学习数字图像处理过程中遇到的问题
 - 博客： <https://cwlseu.github.io/>
 
 
-# Matlab 中的图像处理函数
+## 引言
+
 matlab中有toolbox是关于图像处理的，很容易上手。当然，要是opencv用的很熟悉的话，也可以使用opencv.
 
 ## 基本的图像处理
