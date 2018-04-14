@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "玩转Caffe之模型设计"
+title: "深度学习：玩转Caffe之模型设计"
 categories: [blog ]
 tags: [Caffe, ]
 description:  使用caffe框架进行实验过程中的一些心得

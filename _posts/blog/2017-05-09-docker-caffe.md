@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "玩转Caffe之Dockerfile"
+title: "深度学习：玩转Caffe之Dockerfile"
 categories: [blog ]
-tags: [Caffe, ]
+tags: [Caffe, 深度学习]
 description:  租用亚马逊的环境进行实验，直接运行docker file 进行镜像创建
 ---
 

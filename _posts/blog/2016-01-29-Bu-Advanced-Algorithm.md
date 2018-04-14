@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 算法学习大纲
+title: 算法的乐趣：大纲
 categories: [blog ]
 tags: [Algorithm, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)

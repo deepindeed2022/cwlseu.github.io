@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "玩转Caffe之数据处理"
+title: "深度学习：玩转Caffe之数据处理"
 categories: [blog ]
-tags: [Caffe, ]
+tags: [Caffe, 深度学习]
 description:  使用caffe框架进行实验过程中的一些心得
 ---
 
