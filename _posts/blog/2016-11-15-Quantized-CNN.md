@@ -15,9 +15,11 @@ description: "CNN在很多计算机视觉任务中取得了显著的成果，然
 [Jiaxiang Wu, Cong Leng, Yuhang Wang, Qinghao Hu, Jian Cheng](National Laboratory of Patter Recognition Institute of Automation, Chinese Academy of Sciences)
 
 ## 简介
+
 目标是减少模型大小，同时提高计算速度。通过对卷积层的filter kernal和全连接层的权重矩阵同时进行量化，最小化每一层的错误估值进行训练。
 
 ## 问题
+
 之前的工作很少有能够同时实现整个网络的显著的加速和压缩。
 
 ## 主要贡献

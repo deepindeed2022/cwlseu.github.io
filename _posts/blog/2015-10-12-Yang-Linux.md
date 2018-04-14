@@ -11,13 +11,16 @@ description: 探究linux 0.11的一些神奇的东西
 - 博客： <https://cwlseu.github.io/>
 
 ## linux设计的作者
+
 [Linus](https://en.wikipedia.org/wiki/Linus_Torvalds)
 [Linux官网](http://www.linux.org/) 
 
 
-##理解schedule函数的调用
+## 理解schedule函数的调用
+
 process 0 第一次调度和后面调度，schedule运行的机制是不同的。
 
+```cpp
 	void main(void)		/* This really IS void, no error here. */
 	{			
 	......
@@ -30,18 +33,22 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 	 */
 		for(;;) pause();
 	}
+```
 
 当进程0到达main函数的最后的循环之后，将通过系统调用，调用系统函数_sys_pause，其中调用schedule，
-	
+
+```cpp	
 	int sys_pause(void)
 	{
 		current->state = TASK_INTERRUPTIBLE;
 		schedule();
 		return 0;
 	}
+```
 
 查找到刚刚创建的进程1处于就绪状态，在schedule最后switch_to(1). 在switch中发生了什么呢？
-	
+
+```cpp	
 	/*
 	 *  'schedule()' is the scheduler function. This is GOOD CODE! There
 	 * probably won't be any reason to change this, as it should work well
@@ -91,14 +98,15 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 		}
 		switch_to(next);
 	}
-
+```
 
 `ljmp 0 \n\t`这个得查看IA-32手册，就会发现，IA-32架构中允许同种特权级之间相互切换，但是不同特权级之间切换是不允许的。但是0特权级的进程0是如何切换到3特权级的进程1呢？就要引入'门'的概念了。具体参见[手册](http://www.intel.cn/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf).门是允许点到点的，不同特权级之间的切换。
 
 那么当进程1运行过之后，再次由进程0切换到进程1时，由于进程切换都是0特权级，此时，此时就不需要经过什么门了，IA32是允许同特权级之间进行进程切换的。
 
 ## switch_to
-	
+
+```
 	#define switch_to(n) {\
 	struct {long a,b;} __tmp; \
 	__asm__("cmpl %%ecx,_current\n\t" \
@@ -113,6 +121,7 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 		::"m" (*&__tmp.a),"m" (*&__tmp.b), \
 		"d" (_TSS(n)),"c" ((long) task[n])); \
 	}
+```
 
 这里涉及到TSS的定义和GDT LDT管理结构
 
@@ -127,10 +136,13 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 现在开始理解代码，首先声明了一个_tmp的结构，这个结构里面包括两个long型，32位机里面long占32位，声明这个结构主要与ljmp这个长跳指令有关，这个指令有两个参数，一个参数是段选择符，另一个是偏移地址，所以这个_tmp就是保存这两个参数。再比较任务n是不是当前任务，如果不是则跳转到标号1，否则交互ecx和current的内容，交换后的结果为ecx指向当前进程，current指向要切换过去的新进程，在执行长跳，%0代表输出输入寄存器列表中使用的第一个寄存器，即"m"(*&__tmp.a)，这个寄存器保存了*&__tmp.a，而_tmp.a存放的是32位偏移(对应EIP)，_tmp.b存放的是新任务的tss段选择符(对应CS)，长跳到段选择符会造成任务切换，这个是x86的硬件原理。"d" (_TSS(n)),"c" ((long) task[n])); 
 
 ## 缓冲区
+
 Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普通读取。
 其中缓冲区的理解要找到如下数据结构：
+
 1. buffer head
 
+```cpp
 	struct buffer_head {
 		char * b_data;			/* pointer to data block (1024 bytes) */
 		unsigned long b_blocknr;	/* block number */
@@ -145,15 +157,19 @@ Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普
 		struct buffer_head * b_prev_free;
 		struct buffer_head * b_next_free;
 	};
+```
 
 2. hash_table
 
+```cpp
 	struct buffer_head * hash_table[NR_HASH];
 	#define _hashfn(dev,block) (((unsigned)(dev^block))%NR_HASH)
 	#define hash(dev,block) hash_table[_hashfn(dev,block)]
+```
 
 3. request
 
+```cpp
 	/*
 	 * Ok, this is an expanded form so that we can use the same
 	 * request for paging requests when that is implemented. In
@@ -171,9 +187,10 @@ Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普
 		struct buffer_head * bh;
 		struct request * next;
 	};
+```
 
 ### READA and WRITEA
-
+```cpp
 	static void make_request(int major,int rw, struct buffer_head * bh)
 	{
 		......
@@ -196,11 +213,13 @@ Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普
 		}
 		......
 	}
+```
 
 那么什么是预读预写呢？参考[Linux内核的文件预读](http://github.com/cwlseu/cwlseu.github.io/raw/master/pdf/linux_read_ahead.pdf)
 
 ## 系统调用
 
+```cpp
 	fn_ptr sys_call_table[] = { sys_setup, sys_exit, sys_fork, sys_read,
 	sys_write, sys_open, sys_close, sys_waitpid, sys_creat, sys_link,
 	sys_unlink, sys_execve, sys_chdir, sys_time, sys_mknod, sys_chmod,
@@ -214,14 +233,13 @@ Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普
 	sys_uname, sys_umask, sys_chroot, sys_ustat, sys_dup2, sys_getppid,
 	sys_getpgrp, sys_setsid, sys_sigaction, sys_sgetmask, sys_ssetmask,
 	sys_setreuid,sys_setregid };
-
-
+```
 
 ## 重新编译替换内核
 先看一下当前linux的版本号`uname -a`
 下载linux某个版本的linux内核源代码，如3.19.8,将源代码解压到/usr/src/目录下。
 
-```bash
+```sh
 cd /usr/src/linux-3.19.8
 # compile
 make 

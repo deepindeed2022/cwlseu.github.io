@@ -13,14 +13,17 @@ description: "在Linux下工作，常常对log信息或者一些文本信息进�
 ## 文件及目录的管理
 
 #### 查找当前文件夹下文件的个数
+
 `find ./ | wc -l`
 该命令是采用递归统计文件的个数的方式，如果是文件则计数，如果是
 文件夹则计数的基础上+ 文件夹中文件的个数。
 
 #### 递归当前目录及子目录删除所有.o文件:
+
 `find ./ -name "*.o" -exec rm {} \;`
 
 #### 创建符号软连接，删除源，另一个无法使用
+
 `ln -s source  新建的名字`
 
 #### 带编号的列出文件内容：`ls | cat -n`
@@ -34,16 +37,23 @@ description: "在Linux下工作，常常对log信息或者一些文本信息进�
 ```
 
 ## 文本处理
+
 本节将介绍Linux下使用Shell处理文本时最常用的工具： find、grep、xargs、sort、uniq、tr、cut、paste、wc、sed、awk； 提供的例子和参数都是常用的； 我对shell脚本使用的原则是命令单行书写，尽量不要超过2行； 如果有更为复杂的任务需求，还是考虑python吧；
 <http://linuxtools-rst.readthedocs.io/zh_CN/latest/base/03_text_processing.html?highlight=awk>
+
 ###  find 文件查找
+
 ####  查找txt和pdf文件:
+
 `find . \( -name "*.txt" -o -name "*.pdf" \) -print`
+
 #### 正则方式查找.txt和pdf:
+
 `find . -iregex ".*\(\(\.json\)\|\(\.md\)\)$"` 
 `-iregex`： 忽略大小写的正则。到那时这种方式不太好使，可能是我初学没有掌握其中的奥秘吧。
 
 #### 否定参数 ,查找所有非txt文本:
+
 `find . ! -name "*.txt" -print`
 指定搜索深度,打印出当前目录的文件（深度为1）:
 
@@ -70,6 +80,7 @@ redis.pid: ASCII text
 `ls -lrt | awk '{print $9}'|xargs file|grep  ELF| awk '{print $1}'|tr -d ':'`
 
 #### 按时间搜索
+
 `-atime` 访问时间 (单位是天，分钟单位则是-amin，以下类似）
 `-mtime` 修改时间 （内容被修改）
 `-ctime` 变化时间 （元数据或权限变化）
@@ -84,6 +95,7 @@ redis.pid: ASCII text
 `find . -atime +7 type f -print`
 
 #### 按大小搜索：
+
 - w字 k M G 寻找大于2k的文件:
 `find . -type f -size +2k`
 - 按权限查找:
@@ -92,13 +104,16 @@ redis.pid: ASCII text
 `find . -type f -user weber -print`// 找用户weber所拥有的文件
 
 ### 找到后的后续动作
+
 #### 删除
+
 - 删除当前目录下所有的swp文件:
 `find . -type f -name "*.swp" -delete`
 - 另一种语法:
 `find . type f -name "*.swp" | xargs rm`
 
 #### 执行动作（强大的exec）
+
 将当前目录下的所有权变更为weber:
 
 `find . -type f -user root -exec chown weber {} \;` 
@@ -118,6 +133,7 @@ redis.pid: ASCII text
 -print0 使用’\0’作为文件的定界符，这样就可以搜索包含空格的文件；
 
 ## grep 文本搜索
+
 #### `grep match_patten file` // 默认访问匹配行
 
 >常用参数
@@ -130,12 +146,15 @@ redis.pid: ASCII text
 在多级目录中对文本递归搜索(程序员搜代码的最爱）:`grep "class" . -R -n`
 
 #### 匹配多个模式:
+
 `grep -e "class" -e "vitural" file`
 
 #### grep输出以0作为结尾符的文件名（-z）:
+
 `grep "test" file* -lZ| xargs -0 rm`
 
 #### 综合应用：
+
 * 将日志中的所有带where条件的sql查找查找出来:
 
 `cat LOG.* | tr a-z A-Z | grep "FROM " | grep "WHERE" > b`
@@ -145,7 +164,7 @@ redis.pid: ASCII text
 查询:`grep：grep -rnP "\xE4\xB8\xAD\xE6\x96\x87|\xD6\xD0\xCE\xC4" *`即可
 汉字编码查询：http://bm.kdd.cc/
 
-## xargs 命令行参数转换¶
+## xargs 命令行参数转换
 
 xargs 能够将输入数据转化为特定命令的命令行参数；这样，可以配合很多命令来组合使用。比如grep，比如find； - 将多行输出转化为单行输出
 
@@ -170,6 +189,7 @@ cat single.txt | xargs -n 3
 ./redis-cli smembers $1  | awk '{print $1}'|xargs -I {} ./redis-cli get {}
 
 ## sort 排序
+
 >字段说明
     -n 按数字进行排序 VS -d 按字典序进行排序
     -r 逆序排序
@@ -190,16 +210,21 @@ sort -bd data // 忽略像空格之类的前导空白字符
 ## 用tr进行转换
 
 #### 通用用法
+
 `echo 12345 | tr '0-9' '9876543210'` //加解密转换，替换对应字符
 `cat text| tr '\t' ' ' ` //制表符转空格
 
 #### tr删除字符
+
 `cat file | tr -d '0-9'` // 删除所有数字
 
 #### `-c` 求补集
+
 `cat file | tr -c '0-9'` //获取文件中所有数字
 `cat file | tr -d -c '0-9 \n' `  //删除非数字数据
+
 #### `tr`压缩字符
+
 `tr -s`压缩文本中出现的重复字符；最常用于压缩多余的空格:
 cat file | tr -s ' '
 
@@ -218,9 +243,11 @@ cat file | tr -s ' '
 ## cut 按列切分文本,按列切分
 
 #### 截取文件的第2列和第4列
+
 `cut -f2,4 filename`
 
 #### 去文件除第3列的所有列
+
 `cut -f3 --complement filename`
 -d 指定定界符
 `cat -f2 -d";" filename`
@@ -282,23 +309,30 @@ step 3: 拼接两个文件 `paste file1 file2`
 `sed 's/text/replace_text/' file`   
 
 #### 全局替换
+
 `sed 's/text/replace_text/g' file`
 在vi中常常使用类似的参数进行全局替换
 
 默认替换后，**输出**替换后的内容，如果需要直接替换原文件,使用`-i`:
 `sed -i 's/text/repalce_text/g' file`
+
 #### 移除空白行
+
 `sed '/^$/d' file`
 变量转换
 已匹配的字符串通过标记&来引用.
 
 `echo this is en example | sed 's/\w+/[&]/g'`
 $>[this]  [is] [en] [example]
+
 #### 子串匹配标记
+
 第一个匹配的括号内容使用标记 1 来引用
 
 `sed 's/hello\([0-9]\)/\1/'`
+
 #### 双引号求值
+
 sed通常用单引号来引用；也可使用双引号，使用双引号后，双引号会对表达式求值:
 
 `sed 's/$var/HLLOE/'`
@@ -356,6 +390,7 @@ $>v1-V2-v3
 `print "begin";} {sum += $1;} END {print "=="; print sum }'`
 
 ### 传递外部变量
+
 ```sh
 var=1000
 echo | awk '{print vara}' vara=$var #  输入来自stdin
@@ -394,6 +429,7 @@ awk '!/linux/' #不包含linux文本的行
 `seq 10 | awk '{printf "->%4s\n", $1}'`
 
 ### 在awk中使用循环
+
 ```sh
 for(i=0;i<10;i++){print $i;}
 for(i in array){print array[i];}
@@ -449,16 +485,21 @@ print buffer[i %10]} } ' filename
 ### 打印指定列
 
 #### awk方式实现
+
 `ls -lrt | awk '{print $6}'`
 
 #### cut方式实现
+
 `ls -lrt | cut -f6`
 
 ### 打印指定文本区域
+
 #### 确定行号
+
 `seq 100| awk 'NR==4,NR==6{print}'`
 
-####确定文本
+#### 确定文本
+
 打印处于start_pattern 和end_pattern之间的文本:
 
 `awk '/start_pattern/, /end_pattern/' filename`

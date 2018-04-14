@@ -11,6 +11,7 @@ description:  开发中的问题记录，当前主要为安装问题
 - 博客： <https://cwlseu.github.io/>
 
 ## fatal error: metis.h: No such file or directory
+
 ### NOT sudo user
 I am trying to install Metis. Since I am working on a public server, I couldn't install it as a root user. So I have installed metis in my account /home/jd/metis.
 
@@ -24,6 +25,7 @@ I added this path to the $PATH variable. But still the same error. Please advise
 Work with cmake. Adding `include_directories("/home/xxx/metis/include")`
 
 ### sudo user
+
 参看[stack-overflow](http://stackoverflow.com/questions/36046189/how-to-install-metis-on-ubuntu/41336362#41336362)
 
 ### 查看机器cpu信息

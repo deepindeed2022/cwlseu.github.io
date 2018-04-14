@@ -24,9 +24,11 @@ description: Inception是在NIN中提出的一个神经网络模块，后来随�
 
 ## Network In Network提出原因[^1]
 ### 提出原因
+
 Generalized Linear Model使用的前提是假设语义空间是线性可分的。但是往往并不是假设的那样子，来自同一个概念的数据信息往往是非线性的，从而表示这些信息要使用输入参数X的非线性关系函数。
 
 ### 结构
+
 ![@MLPConv and Linear Conv](../../images/inception/NINBlock.jpg)
 通过堆叠的MLPConv的方式实现了NIN的设计，最后的预测层使用Global Average Pooling替代全连接层。为什么呢？因为全连接层容易出现Overfitting。对最后的每一个特征层进行average pooling计算，对pooling后的向量直接作为softmax的输入。其中最后的输出特征层可以解释为每个类别的confidence map；同时，average pooling没有参数进行优化；而且average pooling的方式利用的是全局信息，对于空间信息更加robust
 

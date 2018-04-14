@@ -18,8 +18,8 @@ description:
 
 ## 突出贡献
 
-![一个关于DenseNet block的示意图](../images/cvpr2017/densenet/1.JPG)
-<!-- <img src="../images/cvpr2017/densenet/1.JPG" width = "600" height = "600" alt="图片名称" align=center /> -->
+![一个关于DenseNet block的示意图](../../images/cvpr2017/densenet/1.JPG)
+<!-- <img src="../../images/cvpr2017/densenet/1.JPG" width = "600" height = "600" alt="图片名称" align=center /> -->
 
     In this paper, we propose an architecture that distills this insight into a simple connectivity pattern: to ensure maximum information flow between layers in the network, we connect all layers (with matching feature-map sizes) directly with each other. To preserve the feed-forward nature, each layer obtains additional inputs from all preceding layers and passes on its own feature-maps to all subsequent
     layers. Crucially, in contrast to ResNets, we never combine features
@@ -27,21 +27,21 @@ description:
 
 ## 模型
 
-![DenseNet的组成结构](../images/cvpr2017/densenet/Table1.JPG)
+![DenseNet的组成结构](../../images/cvpr2017/densenet/Table1.JPG)
 
 对其中的121层的模型进行显示，如下图所示。为了显示得更多，我对其中第二个DenseBlock变为只剩头和尾的部分，第三层的也是如同处理。
 
-![Layer 121的组成结构](../images/cvpr2017/densenet/121-short.JPG)
+![Layer 121的组成结构](../../images/cvpr2017/densenet/121-short.JPG)
 
 ## 残差网关键技术
 关键是ResBlock的理解。传统卷积网络就是l层向前卷积，结果作为l+1层的输入。ResNet中添加了一个skip-connnection连接l层和l+1层。如下共计算公式：
 
-![ResBlock](../images/cvpr2017/densenet/ResBlock.JPG)
+![ResBlock](../../images/cvpr2017/densenet/ResBlock.JPG)
 
 ## 稠密网关键技术
 这里是采用串联的方式组合特征，这就要求各层特征图X0， X1...Xl-1的大小是一样的。
 
-![ResBlock](../images/cvpr2017/densenet/DenseConn.JPG)
+![ResBlock](../../images/cvpr2017/densenet/DenseConn.JPG)
 
 H()是一个composite function，是三个操作的组合
 
@@ -66,7 +66,7 @@ H()是一个composite function，是三个操作的组合
 ## 效果
 
 ### 分类错误率
-![分类错误率](../images/cvpr2017/densenet/ClassificationError.JPG)
+![分类错误率](../../images/cvpr2017/densenet/ClassificationError.JPG)
 
 L表示网络深度，k为增长率。蓝色字体表示最优结果，+表示对原数据库进行data augmentation。可以发现DenseNet相比ResNet可以取得更低的错误率，并且使用了更少的参数。 
 
@@ -84,15 +84,15 @@ L表示网络深度，k为增长率。蓝色字体表示最优结果，+表示�
 **数据增益的方法** the images are first zero-padded with 4 pixels on each side, then randomly cropped to again produce 32×32 images;half of the images are then horizontally mirrored.
 
 ### 参数规模和训练收敛效率
-![ImageNet分类错误率](../images/cvpr2017/densenet/ParameterEfficiency.JPG)
+![ImageNet分类错误率](../../images/cvpr2017/densenet/ParameterEfficiency.JPG)
 前两组描述分类错误率与参数量的对比，从第二幅可以看出，在取得相同分类精度的情况下，DenseNet-BC比ResNet少了2/3的参数。第三幅图描述含有10M参数的1001层的ResNet与只有0.8M的100层的DenseNet的训练曲线图。可以发现ResNet可以收敛到更小的loss值，但是最终的test error与DenseNet相差无几。再次说明了DenseNet参数效率（Parameter Efficiency）很高！
 
 ### 计算量
-![ImageNet分类错误率](../images/cvpr2017/densenet/ImageNet.JPG)
+![ImageNet分类错误率](../../images/cvpr2017/densenet/ImageNet.JPG)
 右图使用FLOPS来说明计算量。通过比较ResNet-50，DenseNet-201，ResNet-101，说明计算量方面，DenseNet结果更好。
 
 ### DenseNet信息量分析
-![ImageNet分类错误率](../images/cvpr2017/densenet/HeatMap.JPG)
+![ImageNet分类错误率](../../images/cvpr2017/densenet/HeatMap.JPG)
 
 For each convolutional layer l within a block, we compute the average (absolute) weight assigned to connections with layer s. 上图 shows a heatmap for all three dense blocks. 
 

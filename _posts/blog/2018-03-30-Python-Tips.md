@@ -22,4 +22,10 @@ description: Python开发中的问题记录。
 	安装过程中添加信赖的地址，尤其是在某些互联网公司中，由于安全，防火墙等等安全考虑，会将pip默认的host地址作为不信任。
 	xxx@xxxx:~/Repo/engine/online_index/webpy-master$ pip install web.py -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 
-
+    在pip.conf中加入trusted-host选项，该方法是一劳永逸
+    ```
+    [global]
+    index-url = http://mirrors.aliyun.com/pypi/simple/
+    [install]
+    trusted-host=mirrors.aliyun.com
+    ```

@@ -12,11 +12,14 @@ description: 使用NuGet
 - 博客： <https://cwlseu.github.io/>
 
 在window上使用caffe深度学习框架，安装路程艰辛，不过也是很有乐趣的。
+
 ## NuGet
+
 [install](http://docs.nuget.org/consume/installing-nuget)
 第一次接触到NuGet工具，很是帅气，简单一句话，就像是python里的pip，ubuntu里的sudo apt-get 命令，NuGet有一个server管理着大量的package，我们通过一个简单的*Install-Package* 的命令就可以实现对响应的依赖库的安装，很是方便。
 
 ## VS2012
+
 vs2012由于对于C++11的支持还是不够全面的，在caffe中用了很多C++11的特性，导致错误。[MSVC对 C++11 Core Language Feature的支持性](https://msdn.microsoft.com/en-us/library/hh567368(v=vs.110).aspx)
 
 '''
@@ -25,6 +28,7 @@ vs2012由于对于C++11的支持还是不够全面的，在caffe中用了很多C
 '''
 
 ## VS2013 
+
 VS2013对于C++11的支持性就好多了
 
 "pyconfig.h"或者"patchlevel.h"文件找不到的问题：

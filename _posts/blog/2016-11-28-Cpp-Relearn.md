@@ -13,6 +13,7 @@ description: "如果不是使用C++开发过大型系统项目，可能一些编
 
 
 ## C++/C 宏定义（define）中\# \#\# 的含义
+
 define 中的# ## 一般是用来拼接字符串的，但是实际使用过程中，有哪些细微的差别呢，我们通过几个例子来看看。
 
 \#是字符串化的意思，出现在宏定义中的#是把跟在后面的参数转成一个字符串；
@@ -351,6 +352,7 @@ int main(int argc, char const *argv[])
 2. type_traits
 
 ## 仿函数
+
 仿函数(functor)，就是使一个类的使用看上去象一个函数。其实现就是类中实现一个
 operator()，这个类就有了类似函数的行为，就是一个仿函数类了。C语言使用函数指针和回调函数来实现仿函数，例如一个用来排序的函数可以这样使用仿函数.在C++里，我们通过在一个类中重载括号运算符的方法使用一个函数对象而不是一个普通函数。
 
@@ -399,6 +401,7 @@ int main()
 ```
 
 ### 仿函数在STL中的定义
+
 要使用STL内建的仿函数，必须包含<functional>头文件。而头文件中包含的仿函数分类包括
 
 1. 算术类仿函数
@@ -430,6 +433,7 @@ int main()
 }   
 ```
 2. 关系运算类仿函数
+
   等于：equal_to<T>
   不等于：not_equal_to<T>
   大于：greater<T>
@@ -467,6 +471,7 @@ int main()
 ```
 
 3. 逻辑运算仿函数
+
   逻辑与：logical_and<T>
   逻辑或：logical_or<T>
   逻辑否：logical_no<T>
@@ -484,7 +489,9 @@ int main()
 #endif
 ```
 我就发现了新大陆似的开始找这个属性的特点。
+
 ### 定义
+
 visibility用于设置动态链接库中函数的可见性，将变量或函数设置为hidden，则该符号仅在本so中可见，在其他库中则不可见。
 
 g++在编译时，可用参数-fvisibility指定所有符号的可见性(不加此参数时默认外部可见，参考man g++中-fvisibility部分)；若需要对特定函数的可见性进行设置，需在代码中使用`__attribute__`设置visibility属性。
@@ -591,6 +598,7 @@ $ readelf -s libvisibility.so|grep fun
 
 
 # 一些C++中的template
+
 ```cpp
 ClassName& operator++()
 {

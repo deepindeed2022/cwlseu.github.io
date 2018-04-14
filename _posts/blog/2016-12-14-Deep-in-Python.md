@@ -39,6 +39,7 @@ classA(object):
     if__name__ == "__main__":
 print(list(A.gen))
 ```
+
 ### 装饰器
 
 > 描述
@@ -534,9 +535,11 @@ if __name__ == '__main__':
 [参考连接]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple>
 
 ## 更多python技巧
+
 [我的python小吃](https://github.com/cwlseu/recipes/tree/master/pyrecipes)
 
 ## 参考文献
+
 - [Someone-tell-me-that-you-think-Python-is-simple]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/>
 - [invoking-descriptors]<https://docs.python.org/2/reference/datamodel.html#invoking-descriptors>  
 - [Descriptor HowTo Guide]<https://docs.python.org/3/howto/descriptor.html>

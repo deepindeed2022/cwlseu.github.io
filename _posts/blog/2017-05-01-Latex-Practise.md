@@ -100,7 +100,7 @@ A reference to Table \ref{tab:template}.
 
 \end{document}
 ```
-![@table](../images/latex/table2.png)
+![@table](../../images/latex/table2.png)
 
 6. 编写公式
 
@@ -112,7 +112,7 @@ A reference to Table \ref{tab:template}.
     \end{align}
  ```
 公式显示结果
-![@公式显示结果](../images/latex/math.png)
+![@公式显示结果](../../images/latex/math.png)
 
 更多参考信息[Mathematics](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
 
@@ -125,7 +125,7 @@ A reference to Table \ref{tab:template}.
 & \hat{g}^{w}_j =\log(\frac{g_j^w}{d_i^w}) & \hat{g}^{h}_j =\log(\frac{g_j^h}{d_i^h}) & 
 \end{align}
 ```
-显示出来是这样子的![@](../images/latex/align.png)
+显示出来是这样子的![@](../../images/latex/align.png)
 
 ### label让交叉引用更方便
 
