@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Noise is good
+title: 数学基础：Noise is good
 categories: [blog ]
 tags: [Matlab, 病态系统]
 description: Smoothed Analysis

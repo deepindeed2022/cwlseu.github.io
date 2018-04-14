@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Matrix analysis and application
+title: 数学基础：Matrix analysis and application
 categories: [blog ]
 tags: [矩阵分析, ]
 description: 矩阵分析、应用与实践；主讲教师：Baobin Li
@@ -8,10 +8,11 @@ description: 矩阵分析、应用与实践；主讲教师：Baobin Li
 
 
 
-声明：本博客欢迎转发，但请保留原作者信息!
-作者: [cwlseu]
-博客： <https://cwlseu.github.io/>
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [cwlseu]
+- 博客： <https://cwlseu.github.io/>
 
+# 引言
 
 矩阵也许就是为了计算机而出现的一门学科吧。虽然以前大学学习矩阵，好像感觉没有什么用处，但是当接触到图像之后发现，数字图像全是矩阵，矩阵成为每天必须面对的话题。
 不管是特征提取还是聚类分析，矩阵的特征值在矩阵的作用尤为突出，那么特征值到底是什么含义呢？此外，矩阵的trace反应了矩阵的什么性质？

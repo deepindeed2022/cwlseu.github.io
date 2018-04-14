@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 模式识别入门算法
+title: 机器学习：模式识别入门算法
 categories: [blog ]
 tags: [模式识别]
 description: 模式识别

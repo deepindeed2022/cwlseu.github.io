@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Linux Common Comment in Practices
+title: 开发：Linux常用命令
 categories: [blog ]
 tags: [Linux基础, ]
 description: In me the tiger sniffs the rose.
