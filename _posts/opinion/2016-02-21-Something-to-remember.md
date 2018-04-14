@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 新年
-categories: [blog ]
+categories: [opinion ]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
