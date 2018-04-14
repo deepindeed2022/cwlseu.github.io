@@ -31,6 +31,7 @@
 [Notes](http://cs231n.github.io/)
 
 ### Linux Manual
+
 [Linux快速入门](http://linuxtools-rst.readthedocs.io/zh_CN/latest/)
 
 [Linux Manual](http://man7.org/linux/man-pages/dir_section_1.html)

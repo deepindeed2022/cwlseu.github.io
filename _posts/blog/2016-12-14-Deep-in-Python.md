@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Python中的tricks"
+title: Python：Python中的一些奇淫技巧
 categories: [blog ]
 tags: [Python, ]
 description: Python入门简单，但是无论哪种语言，都有语言设计者赋予其中的特殊意义的东西，可能是为了方便，可能是为了得到高的level,无论出发点是什么，都是值得我学习探究的。
@@ -540,8 +540,14 @@ if __name__ == '__main__':
 
 ## 参考文献
 
-- [Someone-tell-me-that-you-think-Python-is-simple]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/>
-- [invoking-descriptors]<https://docs.python.org/2/reference/datamodel.html#invoking-descriptors>  
-- [Descriptor HowTo Guide]<https://docs.python.org/3/howto/descriptor.html>
-- [PEP 487]<https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order> 
-- [what`s new in Python 3.6]<https://docs.python.org/3.6/whatsnew/3.6.html> 
+[1]. [Someone-tell-me-that-you-think-Python-is-simple]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple/>
+
+[2].[invoking-descriptors]<https://docs.python.org/2/reference/datamodel.html#invoking-descriptors>  
+
+[3].[Descriptor HowTo Guide]<https://docs.python.org/3/howto/descriptor.html>
+
+[4].[Python代码规范PEP 487]<https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order> 
+
+[5].[what`s new in Python 3.6]<https://docs.python.org/3.6/whatsnew/3.6.html> 
+
+[6].[Python相见恨晚的库]<https://www.zhihu.com/question/24590883>

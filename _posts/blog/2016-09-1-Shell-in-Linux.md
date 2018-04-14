@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Shell 学习之路
+title: 开发：Shell 学习之路
 categories: [blog ]
 tags: [Shell, ]
 description: linux下的shell脚本的学习与使用

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Log Analysis 可视化
+title: tool：Log Analysis 可视化
 categories: [blog ]
 tags: [数据可视化, ]
 description: 使用html5技术实现数据可视化，主要使用过ajax动态请求的技术，使用现成的数据可视化js框架echarts, 实现测试log的可视化。

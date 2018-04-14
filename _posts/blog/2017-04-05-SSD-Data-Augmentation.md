@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "SSD中的数据增强分析"
-categories: [blog ]
+title: 深度学习："SSD中的数据增强分析"
+categories: [project]
 tags: [深度学习, 物体检测, 数据增强]
 description: 数据增强技术在CV研究中对于提高Performance是重要的研究话题。尤其是在物体检测方面，业界流行的方法中对具体方法之外，往往通过数据增强技术再次提高几个百分点。
 ---

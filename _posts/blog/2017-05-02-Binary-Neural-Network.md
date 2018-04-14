@@ -1,6 +1,6 @@
 ---
 layout: post
-title: XNOR-Net论文笔记
+title: 论文笔记：XNOR-Ne：
 categories: [blog ]
 tags: [论文 ]
 description: "神经网络量化、二值化、设计package的神经网络模块"

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "综述：Hashing by Deep Learning"
+title: "深度学习：Hashing by Deep Learning(综述)"
 categories: [blog ]
 tags: [Hashing, ]
 description: 

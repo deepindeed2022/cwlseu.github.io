@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Quantized Convolutional Neural Networks for Mobile Devices
+title: CNNC：Quantized Convolutional Neural Networks for Mobile Devices
 categories: [blog ]
 tags: [Math, ]
 description: "CNN在很多计算机视觉任务中取得了显著的成果，然而高性能硬件对于CNN模型来说不可或缺。因为CNN模型具有计算复杂繁琐，使得其拓展成为困难。"

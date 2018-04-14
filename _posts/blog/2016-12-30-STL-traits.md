@@ -1,6 +1,6 @@
 ---
 layout: post
-title: The Annotated STL sources
+title: 开发：The Annotated STL sources
 categories: [blog ]
 tags: [C++开发, ]
 description: STL源码剖析，在源码阅读中学习C++中的一些tricks
@@ -11,7 +11,8 @@ description: STL源码剖析，在源码阅读中学习C++中的一些tricks
 - 博客： <https://cwlseu.github.io/>
 
 
-# type_traits 
+## type_traits 
+
 type_traits可以翻译为类型提取器或者类型萃取器，很直白的说就是通过这个机制可以获取被操作数据类型的一些特征。这个机制在编写模板代码的时候特别有用，可以在编译期间就根据数据类型的特征分派给不同的代码进行处理
 
 ```cpp

@@ -1,20 +1,23 @@
 ---
 layout: post
-title: "神经网络中的卷积感受野"
+title: 深度学习："神经网络中的卷积感受野"
 categories: [blog ]
 tags: [CNN]
 description: "看这篇博客之前希望对CNN的基本概念有所了解，尤其是卷积和pooling操作。也可以看 <https://arxiv.org/pdf/1603.07285.pdf>来回顾一下. 这篇博客和该文章是想通的。 "
 ---
+
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
 ## 原文地址
+
 翻译来源：[A guide to receptive field arithmetic for Convolutional Neural Networks](https://medium.com/@nikasa1889/a-guide-to-receptive-field-arithmetic-for-convolutional-neural-networks-e0f514068807)
 
 看这篇博客之前希望对CNN的基本概念有所了解，尤其是卷积和pooling操作。也可以看 "[A guide to convolution arithmetic for deep learning [1]](https://arxiv.org/pdf/1603.07285.pdf)"来回顾一下. 这篇博客和该文章是想通的。
 
 ## The fixed-sized CNN feature map visualization
+
  By applying a convolution C with kernel size k = 3x3, padding size p = 1x1, stride s = 2x2 on an input map 5x5, we will get an output feature map 3x3 (green map).
 我们假设一次叫做C的卷积过程中，输入图像大小为5x5，卷积核k=3x3，padding大小 p = 1, 步长 s = 2.
 ![Figure 1](../../images/receptiveregion/eq1.png)
@@ -28,6 +31,7 @@ Each feature is then marked at the center of its receptive field location. Becau
 ![Figure 1](../../images/receptiveregion/2.png)
 
 ## Receptive Field Arithmetic
+
 To calculate the receptive field in each layer, besides the number of features n in each dimension, we need to keep track of some extra information for each layer. These include the current receptive field size r , the distance between two adjacent features (or jump) j, and the center coordinate of the the upper left feature (the first feature) start. Note that the center coordinate of a feature is defined to be the center coordinate of its receptive field, as shown in the fixed-sized CNN feature map above. When applying a convolution with the kernel size k, the padding size p, and the stride size s, the attributes of the output layer can be calculated by the following equations:
 
 ![Figure 2](../../images/receptiveregion/eq2.png)

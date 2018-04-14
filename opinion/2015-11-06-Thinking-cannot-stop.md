@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Thinking all the time
-categories: [blog ]
+categories: [opinion]
 tags: [随笔]
 description: 平时闲来没事，胡思乱想
 ---
@@ -11,6 +11,7 @@ description: 平时闲来没事，胡思乱想
 - 博客： <https://cwlseu.github.io/>
 
 ## 平庸是魔鬼的温床
+
 平庸是魔鬼的温床，出色是天使的摇篮。
 
 一个人一时间平庸并不可怕，可怕的是长时间的平庸，磨灭了斗志。

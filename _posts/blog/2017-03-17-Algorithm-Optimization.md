@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "算法优化的一些技巧"
+title: 开发："算法优化的一些技巧"
 categories: [blog ]
 tags: [算法优化, SIMD]
 description: 向量化和编译器优化
