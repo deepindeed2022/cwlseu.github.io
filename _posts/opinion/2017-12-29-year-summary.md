@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 2017年干的那些事儿
+title: "2017年，那人，那事儿"
 categories: [opinion]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
