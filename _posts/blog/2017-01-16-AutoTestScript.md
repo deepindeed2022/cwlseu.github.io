@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AutoIt：自动化测试工具
+title: 测试：自动化测试工具`AutoIt`
 categories: [blog ]
 tags: [Test]
 description: Autoit是一个使用脚本语言的免费软件,它设计用于Windows GUI(图形用户界面)中进行自动化操作。它利用脚本模拟键盘按键，鼠标移动和窗口/控件的组合来实现自动化任务。
@@ -84,5 +84,6 @@ Send ( "keys" [, flag = 0] )
 ```
 
 ## 参考
-[中文文档](http://www.jb51.net/shouce/autoit/)
-[AutoIt Help](https://zh.scribd.com/document/211815582/Autoit-Help-Manual)
+
+[1]. [中文文档]<http://www.jb51.net/shouce/autoit/>
+[2]. [AutoIt Help]<https://zh.scribd.com/document/211815582/Autoit-Help-Manual>

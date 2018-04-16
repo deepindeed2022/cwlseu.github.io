@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Performance Test中时间测试
+title: 测试：Performance Test中时间测试
 categories: [blog ]
 tags: [Perfmance Test, ]
 description: "在项目中或者研究中，经常需要对系统性能进行测试，今天将对我在项目中或者研究中用到的性能测试的有关东西进行总结"
@@ -15,9 +15,11 @@ description: "在项目中或者研究中，经常需要对系统性能进行测
 ## 程序运行时间
 
 ### 使用linux 命令`time`进行运行整个程序
+
 `time main_exe`
 
 ### 使用在测试程序中打印系统时间的方法
+
 1. 获取最佳性能
 
 ```cpp
@@ -63,6 +65,7 @@ void clean_cache()
 ```
 
 ## 系统性能测试
+
 1. cpu指标：cpu利用率
     
 cpu瓶颈原因
@@ -102,6 +105,7 @@ top展示cpu与内存信息，看到各个进程的CPU使用率和内存使用�
 `vmstat`命令是最常见的Linux/Unix监控工具，可以展现给定时间间隔的服务器的状态值,包括服务器的CPU使用率，内存使用，虚拟内存交换情况,IO读写情况。这个命令是我查看Linux/Unix最喜爱的命令，一个是Linux/Unix都支持，二是相比top，我可以看到整个机器的CPU,内存,IO的使用情况，而不是单单看到各个进程的CPU使用率和内存使用率(使用场景不一样)。
 
 ## 综合系统性能测评工具nmon
+
 使用命令nmon -f -s 2 -c 1800启动nmon
 在当前目录中生成：计算机名_日期_时间.nmon文件
 
@@ -116,6 +120,7 @@ Photoshop软件正常启动，出现Photoshop软件窗口
 nmon停止运行
 
 ## 其他工具
+
 [vmstat](http://www.cnblogs.com/ggjucheng/archive/2012/01/05/2312625.html)
 sar工具
 

@@ -11,7 +11,8 @@ description: 学习数字图像处理过程中遇到的问题
 - 博客： <https://cwlseu.github.io/>
 
 
-# Matlab 中的图像处理函数
+## 引言
+
 matlab中有toolbox是关于图像处理的，很容易上手。当然，要是opencv用的很熟悉的话，也可以使用opencv.
 
 ## 基本的图像处理
@@ -83,6 +84,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 - 锐化：增强图像的边缘及灰度变化的部分（一般先去噪）
 
 ### 噪声与图像的关系
+
 - 加性噪声
 - 乘性噪声
 
@@ -94,6 +96,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 # 图像增强
 
 ## 空间域图像增强
+
 锐化空间滤波--基于laplace算子的二阶微分的图像增强
 	$g(x,y) = f(x,y) - \delta^2f(x,y)$
 * 明白laplace算子与掩模之间的关系
@@ -116,7 +119,9 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 ## 滤波器的设计
 
 ## 小波变换
+
 [定义参考wikipedia:https://en.wikipedia.org/wiki/Wavelet_transform](https://en.wikipedia.org/wiki/Wavelet_transform)
+
 ### Haar 小波
 
 ### Daubechies wavelets

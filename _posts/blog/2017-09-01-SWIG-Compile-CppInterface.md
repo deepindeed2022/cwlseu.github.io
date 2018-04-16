@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "SWIG编译C++接口笔记"
+title: "Python：SWIG编译C++接口"
 categories: [blog ]
 tags: [cmake, C++接口, SeetaFace]
 description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三个核心模块。为了使用方便，决定使用swig编译python接口进行使用。
@@ -10,20 +10,24 @@ description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三�
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
                                         
-# 来源
+## 来源
+
 SeetaFaceEngine使用C++编译，而且使用OpenMP技术和向量化技术进行加速，已经基本可以满足业界对人脸识别功能的需求。在项目中用到人脸识别
 功能，OpenCV自带的基于Haar特征的算法，效果不理想，仅仅能够识别正脸，人脸歪一定的角度都不能够识别。使用SeetaFaceEngine需要重新编译python接口，对于没有接触过的人来说还真不简单，在此新路记录。
 [SeetaFaceEngine源代码](https://github.com/seetaface/SeetaFaceEngine) 
 
-# SWIG
+## SWIG
+
 [SWIG（Simplified Wrapper and Interface Generator）](http://swig.org)是一个为C/C++库提供脚本调用支持的工具，支持Lua, Perl, Python, Go等多种脚本语言。[1]中详细介绍了如何使用SWIG编写C/C++接口，很是详细。
 
-## 安装
+### 安装
+
 Ubuntu下使用`sudo apt-get install swig`就可以安装swig, 当然也可以下载[源码](http://swig.org/)进行安装
 安装`sudo apt-get install boost-dev`，这是为了支持numpy.ndarray和cv::Mat的转化
 安装OpenCV-2.4，最好从源代码进行编译安装，这个网上教程很多，就不说了
 
-## 编写.i
+### 编写.i
+
 ```c
 %module pyfacedetect # 要生成的python模块的名称
 %{
@@ -95,12 +99,13 @@ Rects(void* _rects)
 ```
 这样就可以实现在python中调用`rects = Rects(detectface(mat, model_path))`就可以获得结果。
 
-# 生成代码 & 测试
-## 依赖库
+## 生成代码 & 测试
+
+### 依赖库
 使用的swig生成的_pyxxxxx.so文件是依赖原来的C++ lib的，因此，这个lib放置的位置需要让_pyxxxxx.so能够找到。
 否则会出现连接lib找不到的问题。因此，最方便的方法就是直接进行编译C++库的时候，将库安装到系统路径下。
 
-## swig生成代码
+### swig生成代码
 
 ```python
 from sys import version_info

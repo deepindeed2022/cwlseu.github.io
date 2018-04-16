@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Digital Image Processing
+title: 图像处理：基础知识
 categories: [blog ]
 tags: [数字图像处理，机器视觉]
 description: 机器视觉中阈值获取
@@ -13,6 +13,7 @@ description: 机器视觉中阈值获取
 ## 机器视觉二值化问题
 
 ## 意义与作用
+
 存储方便，边缘提取，图像分割  
 目标识别后续的处理服务  
 本质上就是一个聚类的操作

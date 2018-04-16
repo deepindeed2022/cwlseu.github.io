@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "递归和指针"
+title: "算法的乐趣：递归和指针"
 categories: [blog ]
 tags: [Algorithm, ]
 description: 算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。
@@ -51,7 +51,7 @@ bool delete_node(ListNode* curr)
 ```
 
 ## 将二叉树转化为双向链表
-![@算法示意图](../images/algorithm/bstconvertlist.jpg)
+![@算法示意图](../../images/algorithm/bstconvertlist.jpg)
 
 ```cpp
 /***************************************************************************

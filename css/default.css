@@ -52,7 +52,7 @@ pre code{background-color:transparent;border:none;padding:0;word-wrap:normal;}
 pre ol{margin-left:25px;list-style-type:decimal;}
 
 /************layout style*****************/
-#content {width:90%;margin:90px auto 60px;min-height:400px;height:auto !important;height:400px;postion:relative; }
+#content {width:90%;margin:90px auto 60px;min-height:400px;height:auto !important;height:400px;position:relative; }
 
 
 /****************entry style**************/
@@ -84,7 +84,7 @@ pre ol{margin-left:25px;list-style-type:decimal;}
     background-position:50% 50%;
 }
 .blog .aside{
-    background-image:url('/images/bg1.gif');
+    background-image:url('/images/bg11.jpg');
 }
 .opinion .aside{
     background-image:url('/images/bg28.jpg');

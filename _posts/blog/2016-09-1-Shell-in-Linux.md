@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Shell 学习之路
+title: 开发：Shell 学习之路
 categories: [blog ]
 tags: [Shell, ]
 description: linux下的shell脚本的学习与使用
@@ -14,6 +14,7 @@ description: linux下的shell脚本的学习与使用
 
 
 ##  简单介绍
+
 你能不能用shell判断一个文件中的数字是否有序啊？想想这不挺简单的吗，就开始动手写了，然后就有了这个版本。
 
 ```bash
@@ -45,6 +46,7 @@ fi
 * [LINUX SHELL脚本攻略笔记[速查]](http://www.wklken.me/posts/2013/07/04/note-of-linux-shell-scripting-cookbook.html)
 
 ## #返回值
+
 原来shell脚本的返回值不是直接返回啊，而是通过
 linux中shell变量`$#`,`$@`,`$0`,`$1`,`$2`的含义解释: 
     变量说明: 

@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "SSD中的数据增强分析"
-categories: [blog ]
+title: 深度学习："SSD中的数据增强分析"
+categories: [project]
 tags: [深度学习, 物体检测, 数据增强]
 description: 数据增强技术在CV研究中对于提高Performance是重要的研究话题。尤其是在物体检测方面，业界流行的方法中对具体方法之外，往往通过数据增强技术再次提高几个百分点。
 ---
@@ -12,13 +12,14 @@ description: 数据增强技术在CV研究中对于提高Performance是重要的
 
 本文是Wei Liu在2016年的一篇成果. 采用VOC2007 Dataset, Nvidia Titan X上：
 
->mAP： 74.3% 
->59FPS
->使用数据增强技术可以达到77.2%
+> mAP： 74.3% 
+> 59FPS
+> 使用数据增强技术可以达到77.2%
 
 ## SSD(Single Shot MultiBox Detector)
 
 ## 模型关键词
+
 使用前向反馈CNN网络，产生固定数目的bounding box， 然后再这些bounding box中进行打分。
 
 non-maximum suppression step
@@ -31,6 +32,7 @@ Non-Maximum Suppression就是根据score和box的坐标信息，从中找到置�
 ## 源代码分析
 
 ### anno_type_
+
 `has_anno_type_ = anno_datum.has_type() || anno_data_param.has_anno_type();` 最后的结果是什么？其中`anno_data_param.has_anno_type()` 结果是false, 关键看anno_datum中有没有了。这个里面有没有要去看你运行`create_data.sh`的时候对数据进行了什么操作。在本文中是对其中写了`AnnotatedDatum_AnnotationType_BBOX`类型
 
 ```cpp
@@ -49,7 +51,6 @@ Non-Maximum Suppression就是根据score和box的坐标信息，从中找到置�
 因此此处`has_anno_type`就是true。
 
 ### 过程概述
-
 
 for i in batch_size:
   1. 先对图片Expand操作或者Distort操作进行处理
@@ -84,8 +85,8 @@ endfor
 6. 重新处理annotation数据
   最后的top_label数据shape为：1 x 1 x num_boxs x 8
 
-
 ### 数据增强入口
+
 ```python
 # Create train net.
 # NOTE: Where the data from
@@ -201,6 +202,7 @@ def CreateAnnotatedDataLayer(source, batch_size=32, backend=P.Data.LMDB,
     }
 
 #### SSD中的数据转换和采样参数设置
+
 ```python
 # sample data parameter
 batch_sampler = [
@@ -309,6 +311,7 @@ void DataTransformer<Dtype>::ExpandImage(const AnnotatedDatum& anno_datum,
                       expanded_anno_datum->mutable_annotation_group());
 }
 ```
+
 ### 生成采样
 
 #### 入口
@@ -337,7 +340,7 @@ void DataTransformer<Dtype>::ExpandImage(const AnnotatedDatum& anno_datum,
 ```
   
 
-####具体调用过程
+#### 具体调用过程
 
 ```cpp
 
@@ -606,4 +609,5 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 ```
 
 ## 参考文献
+
 1. [ssd源代码]<https://github.com/weiliu89/caffe.git>

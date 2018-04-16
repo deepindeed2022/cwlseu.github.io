@@ -31,7 +31,7 @@ Gramian矩阵是通过计算一组特征向量的内积进行生成的，包含�
 
 本文中的FSP矩阵的计算与Gramian矩阵的计算是类似的。我们计算GramianMatrix是跨层计算的。而传统Gramian Matrix是在一个层内的features之间进行计算的。如下图所示。
 
-![本文中的迁移学习方法示意图](../images/cvpr2017/kd/method.JPG)
+![本文中的迁移学习方法示意图](../../images/cvpr2017/kd/method.JPG)
 
 **Distilled Knowledge**
 如果将DNN的输入视为问题，将DNN的输出作为回答，那么我们可以将中间的生成的特征看作回答问题过程中的中间结果。
@@ -41,12 +41,12 @@ Gramian矩阵是通过计算一组特征向量的内积进行生成的，包含�
 对问题的解决过程往往被定义为两个中间结果的关系进行表示。本文中定义FSP矩阵来表示问题解决过程。
 > 如何计算FSP矩阵
 
-![FSP矩阵计算](../images/cvpr2017/kd/FSP.JPG)
+![FSP矩阵计算](../../images/cvpr2017/kd/FSP.JPG)
 
 > 如何优化FSP矩阵
 
 首先是Teacher Network中生成的FSP矩阵，Gt_i (i = 1, ..n). Student Network 中生成了n个FSP矩阵，Gs_i (i=1,.. n). 然后Teacher和Student Network的FSP矩阵组成对(Gt_i, Gs_i), i = 1,2,...n
-![FSP矩阵计算](../images/cvpr2017/kd/Loss.JPG)
+![FSP矩阵计算](../../images/cvpr2017/kd/Loss.JPG)
 
 > 方法架构图
 
@@ -62,11 +62,11 @@ Gramian矩阵是通过计算一组特征向量的内积进行生成的，包含�
 ## 实验
 
 ### **Fast Optimization**
-![DenseNet的组成结构](../images/cvpr2017/kd/Fast.JPG)
+![DenseNet的组成结构](../../images/cvpr2017/kd/Fast.JPG)
 
 从结果中可以看出student network比teacher network 收敛速度更快。 大概快了3倍，试验中Teacher Network和Student Network是相同的结构。
 依次类推，1/3原来的迭代次数，我们在Student Network训练过程中使用相应的学习率。实验结果如下表：
-![Recignition rates on CIFAR-10](../images/cvpr2017/kd/Table1.JPG)
+![Recignition rates on CIFAR-10](../../images/cvpr2017/kd/Table1.JPG)
 
 \* 表示每个网络训练了21000iteration, 原始网络迭代次数为63000.
 两个+的符号（++）表示Teacher Network在前面64000次迭代基础上，又训练了21000次迭代。
@@ -77,12 +77,12 @@ Gramian矩阵是通过计算一组特征向量的内积进行生成的，包含�
 ###  **Network Minimization**
 最近，很多研究结果都是使用更大更深的神经网络获得更好的性能表现。那么，我们想通过将学习深层网络的知识应用到提升小网络中来。就像下图所示：
 
-![DenseNet的组成结构](../images/cvpr2017/kd/arch.JPG)
+![DenseNet的组成结构](../../images/cvpr2017/kd/arch.JPG)
 
     Because the student DNN and teacher DNN had the same number of channels, the sizes of the FSP matrices were the same. By minimizing the distance between the FSP matrices of the student network and teacher network, we found a good initial weight for the student network. Then,the student network was trained to solve the main task.
 
 来看看使用这个想法，全部不使用数据增强，训练网络的结果：
-![DenseNet的组成结构](../images/cvpr2017/kd/Table4.JPG)
+![DenseNet的组成结构](../../images/cvpr2017/kd/Table4.JPG)
 从中可以看出使用distill knowledge还是有效果的。而且使用本文中的方法效果比FitNet好很多(2.0%+)。
 
 ###  **Transfer Learning**

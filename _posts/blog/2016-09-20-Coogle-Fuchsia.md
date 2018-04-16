@@ -13,6 +13,7 @@ description: Google Fuchsia OS
 ## Google Fuchsia
 
 ### Fuchsia简介
+
 该操作系统是为具有高速处理器和大容量内存的硬件而开发。它的Github页只是简要地将Google的这个新项目描述为为“Pink+Purple==Fuchsia（新的操作系统）”。
 Chris McKillop是Google的产品和研发负责人，按照他的解释Purple指的是一个“具有高性能图像显示、输入延迟低、用户交互界面美观的系统”，Pink指的是“面向开发者和用户的模块化系统”。
 Fuchsia目前运行于Intel Broadwell和Skylake处理器上，不过它也能够在增强后运行于比较老的Intel甚至AMD处理器上。不久之后，它也将增加对ARM和树莓派3的支持。该操作系统的是为“具有高速处理器和大容量内存的现代手机及个人电脑”而构建的，令人推测将会在未来代替安卓。Fuchsia的用户界面似乎是使用了Flutter控件框架，并用Escher渲染。Escher是一个基于物理的渲染器，支持复杂的特效，例如体阴影、色溢、光扩散等。高超的图像处理能力以及目标硬件平台需要具有高速处理器和大容量内存，表明该操作系统可能是针对虚拟现实的头戴设备。
@@ -25,6 +26,7 @@ Specialties: Operating System design and implementation. Low level OS bringup on
 综上，就是项目负责人对操作系统开发设计与实现都有很强的功底， 此外，在游戏引擎方面有造诣，游戏引擎需要大量的图像处理开发技能，所以这个系统可能与VR设备有关。
 
 #### 其他成员
+
 团队包括Brian Swetland和Travis Geiselbrecht，他们过去曾从事Android、BeOS、ChromeOS、DangerOS、iOS、MacOS、QNX、webOS和其他操作系统的开发工作。
 -  Brian Swetland 
 kernel development, drivers, bootloaders, embedded systems, tools, nifty products
@@ -39,8 +41,11 @@ Apple ][ Emulator - A cheezy little Apple ][ emulator I wrote a long time ago fo
 ### 技术架构
 
 #### 内核：Magenta
+
 有可以在特定设备运行的早期版本，框架设计、核心功能、相关工具链较完善。如果需要支持新的（外围）设备，还有大量驱动需要移植。
+
 #### UI层：Flutter
+
 组件库已经基本完善，写一些简单程序没有障碍，暂时还无法在 Fuchsia 运行。官方自称属于早期阶段的版本，实际也是。另外目前没有OpenGL ES 方面 3D相关的支持，官方承诺未来会公开自己的优化版 3D编程接口。（所以可能也是暂时没有炫酷亮闪未来界面的原因）
 
 #### 渲染引擎：Escher
@@ -62,7 +67,7 @@ Apple ][ Emulator - A cheezy little Apple ][ emulator I wrote a long time ago fo
 
 ###源代码情况
 
-![@图 1: 各个模块贡献人员的统计图](../images/Fuchsia/sourcecode.jpg)
+![@图 1: 各个模块贡献人员的统计图](../../images/Fuchsia/sourcecode.jpg)
 
 可以看到参与人数多代码提交比较活跃的，是内核 Magenta 和图形界面层 Flutter 两个项目。Flutter 项目比较特殊，它其实很早就启动了，一直致力于为 Android/iOS 移动设备提供编码统一的开发环境。除了 Flutter 之外，其他所有项目大概都是最近两个月内被启动的。其中目前最活跃的是操作系统内核部分，22 名贡献者中可以看到不少 Google, Chromium 官方成员在提交代码。内核开发极度需要技术和经验，也不是劳动力密集型工种，几名核心工程师已经足够，由此可见目前谷歌对内核项目的干劲还是比较足的，只是其他配套项目关注的人数就稍微少了点。
 
@@ -81,12 +86,12 @@ Fuchsia使用Mojo来帮助构建应用程序，Mojo是"一个进程间通信技�
 3. **Magenta** 
 Magenta，是一个微内核和一系列用户空间的服务、驱动的组合。目前它已经能够在虚拟机、某几款NUC小电脑和某款笔记本上启动运行。在虚拟机里面运行后就是一个字符终端，执行一个叫 mxsh 的 shell，另外还有少量的基本工具和测试程序集 。只有 Magenate 内核的 Fuchsia 系统，在虚拟机运行起来是这个样子：
   
-![@图 2 内核安装运行图1](../images/Fuchsia/1.png)
-![图 2 内核安装运行图2](../images/Fuchsia/2.png)
+![@图 2 内核安装运行图1](../../images/Fuchsia/1.png)
+![图 2 内核安装运行图2](../../images/Fuchsia/2.png)
 为了方便安装，编写了相应的安装脚本INSTALL_MAGENTA.sh安装测试是在ubuntu16.04LTS 上进行的，其他环境安装没有进行实验。
 其中支持的命令：
  
-![@图 3 内核支持的系统命令](../images/Fuchsia/3.png)
+![@图 3 内核支持的系统命令](../../images/Fuchsia/3.png)
 当前该kernal内置40个测试用例，测试报告：magenta.txt
 Magenta作为Fuchsia的内核，基本框架已经实现，同时还有API文档，详见
 https://github.com/fuchsia-mirror/magenta/tree/master/docs
@@ -120,8 +125,8 @@ questions.
 Flutter
 Flutter 是可以运行在 Android 和 iOS 上的用户界面开发库，从它的源代码提交和bug跟踪日志中的信息看，目前它的引擎还不能运行在 Fuchsia 上，不过已经很接近可以工作。Flutter 官网声称自己还是一个早期阶段的开源项目，“未来” 操作系统上的程序可能会是什么样子，在[2]中进行了测试（请忽略Android自带黑边和某运营商标志）：
   
-![图 4跑在 Android 手机上的 Flutter Gallery 演示程序1](../images/Fuchsia/4.png)
-![@图 4跑在 Android 手机上的 Flutter Gallery 演示程序2](../images/Fuchsia/5.png)
+![图 4跑在 Android 手机上的 Flutter Gallery 演示程序1](../../images/Fuchsia/4.png)
+![@图 4跑在 Android 手机上的 Flutter Gallery 演示程序2](../../images/Fuchsia/5.png)
 Flutter采用 Materal Design 设计语言（规范），该规范定义了用户界面上的元素的用途、外观、展现形式以及形态变化的规范。
 
 从用户可见的角度来看，未来 Fuchsia 操作系统内运行的程序，其中的按钮，对话框，图片框等等界面组件，基本就应该跟上面图片中差不多——当然未来也可能会改变——而那些科幻电影中炫酷亮眼的3D特效、隔空指点、虚拟（增强）现实画面，暂时还不能从演示程序中看到。

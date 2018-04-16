@@ -1,6 +1,6 @@
 ---
 layout: post
-title: XNOR-Net论文笔记
+title: 论文笔记：XNOR-Ne：
 categories: [blog ]
 tags: [论文 ]
 description: "神经网络量化、二值化、设计package的神经网络模块"
@@ -11,6 +11,7 @@ description: "神经网络量化、二值化、设计package的神经网络模�
 - 博客： <https://cwlseu.github.io/>
 
 ## 引言
+
 面对神经网络over-parametrization和enormous parameters, 工作者在这者方面下了不少功夫。我们也想在这方面分的一杯羹, 当前主要的方向有：
 - shallow network
 - compressing pre-trained network

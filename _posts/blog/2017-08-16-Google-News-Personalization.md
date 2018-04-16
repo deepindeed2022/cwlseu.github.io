@@ -41,7 +41,7 @@ $r_{u_a,s_k} = \sum_{i\neqa} I_{(u_i, s_k)}w(u_a, u_i)$
 
 ## 模型
 本文中涉及的模型是一个混合模型，将上述两种模型进行线性加权结合。
-![@整体模型公式](../images/lsh/model_eq.PNG)
+![@整体模型公式](../../images/lsh/model_eq.PNG)
 `I(u_i,s_k)` is 1 if the user `u_i` clicked on the story `s_k` and 0 otherwise.话说将来可以使用SVM算法学习不同algorithm之间的比重。
 ### MinHash
 
@@ -52,7 +52,7 @@ filtering.The relationship between
 users and items is learned by modeling the joint distribution
 of users and items as a mixture distribution.
 
-![@plsi 公式](../images/lsh/plsi_eq.PNG)
+![@plsi 公式](../../images/lsh/plsi_eq.PNG)
 
 这个模型的关键在于隐变量Z的引入，使得users和items变得条件独立。这个模型也可以看做是一个生成模型。用户u通过p(z|u)随机选择状态z，然后再基于选择的状态z和CPD p(s|z)选择item.
 
@@ -64,7 +64,7 @@ of users and items as a mixture distribution.
 
 > 目标函数：最大化条件似然函数
 
-![@plsi 公式](../images/lsh/EM_obj.PNG)
+![@plsi 公式](../../images/lsh/EM_obj.PNG)
 
 > 训练过程：
 * 初始化：
@@ -72,7 +72,7 @@ of users and items as a mixture distribution.
 ˆp values stand for the parameter estimates from the previous iteration of the EM algorithm. For the first iteration, we set ˆp to appropriately normalized random values that form a probability distribution.
 * 两步走：
 
-![@plsi 公式](../images/lsh/EM_2Step.PNG)
+![@plsi 公式](../../images/lsh/EM_2Step.PNG)
 
 > 算法分析：
 对于数据规模比较大的时候，内存空间消耗巨大。例如M=N=10M, L=1000,
@@ -84,14 +84,14 @@ of users and items as a mixture distribution.
 
 * Step E
 
-![@EM_Step_E](../images/lsh/EM_distribution_E.PNG)
+![@EM_Step_E](../../images/lsh/EM_distribution_E.PNG)
 
 * Step M
 
-![@EM_Step_E](../images/lsh/EM_distribution_M.PNG)
+![@EM_Step_E](../../images/lsh/EM_distribution_M.PNG)
 
 考虑在一个RxK的集群上进行训练，如下图:
-![@分布式EM架构图](../images/lsh/mr_em.PNG)
+![@分布式EM架构图](../../images/lsh/mr_em.PNG)
 
 用户和items分别被分为R组和K组。对于一个点击记录(u, s)对，我们通过一定的算法，如Hash，
 
@@ -116,7 +116,7 @@ of users and items as a mixture distribution.
 2. Minhashing：在保留文档之间相似度的同时，将上一步得到庞大数据，转化为短些的签名（signatures）。将对集合的比较转化为签名的比较。
 3. Locality-sensitive hashing：得到的签名集还是很大，通过LSH进一步缩减处理的数据量。只是比较存在很高概率相似的一些签名。
 
-![@相似文档查找过程](../images/lsh/minhash.png)
+![@相似文档查找过程](../../images/lsh/minhash.png)
 
 > Shingling
 
@@ -147,7 +147,7 @@ $Sim(C1, C2) = \frac{C1 与 C2}{C1 或 C2}$
 
 Minhashing首先假设，行是随机排列的，然后定义一个哈希函数h(C)，哈希函数的值是列C在前面定义的随机排列中，第一个为值1行号。然后使用一定数量的相互独立的哈希函数来构成签名。
 
-![@相似文档查找过程](../images/lsh/minhash_step2.png)
+![@相似文档查找过程](../../images/lsh/minhash_step2.png)
 
 图中间是得到的布尔矩阵，左边是*三个随机的行的排列*。其中的值是行的编号。我们用行的排列数，在矩阵中找最先出现1的行。对于排列数`1376254`，
 - 在矩阵第一列中为1的有1354，然后*取最小的1*；
@@ -186,14 +186,14 @@ for each row r
 LSH选择一个相似度阀值s，如果两个列的签名相符度至少是s，那么就将它们放到同一个Bucket中。原理就这样简单，但是不是太粗糙了呢？
 
 我们将矩阵的行分成b个Band（r行为一个Band）：
-![@相似文档查找过程](../images/lsh/lsh_bank.png)
+![@相似文档查找过程](../../images/lsh/lsh_bank.png)
 
 然后对每个Band做哈希，将她分区的列的一部分哈希到k个Bucket中。现在的**候选对**就是至少在1个Band中被哈希到同一个Bucket的列。分割之后的工作就是，调制参数b和r使尽可能可多的相似的对放到同一个Bucket，并且尽量减少不相似的对放到同一个Bucket中。
 
-![@相似文档查找过程](../images/lsh/lsh_update.png)
+![@相似文档查找过程](../../images/lsh/lsh_update.png)
 分割Band的目的是要得到很好的区分度效果。
 
-![@相似文档查找过程](../images/lsh/lsh_why.png)
+![@相似文档查找过程](../../images/lsh/lsh_why.png)
 右边的函数感觉666的，几乎相当于分段函数了。
 
 

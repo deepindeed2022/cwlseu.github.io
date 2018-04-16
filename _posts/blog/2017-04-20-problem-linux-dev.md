@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Linux开发中的问题录"
+title: "开发：Linux开发中的问题录"
 categories: [blog ]
 tags: [Linux开发]
 description:  开发中的问题记录，当前主要为安装问题
@@ -11,6 +11,7 @@ description:  开发中的问题记录，当前主要为安装问题
 - 博客： <https://cwlseu.github.io/>
 
 ## fatal error: metis.h: No such file or directory
+
 ### NOT sudo user
 I am trying to install Metis. Since I am working on a public server, I couldn't install it as a root user. So I have installed metis in my account /home/jd/metis.
 
@@ -24,6 +25,7 @@ I added this path to the $PATH variable. But still the same error. Please advise
 Work with cmake. Adding `include_directories("/home/xxx/metis/include")`
 
 ### sudo user
+
 参看[stack-overflow](http://stackoverflow.com/questions/36046189/how-to-install-metis-on-ubuntu/41336362#41336362)
 
 ### 查看机器cpu信息
@@ -73,3 +75,28 @@ usr/bin/ld: warning: libpng16.so.16, needed by /home/andrei/anaconda/lib/libopen
 [caffe-installation-opencv-libpng16-so-16-linkage-issues](http://stackoverflow.com/questions/32405035/caffe-installation-opencv-libpng16-so-16-linkage-issues)
 
 在编译Makefile或者CMake文件中添加`opencv_highgui`的链接信息，确认opencv 的lib路径是否已经添加到LD_LIBRARY_PATH中
+
+## 误删/var/lib/dpkg/
+
+首先创建一些文件
+`sudo mkdir -p /var/lib/dpkg/{alternatives,info,parts,triggers,updates} `
+从备份数据中恢复
+`sudo cp /var/backups/dpkg.status.0 /var/lib/dpkg/status `
+
+Now, lets see if your dpkg is working (start praying):
+`apt-get download dpkg`
+`sudo dpkg -i dpkg*.deb` 
+
+修复base files
+`apt-get download base-files`
+`sudo dpkg -i base-files*.deb `
+
+要选Y，要选Y要选Y，否则就会出现
+`Setting up grub-pc (2.02~beta2-36ubuntu3.17) ...
+Setting up unattended-upgrades (0.90ubuntu0.9) ...
+`
+这两关过不了的情况。
+
+试试可以更新了不
+`sudo apt-get update`
+`sudo apt-get check`

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "玩转caffe之安装"
+title: "深度学习：玩转caffe之安装"
 categories: [blog ]
-tags: [Caffe, ]
+tags: [Caffe, 深度学习]
 description: Caffe install in Ubuntu
 ---
 
@@ -11,6 +11,7 @@ description: Caffe install in Ubuntu
 - 博客： <https://cwlseu.github.io/>
 
 ## 引言
+
 做深度学习，没用玩过深度学习框架caffe就有点说不过去了。虽然自己的小机器显卡能力不行，但是希望在cuda上跑caffe的心却没有停止过。从ubuntu12.04一直折腾到16.04，cuda从6.5也release到了8.0，中间走过的弯路很多。
 - cuda与系统的适配能力问题
 - ubuntu系统的问题
@@ -19,6 +20,7 @@ description: Caffe install in Ubuntu
 建议: 直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
 
 ### 安装BLAS
+
 BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://stackoverflow.com/questions/7596612/benchmarking-python-vs-c-using-blas-and-numpy)
 发现这个mkl是不错的，但是要[收费](https://software.intel.com/en-us/intel-mkl/)
 最后选择默认的[Atlas](http://sourceforge.net/settings/mirror_choices?projectname=math-atlas&filename=Stable/3.10.2/atlas3.10.2.tar.bz2)
@@ -49,6 +51,7 @@ cpufreq-selector -g performance -c 0
 `sudo apt-get install libatlas-base-dev`
 
 ### 安装Boost
+
 * preinstall boost should install following software
 * compile the source code 
 下载源代码，当前最新版本为version 1.60
@@ -80,6 +83,7 @@ source boot
 
 
 ### 从7.5之后安装的方法简单得多
+
 `sudo apt-get --purge remove nvidia-*`
 到https://developer.nvidia.com/cuda-downloads下载对应的deb文件
 到deb的下载目录下
@@ -94,20 +98,23 @@ source boot
 而网上大部分中文和英文的参考教程都是过时的，折腾几个小时不说还容易装不成。
 
 ### 查看机器参数是否满足CUDA计算的最低要求
+
 lspci | grep -i nvidia
 01:00.0 3D controller: NVIDIA Corporation GF117M [GeForce 610M/710M/820M / GT 620M/625M/630M/720M] (rev a1)
 参照nvidia [往年发布的gpus](http://developer.nvidia.com/cuda-gpus)
 我的机器为Compute Capability 2.1，是可以使用CUDA加速的。：）
 
 ### 不是所有Nvida显卡都支持Cudnn的
+
 折腾了很久的cudnn安装，后来才发现是自己的显卡太low了，不支持Cudnn，因为Compute Capability 才2.1，要支持Cudnn， Capability >= 3.0，[查看自己显卡的计算能力](https://developer.nvidia.com/cuda-gpus)
 
 ### install cuDNN
+
 PREREQUISITES
 CUDA 7.0 and a GPU of compute capability 3.0 or higher are required.
 Extract the cuDNN archive to a directory of your choice, referred to below as <installpath>.Then follow the platform-specific instructions as follows.
 
->LINUX
+> LINUX
 
 ```sh
     cd <installpath>
@@ -116,7 +123,8 @@ Extract the cuDNN archive to a directory of your choice, referred to below as <i
     Add <installpath> to your build and link process by adding -I<installpath> to your compile
     line and -L<installpath> -lcudnn to your link line.
 ```
->WINDOWS
+
+> WINDOWS
 
 Add <installpath> to the PATH environment variable.
 
@@ -128,6 +136,7 @@ and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dep
 [Install Caffe Script](https://github.com/cwlseu/script-ubuntu-debian/blob/master/install-caffe.sh)
 
 ## pycaffe
+
 1. 首先要编译caffe成功，make pycaffe也成功
 2. 使得pycaffe可以被访问到, set PYTHONPATH=$PYTHONPATH:/path/to/caffe/python
 3. install dependencies python package.在python文件夹下面有requirements.txt文件，列出了所有有关的python package.
@@ -136,6 +145,7 @@ and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dep
 这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，
 
 ## 综合一个安装cuda的教程
+
 可以参考<https://gwyve.github.io/>博客，为了方便把gwyve的cuda 安装部分blog放到这里，
 
 ## 引言      
@@ -344,7 +354,7 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 [issues 2690](https://github.com/BVLC/caffe/issues/2690)
 
 ### 编译OpenCV  syntax error: identifier 'NppiGraphcutState'
-![@build opencv using cuda](../images/linux/opencv-cuda.png)
+![@build opencv using cuda](../../images/linux/opencv-cuda.png)
 
 ```sh
 1>------ Build started: Project: opencv_cudalegacy, Configuration: Debug x64 ------
@@ -391,7 +401,7 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 
 ### ld链接失败，或者.o没有生成
 
-![caffe make-j8 recipe failed](../images/linux/caffe-make.png)
+![caffe make-j8 recipe failed](../../images/linux/caffe-make.png)
 如果你使用的是`make -j8`进行编译的，并且你需要的lib已经都加到`LD_LIBRARY_PATH`中了，那么你可以再试一遍`make -j8`或者使用`make -j4` or `make -j`，最保险的情况就是使用`make`进行编译，虽然慢点但是不会出现各种依赖找不到的情况。
     
     因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。
@@ -447,14 +457,31 @@ make: *** [.build_release/tools/extract_features.bin] Error 1
 [查看GPU卡是否支持cuda](https://developer.nvidia.com/cuda-gpus)
 哦哦，并不支持，好吧，换卡吧。
 
+## error: ‘kEmptyString’ is not a member of ‘google::protobuf::internal’
+这个比较玄，有的人使用protobuf 2.5就OK，有的人使用这个版本就爆出这个错误。我是使用libprotoc 2.5.0版本，当
+使用`make`进行编译的时候就会出现该问题。当时如果采用make -j
+https://blog.csdn.net/ahbbshenfeng/article/details/52065676
+
 ## 参考
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
-2.[NVIDIA CUDA Installation Guide for Linux](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu)         
+2.[NVIDIA CUDA Installation Guide for Linux](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu)    
+
 3.[CUDA安装和测试](http://blog.csdn.net/u012235003/article/details/54575758)
+
 4.[import TensorFlow提示Unable to load cuDNN DSO](http://blog.csdn.net/jk123vip/article/details/50361951)                        
 5.[Installing TensorFlow on Ubuntu](https://www.tensorflow.org/install/install_linux)
+
 6.[Install OpenCV Scripts](https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh)
+
 7.[virtualenv user guide](https://virtualenv.pypa.io/en/stable/userguide/)
+
 8.[查看GPU卡是否支持cuda](https://developer.nvidia.com/cuda-gpus)
+
 9.[cuda各个版本库](https://developer.nvidia.com/cuda-toolkit-archive)
+
+10.[IBM的google protocol buffer的介绍链接](http://www.ibm.com/developerworks/cn/linux/l-cn-gpb/)
+
+11.[protobuf-on-ubuntu-not-compiling](https://stackoverflow.com/questions/37983310/protobuf-on-ubuntu-not-compiling)
+
+12.[googleprotobufinternalkemptystring](https://stackoverflow.com/questions/36360188/c-protobuf-error-googleprotobufinternalkemptystring-error)

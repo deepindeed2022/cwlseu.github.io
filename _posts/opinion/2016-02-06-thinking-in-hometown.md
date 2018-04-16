@@ -1,7 +1,7 @@
 ---
 layout: post
-title: 过年
-categories: [blog ]
+title: 胡思乱想：过年
+categories: [opinion ]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
