@@ -10,6 +10,9 @@ description: STL源码剖析，在源码阅读中学习C++中的一些tricks
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
+## 引言
+一个方法实现过程中，业务逻辑很多都是相似的，但是与具体的特化类型的不同有一定的差异。
+这个时候可以采用特化模板的方式实现，不同的类型使用不同的特化实现。但是这种情况造成一定的业务逻辑的冗余。而trait技术可以将特化类型通过封装，以一个统一的调用方式实现相同的业务逻辑。
 
 ## type_traits 
 
@@ -123,3 +126,51 @@ __uninitialized_copy(_InputIter __first, _InputIter __last,
 }
 ```
 
+## 函数的调用过程
+1. 函数直接匹配
+2. 模板函数
+3. 通过一定的隐形转换数据类型可以调用
+
+```cpp
+#include <iostream>
+
+void func(float a) {
+  std::cout << "float func:" << a << std::endl;
+}
+
+void func(int a) {
+  std::cout << "int func:" << a << std::endl;
+
+}
+template <class T>
+void func(T a) {
+  std::cout << "template func:" << a << std::endl;
+}
+int main(int argc, char const *argv[])
+{
+  int ia = 1;
+  func(ia);
+  func<int>(ia);
+
+  float fb = 2;
+  func(fb);
+  func<float>(fb);
+  double db = 3;
+  func(db);
+  func<double>(db);
+  return 0;
+}
+```
+
+>结果输出
+int func:1
+template func:1
+float func:2
+template func:2
+template func:3
+template func:3
+
+
+## 模板函数的声明与定义一般有两种方式
+1. 声明定义在header文件中。这种情况往往是模板针对不同的类型处理方式是一样的，这样可以直接放到头文件中。当实际调用过程中实现template的调用
+2. 声明+特化在头文件中，实际定义在cpp文件中。这种情况往往特化几种就是几种。
