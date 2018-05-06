@@ -133,6 +133,6 @@ cv::Mat cv::getAffineTransform( const Point2f src[], const Point2f dst[] )
 
 ## 更多信息可以参考
 
-比往年上次去[1] https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/warp_affine/warp_affine.html
+[1] https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/warp_affine/warp_affine.html
 
 [2] gTest的原理： http://cwlseu.github.io/st-CMAKE-and-gTest/搜索
