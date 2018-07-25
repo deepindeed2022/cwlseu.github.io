@@ -1,3 +1,11 @@
+---
+layout: post
+title: Effective Python
+categories: [blog ]
+tags: [Python, ]
+description:  python中的语法糖
+---
+
 # Python 中不为人知的一面
 
 [TOC]
