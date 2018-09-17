@@ -8,6 +8,7 @@ layout: home
             <li class="on"><a href="/"><span>我的博客</span></a></li>
             <li style="text-align:center"><a href="/project"><span>项目</span></a></li>
             <li style="text-align:right"><a href="/opinion"><span>观点</span></a></li>
+            <li style="text-align:right"><a href="/paper"><span>论文跟踪</span></a></li>
         </ul>
 
         <div class="cate-bar"><span id="cateBar"></span></div>
