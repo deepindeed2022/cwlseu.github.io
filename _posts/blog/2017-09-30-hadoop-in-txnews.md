@@ -9,19 +9,25 @@ description: Spark和hadoop的踩坑之路
 
 [TOC]
 
-## install jdk in centos      
+## install jdk in centos 
+
 1. wget --no-cookies --no-check-certificate --header "Cookie:oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u91-b14/jdk-8u91-linux-x64.rpm"
+
 2. yum localinstall jdk-8u91-linux-x64.rpm
 
 ## 查看开发端口
+
 netstat -nlp | grep tcp
+
 ## install Hadoop
 
 ## 重新启动hadoop之后
+
 bin/hdfs namenode -format
 
 
 ## 运行Demo
+
 下面看[MapReduce](http://hadoop.apache.org/docs/r2.7.3/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html)的例子
 
 ```java
@@ -128,9 +134,10 @@ public class WordMain {
 [hdfs shell官方文档](http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html)中提及的一些命令已经基本够用了
 
 ## 向spark提交任务
+
 首先将spark程序export为jar包
 
-`. /data/pac_hadoop/spark/bin/spark-submit --class com.tencent.Lda --master spark://master:portnum ./wenlong/lda.jar  /user/hadoop/topics/dumps  /user/hadoop/model_path 1 1 30 > ./wenlong/segment_all_1.log`
+`. /data/pac_hadoop/spark/bin/spark-submit --class com.tencent.Lda --master spark://master:portnum ./xxxx/lda.jar  /user/hadoop/topics/dumps  /user/hadoop/model_path 1 1 30 > ./xxxx/segment_all_1.log`
 
 最后的结果输出，然后根据
 [Spark start](http://spark.apache.org/docs/latest/quick-start.html)
@@ -141,11 +148,6 @@ public class WordMain {
 1. [Hadoop Commands Guide](http://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/CommandsManual.html)
 2. [本地编辑，hadoopserver部署运行案例-详细](https://freeshow.github.io/BigData/Hadoop/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8eclipse%E7%BC%96%E8%AF%91%E6%89%93%E5%8C%85%E8%BF%90%E8%A1%8C%E8%87%AA%E5%B7%B1%E7%9A%84MapReduce%E7%A8%8B%E5%BA%8F%20Hadoop2.6.0/)
 3. [一个python写的hadoop map reduce程序](https://github.com/hustlijian/hadoop-tutorial)
-
-## configure hadoop dev environment
-## 问题
-### 用户名问题
-
 
 
 ## 理论部分
@@ -160,6 +162,7 @@ LDA以**词频向量**表示的文档集合作为输入，输出结果提供：
 * Topic distributions for documents：对训练集中的每个文档，LDA给一个在主题上的概率分布。
 
 ## 查看spark集群
+
 在master 节点上使用 `w3m http://localhost:8080`
 
 问题：
@@ -183,7 +186,7 @@ scp hadoop@xx.xxx.xx.xx:/home/hadoop/xxxx lda_result_500_20
 3. Scala是也是可以访问数据库的，技术选型很重要
 
 SQL语句：不要有多余的空格
-UPDATE cwl_rcd_corpus_info SET topic = '187:0.029912,107:0.027155,142:0.025944,10:0.021934,148:0.016860', update_time=14934342342 WHERE article_id=20170614034267;
+```UPDATE cwl_rcd_corpus_info_tx SET topic = '187:0.029912,107:0.027155,142:0.025944,10:0.021934,148:0.016860', update_time_tx=14934342342 WHERE article_id_tx=20170614034267;```
 
 #!/bin/sh
 export PATH=$PATH:/data/Python-2.7.3/bin
@@ -196,16 +199,17 @@ source topics/bin/activate
 pip install virtualenv -i http://mirror-sng.oa.com/pypi/web/simple/ --trusted-host mirror-sng.oa.com  -->
 
 
-/bin/sh /data/pac_hadoop/spark/bin/spark-submit --class com.tencent.TopicShow --master spark://xxxx.xxxx.xxx.xxx:7077 topicshow.jar
+`/bin/sh /data/pac_hadoop/spark/bin/spark-submit --class com.tencent.TopicShow --master spark://xxxx.xxxx.xxx.xxx:7077 topicshow.jar`
 
-select pac_articles.article_id, title, content from pac_articles left join rcd_corpus_info on rcd_corpus_info.article_id where pac_articles.create_time between '1499244660' and  '1499307191' limit 10;
+`select pac_articles.article_id, title, content from pac_articles left join rcd_corpus_info on rcd_corpus_info.article_id where pac_articles.create_time between '1499244660' and  '1499307191' limit 10;`
 
 
-select count(a.article_id) from rcd_corpus_info b, pac_articles a where a.article_id=b.article_id and b.create_time between 1499137016 and 1499309816 order by b.create_time desc limit 30000 offset 0;
+`select count(a.article_id) from rcd_corpus_info b, pac_articles a where a.article_id=b.article_id and b.create_time between 1499137016 and 1499309816 order by b.create_time desc limit 30000 offset 0;`
 
 `ps -ef | grep "topics_corpus_update_hdfs.py" | awk '{print $2}'|xargs kill -9`
 
 ## ERROR
+```
 SLF4J: Class path contains multiple SLF4J bindings.
 SLF4J: Found binding in [jar:file:/data/pac_hadoop/spark/jars/slf4j-log4j12-1.7.16.jar!/org/slf4j/impl/StaticLoggerBinder.class]
 SLF4J: Found binding in [jar:file:/data/pac_hadoop/spark/jars/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
@@ -254,3 +258,4 @@ Driver stacktrace:
   at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:212)
   at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:126)
   at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+```
