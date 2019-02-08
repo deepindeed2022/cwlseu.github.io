@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 数学基础：Noise is good
+title: 数学基础：理解噪声与matlab基础
 categories: [blog ]
 tags: [Matlab, 病态系统]
 description: Smoothed Analysis
@@ -32,8 +32,6 @@ description: Smoothed Analysis
 ```matlab	
 	% The script for ill-conditioned system example.
 	% date: 2015-11-22
-	% author: Clython
-
 	n = 80;
 	b = randn(n,1);
 
@@ -108,7 +106,7 @@ mask可以从一个数组中选择需要的元素参与运算，指定运算只�
 ```
 
 
-##数组
+## 数组
 
 * size
 `size(V)`不是一个数字,而是一个1*2的向量，这一个千万要注意。
