@@ -2,7 +2,7 @@
 layout: post
 title: "概率论基础"
 categories: [blog ]
-tags: [机器学习]
+tags: [机器学习, 数学基础]
 description: 概率论中的基本概念，做机器学习相关的内容，不得不知的知识。 
 ---
 

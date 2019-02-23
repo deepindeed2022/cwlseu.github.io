@@ -5,8 +5,6 @@ permalink: /collection/
 icon: bookmark
 type: page
 ---
-
-* content
 {:toc}
 
 ## 绘制图片

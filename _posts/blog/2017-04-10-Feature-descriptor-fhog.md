@@ -5,7 +5,6 @@ categories: [project]
 tags: [detection, CV算法]
 description: Hog特征结合分类算法广泛应用于图像识别中，尤其是行人检测中获得极大成功。
 ---
-
 {:toc}
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]

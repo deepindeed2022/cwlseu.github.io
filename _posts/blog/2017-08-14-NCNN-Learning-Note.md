@@ -6,14 +6,13 @@ tags: [算法优化]
 description:  腾讯前不久开源了一个关于手机上卷积加速优化的框架NCNN，闲来没事，拿来研读一番。
 ---
 {:toc}
-
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>    
 
 ## 从C++ 到android
 在ncnn中是用C++写的，没玩过android很是愧疚。幸好项目中有android依赖链的cmake文件。
-
+```
 	Android CMake toolchain file, for use with the Android NDK r5-r10d 
 	Requires cmake 2.6.3 or newer (2.8.9 or newer is recommended).
 	See home page: https://github.com/taka-no-me/android-cmake
@@ -36,7 +35,7 @@ description:  腾讯前不久开源了一个关于手机上卷积加速优化的
 	-DCMAKE_TOOLCHAIN_FILE=path\to\the\android.toolchain.cmake
 	-DCMAKE_MAKE_PROGRAM="%ANDROID_NDK%\prebuilt\windows\bin\make.exe" ..
 	$ cmake.exe --build .
-
+```
 内心很是欣喜，再次凸显注释的重要性。沿着提示信息，我就学习了一下android-cmake
 
 ```sh

@@ -6,7 +6,6 @@ tags: [Python, ]
 description: Python入门简单，但是无论哪种语言，都有语言设计者赋予其中的特殊意义的东西，可能是为了方便，可能是为了得到高的level,无论出发点是什么，都是值得我学习探究的。
 ---
 {:toc}
-
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
@@ -535,9 +534,36 @@ if __name__ == '__main__':
 说实话 Python 的动态特性可以让其用众多黑技术去实现一些很舒服的功能，当然这也对我们对语言特性及坑的掌握也变得更严格了。
 [参考连接]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple>
 
-## 更多python技巧
+## Python 中不为人知的一面
 
+1.  `eval` 与`ast.literal_eval`:
+       literal_eval相对来说比较安全，只有字符串中包含表达式的时候才会评估。
+2. 实现一组字符串分组分开：`itertools.groupby` 
+```
+from itertools import groupby
+s = "1123433364433"
+print([''.join(i) for _, i in groupby(s)])
+```
+
+3. 判断list是否为空
+```
+if not l:
+	pass
+```
+就是最好的选择
+[how-do-i-check-if-a-list-is-empty](https://stackoverflow.com/questions/53513/how-do-i-check-if-a-list-is-empty?rq=1)
+
+4. 从json文件中读取参数
+[parse values from a json file](https://stackoverflow.com/questions/2835559/parsing-values-from-a-json-file?noredirect=1&lq=1)
+
+5. 各种`@property`的实现
+[python property的作用](https://stackoverflow.com/questions/17330160/how-does-the-property-decorator-work)
+[python property的重定义](https://stackoverflow.com/questions/3012421/python-memoising-deferred-lookup-property-decorator)
+
+
+> 更多python技巧
 [我的python小吃](https://github.com/cwlseu/recipes/tree/master/pyrecipes)
+
 
 ## 参考文献
 

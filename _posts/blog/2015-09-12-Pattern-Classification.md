@@ -2,11 +2,10 @@
 layout: post
 title: 模式识别算法课程笔记
 categories: [blog ]
-tags: [模式识别]
+tags: [机器学习]
 description: 模式识别经典算法介绍。主要是参加模式识别课程中一些基本概念的记录与总结。
 ---
 {:toc}
-
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
