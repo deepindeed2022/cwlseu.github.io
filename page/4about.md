@@ -1,9 +1,9 @@
 ---
 layout: page
-title: about
-categories: [opinion]
+title: About
 permalink: /about/
 icon: bookmark
+type: page
 description: "Welcome to my world!"
 ---
 
@@ -13,7 +13,7 @@ description: "Welcome to my world!"
 
 我是曹文龙， 大学就读于[东南大学](http://www.seu.edu.cn/)软件工程专业。大学期间参加[I++俱乐部](http://ippclub.org)，是最令我难忘的经历。
 期间做得最多的是javaweb项目，《我爱我师》、《最有影响力的毕业生》、《校史知识竞赛现场版系统》等等。小伙伴们当时干劲十足，整天熬夜也靠的住。
-后来，大四的时候去一家非常棒的[外企](http://www.ni.com/zh-cn.html)实习，当时遇到了一批牛掰又有趣的人。期间也渐渐丢掉了java，转向python和喜家家。
+后来，大四的时候去一家非常棒的[外企](http://www.ni.com/zh-cn.html)实习，当时遇到了一批牛掰又有趣的人, 转向python和喜家家。
 
 <!-- 研究生期间，我就掉进了机器视觉的漩涡中，在这里挣扎，漩涡里的风景还是有的，只是现在无暇去观赏罢了。等我抵达漩涡之心得时候再跟大家详细介绍。 -->
 

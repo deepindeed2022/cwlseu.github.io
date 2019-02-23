@@ -113,7 +113,7 @@ public class WordMain {
 其中本程序中需要输入两个参数
 
 
-## 出现的问题
+## hadoop出现的问题
 
 > Datanode不能够启动的问题
 
@@ -189,13 +189,14 @@ scp hadoop@xx.xxx.xx.xx:/home/hadoop/xxxx lda_result_500_20
 SQL语句：不要有多余的空格
 ```UPDATE cwl_rcd_corpus_info_tx SET topic = '187:0.029912,107:0.027155,142:0.025944,10:0.021934,148:0.016860', update_time_tx=14934342342 WHERE article_id_tx=20170614034267;```
 
+```sh
 #!/bin/sh
 export PATH=$PATH:/data/Python-2.7.3/bin
 export PYTHONPATH=$PYTHONPATH:/data/pac_hadoop/spark/python
 
 virtualenv topics
 source topics/bin/activate
-
+```
 <!-- pip install scikit-learn -proxy=http://dev-proxy.oa.com:8080
 pip install virtualenv -i http://mirror-sng.oa.com/pypi/web/simple/ --trusted-host mirror-sng.oa.com  -->
 
@@ -208,55 +209,3 @@ pip install virtualenv -i http://mirror-sng.oa.com/pypi/web/simple/ --trusted-ho
 `select count(a.article_id) from rcd_corpus_info b, pac_articles a where a.article_id=b.article_id and b.create_time between 1499137016 and 1499309816 order by b.create_time desc limit 30000 offset 0;`
 
 `ps -ef | grep "topics_corpus_update_hdfs.py" | awk '{print $2}'|xargs kill -9`
-
-## ERROR
-```
-SLF4J: Class path contains multiple SLF4J bindings.
-SLF4J: Found binding in [jar:file:/data/pac_hadoop/spark/jars/slf4j-log4j12-1.7.16.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: Found binding in [jar:file:/data/pac_hadoop/spark/jars/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
-[Stage 551:======================================>                  (2 + 1) / 3]
-Exception in thread "main" org.apache.spark.SparkException: Job aborted due to stage failure: Task 1 in stage 551.0 failed 4 times, 
-most recent failure: Lost task 1.3 in stage 551.0 (TID 230, 10.185.25.224, executor 0): 
-ExecutorLostFailure (executor 0 exited caused by one of the running tasks) 
-Reason: Remote RPC client disassociated. Likely due to containers exceeding thresholds, or network issues. Check driver logs for WARN messages.
-Driver stacktrace:
-  at org.apache.spark.scheduler.DAGScheduler.org$apache$spark$scheduler$DAGScheduler$$failJobAndIndependentStages(DAGScheduler.scala:1435)
-  at org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1423)
-  at org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1422)
-  at scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:59)
-  at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:48)
-  at org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:1422)
-  at org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:802)
-  at org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:802)
-  at scala.Option.foreach(Option.scala:257)
-  at org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:802)
-  at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:1650)
-  at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1605)
-  at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1594)
-  at org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:48)
-  at org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:628)
-  at org.apache.spark.SparkContext.runJob(SparkContext.scala:1925)
-  at org.apache.spark.SparkContext.runJob(SparkContext.scala:1988)
-  at org.apache.spark.rdd.RDD$$anonfun$fold$1.apply(RDD.scala:1089)
-  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)
-  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:112)
-  at org.apache.spark.rdd.RDD.withScope(RDD.scala:362)
-  at org.apache.spark.rdd.RDD.fold(RDD.scala:1083)
-  at org.apache.spark.mllib.clustering.EMLDAOptimizer.computeGlobalTopicTotals(LDAOptimizer.scala:229)
-  at org.apache.spark.mllib.clustering.EMLDAOptimizer.next(LDAOptimizer.scala:216)
-  at org.apache.spark.mllib.clustering.EMLDAOptimizer.next(LDAOptimizer.scala:80)
-  at org.apache.spark.mllib.clustering.LDA.run(LDA.scala:334)
-  at com.tencent.Lda$.main(lda.scala:78)
-  at com.tencent.Lda.main(lda.scala)
-  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-  at java.lang.reflect.Method.invoke(Method.java:498)
-  at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:743)
-  at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:187)
-  at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:212)
-  at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:126)
-  at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
-```
