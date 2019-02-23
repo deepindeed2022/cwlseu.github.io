@@ -10,7 +10,7 @@ description:  租用亚马逊的环境进行实验，直接运行docker file 进
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>                                          
 
-[TOC]
+{:toc}
 
 ## Docker安装caffe
 

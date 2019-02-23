@@ -9,7 +9,7 @@ description: "为了展示模型的效果，结合caffe中的tools进行可视�
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>                                          
 
-[TOC]
+{:toc}
 
 ## 引言
 
@@ -106,7 +106,7 @@ time LeNet training on CPU for 10 iterations
 `./build/tools/caffe time -model examples/mnist/lenet_train_test.prototxt -gpu 0`
 3. time a model architecture with the given weights on no GPU for 10 iterations
 `./build/tools/caffe time --model=models/ResNet/VOC0712/OOXX_321x321/deploy.prototxt --weights models/ResNet/VOC0712/OOXX_321x321/ResNet_VOC0712_OOXX_321x321_iter_115000.caffemodel --iterations 10`
-![@inference time result](../../images/linux/inference_time.JPG)
+![@inference time result](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/linux/inference_time.JPG)
 
 ## 为什么要用Google Protocol Buffer序列化协议
 

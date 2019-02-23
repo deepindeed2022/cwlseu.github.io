@@ -26,7 +26,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 		gf =imfilter(f,w);  
 		imshow(gf,[]);  
 ```
-![filter效果图](../../images/digital-img-process/1.jpg)
+![filter效果图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/1.jpg)
 
 ```matlab
 		f = imread('fig.tif');  
@@ -35,7 +35,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 		gf =imfilter(f,w);  
 		imshow(gf,[]); 
 ```
-![filter灰度值溢出后效果图](../../images/digital-img-process/2.jpg)
+![filter灰度值溢出后效果图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/2.jpg)
 
 当然，这个函数的参数还有很多，更多信息，请看博客(http://blog.sina.com.cn/s/blog_5d14765801014fi7.html)。
 如果自己想动手实现以下，可以参考[implementing-imfilter-in-matlab](http://stackoverflow.com/questions/10672184/implementing-imfilter-in-matlab)
@@ -46,13 +46,13 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 
 如果一副图像的像素占有很多的灰度级而且分布均匀，那么这样的图像往往有高对比度和多变的灰度色调。直方图均衡化就是一种能仅靠输入图像直方图信息自动达到这种效果的变换函数。它的基本思想是对图像中像素个数多的灰度级进行展宽，而对图像中像素个数少的灰度进行压缩，从而扩展像元取值的动态范围，提高了对比度和灰度色调的变化，使图像更加清晰。
 
-![直方图均衡化](../../images/digital-img-process/DIP-histeq.jpg)
+![直方图均衡化](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/DIP-histeq.jpg)
 
 ### 直方图匹配
 
-![直方图匹配](../../images/digital-img-process/DIP-histmatch.jpg)
+![直方图匹配](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/DIP-histmatch.jpg)
 
-![直方图匹配](../../images/digital-img-process/DIP-histmatch-2.jpg)
+![直方图匹配](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/DIP-histmatch-2.jpg)
 
 ### 直方图的用途
 - 数字化参数
@@ -65,7 +65,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 
 ` C = conv2(A,B)` 计算数组A和B的卷积。如果一个数组描述了一个二维FIR滤波器，则另一个数组被二维滤波。当A的大小为[ma,na],B的大小为[mb,nb]时，C的大小为[ma+mb-1,mb+nb-1]。
 但是要知道，在当前神经网络中的卷积和这里定义的卷积操作是不一样的。当前卷积神经网络中的卷积相当于掩码操作似的。数学上的卷积定义比这个复杂得多。
-![一维卷积](../../images/digital-img-process/DIP-conv.jpg)
+![一维卷积](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/DIP-conv.jpg)
 
 ## 图像滤波
 
@@ -74,7 +74,7 @@ matlab中有toolbox是关于图像处理的，很容易上手。当然，要是o
 ### 方法：
 - 空域滤波：直接对图像的像素进行的滤波运算
 
-![空域滤波](../../images/digital-img-process/IDP-spacefilter.png)
+![空域滤波](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/digital-img-process/IDP-spacefilter.png)
 
 - 频域滤波：在傅立叶变换域的滤波运算
 

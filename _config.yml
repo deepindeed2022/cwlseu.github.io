@@ -4,31 +4,25 @@
 #
 
 # Name of your site (displayed in the header)
+title: cwlseu
 name: 曹文龙
 
+
 # Short bio or description (displayed in the header)
-description: 来自软件所的程序狗
+brief-intro: 来自软件所的程序狗
+url: http://cwlseu.github.io
+permalink: /:year/:month/:day/:title/
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 # avatar:https://github.com/cwlseu/cwlseu.github.com/tree/master/images/myface.jpg
+# other links
+github_username: cwlseu
+email: caowenlong92@gmail.com
+zhihu_username: 
+linkedIn_username:
+dribbble_username:
 
-#
-# Flags below are optional
-#
-
-# Includes an icon in the footer for each username you enter
-footer-links:
-  dribbble: 
-  email: caowenlong92@gmail.com
-  facebook: 
-  flickr: 
-  github: cwlseu/github
-  instagram: 
-  linkedin: 
-  pinterest: 
-  rss: # just type anything here for a working RSS icon, make sure you set the "url" above!
-  twitter: jekyllrb
-  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+description_footer: 本站记录我视觉之旅的沿途风景！
 
 # Your disqus shortname, entering this will enable commenting on posts
 disqus: cwlseu
@@ -39,38 +33,23 @@ google_analytics: UA-86501439-1
 baidu_analytics: 
 # Your website URL (e.g. http://barryclark.github.io or http://www.barryclark.co)
 # Used for Sitemap.xml and your RSS feed
-url: http://cwlseu.github.io
-
-# If you're hosting your site at a Project repository on GitHub pages 
-# (http://yourusername.github.io/repository-name)
-# and NOT your User repository (http://yourusername.github.io)
-# then add in the baseurl here, like this: "/repository-name"
-baseurl: ""
-
-#
-# !! You don't need to change any of the configuration flags below !!
-#
-
+# Build settings
 markdown: kramdown
-highlighter: pygments
-permalink: /:title/
 
-# The release of Jekyll Now that you're using
-version: v1.0.0
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 
-# Set the Sass partials directory, as we're using @imports
-sass:
-  sass_dir: _scss
-  style: :expanded # You might prefer to minify using :compressed
+# port
+# port: 1234
 
-# Use the following plug-ins
-gems:
-  - jemoji # Emoji please!
-  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
+# url
+category_dir: category/
+tag_dir: tag/
 
-# Exclude these files from your production _site
-exclude:
-    - Gemfile
-    - Gemfile.lock
-    - LICENSE
-    - README.md
+# excerpt
+excerpt_separator: "\n\n\n\n"
+
+# paginate
+gems: [jekyll-paginate]
+paginate: 6

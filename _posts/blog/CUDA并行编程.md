@@ -26,15 +26,15 @@ description: CUDA并行编程指南
 * 每个流处理单元SPE调用执行一个程序
 * 通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯
 * 
-![国产申威 26010 处理器架构图](../../images/cuda/cell_arch.png)
+![国产申威 26010 处理器架构图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/cuda/cell_arch.png)
 
 ### 多点计算
 集群，当前最流行的莫过于Hadoop和spark了，一个是分布式文件系统，一个是分布式计算框架，这两个工具使得多点计算的方法充分发挥。
 
 ### GPU架构
-![](../../images/cuda/2.png)
+![](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/cuda/2.png)
 
-![](../../images/cuda/1.png)
+![](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/cuda/1.png)
 
 ## CUDA编程基础知识
 学习CUDA C，可以在异构计算平台中实现高性能的应用。CUD的编译原则--基于虚拟指令集的运行时编译。

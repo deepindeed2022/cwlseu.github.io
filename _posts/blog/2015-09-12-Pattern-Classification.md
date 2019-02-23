@@ -5,13 +5,11 @@ categories: [blog ]
 tags: [模式识别]
 description: 模式识别
 ---
-
-
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
-
 
 ## 概述
 
@@ -23,7 +21,7 @@ description: 模式识别
 ## 概念
 
 **增广样本**  
-![@对于原训练数据添加全部为1的一项，用来表示偏置的权重，从而将偏置和原始权重统一到一个矩阵乘法之中，这个预处理数据的过程叫数据的增广](../../images/classifiction-pattern/1.jpg)
+![@对于原训练数据添加全部为1的一项，用来表示偏置的权重，从而将偏置和原始权重统一到一个矩阵乘法之中，这个预处理数据的过程叫数据的增广](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/classifiction-pattern/1.jpg)
 
 ## 方法论
 

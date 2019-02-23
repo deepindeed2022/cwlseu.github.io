@@ -8,7 +8,7 @@ description:  python中的语法糖
 
 # Python 中不为人知的一面
 
-[TOC]
+{:toc}
 
 1.  `eval` 与`ast.literal_eval`:
        literal_eval相对来说比较安全，只有字符串中包含表达式的时候才会评估。

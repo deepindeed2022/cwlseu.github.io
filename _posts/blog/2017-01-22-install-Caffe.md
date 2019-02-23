@@ -354,7 +354,7 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 [issues 2690](https://github.com/BVLC/caffe/issues/2690)
 
 ### 编译OpenCV  syntax error: identifier 'NppiGraphcutState'
-![@build opencv using cuda](../../images/linux/opencv-cuda.png)
+![@build opencv using cuda](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/linux/opencv-cuda.png)
 
 ```sh
 1>------ Build started: Project: opencv_cudalegacy, Configuration: Debug x64 ------
@@ -401,7 +401,7 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 
 ### ld链接失败，或者.o没有生成
 
-![caffe make-j8 recipe failed](../../images/linux/caffe-make.png)
+![caffe make-j8 recipe failed](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/linux/caffe-make.png)
 如果你使用的是`make -j8`进行编译的，并且你需要的lib已经都加到`LD_LIBRARY_PATH`中了，那么你可以再试一遍`make -j8`或者使用`make -j4` or `make -j`，最保险的情况就是使用`make`进行编译，虽然慢点但是不会出现各种依赖找不到的情况。
     
     因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。

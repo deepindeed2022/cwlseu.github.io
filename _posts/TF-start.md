@@ -9,7 +9,7 @@ description:
 作者: [曹文龙]                                                                 
 博客： <https://cwlseu.github.io/>                                             
 
-[TOC]
+{:toc}
 
 ## 安装与启动
 

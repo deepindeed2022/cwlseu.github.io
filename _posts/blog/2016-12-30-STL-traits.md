@@ -2,7 +2,7 @@
 layout: post
 title: 开发：The Annotated STL sources
 categories: [blog ]
-tags: [C++开发, ]
+tags: [C++, ]
 description: STL源码剖析，在源码阅读中学习C++中的一些tricks
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 图像处理：基础知识
+title: "图像处理：基础知识"
 categories: [blog ]
 tags: [数字图像处理，机器视觉]
 description: 机器视觉中阈值获取

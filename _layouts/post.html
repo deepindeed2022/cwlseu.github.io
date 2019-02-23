@@ -1,215 +1,112 @@
 ---
 layout: default
 ---
-
-<link rel="stylesheet" href="/js/prettify/prettify.css" />
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-
-<style type="text/css">
-    body { background:##A56666; }
-    @media screen and (max-width: 750px){
-        body { background:#fff; }
-    }
-    @media screen and (max-width: 920px){
-        body { background:#fff; }
-    }
-  table{
-		border-collapse: collapse;
-	   	border-spacing: 0 !important;
-	   	border:1px solid #000 !important;
-		margin: auto !important;
-	}
-
-	th{
-	    border:1px solid #000 !important;
-	    text-align: center !important;
-	    font-weight: bold !important;
-	}
-
-   	td{
-	padding: 10px !important;
-         border: 1px solid #000 !important;
-	text-align: center !important;
-   }
-	p{
-	    text-indent: 2em !important;
-	}
-
-</style>
-
-<div id="content">
-    <div class="entry">
-        <h1 class="entry-title"><a href="{{ page.url }}" title="{{ page.title }}">{{ page.title }}</a></h1>
-
-        <span id="busuanzi_container_page_pv">
-              本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-        </span>
-	<div algin="right">欢迎<a href="https://github.com/cwlseu/cwlseu.github.io">star</a>我的博客</div>
-        <p class="entry-date">{{ page.date|date:"%Y-%m-%d" }}</p>
-
-        {{ content }}
-
-     <!-- 取消Disque的评论插件，改用 多说的
-        <div id="disqus_container">
-            <div style="margin-bottom:20px" class="right">
-                <script type="text/javascript" charset="utf-8">
-                (function(){
-                  var _w = 86 , _h = 16;
-                  var param = {
-                    url:location.href,
-                    type:'6',
-                    count:'', /**是否显示分享数，1显示(可选)*/
-                    appkey:'', /**您申请的应用appkey,显示分享来源(可选)*/
-                    title:'', /**分享的文字内容(可选，默认为所在页面的title)*/
-                    pic:'', /**分享图片的路径(可选)*/
-                    ralateUid:'2820853451', /**关联用户的UID，分享微博会@该用户(可选)*/
-                    language:'zh_cn', /**设置语言，zh_cn|zh_tw(可选)*/
-                    rnd:new Date().valueOf()
-                  }
-                  var temp = [];
-                  for( var p in param ){
-                    temp.push(p + '=' + encodeURIComponent( param[p] || '' ) )
-                  }
-                  document.write('<iframe allowTransparency="true" frameborder="0" scrolling="no" src="http://hits.sinajs.cn/A1/weiboshare.html?' + temp.join('&') + '" width="'+ _w+'" height="'+_h+'"></iframe>')
-                })()
-                </script>
-            </div>
-            <a href="#" class="comment" onclick="return false;">点击查看评论</a>
-            <div id="disqus_thread"></div>
-       -->
-          <!-- 多说评论框 start # 多说评论已经关闭
-       <div class="ds-thread" data-thread-key={{ page.title }}  data-title={{ page.title }} data-url="http://cwlseu.github.io/{{ page.url }}"></div>
-           <!-- 多说评论框 end -->
-           <!-- 多说公共JS代码 start (一个网页只需插入一次)
-          <script type="text/javascript">
-          var duoshuoQuery = {short_name:"cwlseu"};
-	  (function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0]
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	  })();
--->
-<!-- 来必力City版安装代码 -->
-<div id="lv-container" data-id="city" data-uid="MTAyMC8yODgxNi81Mzg2">
-	<script type="text/javascript">
-   (function(d, s) {
-       var j, e = d.getElementsByTagName(s)[0];
-
-       if (typeof LivereTower === 'function') { return; }
-
-       j = d.createElement(s);
-       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-       j.async = true;
-
-       e.parentNode.insertBefore(j, e);
-   })(document, 'script');
-	</script>
-<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
-</div>
-	
-<!-- City版安装代码已完成 -->
-	
-	 </script>
-       <!-- 多说公共JS代码 end -->
-      </div>
-
-<!--       删除Disqus评论系统
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'cwlseu'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
--->
-
-
-  <!--删除微博秀
-    <div class="sidenav">
-        <iframe width="100%" height="75" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=75&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=0&isWeibo=0&isFans=0&uid=2820853451&verifier=375b89d6&dpc=1"></iframe>
-    </div>
-   -->
-    <div class="sidenav">
-        <h2>我的博客</h2>
-        <ul class="artical-list">
-        {% for post in site.categories.blog%}
-            <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-        {% endfor %}
-        </ul>
-
-        <h2>项目</h2>
-        <ul class="artical-list">
-        {% for post in site.categories.project%}
-            <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-        {% endfor %}
-        </ul>
-
-        <h2>观点</h2>
-        <ul class="artical-list">
-        {% for post in site.categories.opinion%}
-            <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-        {% endfor %}
-        </ul>
-
-    </div>
-</div>
-
-<!--MathJax支持Latex------------------------>
 <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-  inlineMath: [['$','$'], ['\\(','\\)']],
-  processEscapes: true
-  }/*,
-displayAlign : "left",
-TeX: {
-        equationNumbers: {
-            autoNumber: "all",
-            useLabelIds: true
-        }
-    },
-    "HTML-CSS": {
-        linebreaks: {
-            automatic: true
-        },
-        scale: 100,
-        styles: {
-          ".MathJax_Display": {
-            "text-align": "center !important",
-            "width" : "auto",
-            "margin": "10px 0px 10px 0px !important",
-            "background-color": "#FFF !important",
-            "border-radius": "3px !important",
-            border:  "1px solid #ccc !important",
-            padding: "5px 5px 5px 5px !important"
-          },
-          ".MathJax": {
-            "background-color": "#FFF !important",
-            padding: "2px 2px 2px 2px !important"
-          }
-        }
-    },
-    SVG: {
-        linebreaks: {
-            automatic: true
-        }
-    }*/
-});
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        inlineMath: [['$','$']]
+      }
+    });
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+<div class="page clearfix" post>
+    <div class="left">
+        <h1>{{page.title}}</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>{{ page.date | date: "%F" }}
+            </div>
+
+            <div class="label-card">
+                {% if page.author %}<i class="fa fa-user"></i>{{ page.author }}
+                {% endif %}
+            </div>
+
+            <div class="label-card">
+                {% if page.meta %}<i class="fa fa-key"></i>{{ page.meta }}  {% endif %}
+            </div>
+
+            <div class="label-card">
+            {% include category.html %}
+            </div>
+
+            <div class="label-card">
+            {% include tag.html %}
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        {{content}}
+        </article>
+        <hr>
+
+        {% assign hasSimilar = '' %}
+        {% for post in site.related_posts %}
+            {% assign postHasSimilar = false %}
+            {% for tag in post.tags %}
+                {% for thisTag in page.tags %}
+                    {% if postHasSimilar == false and hasSimilar.size < 6 and post != page and tag == thisTag %}
+                        {% if hasSimilar.size == 0 %}
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        {% endif %}
+                        <li class="relatedPost">
+                            <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}
+                            {% if post.series %}
+                                (Series: {{ post.series }})
+                            {% endif %}
+                            </a>
+                        </li>
+                        {% capture hasSimilar %}{{ hasSimilar }}*{% endcapture %}
+                        {% assign postHasSimilar = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+        {% if hasSimilar.size > 0 %}
+            </ul>
+        {% endif %}
+
+        {% include previousAndNext.html %}
+
+        <h2 id="comments">Comments</h2>
+        {% include comments.html %}
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    {% if hasSimilar.size > 0 %}
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    {% endif %}
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
 </script>
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-
-
-<script src="/js/post.js" type="text/javascript"></script>
+<script src="{{ "/js/pageContent.js " | prepend: site.baseurl }}" charset="utf-8"></script>

@@ -29,13 +29,13 @@ Generalized Linear Model使用的前提是假设语义空间是线性可分的�
 
 ### 结构
 
-![@MLPConv and Linear Conv](../../images/inception/NINBlock.jpg)
+![@MLPConv and Linear Conv](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/NINBlock.jpg)
 通过堆叠的MLPConv的方式实现了NIN的设计，最后的预测层使用Global Average Pooling替代全连接层。为什么呢？因为全连接层容易出现Overfitting。对最后的每一个特征层进行average pooling计算，对pooling后的向量直接作为softmax的输入。其中最后的输出特征层可以解释为每个类别的confidence map；同时，average pooling没有参数进行优化；而且average pooling的方式利用的是全局信息，对于空间信息更加robust
 
-![@NIN](../../images/inception/NIN.jpg)
+![@NIN](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/NIN.jpg)
 
 展示最后的feature maps 结果信息：
-![@Visualization NIN](../../images/inception/VisualizationNIN.jpg)
+![@Visualization NIN](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/VisualizationNIN.jpg)
 
 ## 从Inception设计遵循规则[^4]
 
@@ -44,18 +44,18 @@ Generalized Linear Model使用的前提是假设语义空间是线性可分的�
 Avoid representational bottlenecks, especially early in the network. Feed-forward networks can be represented by an acyclic graph from the input layer(s) to the classifier or regressor. This defines a clear direction
 for the information flow. For any cut separating the inputs from the outputs, one can access the amount of information passing though the cut. One should avoid bottlenecks with extreme compression. In general the representation size should gently decrease from the inputs to the outputs before reaching the final representation used for the task at hand. Theoretically, information content can not be assessed merely by the dimensionality of the representation as it discards important factors like correlation structure; the dimensionality merely provides a rough estimate of information content.
 
-![@](../../images/inception/9.PNG)
+![@](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/9.PNG)
 
 #### 高纬度更容易处理局部
 
 Higher dimensional representations are easier to process locally within a network. Increasing the activations per tile in a convolutional network allows for more disentangled features. The resulting networks will train faster.
-![@](../../images/inception/7.PNG)
+![@](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/7.PNG)
 
 #### 通过低维嵌入的方式实现空间信息的聚合，能够减少特征表示的损失
 
 Spatial aggregation can be done over lower dimensional embeddings without much or any loss in representational power. For example, before performing a more spread out (e.g. 3 × 3) convolution, one can reduce the dimension of the input representation before the spatial aggregation without expecting serious adverse effects. We hypothesize that the reason for that is the strong correlation between adjacent unit results in much less loss of information during dimension reduction, if the outputs are used in a spatial aggregation context. Given that these signals should be easily compressible, the dimension reduction even promotes faster learning.
-![@](../../images/inception/5.PNG)
-![@](../../images/inception/6.PNG)
+![@](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/5.PNG)
+![@](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/inception/6.PNG)
 
 #### 网络的宽度和深度的平衡
 
