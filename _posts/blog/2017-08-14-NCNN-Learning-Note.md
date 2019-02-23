@@ -565,7 +565,7 @@ Pooling的实现与Convolution的实现很相似，这里就不做解释了。Po
     value = value / sum 
 在ARM平台上，进一步通过SIMD技术加速优化，这里不再赘述。
 
-![@其他一些激活函数](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/cnn/active.jpg)
+![@其他一些激活函数](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/cnn/active.jpg)
 当然，Sigmoid在ARM上也进行了类似SoftMax的优化，Sigmod比Softmax实现简单得多，这里就不说了。
 
 ### Batch Normalization

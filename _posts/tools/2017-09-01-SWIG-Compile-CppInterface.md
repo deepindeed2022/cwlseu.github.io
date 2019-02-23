@@ -304,9 +304,9 @@ if __name__ == '__main__':
 
 ## 结果
 
-![@facedet](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/python/facedet.jpg)
+![@facedet](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/python/facedet.jpg)
 
-![@visual detection](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/python/facedetresult.jpg)
+![@visual detection](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/python/facedetresult.jpg)
 
 
 ## 参考文献

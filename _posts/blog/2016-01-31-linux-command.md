@@ -291,4 +291,4 @@ real：实际时间，从command命令行开始执行到运行终止的消逝时
 如`uname -p` 将得到处理器类型为`x86_64`
 2. nvidia-smi -l 1
 循环显示当前显卡状态
-![@nvidia显示示例图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/linux/nvidia-smi.JPG)
+![@nvidia显示示例图](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/linux/nvidia-smi.JPG)

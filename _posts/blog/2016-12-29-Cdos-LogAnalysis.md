@@ -206,7 +206,7 @@ chart.use(Axis('value','left', data= range(0, 100, 10 )))
 chart.plot()
 ```
 就在浏览器中出现了如下图片：
-![图片](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/visualdata/bar.jpg)
+![图片](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/visualdata/bar.jpg)
 
 ## 参考
 

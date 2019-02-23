@@ -51,7 +51,7 @@ bool delete_node(ListNode* curr)
 ```
 
 ## 将二叉树转化为双向链表
-![@算法示意图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/algorithm/bstconvertlist.jpg)
+![@算法示意图](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/algorithm/bstconvertlist.jpg)
 
 ```cpp
 /***************************************************************************

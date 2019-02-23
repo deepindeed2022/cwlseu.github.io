@@ -54,7 +54,7 @@ description: Hog特征结合分类算法广泛应用于图像识别中，尤其�
 ### 算法步骤
 
 HOG特征提取方法就是将一个image（你要检测的目标或者扫描窗口):
-![@HOG特征提取算法的实现过程](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/process.jpg)
+![@HOG特征提取算法的实现过程](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/process.jpg)
 
 
 
@@ -78,16 +78,16 @@ G(x, y) = \sqrt{G_x(x, y)^2 + G_y(x, y)^2}
 
 ##### 将图像划分成小`cells`（例如16*16像素/cell）；
 
-![@](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/cell.jpg)
+![@](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/cell.jpg)
 每一个点的梯度角度可能是0~180度之间的任意值，而程序中将其离散化为9个bin，即每个bin占20度。所以滑动窗口中每个像素点的梯度角度如果要离散化到这9个bin中，则一般它都会有2个相邻的bin(如果恰好位于某个bin的中心，则可认为对该bin的权重为1即可)。从源码中可以看到梯度的幅值是用来计算梯度直方图时权重投票的，所以每个像素点的梯度幅值就分解到了其角度相邻的2个bin了，越近的那个bin得到的权重越大。因此幅度图像用了2个通道，每个通道都是原像素点幅度的一个分量。同理，不难理解，像素点的梯度角度也用了2个通道，每个通道中存储的是它相邻2个bin的bin序号。序号小的放在第一通道。
-![@每个cell中的像素梯度最后离散化为9个bin中，其中的bins统计各个bin中hist信息](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/bin.png)
+![@每个cell中的像素梯度最后离散化为9个bin中，其中的bins统计各个bin中hist信息](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/bin.png)
 其中，假设那3条半径为离散化后bin的中心，红色虚线为像素点O(像素点在圆心处)的梯度方向，梯度幅值为A，该梯度方向与最近的相邻bin为bin0,这两者之间的夹角为a.这该像素点O处存储的梯度幅值第1通道为A*(1-a),第2通道为A*a;该像素点O处存储的角度第1通道为0(bin的序号为0)，第2通道为1(bin的序号为1)。
 另外在计算图像的梯度图和相位图时，如果该图像时3通道的，则3通道分别取梯度值，并且取梯度最大的那个通道的值为该点的梯度幅值。
 
 ##### 统计每个cell的梯度直方图（不同梯度的个数），即可形成每个cell的descriptor；
 
 ##### 将每几个cell组成一个block（例如2*2个cell/block）
-![@cell与block之间的关系](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/cell2block.png)，一个block内所有cell的特征descriptor串联起来便得到该block的HOG特征descriptor。这个在OpenCV中有HogCache中getBlock进行实现的。
+![@cell与block之间的关系](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/cell2block.png)，一个block内所有cell的特征descriptor串联起来便得到该block的HOG特征descriptor。这个在OpenCV中有HogCache中getBlock进行实现的。
 如图所示，黑色框代表1个block，红实线隔开的为4个cell，每个cell用绿色虚线隔开的我们称之为4个区域，所以该block中共有16个区域，分别为A、B、C、…、O、P。
 将这16个区域分为4组：
 第1组：A、D、M、P;该组内的像素点计算梯度方向直方图时只对其所在的cell有贡献。
@@ -99,7 +99,7 @@ G(x, y) = \sqrt{G_x(x, y)^2 + G_y(x, y)^2}
 
 ##### 将图像image内的所有block的HOG特征descriptor串联起来就可以得到该image（你要检测的目标）的HOG特征descriptor了。这个就是最终的可供分类使用的特征向量了。
 
-![@HOG算法名词之间的关系结构图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/cell-block-window-image.png)
+![@HOG算法名词之间的关系结构图](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/cell-block-window-image.png)
 
 >实际实现的时候，首先用[-1,0,1]梯度算子对原图像做卷积运算，得到x方向（水平方向，以向右为正方向）的梯度分量gradscalx，然后用[1,0,-1]T梯度算子对原图像做卷积运算，得到y方向（竖直方向，以向上为正方向）的梯度分量gradscaly。然后再用以上公式计算该像素点的梯度大小和方向。
 
@@ -107,7 +107,7 @@ G(x, y) = \sqrt{G_x(x, y)^2 + G_y(x, y)^2}
 
 在读源码时，由于里面用到了intel的ipp库，优化了算法的速度。为了学习方便，我对OpenCV中关于加速的
 部分进行了删减，只剩下算法的精要部分。
-![@OpenCV中关于HogDescriptor的实现](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/opencv-hog.png)
+![@OpenCV中关于HogDescriptor的实现](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/opencv-hog.png)
 
 	头文件中有关于一些参数的默认设置：
 	检测窗口大小为128*64;
@@ -1286,8 +1286,8 @@ void HOGDescriptor::detectMultiScaleROI(const cv::Mat& img,
 }
 
 ```
-![@我的手工笔记](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/notes.jpg)
-[源码下载](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/fhog/hog.cpp)
+![@我的手工笔记](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/notes.jpg)
+[源码下载](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/fhog/hog.cpp)
 
 
 ### FHOG

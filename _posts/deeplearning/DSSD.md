@@ -25,31 +25,31 @@ description: SSD的出现，引起了人们对YOLO和SSD的双重关注。SSD为
 采用Residual-101代替VGG网络
 引入反卷积层
 
-![@DSS和SSD架构图](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/DSSD.png)
+![@DSS和SSD架构图](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/DSSD.png)
 对于小物体和多个物体的识别正确率提升，但是速度是下降的。如下图所示，每组图片中左边是SSD的结果，右边是DSSD的结果。
-![@DSS和SSD结果对比](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/a.png)
-![@DSS和SSD结果对比](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/b.png)
+![@DSS和SSD结果对比](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/a.png)
+![@DSS和SSD结果对比](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/b.png)
 从速度方面，SSD的速度是DSSD是快的。原来SSD可以大搞46FPS,当前使用Residual-101之后大于为11.2FPS。速度是原来的1/4.
-![@Speed and Accuracy on Pascal VOC2007](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/speed-accuracy-1.png)
+![@Speed and Accuracy on Pascal VOC2007](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/speed-accuracy-1.png)
 也就是我们可以考虑在ResNet和VGG选择，权衡正确率和速度。
 
 ## SSD 回顾
 这个可以看[gwyve的ssd]<http://gwyve.com/blog/2017/03/01/reading-note-SSD.html>
 ### Prediction Module
 这个模块的设计是根据MS-CNN[^1]提出的"improving the sub-network of each task can improve accuracy."
-![@Deconvolution Module介绍](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/predictionmodule.png)
+![@Deconvolution Module介绍](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/predictionmodule.png)
 
 ## Deconvolutional SSD
 
 ### Deconvolution Module
-![@Deconvolution Module介绍](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/deconv.png)
+![@Deconvolution Module介绍](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/deconv.png)
 
 1. a batch normalization layer is added after each convolution
 layer. 
 2. learned deconvolution layer instead of bilinear upsampling. 
 3. test different combination methods: element-wise sum and element-wise product. 
 
-![@PM的效果](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/PM.png)
+![@PM的效果](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/PM.png)
 
 ### Box radio
 原理ssd中box radio选用的是2 and 3. 本文中采用YOLO9000中的kmeans聚类方法进行选取aspect radio.
@@ -57,7 +57,7 @@ layer.
 
 ### result
 
-![@Speed and Accuracy on Pascal VOC2007](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/ssd/speed-accuracy-1.png)
+![@Speed and Accuracy on Pascal VOC2007](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/ssd/speed-accuracy-1.png)
 
 
 ### 参考文献

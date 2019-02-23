@@ -6,4 +6,4 @@
 
 ## 编译
 
-![运行auto_tune项目](https://github.com/cwlseu/cwlseu.github.io/tree/master/images/faiss/demo_auto_tune.png)
+![运行auto_tune项目](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/faiss/demo_auto_tune.png)
