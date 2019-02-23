@@ -1,10 +1,11 @@
 ---
 layout: post
-title: Python：Python中的一些奇淫技巧
+title: "Python中的一些奇淫技巧"
 categories: [blog ]
 tags: [Python, ]
 description: Python入门简单，但是无论哪种语言，都有语言设计者赋予其中的特殊意义的东西，可能是为了方便，可能是为了得到高的level,无论出发点是什么，都是值得我学习探究的。
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]

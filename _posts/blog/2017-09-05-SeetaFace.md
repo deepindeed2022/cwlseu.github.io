@@ -2,13 +2,14 @@
 layout: post
 title: "深度学习：SeetaFace开源人脸识别引擎"
 categories: [blog ]
-tags: [人脸检测, SeetaFace]
+tags: [detection]
 description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三个核心模块。为了使用方便，决定使用swig编译python接口进行使用。
 ---
 
+{:toc}
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
+- 博客： <https://cwlseu.github.io/> 
 
 ## 人脸检测训练集合
 

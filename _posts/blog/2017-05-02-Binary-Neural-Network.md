@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 论文笔记：XNOR-Net：
+title: "论文笔记：XNOR-Net"
 categories: [blog ]
-tags: [论文 ]
+tags: [深度学习, 神经网络压缩]
 description: "神经网络量化、二值化、设计package的神经网络模块"
 ---
 

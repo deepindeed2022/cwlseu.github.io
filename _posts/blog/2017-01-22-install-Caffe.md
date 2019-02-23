@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [Caffe, 深度学习]
 description: Caffe install in Ubuntu
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]

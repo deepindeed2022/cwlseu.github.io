@@ -2,7 +2,7 @@
 layout: post
 title: 开发：Shell 学习之路
 categories: [blog ]
-tags: [Shell, ]
+tags: [linux开发]
 description: linux下的shell脚本的学习与使用
 --- 
 

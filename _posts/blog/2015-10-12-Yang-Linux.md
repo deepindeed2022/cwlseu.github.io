@@ -2,8 +2,8 @@
 layout: post
 title: 探究Linux的奇妙之旅
 categories: [blog ]
-tags: [Linux, 操作系统]
-description: 探究linux 0.11的一些神奇的东西
+tags: [linux, 操作系统]
+description: 探究linux 0.11的一些神奇的东西，课程教师杨立祥，一个成功的实现财富自由的男人。
 ---
 
 {:toc}
@@ -255,3 +255,6 @@ make install
 
 其中要设置一番，设置过程可以参考[博客](http://blog.sina.com.cn/s/blog_4b14d8190100muj3.html)或者默认就好了。
 最后安装完毕重启，重新执行`uname -a`查看是否内核版本已经更新为你编译安装的版本。
+
+## 参考链接
+1. 新设计团队. Linux内核设计的艺术[M]. 机械工业出版社, 2011.

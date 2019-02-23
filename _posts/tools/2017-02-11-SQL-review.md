@@ -2,13 +2,14 @@
 layout: post
 title: "计算机基础-SQL操作"
 categories: [blog ]
-tags: [Algorithm, ]
+tags: [工具]
 description: "SQL是数据库操作的基础语言，使用SQL可以说是和数据库交流沟通的工具"
 ---
 
- - 声明：本博客欢迎转发，但请保留原作者信息!
- - 作者: 曹文龙
- - 博客： <https://cwlseu.github.io/>
+{:toc}
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/> 
 
 ## SQL查询语句
 

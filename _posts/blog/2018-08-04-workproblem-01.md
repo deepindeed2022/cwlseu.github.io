@@ -1,18 +1,15 @@
 ---
 layout: post
-title: 奇怪的问题
+title: string字符串奇怪的问题
 categories: [blog ]
 tags: [C++, android]
-description: 工程
+description: 关于字符串赋值导致crash的问题
 ---
-
+{:toc}
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
-
-* 关于字符串赋值导致crash的问题
-{:toc}
 
 ## 问题描述
 在**android**系统中，测试一个C++动态库时，出现segment fault或者Invalid Address free

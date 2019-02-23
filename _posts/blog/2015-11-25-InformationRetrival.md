@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "开发：信息检索系统的设计"
+title: "信息检索系统的设计"
 categories: [blog ]
-tags: [信息检索系统]
+tags: [Algorithm, 开发]
 description: 信息检索系课程回顾与课程设计
 ---
 
@@ -357,10 +357,6 @@ topics.451-500
       At 1000 docs:   0.0267
     R-Precision (precision after R (= num_rel for a query) docs retrieved):
         Exact:        0.2177
-
-
-
-
 
 
 ## 网络爬虫

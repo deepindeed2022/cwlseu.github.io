@@ -1,15 +1,17 @@
 ---
 layout: post
-title: 机器学习：基于SVM的人脸识别
-categories: [blog ]
-tags: [SVM, 人脸分类]
-description: 通过SVM分类的方法，进行人脸识别
+title: 基于SVM的人脸识别
+categories: [blog]
+tags: [机器学习]
+description: 通过SVM分类方法，进行人脸识别，其中人脸特征采用LFW数据库。
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
+## 引言
 
 ## 数据说明
 
@@ -234,7 +236,7 @@ $f = \exp(-\gamma || x - x'||^2)$
 
 **表格 1: 关于测试集合人名标记结果的正确率，召回率和F1**
 
-|  #          |Precision|	Recall|	F1|	Support|
+| # |Precision|	Recall|	F1|	Support|
 | ------------- |:-------------:| -----:|------|
 |Ariel Sharon|	1.00	|0.85|	0.92|	13|
 |Colin Powell|0.86 |0.95|	0.90|60|
@@ -256,3 +258,18 @@ $f = \exp(-\gamma || x - x'||^2)$
 1. [ sklearnPCA](http://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca)
 2.  [The Elements of Statistical Learning
 Data Mining, Inference, and Prediction](http://link.springer.com/book/10.1007%2F978-0-387-84858-7)
+
+
+### 支持向量机
+支持向量机，因其英文名为 Support Vector Machine，故一般简称 SVM，通俗来讲，它是一种二类分类模型，其基本模型定义为特征空间上的间隔最大的线 性分类器，其学习策略便是间隔最大化，最终可转化为一个凸二次规划问题的求解。
+
+## SVM设计原理
+
+> Train data:
+$$ (x_i, y_i), i = 1,...l,   where \quad x_i  \in  R^n  and \quad y \in \{1, -1\}^l$$
+
+> 优化目标函数
+$$ min_{W,b,\epsilon} \frac{1}{2}W^tW + C \sum_{i = 1}^l{\epsilon_i} $$
+$$s.t.  \quad y_i(W^T\phi(x_i) + b) \geq 1- \epsilon_i $$
+
+## TODO: 完善SVM算法的介绍

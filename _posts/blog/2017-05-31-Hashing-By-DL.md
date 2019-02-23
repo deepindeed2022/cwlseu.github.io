@@ -2,9 +2,10 @@
 layout: post
 title: "深度学习：Hashing by Deep Learning(综述)"
 categories: [blog ]
-tags: [Hashing, ]
+tags: [深度学习]
 description: 
 ---
+{:toc}
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>     

@@ -22,3 +22,4 @@ $D: D(x) -> (0, 1)$
 2. Convolutional GANs
 特别适合与Image data的生成，但是使用相同表达能力的CNNs作为生成器和判别器，是很难训练的。其中LAP-GAN(Laplacian pyramid of adversarial networks)使用多尺度思想，将G的generation 过程分解为生成一个laplacian pyramid的过程.如果卷积网络使用deep convolution的话，即使DCGANs，通过利用stride和fractionally-strided convolutions在空间域中下采样和上采样操作。
 
+## TODO

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 开发：Linux常用命令
+title: "Linux常用命令"
 categories: [blog ]
-tags: [Linux基础, ]
+tags: [linux开发, ]
 description: In me the tiger sniffs the rose.
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: "《高质量的C++代码笔记》"
 categories: [blog ]
-tags: [C++, "Code Style"]
+tags: [C++, 开发]
 description: 软件质量是被大多数程序员挂在嘴上而不是放在心上的东西！除了完全外行和真正的编程高手外，初读本书，你最先的感受将是惊慌：“哇！我以前捏造的 C++/C 程序怎么会有那么多的毛病？”有多少软件开发人员对正确性、健壮性、可靠性、效率、易用性、可读性（可理解性）、可扩展性、可复用性、兼容性、可移植性等质量属性了如指掌？并且能在实践中运用自如？。
 --- 
 {:toc}
@@ -117,8 +117,6 @@ C++编译器将自动为 A 产生四个缺省的函数，如
 
 不少难以察觉的程序错误是由于变量没有被正确初始化或清除造成的，而初始化和清除工作很容易被人遗忘。
 
-
-
 ## 调试
 ```c
 #define stub  fprintf(stderr, "error param in %s:%s:%d\n",  __FUNCTION__, __FILE__, __LINE__);
@@ -126,30 +124,11 @@ C++编译器将自动为 A 产生四个缺省的函数，如
 
 ## mutable关键字用来解决常函数中不能修改对象的数据成员的问题
 
-##
+## 内存对齐
 这是因为结构体内存分配有自己的对齐规则，结构体内存对齐默认的规则如下：
 1、 分配内存的顺序是按照声明的顺序。
 2、 每个变量相对于起始位置的偏移量必须是该变量类型大小的整数倍，不是整数倍空出内存，直到偏移量是整数倍为止。
 3、 最后整个结构体的大小必须是里面变量类型最大值的整数倍。
 
-内存对其 https://www.cnblogs.com/suntp/p/MemAlignment.html
+内存对齐 https://www.cnblogs.com/suntp/p/MemAlignment.html
 
-## 使用trait的陷阱
-有的时候
-```cpp
-template <typename T>
-struct image_crop_trait;
-
-template <typename>
-struct image_crop_trait<float>{
-
-};
-```
-
-```cpp
-template <>
-struct image_crop_trait{};
-struct image_crop_trait<float>{
-
-};
-```

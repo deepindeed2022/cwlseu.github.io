@@ -2,11 +2,12 @@
 layout: post
 title: "A AWK Programming Language"
 categories: [blog ]
-tags: [Linux, awk ]
+tags: [linux开发]
 description: 这是关于在Linux开发中常用小工具--awk的故事
 ---
-声明：本博客欢迎转发，但请保留原作者信息!                            
-作者: [曹文龙]                                                                 
+{:toc}
+声明：本博客欢迎转发，但请保留原作者信息!
+作者: [曹文龙] 
 博客： <https://cwlseu.github.io/>
 
 # 序言
@@ -14,7 +15,6 @@ description: 这是关于在Linux开发中常用小工具--awk的故事
 Computer users spend a lot of time doing simple, mechanical data manipulation - changing the format of data, checking its validity, finding items with some property, adding up numbers, printing reports, and the like. All of these jobs ought to be mechanized, but it's a real nuisance to have to write a specialpurpose
 program in a standard language like C or Pascal each time such a task comes up.
 
-记住，
 # Chapter 1 — Chapter2
 通过案例程序的方式介绍基本的语法，读完第一章就可以开始写awk程序了。然后第二章将系统详细的介绍整个awk语言
 

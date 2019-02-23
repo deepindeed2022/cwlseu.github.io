@@ -1,12 +1,12 @@
 ---
 layout: post
-title: 数学基础：Matrix analysis and application
+title: "数学基础：Matrix analysis and application"
 categories: [blog ]
-tags: [矩阵分析, ]
+tags: [数学基础]
 description: 矩阵分析、应用与实践；主讲教师：Baobin Li
 ---
 
-
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [cwlseu]
@@ -97,7 +97,7 @@ solution. Otherwise, the system is said to be well-conditioned
 A的基本列为包含主元位置的列的集合。
 
 
-###线性系统的系统的相容性 (Consistency of Linear Systems)
+### 线性系统的系统的相容性 (Consistency of Linear Systems)
 
 #### 增广矩阵 [A|b] 是一致的  （要求AX = b的解)
 * 增广矩阵的约简形式不会出现（0 0 .... 0 | a), where a != 0
@@ -116,7 +116,6 @@ A的基本列为包含主元位置的列的集合。
 #### 非次线性方程组
 非齐次线性方程组通解为 $x = p+ x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}$
 
--------------------------------------------------------------------------------
 
 ## 矩阵代数
 ### 矩阵加法

@@ -1,16 +1,15 @@
 ---
 layout: post
-title: 开发：C++ Programming Tricks
+title: "C++ Programming Tricks"
 categories: [blog ]
 tags: [C++, 开发]
 description: "如果不是使用C++开发过大型系统项目，可能一些编程语言的feature将继续雪藏，让我们一起来挖掘这些秘密吧。"
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
-
-
 
 ## C++/C 宏定义（define）中\# \#\# 的含义
 
@@ -307,6 +306,7 @@ sizeof(qn)=8;即qn是采用8字节对齐的，所以要在a，b后面添3个空�
 [`__declspec` blog](http://www.cnblogs.com/ylhome/archive/2010/07/10/1774770.html)
 
 ## C++中容易忽略的库
+
 1. bitset
 bitset是处理*进制转换*，*基于bit的算法*中简单算法，虽然也可以使用raw的char array替代，但是很多bitset自带的方法，可以让程序飞起来。
 
@@ -476,7 +476,8 @@ int main()
   逻辑或：logical_or<T>
   逻辑否：logical_no<T>
 
-##  gcc `__attribute__`关键字举例之visibility
+##  gcc `__attribute__`关键字举例之`visibility`
+
 看opencv的源代码的时候，发现`CV_EXPORT`的宏定义是
 
 ```cpp
@@ -488,13 +489,12 @@ int main()
 # define CV_EXPORTS
 #endif
 ```
-我就发现了新大陆似的开始找这个属性的特点。
+我就发现了新大陆似的开始找这个属性的特点。这个在工程中尤其重要，我们实现的函数要想被其他用户调用，就必须使用`visibility`让
+用户可见，否则我们的实现的功能函数对用户隐藏，出现"undefined reference".
 
-### 定义
+> visibility用于设置动态链接库中函数的可见性，将变量或函数设置为hidden，则该符号仅在本so中可见，在其他库中则不可见。
 
-visibility用于设置动态链接库中函数的可见性，将变量或函数设置为hidden，则该符号仅在本so中可见，在其他库中则不可见。
-
-g++在编译时，可用参数-fvisibility指定所有符号的可见性(不加此参数时默认外部可见，参考man g++中-fvisibility部分)；若需要对特定函数的可见性进行设置，需在代码中使用`__attribute__`设置visibility属性。
+g++在编译时，可用参数`-fvisibility`指定所有符号的可见性(不加此参数时默认外部可见，参考man g++中`-fvisibility`部分)；若需要对特定函数的可见性进行设置，需在代码中使用`__attribute__`设置visibility属性。
 
 编写大型程序时，可用`-fvisibility=hidden`设置符号默认隐藏，针对特定变量和函数，在代码中使用`__attribute__ ((visibility("default")))`另该符号外部可见，这种方法可用有效避免so之间的符号冲突。
 
@@ -502,7 +502,7 @@ g++在编译时，可用参数-fvisibility指定所有符号的可见性(不加�
 
 值得注意的是，visibility2.cc中可以调用fun1，原因是visibility1.o和visibility2.o同属于一个so文件。
 
-    visibility1.cc：
+> visibility1.cc：
 
 ```cpp
 #include <stdio.h>
@@ -515,7 +515,7 @@ __attribute__ ((visibility("hidden"))) void fun1();//
 ```
 若编译此文件时使用了参数`-fvisibility=hidden`，则此行可以省略
 
-    visibility2.cc：
+> visibility2.cc：
 
 ```cpp
 #include <stdio.h>
@@ -528,7 +528,7 @@ extern "C" void fun2()
 __attribute__ ((visibility("default"))) void fun2();//若编译此文件时没有使用参数-fvisibility或设置参数-fvisibility=default，则此行可以省略
 ```
 
-    main.cpp
+> main.cpp
 
 ```cpp
 extern "C" void fun1();
@@ -541,7 +541,7 @@ int main()
 }
 ```
 
-    Makefile：
+> Makefile：
 
 ```Makefile
 all:test
@@ -558,47 +558,60 @@ visibility2.o:visibility2.cc
 clean:
         rm -f *.o *.so test
 ```
-编译和输出：
-
-    $ make
-    g++ -c main.cc
-    g++ -fvisibility=hidden -fPIC -c visibility1.cc
-    g++ -fvisibility=hidden -fPIC -c visibility2.cc
-    g++ -shared -o libvisibility.so visibility1.o visibility2.o
-    g++ -o test main.o -lvisibility -L .
-    main.o: In function `main':
-    main.cc:(.text+0x5): undefined reference to `fun1'
-    collect2: ld returned 1 exit status
-    make: *** [test] Error 1
-
+> 编译和输出：
+```sh
+  $ make
+  g++ -c main.cc
+  g++ -fvisibility=hidden -fPIC -c visibility1.cc
+  g++ -fvisibility=hidden -fPIC -c visibility2.cc
+  g++ -shared -o libvisibility.so visibility1.o visibility2.o
+  g++ -o test main.o -lvisibility -L .
+  main.o: In function `main':
+  main.cc:(.text+0x5): undefined reference to `fun1'
+  collect2: ld returned 1 exit status
+  make: *** [test] Error 1
+```
 可以看到，`main()`中可以不可用调用`fun1`,可以调用`fun2`，因为`fun1`已经设置为外部不可见，`fun2`设置为外部可见。
 
 使用readelf对各个.o文件分析可以看到，fun1的Vis属性为HIDDEN，fun2的Vis属性为DEFAULT：
 
-$ readelf -s visibility1.o|grep fun
-6: 0000000000000007    5 OBJECT  LOCAL  DEFAULT    6 _ZZ4fun1E12__FUNCTION__
-12: 0000000000000000    30 FUNC    GLOBAL HIDDEN    2 fun1
+```sh
+  $ readelf -s visibility1.o|grep fun
+  6: 0000000000000007    5 OBJECT  LOCAL  DEFAULT    6 _ZZ4fun1E12__FUNCTION__
+  12: 0000000000000000    30 FUNC    GLOBAL HIDDEN    2 fun1
 
-$ readelf -s visibility2.o|grep fun
-6: 0000000000000007    5 OBJECT  LOCAL  DEFAULT    6 _ZZ4fun2E12__FUNCTION__
-12: 0000000000000000    35 FUNC    GLOBAL DEFAULT    2 fun2
-15: 0000000000000000    0 NOTYPE  GLOBAL DEFAULT  UND fun1
+  $ readelf -s visibility2.o|grep fun
+  6: 0000000000000007    5 OBJECT  LOCAL  DEFAULT    6 _ZZ4fun2E12__FUNCTION__
+  12: 0000000000000000    35 FUNC    GLOBAL DEFAULT    2 fun2
+  15: 0000000000000000    0 NOTYPE  GLOBAL DEFAULT  UND fun1
 
-$ readelf -s libvisibility.so|grep fun
-9: 00000000000006ac    35 FUNC    GLOBAL DEFAULT  12 fun2
-41: 000000000000071d    5 OBJECT  LOCAL  DEFAULT  14 _ZZ4fun1E12__FUNCTION__
-43: 0000000000000729    5 OBJECT  LOCAL  DEFAULT  14 _ZZ4fun2E12__FUNCTION__
-48: 000000000000068c    30 FUNC    LOCAL  HIDDEN  12 fun1
-54: 00000000000006ac    35 FUNC    GLOBAL DEFAULT  12 fun2
+  $ readelf -s libvisibility.so|grep fun
+  9: 00000000000006ac    35 FUNC    GLOBAL DEFAULT  12 fun2
+  41: 000000000000071d    5 OBJECT  LOCAL  DEFAULT  14 _ZZ4fun1E12__FUNCTION__
+  43: 0000000000000729    5 OBJECT  LOCAL  DEFAULT  14 _ZZ4fun2E12__FUNCTION__
+  48: 000000000000068c    30 FUNC    LOCAL  HIDDEN  12 fun1
+  54: 00000000000006ac    35 FUNC    GLOBAL DEFAULT  12 fun2
+```
 
--- 参考：
-[Function Attributes](https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#Function-Attributes)
-[Visibility Pragmas](https://gcc.gnu.org/onlinedocs/gcc/Visibility-Pragmas.html#Visibility-Pragmas)
-[GCC扩展 __attribute__ ((visibility("hidden")))](http://liulixiaoyao.blog.51cto.com/1361095/814329)
+### 导出链接库的所有符号
+
+$$A -> B -> C$$
+
+编译shared target B库的时候，gcc编译器默认是用什么区什么的原则，也就是说，依赖了库A中哪个.o文件中的东西，就会把相应的.o文件
+打包到最终的库中。但是，有的时候在这个库中我们并没有引用全部的符号，但是当其他库C依赖我们这个B库的时候，如果引用了B中未引用的A中的符号，这个时候会出现"undefined reference"的编译错误。`-Wl,--whole-archive`可以实现将所有库中的符号打包进去。
+
+`-Wl,--whole-archive you_lib -Wl,--no-whole-archive`
+
+### 参考链接
+
+1. [Function Attributes](https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#Function-Attributes)
+2. [Visibility Pragmas](https://gcc.gnu.org/onlinedocs/gcc/Visibility-Pragmas.html#Visibility-Pragmas)
+3. [GCC扩展 __attribute__ ((visibility("hidden")))](http://liulixiaoyao.blog.51cto.com/1361095/814329)
 
 
-# 一些C++中的template
+## 一些C++中的模板code
 
+1. ++i和i++的重载
 ```cpp
 ClassName& operator++()
 {

@@ -5,6 +5,11 @@ categories: [blog ]
 tags: [Caffe, 深度学习]
 description:  使用caffe框架进行实验过程中的一些心得
 ---
+{:toc}
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/> 
+
 
 ## 引入
 最近实验中又跟caffe打交道，虽然caffe好用，但是要想让caffe启动训练起来，还真得费一番功夫。

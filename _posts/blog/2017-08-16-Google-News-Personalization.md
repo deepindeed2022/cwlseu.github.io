@@ -2,10 +2,10 @@
 layout: post
 title: "Google News Personalization：Scalable Online Collaborative Filtering"
 categories: [blog ]
-tags: [PLSI, EM, LSH]
+tags: [机器学习]
 description:  这篇论文介绍了google news推荐系统的实现。在用户量很大的前提下，原有的推荐算法适用性较差，需要对其进行改进，例如使用mapreduce，bigtable等技术提高运算速度，综合考虑多种推荐算法等等。
 ---
-
+{:toc}
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/> 

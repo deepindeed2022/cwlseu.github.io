@@ -6,6 +6,11 @@ tags: [MXNet, 深度学习]
 description: mxnet源代码阅读笔记
 ---
 
+{:toc}
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/> 
+
 ## 快速安装
 
 参考地址：`https://mxnet.incubator.apache.org/install/index.html`
