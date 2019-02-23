@@ -106,7 +106,7 @@ time LeNet training on CPU for 10 iterations
 `./build/tools/caffe time -model examples/mnist/lenet_train_test.prototxt -gpu 0`
 3. time a model architecture with the given weights on no GPU for 10 iterations
 `./build/tools/caffe time --model=models/ResNet/VOC0712/OOXX_321x321/deploy.prototxt --weights models/ResNet/VOC0712/OOXX_321x321/ResNet_VOC0712_OOXX_321x321_iter_115000.caffemodel --iterations 10`
-![@inference time result](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/linux/inference_time.JPG)
+![@inference time result](https://cwlseu.github.io/images/linux/inference_time.JPG)
 
 ## 为什么要用Google Protocol Buffer序列化协议
 

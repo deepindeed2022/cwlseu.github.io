@@ -14,7 +14,7 @@ description: 平时在github中看到各种开源协议，很好奇但是没有�
 
 而开源许可协议使这些事情变得简单，开发者很容易向一个项目贡献自己的代码，它还可以保护你原始作者的身份，使你 至少获得认可，开源许可协议还可以阻止其它人将某个产品据为己有。以下是开源界的 5 大许可协议。
 
-![](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/license/20140811173721234.jpeg)
+![](https://cwlseu.github.io/images/license/20140811173721234.jpeg)
 
 ## GNU GPL
 

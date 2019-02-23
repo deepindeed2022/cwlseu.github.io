@@ -22,7 +22,7 @@ description: 模式识别经典算法介绍。主要是参加模式识别课程�
 ## 概念
 
 **增广样本**  
-![@对于原训练数据添加全部为1的一项，用来表示偏置的权重，从而将偏置和原始权重统一到一个矩阵乘法之中，这个预处理数据的过程叫数据的增广](https://github.com/cwlseu/cwlseu.github.io/blob/master/images/classifiction-pattern/1.jpg)
+![@对于原训练数据添加全部为1的一项，用来表示偏置的权重，从而将偏置和原始权重统一到一个矩阵乘法之中，这个预处理数据的过程叫数据的增广](https://cwlseu.github.io/images/classifiction-pattern/1.jpg)
 
 ## 方法论
 
