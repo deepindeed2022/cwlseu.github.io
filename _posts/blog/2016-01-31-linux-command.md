@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [linux开发, ]
 description: In me the tiger sniffs the rose.
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]

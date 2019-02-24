@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [Algorithm, 开发]
 description: 信息检索系课程回顾与课程设计
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]

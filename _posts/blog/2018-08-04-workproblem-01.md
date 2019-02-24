@@ -6,12 +6,14 @@ tags: [C++, android]
 description: 关于字符串赋值导致crash的问题
 ---
 {:toc}
+
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
 - 博客： <https://cwlseu.github.io/>
 
 
 ## 问题描述
+
 在**android**系统中，测试一个C++动态库时，出现segment fault或者Invalid Address free
 等问题，最终定位crash的位置时在一个**字符串赋值**的位置。例如：
 ```cpp

@@ -5,6 +5,11 @@ categories: [blog ]
 tags: [GPU编程]
 description: CUDA并行编程指南
 ---
+{:toc}
+
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://cwlseu.github.io/>
 
 ## 名词
 * SIMD： 单指令多数据，是基于一个处理器核的，128位

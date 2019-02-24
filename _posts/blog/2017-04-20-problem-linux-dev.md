@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [linux开发]
 description:  开发中的问题记录，当前主要为安装问题
 ---
+{:toc}
 
 - 声明：本博客欢迎转发，但请保留原作者信息!
 - 作者: [曹文龙]
