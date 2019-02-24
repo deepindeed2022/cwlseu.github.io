@@ -25,7 +25,7 @@ dribbble_username:
 description_footer: 本站记录我视觉之旅的沿途风景！
 
 # Your disqus shortname, entering this will enable commenting on posts
-disqus: cwlseu
+disqus_shortname: cwlseu
 
 # Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
 google_analytics: UA-86501439-1
