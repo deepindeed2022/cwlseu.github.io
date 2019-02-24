@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [linux开发]
 description: 使用html5技术实现数据可视化，主要使用过ajax动态请求的技术，使用现成的数据可视化js框架echarts, 实现测试log的可视化。
 ---
-{:toc}
+[TOC]
 
 ## Javascript框架调研
 

@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [linux开发, ]
 description: In me the tiger sniffs the rose.
 ---
-{:toc}
+[TOC]
 
 ## 引言
 

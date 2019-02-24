@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [工具, 深度学习]
 description: "为了展示模型的效果，结合caffe中的tools进行可视化"
 ---
-{:toc}
+[TOC]
 
 ## 引言
 

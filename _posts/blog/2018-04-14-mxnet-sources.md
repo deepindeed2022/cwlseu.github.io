@@ -6,7 +6,7 @@ tags: [MXNet, 深度学习]
 description: mxnet源代码阅读笔记
 ---
 
-{:toc} 
+[TOC] 
 
 ## 快速安装
 

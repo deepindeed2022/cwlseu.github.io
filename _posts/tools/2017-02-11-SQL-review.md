@@ -6,7 +6,7 @@ tags: [工具]
 description: "SQL是数据库操作的基础语言，使用SQL可以说是和数据库交流沟通的工具"
 ---
 
-{:toc}
+[TOC]
 
 
  

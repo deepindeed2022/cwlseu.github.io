@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [linux开发]
 description: 
 ---
-{:toc} 
+[TOC] 
 
 ## 一个关于CMake的例子的解读
 

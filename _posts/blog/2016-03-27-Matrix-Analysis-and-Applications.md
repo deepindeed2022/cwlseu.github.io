@@ -6,7 +6,7 @@ tags: [数学基础]
 description: 矩阵分析、应用与实践；主讲教师：Baobin Li
 ---
 
-{:toc}
+[TOC]
 
 
 - 作者: [cwlseu]

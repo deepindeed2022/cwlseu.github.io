@@ -6,7 +6,7 @@ tags: [数学基础]
 description: Matlab基础和病态系统基本介绍
 ---
 
-{:toc}
+[TOC]
 
 ## 病态系统的由来
 

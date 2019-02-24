@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [工具]
 description: 最近在写论文，用到latex进行编写，latex真是编辑神器，科研工作者 必备啊，在这向唐纳德先生致敬。
 ---
-{:toc}
+[TOC]
 
 ## 引言
 

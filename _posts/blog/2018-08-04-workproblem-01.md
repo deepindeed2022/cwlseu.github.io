@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [C++, android]
 description: 关于字符串赋值导致crash的问题
 ---
-{:toc}
+[TOC]
 
 ## 问题来源
 

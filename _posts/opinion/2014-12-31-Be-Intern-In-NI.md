@@ -5,7 +5,7 @@ categories: [opinion]
 tags: [随笔, ]
 description: Working hard, Playing hard.
 ---
-{:toc}
+[TOC]
 
 
  

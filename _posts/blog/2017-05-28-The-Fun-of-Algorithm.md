@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [Algorithm, ]
 description: 
 ---
-{:toc}                                  
+[TOC]                                  
 
 ## 算法模式
 

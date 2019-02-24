@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [android]
 description: android 开发
 ---
-{:toc}
+[TOC]
 
 
 ## 前言

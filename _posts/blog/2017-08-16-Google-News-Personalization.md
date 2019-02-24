@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [机器学习]
 description:  这篇论文介绍了google news推荐系统的实现。在用户量很大的前提下，原有的推荐算法适用性较差，需要对其进行改进，例如使用mapreduce，bigtable等技术提高运算速度，综合考虑多种推荐算法等等。
 ---
-{:toc} 
+[TOC] 
 
 ## abstract
 这篇论文介绍了google news推荐系统的实现。在用户量很大的前提下，原有的推荐算法适用性较差，需要对其进行改进，例如使用mapreduce，bigtable等技术提高运算速度，综合考虑多种推荐算法等等。

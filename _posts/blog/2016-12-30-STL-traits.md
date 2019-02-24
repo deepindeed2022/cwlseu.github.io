@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [C++]
 description: STL源码剖析，在源码阅读中学习C++中的一些tricks
 ---
-{:toc}
+[TOC]
 
 ## 引言
 一个方法实现过程中，业务逻辑很多都是相似的，但是与具体的特化类型的不同有一定的差异。
