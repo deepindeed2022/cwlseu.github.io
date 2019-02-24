@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [Algorithm, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
-[TOC]
+
+{:toc}
 
 ## 课程介绍
 

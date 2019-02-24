@@ -5,11 +5,8 @@ categories: [opinion ]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
-[TOC]
 
-
- 
-
+{:toc}
 
 ## 2016年计划
 2016年必将是我的转折一年。

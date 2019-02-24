@@ -5,9 +5,8 @@ categories: [opinion]
 tags: [随笔]
 description: 平时闲来没事，胡思乱想。Thinking all the time
 ---
-[TOC]
 
-
+{:toc}
  
 
 ## 平庸是魔鬼的温床

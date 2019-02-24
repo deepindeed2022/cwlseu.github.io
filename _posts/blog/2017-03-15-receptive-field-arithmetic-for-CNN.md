@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [深度学习, 计算机视觉]
 description: "看这篇博客之前希望对CNN的基本概念有所了解，尤其是卷积和pooling操作。也可以看 <https://arxiv.org/pdf/1603.07285.pdf>来回顾一下. 这篇博客和该文章是想通的。 "
 ---
-[TOC]
+
+{:toc}
 
 ## 原文地址
 

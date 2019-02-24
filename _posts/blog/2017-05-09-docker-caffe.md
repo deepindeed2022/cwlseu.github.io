@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [Caffe, 深度学习]
 description:  租用亚马逊的环境进行实验，直接运行docker file 进行镜像创建
 ---
-[TOC]
+
+{:toc}
 
 ## Docker安装caffe
 

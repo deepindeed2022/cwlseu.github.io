@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [Linux开发, C++]
 description: 基础原理的实现
 ---
-[TOC]
+
+{:toc}
 
 
 ## 简介

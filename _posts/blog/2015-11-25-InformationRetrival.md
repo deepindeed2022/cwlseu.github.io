@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [Algorithm, 开发]
 description: 信息检索系课程回顾与课程设计
 ---
-[TOC]
+
+{:toc}
 
 ## 课程概要
 

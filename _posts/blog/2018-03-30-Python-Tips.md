@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [Python]
 description: Python开发中的问题记录。
 ---
-[TOC]
+
+{:toc}
 
 ## pip安装package出现Read timed out.
 

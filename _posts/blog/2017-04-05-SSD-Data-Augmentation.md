@@ -6,7 +6,7 @@ tags: [深度学习, detection, CV算法]
 description: 数据增强技术在CV研究中对于提高Performance是重要的研究话题。尤其是在物体检测方面，业界流行的方法中对具体方法之外，往往通过数据增强技术再次提高几个百分点。
 ---
 
-[TOC]
+{:toc}
 
 ## SSD(Single Shot MultiBox Detector)
 本文是Wei Liu在2016年的一篇成果. 采用VOC2007 Dataset, Nvidia Titan X上：

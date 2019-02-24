@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [开发]
 description: Spark和hadoop的踩坑之路
 --- 
-[TOC] 
+
+{:toc} 
 
 ## install jdk in centos 
 

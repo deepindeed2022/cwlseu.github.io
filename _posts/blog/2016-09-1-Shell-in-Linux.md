@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [linux开发]
 description: linux下的shell脚本的学习与使用
 --- 
-[TOC]
+
+{:toc}
 
 
 

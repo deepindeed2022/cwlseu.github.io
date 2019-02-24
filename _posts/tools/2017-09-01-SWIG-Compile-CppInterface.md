@@ -5,10 +5,9 @@ categories: [blog ]
 tags: [工具, Python]
 description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三个核心模块。为了使用方便，决定使用swig编译python接口进行使用。
 ---
-[TOC]
 
+{:toc}
 
- 
 
 ## 来源
 

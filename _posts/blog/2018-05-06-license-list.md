@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [linux开发]
 description: 开源协议
 ---
-[TOC] 
+
+{:toc} 
 
 ## 引言
 

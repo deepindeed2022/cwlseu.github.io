@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [C++, ]
 description: C++开发建议50条
 ---
-[TOC]
+
+{:toc}
 
 ###  C++是一组语言的集合
 C + 面向对象的C + 模板 + STL

@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [linux开发]
 description:  开发中的问题记录，当前主要为安装问题
 ---
-[TOC]
+
+{:toc}
 
 ## fatal error: metis.h: No such file or directory
 

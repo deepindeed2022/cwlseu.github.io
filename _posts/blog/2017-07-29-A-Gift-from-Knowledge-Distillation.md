@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [深度学习]
 description: 这是一篇关于知识迁移学习的文章
 ---
-[TOC]
+
+{:toc}
 
 ## 来源
 

@@ -6,7 +6,7 @@ tags: [算法优化, linux开发]
 description: 向量化和编译器优化
 ---
 
-[TOC]
+{:toc}
 
 ## 实战算法优化
 

@@ -5,11 +5,9 @@ categories: [opinion ]
 tags: [随笔, ]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
-[TOC]
 
+{:toc}
 
- 
-  
 ## 当“过年”成为历史文化遗产
 
 过年，是我们小时候最期盼的事情了。现在，已经工作，当在回到老家过年，已经是另外一番景象，我不禁思绪万千，年会一直被过下去吗？

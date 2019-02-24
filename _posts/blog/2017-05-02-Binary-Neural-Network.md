@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [深度学习, 神经网络压缩]
 description: "神经网络量化、二值化、设计package的神经网络模块"
 ---
-[TOC]
+
+{:toc}
 
 ## 引言
 

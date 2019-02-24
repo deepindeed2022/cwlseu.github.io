@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [Caffe, 深度学习]
 description:  使用caffe框架进行实验过程中的一些心得
 ---
-[TOC] 
+
+{:toc} 
 
 
 ## 引入

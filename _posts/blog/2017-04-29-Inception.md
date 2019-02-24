@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [CV算法]
 description: Inception是在NIN中提出的一个神经网络模块，后来随着googLeNet中的成功被人们视为深度网络的法宝。
 ---
-[TOC]
+
+{:toc}
 
 ## 目的
 2014年之后，深度CNN网络成为主流，其中出现了Inception之后，将神经网络由十几层加深到34层[^2], Inception作为后来深度神经网络中的重要组成模块，有对其中的原理和效果进行钻研学习一下。

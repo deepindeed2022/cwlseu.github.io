@@ -5,7 +5,8 @@ categories: [blog ]
 tags: [算法优化, android]
 description:  腾讯前不久开源了一个关于手机上卷积加速优化的框架NCNN，闲来没事，拿来研读一番。
 ---
-[TOC]    
+
+{:toc}    
 
 ## 从C++ 到android
 在ncnn中是用C++写的，没玩过android很是愧疚。幸好项目中有android依赖链的cmake文件。

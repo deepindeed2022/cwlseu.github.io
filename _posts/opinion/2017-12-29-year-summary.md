@@ -5,11 +5,8 @@ categories: [opinion]
 tags: [随笔]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
-[TOC]
 
-
- 
-
+{:toc}
 
 2017已经接近尾声，回想这一年干的事情，历历在目。这一年中遇到了不一样的人，经历了不同的事儿，唯一不变的是纯与真。
 

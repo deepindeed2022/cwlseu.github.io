@@ -5,10 +5,8 @@ categories: [opinion]
 tags: [随笔, ]
 description: Working hard, Playing hard.
 ---
-[TOC]
 
-
- 
+{:toc} 
 
 先上一个NI中国网址：[http://www.ni.com/zh-cn.html](http://china.ni.com/career/intern)
 
