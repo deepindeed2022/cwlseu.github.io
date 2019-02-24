@@ -352,7 +352,7 @@ $$IOC = \frac{area of overlap}{area of union} = \frac{area(B_p \cap B_{gt})}{are
 The image below illustrates the IOU between a ground truth bounding box (in green) and a detected bounding box (in red).
 
 <p align="center">
-<img src="https://github.com/rafaelpadilla/Object-Detection-Metrics/blob/master/aux_images/iou.png" align="center"/></p>
+<img src="https://cwlseu.github.io/images/detection/iou.png" align="center"/></p>
 
 ### True Positive, False Positive, False Negative and True Negative  
 
