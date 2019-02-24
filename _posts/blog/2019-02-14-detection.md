@@ -5,14 +5,12 @@ categories: [blog ]
 tags: [detection]
 description: 物体检测算法概览
 ---
-
-{:toc} 
-
+{:toc}
 # 物体检测算法概述
 
 深度学习让物体检测从实验室走到生活。基于深度学习的物体检测算法分类两大类。一类是像RCNN类似的两stage方法，将
 ROI的选择和对ROI的分类score过程。另外一类是类似YOLO将ROI的选择和最终打分实现端到端一步完成。
-![@物体检测算法概览图](https://cwlseu.github.io/images/detectionDetection-All.png)
+![@物体检测算法概览图](https://cwlseu.github.io/images/detection/Detection-All.png)
 
 # 基于region proposals的方法（Two-Stage方法）
 - RCNN => Fast RCNN => Faster RCNN => FPN 
@@ -22,7 +20,7 @@ ROI的选择和对ROI的分类score过程。另外一类是类似YOLO将ROI的�
 - 论文链接：https://arxiv.org/pdf/1506.01497.pdf
 - 作者：Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun
 ### Faster RCNN 整体框架
-![@faster RCNN的算法框架](https://cwlseu.github.io/images/detectionFasterRCNN.png)
+![@faster RCNN的算法框架](https://cwlseu.github.io/images/detection/FasterRCNN.png)
 我们先整体的介绍下上图中各层主要的功能
 
 * **卷积网络提取特征图**：
@@ -41,7 +39,7 @@ Feature Map进入RPN后，先经过一次$3*3$的卷积，同样，特征图大�
 
 特征图大小为60*40，所以会一共生成60*40*9=21600个Anchor box
 
-![@FasterRCNN-RPN](https://cwlseu.github.io/images/detectionFasterCNN-RPN.png)
+![@FasterRCNN-RPN](https://cwlseu.github.io/images/detection/FasterCNN-RPN.png)
 
 * **Roi Pooling**：
 
@@ -51,8 +49,8 @@ Feature Map进入RPN后，先经过一次$3*3$的卷积，同样，特征图大�
 
 会将ROI Pooling层形成固定大小的feature map进行全连接操作，利用Softmax进行具体类别的分类，同时，利用SmoothL1Loss完成bounding box regression回归操作获得物体的精确位置。
 
-![@FasterRCNN算法详细过程图](https://cwlseu.github.io/images/detectionFasterRCNN-Arch.png)
-![@FasterRCNN proposal&RPN Netscope](https://cwlseu.github.io/images/detectionFasterRCNNNetwork.png)
+![@FasterRCNN算法详细过程图](https://cwlseu.github.io/images/detection/FasterRCNN-Arch.png)
+![@FasterRCNN proposal&RPN Netscope](https://cwlseu.github.io/images/detection/FasterRCNNNetwork.png)
 
 ### 参考链接
 
@@ -78,13 +76,13 @@ Feature Map进入RPN后，先经过一次$3*3$的卷积，同样，特征图大�
 这样我们可以从中获得更多的有用信息。整个过程类似于人眼看一个目标由远及近的
 过程（近大远小原理）。
 
-![@图像金字塔 | center ](https://cwlseu.github.io/images/detectionpyramidImage.jpg)
+![@图像金字塔 | center ](https://cwlseu.github.io/images/detection/pyramidImage.jpg)
 
 ### 论文概述：
 
 作者提出的多尺度的object detection算法：FPN（feature pyramid networks）。原来多数的object detection算法都是只采用顶层特征做预测，但我们知道低层的特征语义信息比较少，但是目标位置准确；高层的特征语义信息比较丰富，但是目标位置比较粗略。另外虽然也有些算法采用多尺度特征融合的方式，但是一般是采用融合后的特征做预测，而本文不一样的地方在于预测是在不同特征层独立进行的。
 
-![@FPN架构图](https://cwlseu.github.io/images/detectionFPN.png)
+![@FPN架构图](https://cwlseu.github.io/images/detection/FPN.png)
 
 前面已经提到了高斯金字塔，由于它可以在一定程度上面提高算法的性能，
 因此很多经典的算法中都包含它。但是这些都是在传统的算法中使用，当然也可以将
@@ -92,7 +90,7 @@ Feature Map进入RPN后，先经过一次$3*3$的卷积，同样，特征图大�
 但是我们的特征金字塔可以在速度和准确率之间进行权衡，可以通过它获得更加鲁棒
 的语义信息，这是其中的一个原因。
 
-![@FPN不同层识别的目标不同](images/FPN-multiScale.png)
+![@FPN不同层识别的目标不同](https://cwlseu.github.io/images/detection/FPN-multiScale.png)
 
 如上图所示，我们可以看到我们的图像中存在不同尺寸的目标，而不同的目标具有不同的特征，
 利用浅层的特征就可以将简单的目标的区分开来；
@@ -130,7 +128,7 @@ Anchor是RPN网络的核心。需要确定每个滑窗中心对应感受野内�
 首先我们需要知道anchor的本质是什么，本质是SPP(spatial pyramid pooling)思想的逆向。而SPP本身是做什么的呢，就是将不同尺寸的输入resize成为相同尺寸的输出。所以SPP的逆向就是，将相同尺寸的输出，倒推得到不同尺寸的输入。
 
 接下来是anchor的窗口尺寸，这个不难理解，三个面积尺寸（128^2，256^2，512^2），然后在每个面积尺寸下，取三种不同的长宽比例（1:1,1:2,2:1）.这样一来，我们得到了一共9种面积尺寸各异的anchor。示意图如下：
-![@9个Anchor示意图](https://cwlseu.github.io/images/detectionAnchor.png)
+![@9个Anchor示意图](https://cwlseu.github.io/images/detection/Anchor.png)
 至于这个anchor到底是怎么用的，这个是理解整个问题的关键。
 
 * Faster RCNN
@@ -146,7 +144,7 @@ ROIs Pooling顾名思义，是Pooling层的一种，而且是针对RoIs的Poolin
 > * 在Fast RCNN中， RoI是指Selective Search完成后得到的“候选框”在特征图上的映射，如下图中的红色框所示；
 > * 在Faster RCNN中，候选框是经过RPN产生的，然后再把各个“候选框”映射到特征图上，得到RoIs。
 
-![@](https://cwlseu.github.io/images/detectionROIPooling.png)
+![@](https://cwlseu.github.io/images/detection/ROIPooling.png)
 
 参考faster rcnn中的ROI Pool层，功能是将不同size的ROI区域映射到固定大小的feature map上。
 
@@ -252,10 +250,10 @@ void ROIPoolingLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
 }
 ```
 ## ROI Align
-![@ROIAlign模块使用示意图](https://cwlseu.github.io/images/detectionROIAlign-1.png)
+![@ROIAlign模块使用示意图](https://cwlseu.github.io/images/detection/ROIAlign-1.png)
 
 为了解决ROI Pooling的上述缺点，作者提出了ROI Align这一改进的方法。ROI Align的思路很简单：取消量化操作，使用双线性内插的方法获得坐标为浮点数的像素点上的图像数值,从而将整个特征聚集过程转化为一个连续的操作。值得注意的是，在具体的算法操作上，ROI Align并不是简单地补充出候选区域边界上的坐标点，然后将这些坐标点进行池化，而是重新设计了一套比较优雅的流程，如下图所示：
-![@浮点坐标计算过程](https://cwlseu.github.io/images/detectionROIAlign-2.png)
+![@浮点坐标计算过程](https://cwlseu.github.io/images/detection/ROIAlign-2.png)
 * 遍历每一个候选区域，保持浮点数边界不做量化。
 * 将候选区域分割成$k\times k$个单元，每个单元的边界也不做量化。
 * 在每个单元中计算固定四个坐标位置，用双线性内插的方法计算出这四个位置的值，然后进行最大池化操作。
@@ -267,7 +265,7 @@ void ROIPoolingLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
 
 ## Normalization
 
-![@归一化方法](https://cwlseu.github.io/images/detectionnormalization-methods.jpg)
+![@归一化方法](https://cwlseu.github.io/images/detection/normalization-methods.jpg)
 每个子图表示一个feature map张量，以$N$为批处理轴，$C$为通道轴，$(H,W)$作为空间轴。其中蓝色区域内的像素使用相同的均值和方差进行归一化，并通过聚合计算获得这些像素的值。从示意图中可以看出，GN没有在N维度方向上进行拓展，因此batch size之间是独立的，GPU并行化容易得多。
 
 
@@ -282,7 +280,7 @@ void ROIPoolingLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
 > GN does not exploit the batch dimension, and its
 computation is independent of batch sizes.
 
-![@BN,LN,IN,GN result comparison](https://cwlseu.github.io/images/detectionGN-Results.png)
+![@BN,LN,IN,GN result comparison](https://cwlseu.github.io/images/detection/GN-Results.png)
 从实验结果中可以看出在训练集合上GN的valid error低于BN，但是测试结果上逊色一些。这个
 可能是因为BN的均值和方差计算的时候，通过*随机批量抽样（stochastic batch sampling）*引入了不确定性因素，这有助于模型参数正则化。
 **而这种不确定性在GN方法中是缺失的，这个将来可能通过使用不同的正则化算法进行改进。**
@@ -311,7 +309,7 @@ $rcnn$主要作用就是用于物体检测，就是首先通过$selective search
 
 ### SPPNet
 
-![Alt text](https://cwlseu.github.io/images/detectionSPPNet.png)
+![Alt text](https://cwlseu.github.io/images/detection/SPPNet.png)
 如果对selective search(ss)提供的2000多个候选区域都逐一进行卷积处理，势必会耗费大量的时间，所以他觉得，能不能我们先对一整张图进行卷积得到特征图，然后再将ss算法提供的2000多个候选区域的位置记录下来，通过比例映射到整张图的feature map上提取出候选区域的特征图B,然后将B送入到金字塔池化层中，进行权重计算.
 
 然后经过尝试，这种方法是可行的，于是在RCNN基础上，进行了这两个优化得到了这个新的网络sppnet.
@@ -320,20 +318,20 @@ $rcnn$主要作用就是用于物体检测，就是首先通过$selective search
 
 NMS算法，非极大值抑制算法，引入NMS算法的目的在于：根据事先提供的 score 向量，以及 regions（由不同的 bounding boxes，矩形窗口左上和右下点的坐标构成） 的坐标信息，从中筛选出置信度较高的 bounding boxes。
 
-![@FasterRCNN中的NMS的作用](https://cwlseu.github.io/images/detectionFasterRCNN_NMS.jpeg)
+![@FasterRCNN中的NMS的作用](https://cwlseu.github.io/images/detection/FasterRCNN_NMS.jpeg)
 
-![@FasterRCNN中anchor推荐框的个数](https://cwlseu.github.io/images/detectionFasterRCNN_anchor.jpeg)
+![@FasterRCNN中anchor推荐框的个数](https://cwlseu.github.io/images/detection/FasterRCNN_anchor.jpeg)
 Faster RCNN中输入s=600时，采用了三个尺度的anchor进行推荐，分别时128,256和512，其中推荐的框的个数为$1106786$，需要将这$1100k$的推荐框合并为$2k$个。这个过程其实正是$RPN$神经网络模型。
 
 ### SSD
 
 https://blog.csdn.net/wfei101/article/details/78176322
 SSD算法中是分为default box(下图中(b)中为default box示意图)和prior box(实际推荐的框)
-![@SSD算法中的anchor box和default box示意图](https://cwlseu.github.io/images/detectionSSD-1.png)
+![@SSD算法中的anchor box和default box示意图](https://cwlseu.github.io/images/detection/SSD-1.png)
 
-![@SSD算法架构图](https://cwlseu.github.io/images/detectionSSD-2.png)
+![@SSD算法架构图](https://cwlseu.github.io/images/detection/SSD-2.png)
 
-![SSD算法推荐框的个数](https://cwlseu.github.io/images/detectionSSD-3.png)
+![SSD算法推荐框的个数](https://cwlseu.github.io/images/detection/SSD-3.png)
 
 ### 注意
 
