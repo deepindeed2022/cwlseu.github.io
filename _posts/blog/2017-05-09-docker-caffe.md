@@ -7,10 +7,6 @@ description:  租用亚马逊的环境进行实验，直接运行docker file 进
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
 ## Docker安装caffe
 
 The `standalone` subfolder contains docker files for generating both CPU and GPU executable images for Caffe. The images can be built using make, or by running: `docker build -t caffe:cpu standalone/cpu`

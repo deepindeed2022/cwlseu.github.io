@@ -7,10 +7,6 @@ description: Caffe install in Ubuntu
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
 ## 引言
 
 做深度学习，没用玩过深度学习框架caffe就有点说不过去了。虽然自己的小机器显卡能力不行，但是希望在cuda上跑caffe的心却没有停止过。从ubuntu12.04一直折腾到16.04，cuda从6.5也release到了8.0，中间走过的弯路很多。

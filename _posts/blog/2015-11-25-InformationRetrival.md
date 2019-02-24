@@ -7,10 +7,6 @@ description: 信息检索系课程回顾与课程设计
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
 ## 课程概要
 
 * 布尔查询
@@ -104,11 +100,9 @@ It's preferred to use Python and with python package unittest for unit test to i
 ![WT10G实验结果](https://cwlseu.github.io/images/ir/WT10G.jpg)
 3. 在数据集合非常的时候，只有Indri, IXE, MTerrier和Zettair的索引性能不会大幅度下降，而Swish-E， Swish++ 在给定系统参数下，根本不能够对大数据集合进行索引。
 
-总结：
+### 小结：
 1. Lucene, MG4J, Swish-E, Swish++, XMLSearch 和Zettair的索引大小为数据集大小的25%~35%。Terrier建立索引文件大小为原来的50%。其他还增大了。
-
 2. ht://Dig， Lucene和XMLSearch会有固定大小的内存开销，并且前两者的内存开销与数据集的大小没有关系(30MB~120MB);IXE，MG4J，Swish-E， Swish++ 和Terrier内存开销大，呈现线性增长；针对大的数据集合要1G以上的内存开销。
-
 3. 在数据集合非常的时候，只有Indri, IXE, MTerrier和Zettair的索引性能不会大幅度下降，而Swish-E， Swish++ 在给定系统参数下，根本不能够对大数据集合进行索引。
 
 ## WT10g 数据说明
@@ -145,7 +139,7 @@ None of the files in this info directory should be indexed.
 #### 文件列表
 
 1. It contains the following files:
-
+```
   README -  this file
   docid_to_url -  mappings: WT10g docid -> URL (*)
   homepages - mappings: server name -> WT10g docid
@@ -190,11 +184,11 @@ None of the files in this info directory should be indexed.
     WTX001-B01-20 http://moe.med.yale.edu:80/mirror/vat/la.html
     WTX001-B01-200 http://www.cdc.net:80/~dupre/pharmacy/pbsound.html
     WTX001-B01-201 http://www.cdnemb-washdc.org:80/sanfran.html
-
+```
   and so on.
 
 ### Document format
-
+```
 The following is an example document contained within the collection.
 All documents are delimited by `*<DOC></DOC>*` tags. The unique WT10g
 document identifier is enclosed within `*<DOCNO></DOCNO>*` tags, and the
@@ -239,7 +233,7 @@ Archive crawler. Lastly the actual HTML source is given.
 
 
 ## The Zettair Search Engine -- Performing TREC experiments
-
+```
 Visual C++ configuration, compilation and installation
 =========================================================
 
@@ -258,7 +252,7 @@ executable that you wish to build.
 Build the executable by selecting Build/Rebuild All.  (Repeat for any
 further executables that you wish to build).  You may then copy the
 created executables whereever you like, and use them.
-
+```
 1. install the zlib by the apt-get 
     `sudo apt-get install zlib1g-dev`
 2. compiler from source code

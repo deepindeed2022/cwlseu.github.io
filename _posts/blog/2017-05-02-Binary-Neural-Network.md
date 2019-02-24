@@ -7,10 +7,6 @@ description: "神经网络量化、二值化、设计package的神经网络模�
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
 ## 引言
 
 面对神经网络over-parametrization和enormous parameters, 工作者在这者方面下了不少功夫。我们也想在这方面分的一杯羹, 当前主要的方向有：

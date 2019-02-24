@@ -1,18 +1,13 @@
 ---
 layout: post
-title: string字符串奇怪的问题
+title: android开发中奇怪crash问题
 categories: [blog ]
 tags: [C++, android]
 description: 关于字符串赋值导致crash的问题
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
-
-## 问题描述
+## 问题来源
 
 在**android**系统中，测试一个C++动态库时，出现segment fault或者Invalid Address free
 等问题，最终定位crash的位置时在一个**字符串赋值**的位置。例如：
@@ -84,12 +79,12 @@ bao->setName("a name");
 
 为什么动态库就有问题，静态库没有问题呢？ ~~因为静态库中是直接将所有需要的文件都包含到静态库中。而动态库中拥有的是所有**需要库的链接**~~我们的动态库中是将所有需要的符号，库等等都编译进行去了的。而我们的软件库依赖其他软件库。
 
+## 最终结论
+### 问题原因
+不同编译环境，以及编译配置导致依赖的静态库和target 动态库依赖了不同的c++标准库，由于两个标准库中的string实现是不同的，导致string对象在释放的时候出现crash。
 
-## 未完待续
-
-
-
-
+### fix方案
+android项目中添加 `-DANDROID_STL=gnustl_shared`或者编译链接中添加`TARGET_LINK_LIBRARIES(test_sdk_common gnustl_shared)`用来显示声明链接的库为gnustl_shared库，从而使得多个动态库链接同一个标准库即可。
 
 ##附录： Android 对C++库的支持
 
@@ -110,8 +105,7 @@ https://developer.android.google.cn/ndk/guides/cpp-support
 
 ### 兼容性
 NDK 的 libc++ 不稳定。并非所有测试都能通过，而且测试套件并不全面。一些已知的问题包括：
-
-如果在 ARM 上使用 c++_shared，引发异常时可能会崩溃。
+如果在 ARM 上使用`c++_shared`，引发异常时可能会崩溃。
 对`wchar_t`和语言区域 API 的支持受到限制。
 
 ### C++ 异常
@@ -131,7 +125,9 @@ NDK 的 libc++ 不稳定。并非所有测试都能通过，而且测试套件�
 `LOCAL_CPP_FEATURES += rtti`
 或者，您也可以使用：
 `LOCAL_CPPFLAGS += -frtti`
+
 ### 静态运行时
+
 将 C++ 运行时的静态库变体添加到多个二进制文件可能导致意外行为。 例如，您可能会遇到：
 
 内存在一个库中分配，在另一个库中释放，从而导致内存泄漏或堆损坏。
@@ -142,6 +138,7 @@ libfoo.so 中引发的异常在 libbar.so 中未被捕获，从而导致您的�
 此问题不适用于只包含一个共享库的项目。例如，您可以链接 stlport_static，并预期您的应用正确运行。 如果您的项目需要多个共享库模块，建议使用 C++ 运行时的共享库变体。
 
 ### 共享运行时
+
 如果您的应用针对早于 Android 4.3（Android API 级别 18）的 Android 版本，并且您使用指定 C++ 运行时的共享库变体，则必须先加载共享库，再加载依赖它的任何其他库。
 
 例如，应用可能具有以下模块:
@@ -157,3 +154,33 @@ libfoo.so 中引发的异常在 libbar.so 中未被捕获，从而导致您的�
     }
 
 注：调用`System.loadLibrary()`时不要使用 lib 前缀。
+
+## 附录
+### Android C++系统库 
+从上到下依次分为六层：
+* 应用框架层
+* 进程通信层
+* 系统服务层
+* Android运行时层
+* 硬件抽象层
+* Linux内核层
+
+Android包含一个C/C++库的集合，供Android系统的各个组件使用。这些功能通过Android的应用程序框架（application framework）暴露给开发者。系统库包括九个子系统，分别是图层管理、媒体库、SQLite、OpenGLEState、FreeType、WebKit、SGL、SSL和libc。Android运行时包括核心库和Dalvik虚拟机，前者既兼容了大多数Java语言所需要调用的功能函数，又包括了Android的核心库，比如android.os、android.net、android.media等等。后者是一种基于寄存器的java虚拟机，`Dalvik虚拟机`主要是完成对生命周期的管理、堆栈的管理、线程的管理、安全和异常的管理以及垃圾回收等重要功能。下面列出一些核心库：
+* 系统C库——标准C系统库（libc）的BSD衍生，调整为基于嵌入式Linux设备 
+* 媒体库——基于PacketVideo的OpenCORE。这些库支持播放和录制许多流行的音频和视频格式，以及静态图像文件，包括MPEG4、 H.264、 MP3、 AAC、 AMR、JPG、 PNG  
+* LibWebCore——新式的Web浏览器引擎,驱动Android 浏览器和内嵌的web视图 
+* FreeType ——位图和矢量字体渲染 
+* OpenGL——开放图形库（英语：Open Graphics Library，缩写为 OpenGL）是个定义了一个跨编程语言、跨平台的应用程序接口（API）的规范，它用于生成二维、三维图像。
+* SQLite ——所有应用程序都可以使用的强大而轻量级的关系数据库引擎，SQLite是遵守ACID的关系数据库管理系统，它包含在一个相对小的C程序库中;
+
+![官方Android架构图](./1541559357972.png)
+
+### 标准库
+
+#### 链接标准库的问题
+![Alt text](./1541492120570.png)
+
+### 参考链接
+[1]. [Android gnustl_static VS gnustl_share](https://blog.csdn.net/matrix_laboratory/article/details/79217973)
+
+[2].[C++支持](https://developer.android.com/ndk/guides/cpp-support)

@@ -42,6 +42,11 @@ layout: default
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
         {{content}}
+
+- 声明：本博客欢迎转发，但请保留原作者信息!
+- 作者: [曹文龙]
+- 博客： <https://www.deepindeed.cn/>
+
         </article>
         <hr>
 
@@ -75,8 +80,20 @@ layout: default
         {% include previousAndNext.html %}
 
         <h2 id="comments">Comments</h2>
-        {% include comments.html %}
-
+        <!-- {% include comments.html %} -->
+        <div id="lv-container" data-id="city" data-uid="MTAyMC8yODgxNi81Mzg2">
+            <script type="text/javascript">
+           (function(d, s) {
+               var j, e = d.getElementsByTagName(s)[0];
+               if (typeof LivereTower === 'function') { return; }
+               j = d.createElement(s);
+               j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+               j.async = true;
+               e.parentNode.insertBefore(j, e);
+           })(document, 'script');
+            </script>
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+        </div> 
 
     </div>
     <button class="anchor"><i class="fa fa-anchor"></i></button>
@@ -97,6 +114,7 @@ layout: default
             </div>
             <!-- 其他div框放到这里 -->
             <!-- <div class="side">bbbb</div> -->
+            
         </div>
     </div>
 </div>

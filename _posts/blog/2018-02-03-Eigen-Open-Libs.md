@@ -5,11 +5,7 @@ categories: [blog]
 tags: [工具]
 description: Eigen开源库的入门
 ---
-{:toc}
-
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/> 
+{:toc} 
 
 
 ## Eigen与C之间数据转换

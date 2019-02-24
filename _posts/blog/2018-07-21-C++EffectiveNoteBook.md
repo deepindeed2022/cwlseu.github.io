@@ -7,10 +7,6 @@ description: C++开发建议50条
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
 ###  C++是一组语言的集合
 C + 面向对象的C + 模板 + STL
 Rules for effective C++ programming vary, depending on the part of C++ you are using.

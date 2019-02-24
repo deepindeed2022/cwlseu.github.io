@@ -7,10 +7,6 @@ description: CUDA并行编程指南
 ---
 {:toc}
 
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/>
-
 ## 名词
 * SIMD： 单指令多数据，是基于一个处理器核的，128位
 * MMX：多媒体拓展
@@ -66,7 +62,6 @@ description: CUDA并行编程指南
 
 ```cpp
 #include<cuda_runtime.h>  // cuda程序运行必须的头文件
-
 ```
 
 ### CUDA routine
@@ -169,3 +164,7 @@ struct __device_builtin__ cudaDeviceProp
     int    multiGpuBoardGroupID;       /**< Unique identifier for a group of devices on the same multi-GPU board */
 };
 ```
+
+## 常见问题
+NVCC没有配置，导致undefined reference
+HEADER DIR没有配置，导致找不到头文件

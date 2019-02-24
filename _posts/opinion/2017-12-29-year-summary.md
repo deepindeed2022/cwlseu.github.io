@@ -6,9 +6,9 @@ tags: [随笔]
 description: In me the tiger sniffs the rose.(心有猛虎，细嗅蔷薇)
 ---
 {:toc}
-- 声明：本博客欢迎转发，但请保留原作者信息!
-- 作者: [曹文龙]
-- 博客： <https://cwlseu.github.io/> 
+
+
+ 
 
 
 2017已经接近尾声，回想这一年干的事情，历历在目。这一年中遇到了不一样的人，经历了不同的事儿，唯一不变的是纯与真。
