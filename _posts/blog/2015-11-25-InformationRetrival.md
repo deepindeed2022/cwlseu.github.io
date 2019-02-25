@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "信息检索系统的设计"
-categories: [blog ]
+categories: [project]
 tags: [Algorithm, 开发]
 description: 信息检索系课程回顾与课程设计
 ---

@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [detection]
 description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三个核心模块。为了使用方便，决定使用swig编译python接口进行使用。
 ---
-
+* content
 {:toc} 
 
 ## 人脸检测训练集合
@@ -17,9 +17,7 @@ description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三�
 
 人脸检测 -> 人脸对齐 -> 人脸识别
 
-##  浅色
-
-人脸检测方法
+## 人脸检测方法
 1. 基于特征的人脸检测
 * 整体轮廓法
 * 肤色检测法
@@ -42,6 +40,8 @@ description: SeetaFace人脸识别引擎提供了人脸识别系统所需的三�
 
 LAB: Locally Assembled binary Haar feature
 LBP: Local Binary Pattern for face detectionu
+
+## 应用场景
 
 ## 参考地址
 [1].[seetaface地址下载](https://github.com/seetaface/SeetaFaceEngine)

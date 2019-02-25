@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 基于SVM的人脸识别
-categories: [blog]
+categories: [project]
 tags: [机器学习]
 description: 通过SVM分类方法，进行人脸识别，其中人脸特征采用LFW数据库。
 ---

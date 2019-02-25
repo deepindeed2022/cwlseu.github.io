@@ -5,19 +5,20 @@ categories: [blog ]
 tags: [Caffe, 深度学习]
 description: Caffe install in Ubuntu
 ---
-
+* content
 {:toc}
 
-## 引言
+# Caffe安装初探
 
-做深度学习，没用玩过深度学习框架caffe就有点说不过去了。虽然自己的小机器显卡能力不行，但是希望在cuda上跑caffe的心却没有停止过。从ubuntu12.04一直折腾到16.04，cuda从6.5也release到了8.0，中间走过的弯路很多。
+## 引言
+做深度学习，没用玩过深度学习框架caffe就有点说不过去了。虽然自己的小机器显卡计算能力很弱，但是希望在cuda上跑caffe的心却没有停止过。从ubuntu12.04一直折腾到16.04，cuda从6.5也release到了8.0，中间走过的弯路很多。
 - cuda与系统的适配能力问题
 - ubuntu系统的问题
 - caffe的框架的问题
 经过这几年的发展，现在caffe的安装已经变得异常简单便捷。在此记录一下曾经的坑。
-建议: 直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯了了的。
+建议: 直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯的。
 
-### 安装BLAS
+## 安装BLAS
 
 BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://stackoverflow.com/questions/7596612/benchmarking-python-vs-c-using-blas-and-numpy)
 发现这个mkl是不错的，但是要[收费](https://software.intel.com/en-us/intel-mkl/)
@@ -48,13 +49,13 @@ cpufreq-selector -g performance -c 0
 
 `sudo apt-get install libatlas-base-dev`
 
-### 安装Boost
+## 安装BOOST
 
 * preinstall boost should install following software
 * compile the source code 
 下载源代码，当前最新版本为version 1.60
 
-```sh
+```shell
 wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.gz
 unpacking boost 1.60.tar.gz
 source boot
@@ -63,48 +64,46 @@ source boot
 ```
 
 ```cpp
-    #include <boost/lexical_cast.hpp>
-    #include <iostream>
-    int main()
-    {
-        using boost::lexical_cast;
-        int a = lexical_cast<int>("123");
-        double b = lexical_cast<double>("123.12");
-        std::cout<<a<<std::endl;
-        std::cout<<b<<std::endl;
+#include <boost/lexical_cast.hpp>
+#include <iostream>
+int main()
+{
+    using boost::lexical_cast;
+    int a = lexical_cast<int>("123");
+    double b = lexical_cast<double>("123.12");
+    std::cout<<a<<std::endl;
+    std::cout<<b<<std::endl;
     return 0;
-    }
+}
 ```
- 
 或者直接`apt-get install libboost-all-dev`
 
-
-
-### 从7.5之后安装的方法简单得多
+## 从7.5之后安装的方法简单得多
 
 `sudo apt-get --purge remove nvidia-*`
 到https://developer.nvidia.com/cuda-downloads下载对应的deb文件
 到deb的下载目录下
 
 ```sh
-    sudo dpkg -i cuda-repo-ubuntu1404_7.5-18_amd64.deb 
-    sudo apt-get update 
-    sudo apt-get install cuda
-    sudo reboot
+sudo dpkg -i cuda-repo-ubuntu1404_7.5-18_amd64.deb 
+sudo apt-get update 
+sudo apt-get install cuda
+sudo reboot
 ```
 完成，cuda和显卡驱动就都装好了；其他的什么都不用动
 而网上大部分中文和英文的参考教程都是过时的，折腾几个小时不说还容易装不成。
 
 ### 查看机器参数是否满足CUDA计算的最低要求
-
+```shell
 lspci | grep -i nvidia
 01:00.0 3D controller: NVIDIA Corporation GF117M [GeForce 610M/710M/820M / GT 620M/625M/630M/720M] (rev a1)
+```
 参照nvidia [往年发布的gpus](http://developer.nvidia.com/cuda-gpus)
-我的机器为Compute Capability 2.1，是可以使用CUDA加速的。：）
+我的机器为Compute Capability 2.1，是可以使用CUDA加速的。: )
 
-### 不是所有Nvida显卡都支持Cudnn的
+### 不是所有Nvida显卡都支持cuDNN的
 
-折腾了很久的cudnn安装，后来才发现是自己的显卡太low了，不支持Cudnn，因为Compute Capability 才2.1，要支持Cudnn， Capability >= 3.0，[查看自己显卡的计算能力](https://developer.nvidia.com/cuda-gpus)
+折腾了很久的cuDNN安装，后来才发现是自己的显卡太low了，不支持cuDNN，因为Compute Capability 才2.1，要支持cuDNN， Capability >= 3.0，[查看自己显卡的计算能力](https://developer.nvidia.com/cuda-gpus)
 
 ### install cuDNN
 
@@ -114,37 +113,38 @@ Extract the cuDNN archive to a directory of your choice, referred to below as <i
 
 > LINUX
 
-```sh
-    cd <installpath>
-    export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH
-
-    Add <installpath> to your build and link process by adding -I<installpath> to your compile
-    line and -L<installpath> -lcudnn to your link line.
+```shell
+cd <installpath>
+export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH
 ```
+Add <installpath> to your build and link process by adding -I<installpath> to your compile
+line and -L<installpath> -lcuDNN to your link line.
+
 
 > WINDOWS
 
 Add <installpath> to the PATH environment variable.
 
 In your Visual Studio project properties, add <installpath> to the Include Directories 
-and Library Directories lists and add cudnn.lib to Linker->Input->Additional Dependencies.
+and Library Directories lists and add cuDNN.lib to Linker->Input->Additional Dependencies.
 
 
 ## 非GPU的自动安装脚本
+
 [Install Caffe Script](https://github.com/cwlseu/script-ubuntu-debian/blob/master/install-caffe.sh)
 
-## pycaffe
+## pyCaffe编译安装
 
 1. 首先要编译caffe成功，make pycaffe也成功
-2. 使得pycaffe可以被访问到, set PYTHONPATH=$PYTHONPATH:/path/to/caffe/python
+2. 使得pycaffe可以被访问到, set `PYTHONPATH=$PYTHONPATH:/path/to/caffe/python`
 3. install dependencies python package.在python文件夹下面有requirements.txt文件，列出了所有有关的python package.
    `pip install -r requirements.txt`
 **Note**
 这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，
 
-## 综合一个安装cuda的教程
+# 综合一个安装cuda的教程
 
-可以参考<https://gwyve.github.io/>博客，为了方便把gwyve的cuda 安装部分blog放到这里，
+可以参考<https://gwyve.github.io/>博客，为了方便把gwyve的cuda 安装部分blog放到这里。
 
 ## 引言      
 
@@ -177,8 +177,8 @@ GPU: Tesla K20c
 
 ### cuDNN
 
-[cuDNN_5.1](https://developer.nvidia.com/rdp/cudnn-download)                         
-[file](https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v5.1/prod_20161129/8.0/cudnn-8.0-linux-x64-v5.1-tgz)
+[cuDNN_5.1](https://developer.nvidia.com/rdp/cuDNN-download)                         
+[file](https://developer.nvidia.com/compute/machine-learning/cuDNN/secure/v5.1/prod_20161129/8.0/cuDNN-8.0-linux-x64-v5.1-tgz)
 
 
 ## 安装步骤
@@ -264,6 +264,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib:$LD_LIBRARY_PATH
 显示最后出现“Resalt=PASS”，代表成功
 
 ### 安装cuDNN
+
 安装之前一定要确认你的GPU是支持cuDNN的。
 这个都不应该叫做安装，就是一个创建链接的过程。这个主要参考[参考4](http://blog.csdn.net/jk123vip/article/details/50361951)
 
@@ -272,19 +273,20 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib:$LD_LIBRARY_PATH
 2.复制文件  
 
 ```bash
-sudo cp include/cudnn.h /usr/local/include
-sudo cp lib64/libcudnn.so* /usr/local/lib
+sudo cp include/cuDNN.h /usr/local/include
+sudo cp lib64/libcuDNN.so* /usr/local/lib
 ```
 
-3.创建cudnn的软链接
+3.创建cuDNN的软链接
 
 ```bash
-$ sudo ln -sf /usr/local/lib/libcudnn.so.5.1.10 /usr/local/lib/libcudnn.so.5
-$ sudo ln -sf /usr/local/lib/libcudnn.so.5 /usr/local/lib/libcudnn.so
+$ sudo ln -sf /usr/local/lib/libcuDNN.so.5.1.10 /usr/local/lib/libcuDNN.so.5
+$ sudo ln -sf /usr/local/lib/libcuDNN.so.5 /usr/local/lib/libcuDNN.so
 $ sudo ldconfig -v
 ```
 
 ## Caffe install  Prepare Dependencies
+
 [安装caffe之前，自动化安装的各种依赖脚本](https://github.com/cwlseu/recipes/blob/master/script/install-caffe.sh)
 
 ## Install OpenCV from Source
@@ -309,8 +311,9 @@ for pack in $(cat requirements.txt); do sudo pip install $pack; done
 等待python依赖的库安装完毕。
 ok， 现在应该就可以运行example/下的某些例子了。
 
-## 问题总结
-### hdf5.h没有找到
+# FAQ总结
+
+## hdf5.h没有找到
 
 ```cpp
 CXX src/caffe/layer_factory.cpp
@@ -337,7 +340,7 @@ make: *** [.build_release/src/caffe/layer_factory.o] Error 1
 ```
 参看[caffe issues](https://github.com/NVIDIA/DIGITS/issues/156)
 
-#### 方案一：
+### 方案一：
 
 ```sh
 cd /usr/lib/x86_64-linux-gnu
@@ -345,13 +348,13 @@ sudo ln -s libhdf5_serial.so.8.0.2 libhdf5.so
 sudo ln -s libhdf5_serial_hl.so.8.0.2 libhdf5_hl.so
 ```
 
-#### 方案二
+### 方案二
 just modify the Makefile.config
 INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial/
 LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/hdf5/serial/
 [issues 2690](https://github.com/BVLC/caffe/issues/2690)
 
-### 编译OpenCV  syntax error: identifier 'NppiGraphcutState'
+## 编译OpenCV  syntax error: identifier 'NppiGraphcutState'
 ![@build opencv using cuda](https://cwlseu.github.io/images/linux/opencv-cuda.png)
 
 ```sh
@@ -397,14 +400,14 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 #if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)  || (CUDART_VERSION >= 8000)
 ```
 
-### ld链接失败，或者.o没有生成
+## ld链接失败，或者.o没有生成
 
 ![caffe make-j8 recipe failed](https://cwlseu.github.io/images/linux/caffe-make.png)
 如果你使用的是`make -j8`进行编译的，并且你需要的lib已经都加到`LD_LIBRARY_PATH`中了，那么你可以再试一遍`make -j8`或者使用`make -j4` or `make -j`，最保险的情况就是使用`make`进行编译，虽然慢点但是不会出现各种依赖找不到的情况。
     
     因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。
 
-### Opencv库找不到问题
+## Opencv库找不到问题
 ```
 CXX/LD -o .build_release/tools/extract_features.bin
 .build_release/lib/libcaffe.so: undefined reference to `cv::imread(cv::String const&, int)'
@@ -417,16 +420,16 @@ make: *** [.build_release/tools/extract_features.bin] Error 1
 
 在Makefile中LIBRARES中添加 opencv_imgcodecs项
 
-### 循环登陆界面
+## 循环登陆界面
 
-#### 方案一
+### 方案一
 1. 卸掉nvidia-driver
 `sudo apt-get remove --purge nvidia*`
 2. 看看能不能登陆guest，可以的话
 删除home/user/目录下的 `.Xauthority  .xsession-errors`
 3. reboot
 
-#### 方案二
+### 方案二
 1. 卸掉nvidia-driver
 `sudo apt-get remove --purge nvidia*`
 2. 进入grub启动界面，可是使用advance 启动方式，进行修复界面。通过选择`recovery mode`进行恢复之后，然后重启。
@@ -446,6 +449,7 @@ make: *** [.build_release/tools/extract_features.bin] Error 1
 
 
 ## Quarto Fx580
+
 查看显卡型号`lspci | grep "VGA"` 
 
     01:00.0 VGA compatible controller: NVIDIA Corporation G96GL [Quadro FX 580] (rev a1)
@@ -460,7 +464,7 @@ make: *** [.build_release/tools/extract_features.bin] Error 1
 使用`make`进行编译的时候就会出现该问题。当时如果采用make -j
 https://blog.csdn.net/ahbbshenfeng/article/details/52065676
 
-## 参考
+## 参考文献
 
 1.[【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题](http://blog.csdn.net/u012759136/article/details/53355781)                                
 2.[NVIDIA CUDA Installation Guide for Linux](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu)    
@@ -483,3 +487,166 @@ https://blog.csdn.net/ahbbshenfeng/article/details/52065676
 11.[protobuf-on-ubuntu-not-compiling](https://stackoverflow.com/questions/37983310/protobuf-on-ubuntu-not-compiling)
 
 12.[googleprotobufinternalkemptystring](https://stackoverflow.com/questions/36360188/c-protobuf-error-googleprotobufinternalkemptystring-error)
+
+
+# Docker安装caffe
+
+The `standalone` subfolder contains docker files for generating both CPU and GPU executable images for Caffe. The images can be built using make, or by running: `docker build -t caffe:cpu standalone/cpu`
+for example. (Here `gpu` can be substituted for `cpu`, but to keep the readme simple, only the `cpu` case will be discussed in detail).
+
+Note that the GPU standalone requires a CUDA 8.0 capable driver to be installed on the system and [nvidia-docker] for running the Docker containers. Here it is generally sufficient to use `nvidia-docker` instead of `docker` in any of the commands mentioned.
+
+```Dockerfile
+# 基础镜像
+FROM ubuntu:14.04
+# 进行维护者信息
+MAINTAINER caffe-maint@googlegroups.com
+# 在基础镜像上执行一些命令，安装caffe依赖的libs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        git \
+        wget \
+        libatlas-base-dev \
+        libboost-all-dev \
+        libgflags-dev \
+        libgoogle-glog-dev \
+        libhdf5-serial-dev \
+        libleveldb-dev \
+        liblmdb-dev \
+        libopencv-dev \
+        libprotobuf-dev \
+        libsnappy-dev \
+        protobuf-compiler \
+        python-dev \
+        python-numpy \
+        python-pip \
+        python-scipy && \
+    rm -rf /var/lib/apt/lists/*
+
+# 声明变量并初始化
+ENV CAFFE_ROOT=/opt/caffe
+# 切换当前工作路径为
+WORKDIR $CAFFE_ROOT
+
+# FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
+ENV CLONE_TAG=master
+# clone caffe源代码，安装python依赖库，编译caffe
+RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+    for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
+    mkdir build && cd build && \
+    cmake -DCPU_ONLY=1 .. && \
+    make -j"$(nproc)"
+
+# 设置环境变量
+ENV PYCAFFE_ROOT $CAFFE_ROOT/python
+ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
+ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
+# 像链接文件中写入当前caffe库
+RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
+
+# 切换工作路径
+WORKDIR /workspace
+```
+
+## 在docker镜像中运行caffe
+
+In order to test the Caffe image, run:
+`docker run -ti caffe:cpu caffe --version`
+
+which should show a message like:
+
+```sh
+libdc1394 error: Failed to initialize libdc1394
+caffe version 1.0.0-rc3
+```
+
+One can also build and run the Caffe tests in the image using:
+
+`docker run -ti caffe:cpu bash -c "cd /opt/caffe/build; make runtest"` 
+
+In order to get the most out of the caffe image, some more advanced `docker run` options could be used. For example, running:
+
+`docker run -ti --volume=$(pwd):/workspace caffe:cpu caffe train --solver=example_solver.prototxt`
+
+will train a network defined in the `example_solver.prototxt` file in the current directory (`$(pwd)` is maped to the container volume `/workspace` using the `--volume=` Docker flag).
+
+Note that docker runs all commands as root by default, and thus any output files (e.g. snapshots) generated will be owned by the root user. In order to ensure that the current user is used instead, the following command can be used:
+
+`docker run -ti --volume=$(pwd):/workspace -u $(id -u):$(id -g) caffe:cpu caffe train --solver=example_solver.prototxt`
+
+where the `-u` Docker command line option runs the commands in the container as the specified user, and the shell command `id` is used to determine the user and group ID of the current user. Note that the Caffe docker images have `/workspace` defined as the default working directory. This can be overridden using the `--workdir=` Docker command line option.
+
+## 其他案例
+
+Although running the `caffe` command in the docker containers as described above serves many purposes, the container can also be used for more interactive use cases. For example, specifying `bash` as the command instead of `caffe` yields a shell that can be used for interactive tasks. (Since the caffe build requirements are included in the container, this can also be used to build and run local versions of caffe).
+
+Another use case is to run python scripts that depend on `caffe`'s Python modules. Using the `python` command instead of `bash` or `caffe` will allow this, and an interactive interpreter can be started by running:
+
+`docker run -ti caffe:cpu python`
+
+(`ipython` is also available in the container).
+
+Since the `caffe/python` folder is also added to the path, the utility executable scripts defined there can also be used as executables. This includes `draw_net.py`, `classify.py`, and `detect.py`
+
+## 挂载本地目录到容器中
+
+```bash
+cd cafferoot
+
+docker -run -ti --volume=$(pwd):/workspace caffe:cpu /bin/bash
+
+```
+
+解析：`--volume=$(pwd):/workspace`是挂载本机目录到容器中，`--volume or -v`是docker的挂载命令，`=$(pwd):/workspace`是挂载信息，是将`$(pwd)`即本机当前目录，:是挂载到哪，`/workspace`是容器中的目录，就是把容器中的`workspace`目录换成本机的当前目录，这样就可以在本机与容器之间进行交互了，本机当前目录可以编辑，容器中同时能看到。容器中的workspace目录的修改也直接反应到了本机上。`$()`是Linux中的命令替换，即将$()中的命令内容替换为参数，pwd是Linux查看当前目录，我的本机当前目录为cafferoot，`--volume=$(pwd):/workspace`就等于`--volume=/Users/***/cafferoot:/workspace`，`/Users/***/cafferoot`为`pwd`的执行结果，$()是将pwd的执行结果作为参数执行。
+
+## 一些有用的命令
+
+1. 基于image `nvidia/cuda`运行某条命令`nvidia-smi`
+`nvidia-docker run  nvidia/cuda nvidia-smi`
+2. 查看当前有哪些镜像
+`sudo nvidia-docker images`
+3. 查看当前有哪些运行中的实例
+`sudo nvidia-docker ps -l`
+4. 运行某个镜像的实例
+`sudo nvidia-docker run -it nvidia/cuda`
+5. 链接运行中的镜像
+`sudo nvidia-docker attach d641ab33bec2`
+6. 跳出运行中的image镜像，但是不退出
+`ctrl+p`, `ctrl+q`
+
+7. 使用linux命令对镜像实例进行操作
+`sudo nvidia-docker cp zeyu/VOCtrainval_11-May-2012.tar  e6a0961ab4cf:/workspace/data`
+`sudo nvidia-docker run -it -t nvidia/cuda nvidia-smi`
+
+8. 在host机器上启动新的bash
+`sudo nvidia-docker exec -it d641ab33bec2 bash`
+
+## TLS handshake timeout 问题
+
+iscas@ZXC-Lenovo:~/Repo$ sudo docker build -t caffe:cpu docker/caffe
+Sending build context to Docker daemon 3.072 kB
+Step 1/12 : FROM ubuntu:14.04
+Get https://registry-1.docker.io/v2/: net/http: TLS handshake timeout
+
+很明显可以看出是连接不到 docker hub，那就需要查看网络原因了。当然较简单的解决办法就是用国内的仓库，
+下面的方法就是使用国内的 daocloud 的仓库：
+
+> 添加国内库的依赖
+
+`$ echo "DOCKER_OPTS="$DOCKER_OPTS --registry-mirror=http://f2d6cb40.m.daocloud.io"" | sudo tee -a /etc/default/docker`
+
+> 重启服务
+
+`$ sudo service docker restart`
+
+更多问题可以查看[3]
+
+## Docker相关的参考文献
+
+1. [Docker理论与实践]<http://noahsnail.com/2016/12/01/2016-12-1-Docker%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E8%B7%B5%EF%BC%88%E5%9B%9B%EF%BC%89/>
+2. [docker install caffe]<https://github.com/cwlseu/caffe/edit/master/docker/README.md>
+
+3. [Pull Docker image的时候遇到docker pull TLS handshake timeout]<https://blog.csdn.net/han_cui/article/details/55190319>
+
+4. [caffe cpu docker]<https://hub.docker.com/r/elezar/caffe/>
