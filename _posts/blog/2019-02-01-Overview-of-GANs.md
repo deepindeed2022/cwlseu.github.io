@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title: "Generative Adeversarial Networks: Overview"
 categories: [blog ]
 tags: [深度学习]

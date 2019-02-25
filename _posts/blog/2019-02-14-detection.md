@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title: "Detection算法Overview"
 categories: [blog ]
 tags: [detection]
