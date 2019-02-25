@@ -78,8 +78,27 @@ layout: default
         {% include previousAndNext.html %}
 
         <h2 id="comments">Comments</h2>
-        {% include comments.html %}
-        <div id="lv-container" data-id="city" data-uid="MTAyMC8yODgxNi81Mzg2">
+        <div id="disqus_thread"></div>
+        <script>
+            /**
+            * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+            * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+            */
+
+            var disqus_config = function () {
+                this.page.url = '{{ site.url }}{{ page.url }}'; // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = '{{ site.url }}{{ page.url }}'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+            };
+            (function () { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://cwlseu.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <!-- {% include comments.html %} -->
+        <!-- <div id="lv-container" data-id="city" data-uid="MTAyMC8yODgxNi81Mzg2">
             <script type="text/javascript">
            (function(d, s) {
                var j, e = d.getElementsByTagName(s)[0];
@@ -91,7 +110,7 @@ layout: default
            })(document, 'script');
             </script>
         <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
-        </div> 
+        </div>  -->
 
     </div>
     <button class="anchor"><i class="fa fa-anchor"></i></button>
