@@ -9,51 +9,51 @@ description: CUDA并行编程指南
 * content
 {:toc}
 
-## 名词
+# 名词
 * SIMD： 单指令多数据，是基于一个处理器核的，128位
 * MMX：多媒体拓展
 * AVX 高级适量拓展， 256位
 
-## 计算机架构
+# 计算机架构
 
-### 冯诺依曼计算机架构
+## 冯诺依曼计算机架构
 * 内存受限型
 * QPI (quick path interconnect) 快速通道互联
 
-### 连接机
+## 连接机
 
 采用4096个16核的CPU组装到一台机器上，也就是说64K个处理器来完成一个任务。连接机采用SIMD型并行处理，但是处理器之间的同步和通讯是很大的问题
 
-### Cell处理器(众核)
+## Cell处理器(众核)
 用一个常规处理器作为监管处理器(PowerPC)，该处理器与大量高速流处理(SPE)相连。
 * 每个流处理单元SPE调用执行一个程序
 * 通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯
 * 
 ![国产申威 26010 处理器架构图](https://cwlseu.github.io/images/cuda/cell_arch.png)
 
-### 多点计算
+## 多点计算
 集群，当前最流行的莫过于Hadoop和spark了，一个是分布式文件系统，一个是分布式计算框架，这两个工具使得多点计算的方法充分发挥。
 
-### GPU架构
+## GPU架构
 ![](https://cwlseu.github.io/images/cuda/2.png)
 
 ![](https://cwlseu.github.io/images/cuda/1.png)
 
-## CUDA编程基础知识
+# CUDA编程基础知识
 学习CUDA C，可以在异构计算平台中实现高性能的应用。CUD的编译原则--基于虚拟指令集的运行时编译。
 
 
-## 计算能力—高性能硬件与技术
+# 计算能力—高性能硬件与技术
 GPU在高性能计算和深度学习加速中扮演着非常重要的角色， GPU的强大的并行计算能力，大大提升了运算性能。随着运算数据量的不断攀升，GPU间需要大量的交换数据，GPU通信性能成为了非常重要的指标。NVIDIA推出的GPUDirect就是一组提升GPU通信性能的技术。但GPUDirect受限于PCI Expresss总线协议以及拓扑结构的一些限制，无法做到更高的带宽，为了解决这个问题，NVIDIA提出了NVLink总线协议。
 
-### GPUDirect P2P
+## GPUDirect P2P
 GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它使得GPU可以通过PCI Express直接访问目标GPU的显存，避免了通过拷贝到CPU host memory作为中转，大大降低了数据交换的延迟。
 以深度学习应用为例，主流的开源深度学习框架如TensorFlow、MXNet都提供了对GPUDirect P2P的支持，NVIDIA开发的NCCL(NVIDIA Collective Communications Library)也提供了针对GPUDirect P2P的特别优化。
 通过使用GPUDirect P2P技术可以大大提升深度学习应用单机多卡的扩展性，使得深度学习框架可以获得接近线性的训练性能加速比
 
 - [浅析GPU通信技术（上）--GPUDirect P2P](http://server.it168.com/a2018/0604/3206/000003206891.shtml)
 
-### NVLink 拓扑结构图
+## NVLink 拓扑结构图
 
 首先我们简单看下NVIDIA对NVLink的介绍：NVLink能在多GPU之间和GPU与CPU之间实现非凡的连接带宽。带宽有多大?2016发布的P100是搭载NVLink的第一款产品，单个GPU具有160GB/s的带宽，相当于PCIe Gen3 * 16带宽的5倍。去年GTC 2017上发布的V100搭载的NVLink 2.0更是将GPU带宽提升到了300G/s，差不多是PCIe的10倍了。
 
@@ -62,7 +62,7 @@ GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它�
 - [NVIDIA NVLINK](https://www.nvidia.com/zh-cn/data-center/nvlink/)
 - [浅析GPU通信技术（中）-NVLink总线协议](http://server.it168.com/a2018/0604/3206/000003206894.shtml)
 
-### RMDA原理介绍
+## RMDA原理介绍
 前面介绍的GPUDirect P2P和NVLink技术可以大大提升GPU服务器单机的GPU通信性能，当前深度学习模型越来越复杂，计算数据量暴增，对于大规模深度学习训练任务，单机已经无法满足计算要求，多机多卡的分布式训练成为了必要的需求，这个时候多机间的通信成为了分布式训练性能的重要指标。
 
 ![多机通讯RMDA架构图](https://cwlseu.github.io/images/detection/RMDA.png)
@@ -72,7 +72,9 @@ GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它�
 
 - [浅析GPU通信技术（下）-GPUDirect RDMA](https://yq.aliyun.com/articles/603617)
 
-### 函数的类型
+# CUDA的基础入门
+
+## 函数的类型
 
 `__host__ float HostFunc()` 默认情况下，被host函数调用在CPU上执行
 
@@ -84,19 +86,19 @@ GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它�
 	* __global__函数返回值必须为void
 	* 在设备上执行的函数不能是递归，函数参数是固定的，不能再函数内部使用static变量
 
-### 变量类型
+## 变量类型
 
 `__shared__ A[4]`；//在share memory，块内线程共享。
 设备上的函数，声明的变量都是存在register上的，存不下的放到local memory；
 `cudaMalloc()`的空间是在设备的global memory上的。
 
-### CUDA几个头文件
+## CUDA几个头文件
 
 ```cpp
 #include<cuda_runtime.h>  // cuda程序运行必须的头文件
 ```
 
-### CUDA routine
+## CUDA routine
 1. `cudaError_t err = cudaSuccess;`
    `cudaError_t`类型，表示错误类型。`cudaSuccess`表示成功。一般cuda routine的返回值都是`cudaError_t`类型，表示函数是否执行成功。  
     
@@ -197,6 +199,6 @@ struct __device_builtin__ cudaDeviceProp
 };
 ```
 
-## 常见问题
+# 常见问题
 NVCC没有配置，导致undefined reference
 HEADER DIR没有配置，导致找不到头文件

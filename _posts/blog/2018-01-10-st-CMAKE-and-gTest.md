@@ -8,7 +8,7 @@ description:
 
 {:toc} 
 
-## 一个关于CMake的例子的解读
+# 一个关于CMake的例子的解读
 
 ```python
 PROJECT(sdk_common_samples)
@@ -78,9 +78,9 @@ ENDFOREACH() # foreach 结束
 
 ```
 
-## google test的一些疑问
+# google test的一些疑问
 
-### TEST_F
+## TEST_F
 TEST_F与TEST的区别是，TEST_F提供了一个初始化函数（SetUp）和一个清理函数(TearDown)，在TEST_F中使用的变量可以在初始化函数SetUp中初始化，在TearDown中销毁，并且所有的TEST_F是互相独立的，都是在初始化以后的状态开始运行，一个TEST_F不会影响另一个TEST_F所使用的数据。
 
 ```cpp
@@ -183,7 +183,7 @@ int main(int argc, char * argv[])
 
 ```
 
-### 看看gtest的工作流程
+## 看看gtest的工作流程
 
 - 入口
 
@@ -311,7 +311,7 @@ TestCase* UnitTestImpl::GetTestCase(const char* test_case_name,
 }
 ```
 
-### Disable COPY和ASSIGN操作的方法， 将赋值函数和拷贝构造函数显示作为private下
+## Disable COPY和ASSIGN操作的方法， 将赋值函数和拷贝构造函数显示作为private下
 
 > 方案 1
 
@@ -342,5 +342,6 @@ public:
 以上两个delete声明禁止复制
 能够通过明确的方式显式限定这些特殊方法有助于增强代码的可读性和可维护性
 
-## Reference
-[1]gtest测试相关: http://blog.csdn.net/breaksoftware/article/details/50948239
+# Reference
+[1]. gtest测试相关: http://blog.csdn.net/breaksoftware/article/details/50948239
+[1]. 练习CMake的项目: https://github.com/cwlseu/LibsForDev.git
