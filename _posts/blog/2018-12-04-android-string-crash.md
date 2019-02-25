@@ -88,7 +88,7 @@ bao->setName("a name");
 ### fix方案
 android项目中添加 `-DANDROID_STL=gnustl_shared`或者编译链接中添加`TARGET_LINK_LIBRARIES(test_sdk_common gnustl_shared)`用来显示声明链接的库为gnustl_shared库，从而使得多个动态库链接同一个标准库即可。
 
-##附录： Android 对C++库的支持
+## 附录： Android 对C++库的支持
 
 | 名称|	说明 | 	功能  |
 |:----------------:|:-------------------:|:---------------:|
@@ -157,7 +157,6 @@ libfoo.so 中引发的异常在 libbar.so 中未被捕获，从而导致您的�
 
 注：调用`System.loadLibrary()`时不要使用 lib 前缀。
 
-## 附录
 ### Android C++系统库 
 从上到下依次分为六层：
 * 应用框架层
@@ -175,14 +174,10 @@ Android包含一个C/C++库的集合，供Android系统的各个组件使用。�
 * OpenGL——开放图形库（英语：Open Graphics Library，缩写为 OpenGL）是个定义了一个跨编程语言、跨平台的应用程序接口（API）的规范，它用于生成二维、三维图像。
 * SQLite ——所有应用程序都可以使用的强大而轻量级的关系数据库引擎，SQLite是遵守ACID的关系数据库管理系统，它包含在一个相对小的C程序库中;
 
-![官方Android架构图](./1541559357972.png)
-
-### 标准库
-
-#### 链接标准库的问题
-![Alt text](./1541492120570.png)
+![官方Android架构图](https://cwlseu.github.io/images/android/arch.png)
 
 ### 参考链接
+
 [1]. [Android gnustl_static VS gnustl_share](https://blog.csdn.net/matrix_laboratory/article/details/79217973)
 
 [2].[C++支持](https://developer.android.com/ndk/guides/cpp-support)
