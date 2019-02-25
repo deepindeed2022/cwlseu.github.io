@@ -5,7 +5,7 @@ categories: [project]
 tags: [机器学习]
 description: 通过SVM分类方法，进行人脸识别，其中人脸特征采用LFW数据库。
 ---
-
+* content
 {:toc}
 
 ## 引言
@@ -16,7 +16,7 @@ description: 通过SVM分类方法，进行人脸识别，其中人脸特征采�
 
  LFW语料图片，每张图片都有人名Label标记。每个人可能有多张不同情况下情景下的图片。如George W Bush 有530张图片，而有一些人名对应的图片可能只有一张或者几张。我们将选取出现最多的人名作为人脸识别的类别，如本实验中选取出现频数超过70的人名为类别， 那么共计1288张图片。其中包括Ariel Sharon, Colin Powell, Donald Rumsfeld, George W Bush, Gerhard Schroeder, Hugo Chavez , Tony Blair等7个人名。
  
-![这里写图片描述](http://img.blog.csdn.net/20160829204914728)
+![这里写图片描述](http://cwlseu.github.io/images/svm-based-face/20160829204914728)
 
 ## 问题描述
 
@@ -76,13 +76,13 @@ plt.legend(prop=dict(size=12))
 plt.show()
 ```
 
-![图片 1 ](http://img.blog.csdn.net/20160829205312201)
+![图片 1 ](http://cwlseu.github.io/images/svm-based-face/20160829205312201.jpg)
  ***图片1: 不同特征选取数目的方差比率大小， 比率大小是按照从大到小的顺序排列的，从曲线中可以看出，最大的一维约占总体方差的18%***
-![图片2 ](http://img.blog.csdn.net/20160829205522096)
+![图片2 ](http://cwlseu.github.io/images/svm-based-face/20160829205522096.jpg)
 ***图片 2： 不同特征选取数目的方差累计比率曲线，从曲线中可以看出，当特征脸数目为50时，约占85%的数据信息，特征脸数据为100时，约占总信息量的90%左右经过测试，最佳分类结果时，特征脸数目为80.此时约占88%的总体方差。***
 因为不同的人有多个不同角度的照片，如果提取特征脸过多，会导致过度拟合，从而测试结果不理想，如果使用特征脸过少，则会导致人脸多类过程区分度不高而使得部分结果分类错误。而在LFW数据集合中，使用特征脸数目为80时效果最佳是可以理解的。图片 3 显示了前16个特征脸。
  
-![PCA降维度后的16个特征脸](http://img.blog.csdn.net/20160829205644112)
+![PCA降维度后的16个特征脸](http://cwlseu.github.io/images/svm-based-face/20160829205644112.jpg)
 图片 3：对PCA降维度结果中16个特征脸先行呈现效果图
 当然，数字图像处理常用的特征降维中NMF分解前几年取得了很多成果，有机会可以使用NMF分级进行特征提取和降维。
 
@@ -225,7 +225,7 @@ plot_gallery(eigenfaces, eigenface_titles, h, w)
 plt.show()
 ```
 
-![这里写图片描述](http://img.blog.csdn.net/20160829210951209)
+![这里写图片描述](http://cwlseu.github.io/images/svm-based-face/20160829210951209.jpg)
 ***图片 4 实验数据在二维空间中分布情况，可以看出该数据集如果使用线性模型进行分类，效果将很差；我们将从非线性模型带核的SVM入手，解决该分类问题***
 分类模型将采用SVM分类器进行分类，其中核函数：
 $f = \exp(-\gamma || x - x'||^2)$
@@ -245,7 +245,7 @@ $f = \exp(-\gamma || x - x'||^2)$
 |Avg/Total	|0.91	|0.90	|0.90	|322|
 
 这么高的准确率，是由于我们仅仅选取了每个标识人名数目> 70的人名，但是大量的仅仅出现1次的人名存在。如果考虑这种数据稀疏性，将大大降低结果的准确率。但是，真实应用中，数据稀疏性问题是不得不考虑的问题。
- ![这里写图片描述](http://img.blog.csdn.net/20160829211022165)
+ ![这里写图片描述](http://cwlseu.github.io/images/svm-based-face/20160829211022165.jpg)
 ***图片 5： 预测人名正确结果展示***
 
 ## 未来工作
