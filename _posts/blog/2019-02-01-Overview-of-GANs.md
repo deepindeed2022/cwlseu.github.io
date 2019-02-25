@@ -72,11 +72,11 @@ GAN在图像领域建树颇多，但是在文本领域作用并不是很大，�
 
 # The GAN Zoo
 
-<p align="center"><img width="40%" src="The_GAN_Zoo.jpg" /></p>
+<!-- <p align="center"><img width="40%" src="The_GAN_Zoo.jpg" /></p> -->
 
 Every week, new GAN papers are coming out and it's hard to keep track of them all, not to mention the incredibly creative ways in which researchers are naming these GANs! So, here's a list of what started as a fun activity compiling all named GANs!
 
-<p align="center"><img width="50%" src="cumulative_gans.jpg" /></p>
+<!-- <p align="center"><img width="50%" src="cumulative_gans.jpg" /></p> -->
 
 You can also check out the same data in a tabular format with functionality to filter by year or do a quick search by title [here](https://github.com/hindupuravinash/the-gan-zoo/blob/master/gans.tsv).
 
