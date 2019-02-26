@@ -44,8 +44,9 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
 我们可以使用这些数据集来学习各种深度学习技术，也可以使用它们来磨练您的技能，理解如何识别和构造每个问题，考虑独特的应用场景!
 
 ### 图像类
-| dataset名称 | 大小 | State-of-Art | 描述 | 
-| :-------------- | :--------  | :--------------------------:| :------------|
+
+| dataset名称 | 大小 | State-of-Art | 描述 |
+| :-------------- | :--------  | :--------------------------:| :------------: |
 |[MNIST](http://yann.lecun.com/exdb/mnist/)|50MB|[Dynamic Routing Between Capsules](https://arxiv.org/pdf/1710.09829.pdf)| 手写数字识别，包含60000个训练数据及10000个测试数据，可分为10类|
 |[MSCOCO](http://cocodataset.org/#home) |~25G |[Mask RCNN](https://arxiv.org/pdf/1703.06870.pdf)|COCO is a large-scale and rich for object detection, segmentation and captioning dataset. 330K images, 1.5 million object instances, 80 object categories, 5 captions per image, 250,000 people with key points|
 |[ImageNet](http://www.image-net.org/)|150GB|[ResNeXt](https://arxiv.org/pdf/1611.05431.pdf)|ImageNet is a dataset of images that are organized according to the WordNet hierarchy. WordNet contains approximately 100,000 phrases and ImageNet has provided around 1000 images on average to illustrate each phrase. Number of Records: Total number of images: ~1,500,000; each with multiple bounding boxes and respective class labels|
@@ -56,6 +57,7 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
 |[Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist)|30MB|[Random Erasing Data Augmentation](https://arxiv.org/abs/1708.04896)|包含60000训练样本和10000测试样本的用于服饰识别的数据集，可分为10类。|
 
 ### 自然语言处理类
+
 | dataset名称 | 大小 | State-of-Art | 描述 | 
 | :-------------- | :--------  | :--------------------------:| :------------|
 |[IMDB 影评数据](http://ai.stanford.edu/~amaas/data/sentiment/)| 80MB |[Learning Structured Text Representations](https://arxiv.org/abs/1705.09207)|可以实现对情感的分类，除了训练集和测试集示例之外，还有更多未标记的数据。原始文本和预处理的数据也包括在内。25,000 highly polar movie reviews for training, and 25,000 for testing|
@@ -68,6 +70,7 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
 |[各种语言的机器翻译数据集](http://statmt.org/wmt18/index.html)|15GB |[Attention Is All You Need](https://arxiv.org/abs/1706.03762)|包含英-汉、英-法、英-捷克、英语- 爱沙尼亚、英 - 芬兰、英-德、英 - 哈萨克、英 - 俄、英 - 土耳其之间互译的数据集|
 
 ### 语音类
+
 | dataset名称 | 大小 | State-of-Art | 描述 | 
 | :-------------- | :--------  | :--------------------------:| :------------|
 |[Free Spoken Digit Dataset](https://github.com/Jakobovski/free-spoken-digit-dataset)|10MB |[Raw Waveform-based Audio Classification Using Sample-level CNN Architectures](https://arxiv.org/pdf/1712.00866)|数字语音识别数据集，包含3个人的声音，每个数字说50遍，共1500条数据|
