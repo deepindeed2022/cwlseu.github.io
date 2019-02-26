@@ -15,13 +15,20 @@ comments: true
 * [A Tutorial on Filter Groups (Grouped Convolution)](https://blog.yani.io/filter-group-tutorial/)
   * AlexNet
   * MobileNet
-  * 就是mxNet中的
 * [An Introduction to different Types of Convolutions in Deep Learning](https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d)
+* [Convolution arithmetic](https://github.com/vdumoulin/conv_arithmetic)
+* [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/)
 
 | Convolution Name | 参考文献 | 典型代表 | 附录 |
 | :-------------- | :--------  | :------------:| :------------:|
-| 1x1 Convolution|  |  GoogLeNet, Inception|                   |
-| Group Convolution| [Deep Roots:Improving CNN Efficiency with Hierarchical Filter Groups](https://arxiv.org/pdf/1605.06489.pdf) |  [MobileNet](), [AlexNet]()  |
+| Convolution  |  |  AlexNet, VGG|                   |
+| 1x1 | [Network in Network](https://arxiv.org/abs/1312.4400) | GoogLeNet, Inception|(1). Dimensionality reduction for efficient computations; (2).Efficient low dimensional embedding, or feature pooling; (3).Applying nonlinearity again after convolution|
+| Dilated convolution | [Multi-Scale Context Aggregation by Dilated Convolutions ](https://arxiv.org/abs/1511.07122) |  |support exponentially expanding receptive fields without losing resolution or coverage.|
+| Group Convolution| [Deep Roots:Improving CNN Efficiency with Hierarchical Filter Groups](https://arxiv.org/pdf/1605.06489.pdf) |   MobileNet, [ResNeXt](https://arxiv.org/abs/1611.05431) |
+| Pointwise grouped convolution|  | ShuffleNet|  |
+| Depthwise separable convolution|[Xception: Deep Learning with Depthwise Separable Convolutions](https://arxiv.org/abs/1610.02357)|Xception||
+| Deconvolutions | [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/) | DSSD |                   |
+| Flattened convolutions|[Flattened convolutional neural networks for feedforward acceleration](https://arxiv.org/abs/1412.5474) | |computation costs due to the significant reduction of learning parameters.|
 
 
 ## 优化
