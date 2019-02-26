@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [CV算法]
 description: Inception是在NIN中提出的一个神经网络模块，后来随着googLeNet中的成功被人们视为深度网络的法宝。
 ---
-
+* content
 {:toc}
 
 # 目的
