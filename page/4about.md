@@ -6,6 +6,8 @@ icon: bookmark
 type: page
 description: "Welcome to my world!"
 ---
+* content
+{:toc}
 
 <center>
     <p><img src="https://avatars2.githubusercontent.com/u/5145788?s=400&u=a0f16452a7940c3fcfe7842bdcfc468f79ac9310&v=4" width="200"  height="200" align="center"></p>
