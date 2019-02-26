@@ -10,15 +10,16 @@ comments: true
 * content
 {:toc}
 
-## 名词解释
+## 什么是卷积
+* [A Comprehensive Introduction to Different Types of Convolutions in Deep Learning](https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215)
+* [An Introduction to different Types of Convolutions in Deep Learning](https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d)
 
+## 优化
 * [梯度下降(gradient descent)](https://www.quora.com/What-is-the-purpose-for-the-use-of-gradient-descent-in-machine-learning?__filter__=&__nsrc__=2&__snid3__=2889908801&redirected_qid=31223828)
 * [梯度下降优化算法](http://ruder.io/optimizing-gradient-descent/)
 
 ## 深度学习教程
 [CS231n: Convolutional Neural Networks for Visual Recognition.](https://cs231n.github.io/)
-
-
 
 ## 计算平台
 
