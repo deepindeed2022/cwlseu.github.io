@@ -391,8 +391,13 @@ IF(PTHREADPOOL_BUILD_BENCHMARKS AND NOT DEFINED GOOGLEBENCHMARK_SOURCE_DIR)
      SET(GOOGLEBENCHMARK_SOURCE_DIR "${CONFU_DEPENDENCIES_SOURCE_DIR}/googlebenchmark" CACHE STRING "Google Benchmark source directory")
 ENDIF()
 ```
+## CMakeLists中的高级用法
+ 
+TODO
+- 库之间的符号继承等
 
 ## 参考资料
+
 - [1] [cmake buildsystem文档，主要关于target_property, target_include_directories,target_link_libraries,set_target_properties](https://cmake.org/cmake/help/v3.10/manual/cmake-buildsystem.7.html)
 - [2] [ExternalProject文档](https://cmake.org/cmake/help/v3.0/module/ExternalProject.html)
 - [3] [CMake Practice](https://app.yinxiang.com/shard/s40/res/ecb203bd-889b-4eb3-8ee6-d0b0e88765f6/CMake%20Practice.pdf?search=Cmake)
