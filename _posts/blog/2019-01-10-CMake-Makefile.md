@@ -292,41 +292,61 @@ do_test (-25 "-25 is 0")
 * 针对大型项目，如果项目比较小，还是直接编写makefile比较好
 
 ### 定义变量
+
 1. 命令行中
 `cmake -DCUDA_USE_STATIC_CUDA_RUNTIME=1 ..`
 2. [cmake 中set的使用](https://cmake.org/cmake/help/v3.10/command/set.html?highlight=set)
-```
+
+```cmake
 # 普通变量定义
-SET(CPPBUILD_TARGET_OS LINUX)
+SET(DIDBUILD_TARGET_OS LINUX)
 # 强制覆盖
 SET(CUDA_USE_STATIC_CUDA_RUNTIME OFF CACHE BOOL "fix cuda compiling error" FORCE)
 # 有则忽略，否则定义变量
-SET(CPPBUILD_TARGET_ARCH X86_64 CACHE STRING "default arch is x86_64")
+SET(DIDBUILD_TARGET_ARCH X86_64 CACHE STRING "default arch is x86_64")
 # 设置环境变量
 SET(ENV{LD_LIBRARY_PATH} /usr/local/lib64)
 ```
+
 ### [字符串处理](https://cmake.org/cmake/help/v3.10/command/string.html?highlight=string#command:string)
+
 `STRING(FIND $Origin_str $substr $target_str)`
+
 此外，`FIND`,`REPLACE`,`REGEX MATCH`，`APPEND`
 `string(CONCAT <output variable> [<input>...])`
+
 Concatenate all the input arguments together and store the result in the named output variable.
+
 `string(TOLOWER <string1> <output variable>)`
+
 Convert string to lower characters.
+
 `string(LENGTH <string> <output variable>)`
+
 Store in an output variable a given string’s length.
+
 `string(SUBSTRING <string> <begin> <length> <output variable>)`
+
 Store in an output variable a substring of a given string. If length is -1 the remainder of the string starting at begin will be returned. If string is shorter than length then end of string is used instead.
+
 `string(STRIP <string> <output variable>)`
+
 Store in an output variable a substring of a given string with leading and trailing spaces removed.
-`string(COMPARE LESS <string1> <string2> <output variable>)`
-`string(COMPARE EQUAL <string1> <string2> <output variable>)`
-`string(<HASH> <output variable> <input>)`
+```cmake
+string(COMPARE LESS <string1> <string2> <output variable>)
+string(COMPARE EQUAL <string1> <string2> <output variable>)
+string(<HASH> <output variable> <input>)
+```
 Compute a cryptographic hash of the input string. The supported `<HASH>` algorithm names are: 很多
+
 ### `STREQUAL`
+
 ### `make VERBOSE=1` 
+
 可以将cmake中定义的变量打印
 
 ### Object Libraries
+
 The OBJECT library type is also not linked to. It defines a non-archival collection of object files resulting from compiling the given source files. The object files collection can be used as source inputs to other targets:
 
 ```cmake
@@ -340,7 +360,9 @@ OBJECT libraries may only be used locally as sources in a buildsystem – they m
 Although object libraries may not be named directly in calls to the `target_link_libraries()` command, they can be “linked” indirectly by using an Interface Library whose `INTERFACE_SOURCES` target property is set to name `$<TARGET_OBJECTS:objlib>`.
 
 ###  ExternalProject，通过url配置依赖第三方库
-1. cmake/DownloadGoogleBenchmark.cmake 
+
+> cmake/DownloadGoogleBenchmark.cmake 
+
 ```cmake
 INCLUDE(ExternalProject)
 ExternalProject_Add(googletest
@@ -354,7 +376,9 @@ ExternalProject_Add(googletest
 	TEST_COMMAND ""
 )
 ```
-2. 主CMakeLists.txt中的使用
+
+> 主CMakeLists.txt中的使用
+
 ```cmake
 IF(PTHREADPOOL_BUILD_BENCHMARKS AND NOT DEFINED GOOGLEBENCHMARK_SOURCE_DIR)
      MESSAGE(STATUS "Downloading Google Benchmark to     ${CONFU_DEPENDENCIES_SOURCE_DIR}/googlebenchmark (define GOOGLEBENCHMARK_SOURCE_DIR to avoid it)")
