@@ -1,6 +1,6 @@
 ---
 layout: post
-title: android手机上gdb调试
+title: Android手机上GDB调试
 categories: [blog ]
 tags: [android]
 description: android 开发
@@ -102,4 +102,4 @@ udev就是一个动态硬件管理服务
 交叉编译和开源项目，使得交叉编译、跨平台开发等问题越来容易，才能够有这种在android 调试程序和在linux上调试程序毫无间隙地切换。
 
 ## 参考链接
-[https://www.cnblogs.com/hangxin1940/archive/2011/07/10/2101552.html](https://www.cnblogs.com/hangxin1940/archive/2011/07/10/2101552.html)
+- [https://www.cnblogs.com/hangxin1940/archive/2011/07/10/2101552.html](https://www.cnblogs.com/hangxin1940/archive/2011/07/10/2101552.html)

@@ -9,6 +9,9 @@ description: C++开发建议50条
 * content
 {:toc}
 
+## 引言
+读《Effective C++》中的笔记
+
 ##  C++是一组语言的集合
 C + 面向对象的C + 模板 + STL
 Rules for effective C++ programming vary, depending on the part of C++ you are using.
@@ -19,3 +22,4 @@ Rules for effective C++ programming vary, depending on the part of C++ you are u
 * const指针类型要注意，尤其是`const char*` 要注意：
 `const char* const author_name = "charles";`
 
+## TODO
