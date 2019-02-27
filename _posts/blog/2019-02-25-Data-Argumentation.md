@@ -33,7 +33,7 @@ comments: true
 2. 减少网络的过拟合现象，通过对训练图片进行变换可以得到泛化能力更强的网络，更好的适应应用场景。
 
 ## 基本方法
-
+现在最常用的数据方案是
 数据增强的基本方法无非就是图像的基本操作进行排列组合，生成千万种数据增强的可能性：
 * 旋转/反射变换(Rotation/reflection): 随机旋转图像一定角度; 改变图像内容的朝向;
 * 翻转变换(flip): 沿着水平或者垂直方向翻转图像;
@@ -76,7 +76,8 @@ http://deepindeed.cn/2017/04/05/SSD-Data-Augmentation/
 同样的算法，数据增强能够显著提升算法的性能
 
 ## 可参考链接
-
+- [Discriminative Unsupervised Feature Learning
+with Exemplar Convolutional Neural Networks](https://arxiv.org/pdf/1406.6909.pdf)
 - [输入图像随机选择一块区域涂黑，《Random Erasing Data Augmentation》](https://arxiv.org/pdf/1511.05635.pdf)
 - [Bag of Freebies for Training Object Detection Neural Networks](https://arxiv.org/pdf/1902.04103.pdf)
 - [AutoAugment: Learning Augmentation Policies from Data](https://arxiv.org/abs/1805.09501v1)
@@ -87,3 +88,30 @@ http://deepindeed.cn/2017/04/05/SSD-Data-Augmentation/
 - [The art of Data Augmentation](http://lib.stat.cmu.edu/~brian/905-2009/all-papers/01-jcgs-art.pdf)
 - [Augmentation for small object detection](https://arxiv.org/abs/1902.07296)
 - [使用深度学习(CNN)算法进行图像识别工作时，有哪些data augmentation 的奇技淫巧？](https://www.zhihu.com/question/35339639)
+
+## 案例-医学图像分割的数据增广
+[Data augmentation using learned transforms for one-shot medical image segmentation](http://arxiv.org/abs/1902.09383)
+
+github: https://github.com/xamyzhao/brainstorm
+
+    Biomedical image segmentation is an important task in many medical applications. Segmentation methods based on convolutional neural networks attain state-of-the-art accuracy; however, they typically rely on supervised training with large labeled datasets. Labeling datasets of medical images requires significant expertise and time, and is infeasible at large scales. To tackle the lack of labeled data, researchers use techniques such as hand-engineered preprocessing steps, hand-tuned architectures, and data augmentation. However, these techniques involve costly engineering efforts, and are typically dataset-specific. We present an automated data augmentation method for medical images. We demonstrate our method on the task of segmenting magnetic resonance imaging (MRI) brain scans, focusing on the one-shot segmentation scenario -- a practical challenge in many medical applications. Our method requires only a single segmented scan, and leverages other unlabeled scans in a semi-supervised approach. We learn a model of transforms from the images, and use the model along with the labeled example to synthesize additional labeled training examples for supervised segmentation. Each transform is comprised of a spatial deformation field and an intensity change, enabling the synthesis of complex effects such as variations in anatomy and image acquisition procedures. Augmenting the training of a supervised segmenter with these new examples provides significant improvements over state-of-the-art methods for one-shot biomedical image segmentation.
+
+### 医学图像segment中U-Net
+- paper: [U-net: Convolutional networks for biomedical image segmentation](https://lmb.informatik.uni-freiburg.de/Publications/2019/FMBCAMBBR19/paper-U-Net.pdf)
+- 作者： Olaf Ronneberger, Philipp Fischer, and Thomas Brox 
+- [project](https://lmb.informatik.uni-freiburg.de/resources/opensource/unet/)
+其中使用的数据增强方案为论文 [Discriminative Unsupervised Feature Learning with Exemplar Convolutional Neural Networks](https://arxiv.org/pdf/1406.6909.pdf)中的方法：
+
+> 
+    we train the network to discriminate between a set of surrogate classes. 
+    Each surrogate class is formed by applying a variety of transformations 
+    to a randomly sampled ’seed’ image patch. In contrast to supervised network 
+    training, the resulting feature representation is not class specific. 
+    It rather provides robustness to the transformations that have been applied 
+    during training. This generic feature representation allows for classification 
+    results that outperform the state of the art for unsupervised learning on 
+    several popular datasets (STL-10, CIFAR-10, Caltech-101, Caltech-256). 
+    While such generic features cannot compete with class specific features 
+    from supervised training on a classification task, we show that they are 
+    advantageous on geometric matching problems, where they also outperform the 
+    SIFT descriptor.
