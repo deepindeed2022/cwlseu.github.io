@@ -62,7 +62,7 @@ GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它�
 - [NVIDIA NVLINK](https://www.nvidia.com/zh-cn/data-center/nvlink/)
 - [浅析GPU通信技术（中）-NVLink总线协议](http://server.it168.com/a2018/0604/3206/000003206894.shtml)
 
-## RMDA原理介绍
+## RDMA原理介绍
 前面介绍的GPUDirect P2P和NVLink技术可以大大提升GPU服务器单机的GPU通信性能，当前深度学习模型越来越复杂，计算数据量暴增，对于大规模深度学习训练任务，单机已经无法满足计算要求，多机多卡的分布式训练成为了必要的需求，这个时候多机间的通信成为了分布式训练性能的重要指标。
 
 ![多机通讯RMDA架构图](https://cwlseu.github.io/images/detection/RMDA.png)
