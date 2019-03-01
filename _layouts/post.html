@@ -14,6 +14,9 @@ layout: default
 
 <div class="page clearfix" post>
     <div class="left">
+        <!-- {% if page.header-img %}
+        <header class="intro-header" style="background-image: url('{{ site.baseurl }}/{{ page.header-img }}')">
+        {% endif %} -->
         <h1>{{page.title}}</h1>
         <div class="label">
 
@@ -22,7 +25,9 @@ layout: default
             </div>
 
             <div class="label-card">
-                {% if page.author %}<i class="fa fa-user"></i>{{ page.author }}
+                {% if page.author %}<i class="fa fa-user"></i>{{ page.author }} 
+                {% else %}
+                    {{site.name }}
                 {% endif %}
             </div>
 
@@ -39,12 +44,17 @@ layout: default
             </div>
 
         </div>
+        <!-- {% if page.header-img %}
+        </header>
+        {% endif %} -->
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
         {{content}}
-
-        <p><span style="color: #ff0000;"><strong>|</strong></span><span style="color: #0000000; font-size: 12px;">版权声明：本文为博主原创文章，未经博主允许不得转载。</span></p>
-
+        {% if page.author %}
+        <p><span style="color: #ff0000;"><strong>|</strong></span><span style="color: #0000000; font-size: 14px;">本文从{{page.author}}原创文章中转载。</span></p>
+        {% else %}
+        <p><span style="color: #ff0000;"><strong>|</strong></span><span style="color: #0000000; font-size: 14px;">版权声明：本文为博主原创文章，未经博主允许不得转载。</span></p>
+        {% endif %}
         </article>
         <hr>
 

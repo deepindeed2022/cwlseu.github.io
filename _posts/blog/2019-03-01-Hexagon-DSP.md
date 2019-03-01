@@ -5,6 +5,7 @@ categories: [blog ]
 tags: [android]
 description: 最近几年，随着移动互联，物联网的发展，高通赚得盆满钵满。本文主要总结日常工作汇总接触到与高通相关的一些东西。
 comments: true
+header-img: "images/bg1.jpg"
 ---
 * content
 {:toc}
