@@ -60,7 +60,7 @@ https://www.hotchips.org/wp-content/uploads/hc_archives/hc27/HC27.24-Monday-Epub
 指令和CPU的NEON指令相比，指令简单，更低功耗
 ![Alt text](https://cwlseu.github.io/images/dsp/DSP-Difference.png)
 
-性能方面
+性能方面,CPU使用NEON优化虽然能够提升1~3的速度，但是单pixel功耗方面大约是DSP的4~18倍。
 ![@Benchmark](https://cwlseu.github.io/images/dsp/DSP-Benchmark.png)
 
 ## 参考链接推荐
