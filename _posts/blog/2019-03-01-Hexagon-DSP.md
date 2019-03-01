@@ -63,8 +63,36 @@ https://www.hotchips.org/wp-content/uploads/hc_archives/hc27/HC27.24-Monday-Epub
 性能方面,CPU使用NEON优化虽然能够提升1~3的速度，但是单pixel功耗方面大约是DSP的4~18倍。
 ![@Benchmark](https://cwlseu.github.io/images/dsp/DSP-Benchmark.png)
 
-## 参考链接推荐
+## Snapdragon Neural Processing Engine (SNPE)
+### Capabilities
+The Snapdragon Neural Processing Engine (SNPE) is a Qualcomm Snapdragon software accelerated runtime for the execution of deep neural networks. With SNPE, users can:
+
+* Execute an arbitrarily deep neural network
+* Execute the network on the SnapdragonTM CPU, the AdrenoTM GPU or the HexagonTM DSP.
+* Debug the network execution on x86 Ubuntu Linux
+* Convert Caffe, Caffe2, ONNXTM and TensorFlowTM models to a SNPE Deep Learning Container (DLC) file
+* Quantize DLC files to 8 bit fixed point for running on the Hexagon DSP
+* Debug and analyze the performance of the network with SNPE tools
+* Integrate a network into applications and other code via C++ or Java
+
+### Workflow
+Model training is performed on a popular deep learning framework (Caffe, Caffe2, ONNX and TensorFlow models are supported by SNPE.) After training is complete the trained model is converted into a DLC file that can be loaded into the SNPE runtime. This DLC file can then be used to perform forward inference passes using one of the Snapdragon accelerated compute cores.
+The basic SNPE workflow consists of only a few steps:
+
+![@SNPE运行模型的工作流](https://cwlseu.github.io/images/dsp/snpe.png)
+* Convert the network model to a DLC file that can be loaded by SNPE.
+* Optionally quantize the DLC file for running on the Hexagon DSP.
+* Prepare input data for the model.
+* Load and execute the model using SNPE runtime.
+
+[SNPE document](https://developer.qualcomm.com/docs/snpe/overview.html)
+[SNPE支持的网络层](https://developer.qualcomm.com/docs/snpe/network_layers.html)
+[SNPE用户自定义层JNI实现](https://blog.csdn.net/guvcolie/article/details/77937786)
+
+## 参考链接
+
 - [手机处理器性能排行榜](http://mobile.zol.com.cn/soc/)
 - [手机CPU性能天梯图](http://www.mydrivers.com/zhuanti/tianti/01/)
 - [2018年高通骁龙CPU处理器排行榜](https://www.xianshua.net/top/5534.html)
 - [【德州仪器DSP技术应用工程师 冯华亮】影响高性能DSP功耗的因素及其优化方法](http://www.ti.com.cn/general/cn/docs/gencontent.tsp?contentId=61574)
+- [移动端深度学习框架小结](https://blog.csdn.net/yuanlulu/article/details/80857211)
