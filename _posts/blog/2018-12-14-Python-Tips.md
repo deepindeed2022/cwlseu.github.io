@@ -5,7 +5,7 @@ categories: [blog ]
 tags: [Python, ]
 description: Python入门简单，但是无论哪种语言，都有语言设计者赋予其中的特殊意义的东西，可能是为了方便，可能是为了得到高的level,无论出发点是什么，都是值得我学习探究的。
 ---
-
+* content
 {:toc}
 
 
@@ -13,7 +13,65 @@ description: Python入门简单，但是无论哪种语言，都有语言设计�
 
 最近觉得 Python 太“简单了”，于是在师父川爷面前放肆了一把：“我觉得 Python 是世界上最简单的语言！”。于是川爷嘴角闪过了一丝轻蔑的微笑（内心 OS：Naive！，作为一个 Python 开发者，我必须要给你一点人生经验，不然你不知道天高地厚！）于是川爷给我了一份满分100分的题，然后这篇文章就是记录下做这套题所踩过的坑。
 
-### 列表生成器
+## 变量类型
+这是关于list的数据类型的理解。觉得如下程序会输出怎么样的结果？
+```python
+def f(x, L = []):
+	for i in range(x):
+		L.append(i*i)
+	print(L)
+	print(id(L))
+
+f(2)
+f(2, [1,2,3])
+f(3)
+```
+输出结果如下
+```
+[0, 1]
+139664725541736
+[1, 2, 3, 0, 1]
+139664725491584
+[0, 1, 0, 1, 4]
+139664725541736
+```
+
+* 在python中的数据可以分为可变数据类型和不变数据类型。
+可变数据类型：像tuple,list,dict之类的变量就是可变数据类型，变量名存储的是一个地址，
+该地址指向一个具体的对象，并且不管对变量的值即对象做怎么样的操作，都不会改变变量名存储的地址。
+我们把列表作为参数传入一个函数时，在函数内我们对该列表进行了一些改变，由于变量存储的地址没有变
+，所以就算我们没有故意通过return语句把该列表传递出来，该列表还是会在函数执行结束后跟着改变的。
+
+* 函数的默认值为可变数据类型的话，会申请一个变量，这个变量地址是固定的，但是值在函数可被改变，
+而且还会影响下次调用。
+
+同样的道理, 如果对不可变数据类型作为输入参数的话，会有什么结果？
+```python
+def g(x, s=""):
+	for i in range(x):
+		s += str("{} ".format(i))
+	print(s)
+	print(id(x), id(s))
+g(2)
+ss = "hello"
+g(3, ss)
+g(2)
+```
+输出结果如下：
+```
+0 1 
+(42414400, 140100353397648)
+140100353385936
+hello0 1 2 
+(42414376, 140100353397648)
+0 1 
+(42414400, 140100353397648)
+```
+从中可以看出，不可变数据类型的情况下，其中的
+* 默认值是空没有随着函数调用被改变,与函数是绑定的关系，不信你可以测试一下相对位置是不变的；
+* 而且在python语言的世界里，数字类型也是一个引用哦；
+
+## 列表生成器
 
 > 描述:
 
@@ -38,7 +96,7 @@ classA(object):
 print(list(A.gen))
 ```
 
-### 装饰器
+## 装饰器
 
 > 描述
 
@@ -122,7 +180,7 @@ if __name__ == '__main__':
     print a.func()
 ```
 
-### Python 调用机制
+## Python 调用机制
 
 > 描述
 
@@ -177,7 +235,7 @@ print len(c)
 
 回到我们的例子上来，当我们在执行 `a.__call__=lambda: "invoking __call__ from lambda"`  时，的确在我们在 `a.__dict__` 中新增加了一个 key 为 `__call__` 的 item，但是当我们执行 a() 时，因为涉及特殊方法的调用，因此我们的调用过程不会从 `a.__dict__` 中寻找属性，而是从 `type(a).__dict__`中寻找属性。因此，就会出现如上所述的情况。
 
-### 描述符
+## 描述符
 
 > 描述
 
@@ -314,7 +372,7 @@ class Grade(object):
 - PEP 487(https://www.python.org/dev/peps/pep-0487/#adding-a-class-attribute-with-the-attribute-order) 
 - what`s new in Python 3.6(https://docs.python.org/3.6/whatsnew/3.6.html) 
 
-### Python 继承机制
+## Python 继承机制
 
 > 描述
 
@@ -357,7 +415,7 @@ print(p.val)
 
     输出是 36 ，具体可以参考 New-style Classes , multiple-inheritance
 
-### Python 特殊方法
+## Python 特殊方法
 
     描述
     我写了一个通过重载 new 方法来实现单例模式的类。
@@ -450,7 +508,7 @@ class A(object):
 
 a1 = A() # what`s the fuck
 ```
-### 多线程是真的多线程吗？
+## 多线程是真的多线程吗？
 > Effective Python 第37条：可以使用线程来执行阻塞式IO，但是不要用它做平行计算。
 
 ```python
@@ -527,12 +585,7 @@ if __name__ == '__main__':
 1. 程序看上去可以同时执行很多个事情，免去了手工管理任务的切换操作
 2. 处理阻塞式IO操作。Python执行某些系统调用时，会触发阻塞式操作。读写文件，在网络间通讯，显示器与设计之间交互都属于阻塞式IO。为了响应阻塞式请求，开发者可以借助线程，把python程序与这些耗时IO操作隔离开来。
 
-### 结语
-
-说实话 Python 的动态特性可以让其用众多黑技术去实现一些很舒服的功能，当然这也对我们对语言特性及坑的掌握也变得更严格了。
-[参考连接]<https://manjusaka.itscoder.com/2016/11/18/Someone-tell-me-that-you-think-Python-is-simple>
-
-## Python 中不为人知的一面
+## Python中一些忽视的性质
 
 1.  `eval` 与`ast.literal_eval`:
        literal_eval相对来说比较安全，只有字符串中包含表达式的时候才会评估。
@@ -559,9 +612,33 @@ if not l:
 [python property的重定义](https://stackoverflow.com/questions/3012421/python-memoising-deferred-lookup-property-decorator)
 
 
-> 更多python技巧
-[我的python小吃](https://github.com/cwlseu/recipes/tree/master/pyrecipes)
+## 常见问题
+## pip安装package出现Read timed out.
 
+```sh
+xxx@xxxx:~/Repo/engine/online_index/webpy-master$ pip install cheroot-6.0.0-py2.py3-none-any.whl 
+Processing ./cheroot-6.0.0-py2.py3-none-any.whl
+Requirement already satisfied: six>=1.11.0 in /opt/anaconda2/lib/python2.7/site-packages (from cheroot==6.0.0)
+Collecting more-itertools>=2.6 (from cheroot==6.0.0)
+Retrying (Retry(total=4, connect=None, read=None, redirect=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.python.org', port=443): Read timed out. (read timeout=15)",)': /simple/more-itertools/
+Retrying (Retry(total=3, connect=None, read=None, redirect=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.python.org', port=443): Read timed out. (read timeout=15)",)': /simple/more-itertools/
+Retrying (Retry(total=2, connect=None, read=None, redirect=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.python.org', port=443): Read timed out. (read timeout=15)",)': /simple/more-itertools/
+Retrying (Retry(total=1, connect=None, read=None, redirect=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.python.org', port=443): Read timed out. (read timeout=15)",)': /simple/more-itertools/
+
+```
+
+### 解决方案
+
+安装过程中添加信赖的地址，尤其是在某些互联网公司中，由于安全，防火墙等等安全考虑，会将pip默认的host地址作为不信任。
+xxx@xxxx:~/Repo/engine/online_index/webpy-master$ pip install web.py -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+
+在pip.conf中加入trusted-host选项，该方法是一劳永逸
+```git-config
+[global]
+index-url = http://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host=mirrors.aliyun.com
+```
 
 ## 参考文献
 
@@ -576,3 +653,5 @@ if not l:
 [5].[what`s new in Python 3.6]<https://docs.python.org/3.6/whatsnew/3.6.html> 
 
 [6].[Python相见恨晚的库]<https://www.zhihu.com/question/24590883>
+
+[7]. [python recipes]<https://github.com/cwlseu/pyrecipes.git>
