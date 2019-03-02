@@ -65,7 +65,7 @@ layout: default
                 {% for thisTag in page.tags %}
                     {% if postHasSimilar == false and hasSimilar.size < 6 and post != page and tag == thisTag %}
                         {% if hasSimilar.size == 0 %}
-                        <h2 id="similar_posts">Similar Posts</h2>
+                        <h2 id="similar_posts">相似博文</h2>
                         <ul>
                         {% endif %}
                         <li class="relatedPost">
@@ -87,7 +87,7 @@ layout: default
 
         {% include previousAndNext.html %}
 
-        <h2 id="comments">Comments</h2>
+        <h2 id="comments">欢迎评论</h2>
         <!-- <div id="disqus_thread"></div>
         <script>
             /**
@@ -134,9 +134,9 @@ layout: default
                 </div>
                 <ul id="content-side" class="content-ul">
                     {% if hasSimilar.size > 0 %}
-                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    <li><a href="#similar_posts">相似博文</a></li>
                     {% endif %}
-                    <li><a href="#comments">Comments</a></li>
+                    <li><a href="#comments">评论</a></li>
                 </ul>
             </div>
             <!-- 其他div框放到这里 -->
