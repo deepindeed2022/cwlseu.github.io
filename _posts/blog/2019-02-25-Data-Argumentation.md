@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "一起来看数据增强 Data Augmentation"
+title: "一起来看数据增强"
 categories: [blog ]
 tags: [detection, 深度学习]
 description: 一起来看数据增强
@@ -14,7 +14,7 @@ comments: true
 
 从AlexNet夺取ImageNet的冠军，到RCNN的出现，再到后来的SSD算法，数据增强仿佛像是一位功成名就的老者，虽然数据增强对于算法性能的提升起到重要的作用，但是他从来不居功，默默在背后付出"众里寻他千百度"，只为让你"蓦然回首，她在灯火阑珊处"。
 
-## 数据增强的目的与作用
+## 数据增强(Data Augmentation)的目的与作用
 
 卷积神经网络能够鲁棒地将物体分类，即便物体放置在不同的方向上，这也就是所说不变性的性质，即使卷积神经网络被放在不同方向上，它也能进行对象分类。更具体的说，卷积神经网络对平移、视角、尺寸或照度（或以上组合）保持不变性。
 这就是数据增强的本质前提。在现实世界中，我们可能会有一组在有限的条件下拍摄的图像 。但是，我们的目标应用可能是在多变的环境中，例如，不同的方向、位置、比例、亮度等。我们通过使用经综合修改过的数据来训练神经网络，以应对这些情形。
@@ -50,11 +50,30 @@ comments: true
 
 ## caffe中的数据增强
 
-只发现mirror、scale、crop三种
+`caffe/src/caffe/data_transformer.cpp`
+只发现mirror、scale、crop三种。 其中Data_Transformer被调用的时候，会采用1/2的随机镜像，以及对应输入参数的scale和crop进行生成新的样本，输出到下一层网络中。因此，我们使用caffe训练的时候，只训练一个epoch就可以的情况是万万不能的。即使是同一个图片，同一套参数，也要进行多次采样才行。每个epoch进行shuffle一次，每次的batch中的分布就会发生变化，同样一张图片，虽然是同一套参数，也可能会出现不同的结果。在训练过程中的数据采样，随机性让样本不至于将噪声过度的学习。
 
 ## SSD中的数据增强
+SSD中的数据采样，在caffe中数据采样的基础上，进行了充分扩充，增强方式包括resize，crop，distort，...
+更重要的是引入BatchSampler, 以Batch中的数据基础，达到真正的增加不同overlap的数据的目的，使得检测能力极大增强。因此，我一度认为，SSD的成功不是One-Stage在Detection的突破，而是数据增强方法的提升。
 
-http://deepindeed.cn/2017/04/05/SSD-Data-Augmentation/
+```
+// Sample a batch of bboxes with provided constraints.
+message BatchSampler {
+  // 是否使用原来的图片
+  optional bool use_original_image = 1 [default = true];
+  // sampler的参数
+  optional Sampler sampler = 2;
+  // 对于采样box的限制条件，决定一个采样数据positive or negative
+  optional SampleConstraint sample_constraint = 3;
+  // 当采样总数满足条件时，直接结束
+  optional uint32 max_sample = 4;
+  // 为了避免死循环，采样最大try的次数.
+  optional uint32 max_trials = 5 [default = 100];
+}
+```
+
+更多内容，参考博客：http://deepindeed.cn/2017/04/05/SSD-Data-Augmentation/
 
 ## 海康威视MSCOCO比赛中的数据增强
 

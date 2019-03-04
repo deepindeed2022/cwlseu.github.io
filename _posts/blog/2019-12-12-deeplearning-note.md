@@ -38,11 +38,16 @@ comments: true
 因为该方向为当前位置的最快下降方向，所以也被称为是”最速下降法“。最速下降法越接近目标值，步长越小，前进越慢。
 梯度下降法的搜索迭代示意图如下图所示：
 ![@梯度下降法的搜索迭代示意图](http://cwlseu.github.io/images/optmethods/gd1.png)
+梯度下降法的缺点：
+* 靠近极小值时收敛速度减慢，如下图所示；
+* 直线搜索时可能会产生一些问题；
+* 可能会“之字形”地下降。
+![@梯度下降法的之字形示意图](http://cwlseu.github.io/images/optmethods/gd2.png)
 
+### 参考文献
 * [梯度下降(gradient descent)](https://www.quora.com/What-is-the-purpose-for-the-use-of-gradient-descent-in-machine-learning?__filter__=&__nsrc__=2&__snid3__=2889908801&redirected_qid=31223828)
 * [梯度下降优化算法](http://ruder.io/optimizing-gradient-descent/)
-
-* http://www.cnblogs.com/shixiangwan/p/7532830.html
+* [常见的几种最优化方法](http://www.cnblogs.com/shixiangwan/p/7532830.html)
 
 ## 深度学习教程
 [CS231n: Convolutional Neural Networks for Visual Recognition.](https://cs231n.github.io/)
