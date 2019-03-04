@@ -392,8 +392,14 @@ IF(PTHREADPOOL_BUILD_BENCHMARKS AND NOT DEFINED GOOGLEBENCHMARK_SOURCE_DIR)
 ENDIF()
 ```
 ## CMakeLists中的高级用法
- 
-TODO
+```cmake
+INSTALL(TARGETS libdeepindeed
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib)
+```
+- [cmake install target](https://cmake.org/cmake/help/v3.1/command/install.html#installing-targets)
+
 - 库之间的符号继承等
 
 ## 参考资料

@@ -32,8 +32,17 @@ comments: true
 
 
 ## 优化
+### 梯度下降法（Gradient Descent）
+梯度下降法是最早最简单，也是最为常用的最优化方法。梯度下降法实现简单，当目标函数是凸函数时，梯度下降法的解是全局解。
+一般情况下，其解不保证是全局最优解，梯度下降法的速度也未必是最快的。梯度下降法的优化思想是用当前位置负梯度方向作为搜索方向，
+因为该方向为当前位置的最快下降方向，所以也被称为是”最速下降法“。最速下降法越接近目标值，步长越小，前进越慢。
+梯度下降法的搜索迭代示意图如下图所示：
+![@梯度下降法的搜索迭代示意图](http://cwlseu.github.io/images/optmethods/gd1.png)
+
 * [梯度下降(gradient descent)](https://www.quora.com/What-is-the-purpose-for-the-use-of-gradient-descent-in-machine-learning?__filter__=&__nsrc__=2&__snid3__=2889908801&redirected_qid=31223828)
 * [梯度下降优化算法](http://ruder.io/optimizing-gradient-descent/)
+
+* http://www.cnblogs.com/shixiangwan/p/7532830.html
 
 ## 深度学习教程
 [CS231n: Convolutional Neural Networks for Visual Recognition.](https://cs231n.github.io/)
