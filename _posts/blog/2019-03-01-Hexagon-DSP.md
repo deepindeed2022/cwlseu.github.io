@@ -11,14 +11,17 @@ header-img: "images/bg1.jpg"
 {:toc}
 
 ## 引言
+
 从2011年甚至更早开始，智能手机，智能终端，车载芯片等等智能终端中，高通芯片无处不在。相比较Intel，高通抓住了移动处理器中续航的问题，不断推出低功耗移动处理器，从而抓住移动处理器的市场。日常工作中接触到很多冠以高通之名的产品，记录以习之。
 
 ## 性能排行榜
+
 收集了一下[2018年高通骁龙CPU处理器排行榜](https://www.xianshua.net/top/5534.html)和[各种手机品牌的处理器性能对比](http://mobile.zol.com.cn/soc/)，从中可以看出，骁龙系列
 处理器也是分为高中低端处理器的，其中去年最常见的845系列，占据较大的市场份额。与之争锋麒麟
 980虽然在HUWEI Meta 20 Pro的跑分汇总获得更高名次，性能前10中高通独占8席。
 
 ## 骁龙
+
 为什么要选择骁龙处理器？
 骁龙移动处理器是Qualcomm开发的完整片上系统解决方案系列产品，该系列适应用户需求而提供卓越的用户体验和更长的电池寿命。利用骁龙处理器先进的处理能力和并发性能，您可以同时运行多个高级应用，而对电池的消耗却可以降到最少。
 
@@ -48,6 +51,7 @@ Qualcomm的晓龙芯片从创立之几乎一直内置Hexagon DSP芯片，它是�
 
 
 ## [高清图像处理，低功耗——Qualcomm® Hexagon™ Vector eXtensions (HVX)](https://www.csdn.net/article/a/2015-09-15/15828177)
+
 摘要：过去几年，开发人员一直在利用 Hexagon SDK，量身定制 DSP，处理音频、图像与计算 。在 HotChips 半导体会议上，我们揭开了即将上市的 Snapdragon 820 处理器中全新 Hexagon DSP 的部分面纱。这款 Hexagon 680 DSP ，集成宽幅向量处理 Hexagon 向量扩展（HVX）核心，充分利用新的DSP 应用实例。
 英文原版[High-Res Image Processing, Low Power Consumption – Qualcomm® Hexagon™ Vector eXtensions (VX)](https://developer.qualcomm.com/blog/high-res-image-processing-low-power-consumption-qualcomm-hexagon-vector-extensions-vx)
 关于HVX技术，可以参考如下介绍

@@ -114,5 +114,7 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
   * 描述：该数据集包含来自10个类的城市声音的8732个标记的声音片段，每个片段时间小于4秒。
   * 大小：训练数据集3GB，训练数据集2GB。
   * 8732 labeled sound excerpts (<=4s) of urban sounds from 10 classes
+
 ## more dataset
-[](https://github.com/Prasanna1991/DHCD_Dataset)
+- [机器之心整理的数据集合](https://www.jiqizhixin.com/articles/2018-09-05-2)
+- [DHCD_Dataset](https://github.com/Prasanna1991/DHCD_Dataset)

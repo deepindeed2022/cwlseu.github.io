@@ -103,8 +103,7 @@ __uninitialized_copy_aux(_InputIter __first, _InputIter __last,
 }
 template <class _InputIter, class _ForwardIter, class _Tp>
 inline _ForwardIter
-__uninitialized_copy(_InputIter __first, _InputIter __last,
-                     _ForwardIter __result, _Tp*)
+__uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result, _Tp*)
 {
   typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
   return __uninitialized_copy_aux(__first, __last, __result, _Is_POD());
