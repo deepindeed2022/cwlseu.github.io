@@ -15,10 +15,76 @@ description: 物体检测算法概览
 深度学习让物体检测从实验室走到生活。基于深度学习的物体检测算法分类两大类。一类是像RCNN类似的两stage方法，将
 ROI的选择和对ROI的分类score过程。另外一类是类似YOLO将ROI的选择和最终打分实现端到端一步完成。
 ![@物体检测算法概览图](https://cwlseu.github.io/images/detection/Detection-All.png)
+[各种检测算法之间的性能对比，准确率，速度，以及一些可能加速的tips](https://www.jianshu.com/p/0586fdb412bf?utm_source=oschina-app)
 
 # 基于region proposals的方法（Two-Stage方法）
 - RCNN => Fast RCNN => Faster RCNN => FPN 
 - https://www.cnblogs.com/liaohuiqiang/p/9740382.html
+- https://blog.csdn.net/u011436429/article/details/80414615
+- https://blog.csdn.net/xiaoye5606/article/details/71191429
+
+![@R-CNN、Fast R-CNN、Faster R-CNN三者关系](https://cwlseu.github.io/images/detection/RCNN-types2.png)
+
+## RCNN
+- 论文链接：https://arxiv.org/pdf/1311.2524.pdf
+- 作者：Ross Girshick Jeff Donahue Trevor Darrell Jitendra Malik
+之前的视觉任务大多数考虑使用SIFT和HOG特征，而近年来CNN和ImageNet的出现使得图像分类问题取得重大突破，那么这方面的成功能否迁移到PASCAL VOC的目标检测任务上呢？基于这个问题，论文提出了R-CNN。
+R-CNN (Region-based CNN features)
+性能：RCNN在VOC2007上的mAP是58%左右。
+
+### 主要工作流程
+![@R-CNN要完成目标定位，其流程主要分为四步](https://cwlseu.github.io/images/detection/RCNN.png)
+R-CNN要完成目标定位，其流程主要分为四步：
+* 输入图像
+* 利用选择性搜索(Selective Search)这样的区域生成算法提取Region Proposal 提案区域(2000个左右)
+* 将每个Region Proposal分别resize(因为训练好的CNN输入是固定的)后(也即下图中的warped region，文章中是归一化为227×227)作为CNN网络的输入。
+* CNN网络提取到经过resize的region proposal的特征送入每一类的SVM分类器，判断是否属于该类
+
+### RCNN的缺点
+
+* 对于提取的每个Region Proposal，多数都是互相重叠，重叠部分会被多次重复提取feature)，都要分别进行CNN前向传播一次(相当于进行了2000吃提特征和SVM分类的过程)，计算量较大。
+* CNN的模型确定的情况下只能接受固定大小的输入(也即wraped region的大小固定)
+
+### 优化思路
+
+既然所有的Region Proposal都在输入图像中，与其提取后分别作为CNN的输入，为什么不考虑将带有Region Proposal的原图像直接作为CNN的输入呢？原图像在经过CNN的卷积层得到feature map，原图像中的Region Proposal经过特征映射(也即CNN的卷积下采样等操作)也与feature map中的一块儿区域相对应。
+
+## SPP net
+- 论文链接：]https://arxiv.org/abs/1406.4729
+- 作者：Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
+简述：SPP net中Region Proposal仍然是在原始输入图像中选取的，不过是通过CNN映射到了feature map中的一片区域。
+
+### SPP-NET的主要思想
+![@SPPNet架构图](https://cwlseu.github.io/images/detection/SPPNet-arch.png)
+* 对卷积层的feature map上的Region Proposal映射区域分别划分成1×1，2×2，4×4的窗口(window)，
+* 在每个窗口内做max pooling，这样对于一个卷积核产生的feature map，就可以由SPP得到一个(1×1+2×2+4×4)维的特征向量。
+* 论文中采用的网络结构最后一层卷积层共有256个卷积核，所以最后会得到一个固定维度的特征向量(1×1+2×2+4×4)×256维)，并用此特征向量作为全连接层的输入后做分类。
+
+### 相对于R-CNN，SPP-net的优势
+* 使用原始图像作为CNN网络的输入来计算feature map(R-CNN中是每个Region Proposal都要经历一次CNN计算)，大大减少了计算量。
+* RCNN要resize，易于失真，而SPP-net不需要，原因是，SPP net中Region Proposal仍然是通过选择性搜索等算法在输入图像中生成的，通过映射的方式得到feature map中对应的区域，并对Region Proposal在feature map中对应区域做空间金字塔池化。通过空间金字塔池化操作，对于任意尺寸的候选区域，经过SPP后都会得到固定长度的特征向量。
+
+<!-- ### SPP-net缺点
+* 训练分多个阶段，步骤繁琐(微调网络+训练SVM+训练边框回归器)
+* SPP net在微调网络的时候固定了卷积层，只对全连接层进行微调 -->
+
+## Fast RCNN
+- 论文链接：https://arxiv.org/abs/1504.08083
+- 作者：Ross Girshick
+性能：在VOC2007上的mAP也提高到了68%
+
+### 算法流程图
+![](https://cwlseu.github.io/images/detection/FastRCNN-1.png)
+![](https://cwlseu.github.io/images/detection/FastRCNN.png)
+
+### 优点
+* Fast R-CNN引入了RoI 池化层(相当于是一层SPP)，对于图像中的Region Poposal(也即RoI)，通过映射关系(图中的RoI projection)可以得到feature map中Region Proposal对应的区域。
+* RoI Pooling层的操作是将feature map上的RoI区域划分为7×7的窗口，在每个窗口内进行max pooling，然后得到(7×7)×256的输出，最后连接到全连接层得到固定长度的RoI特征向量。
+* 前面得到的RoI特征向量再通过全连接层作为Softmax和Regressor的输入,训练过程可以更新所有的网络层
+* 训练过程是端到端的(Sigle-stage),并使用了一个多任务的损失函数(也即将边框回归直接加入到CNN网络中后,Fast R-CNN网络的损失函数包含了Softmax的损失和Regressor的损失)
+
+## 小结
+在前面三种目标检测框架中(R-CNN，SPP net，Fast R-CNN)，Region Proposal都是通过区域生成的算法(选择性搜索等)在原始输入图像中产生的，不过在SPP net及Fast R-CNN中都是输入图像中的Region Proposal通过映射关系映射到CNN中feature map上再操作的。Fast R-CNN中RoI池化的对象是输入图像中产生的proposal在feature map上的映射区域
 
 ## Faster RCNN
 - 论文链接：https://arxiv.org/pdf/1506.01497.pdf
@@ -56,11 +122,13 @@ Feature Map进入RPN后，先经过一次$3*3$的卷积，同样，特征图大�
 ![@FasterRCNN算法详细过程图](https://cwlseu.github.io/images/detection/FasterRCNN-Arch.png)
 ![@FasterRCNN proposal&RPN Netscope](https://cwlseu.github.io/images/detection/FasterRCNNNetwork.png)
 
-### 参考链接
 
+### 参考链接
 - https://www.cnblogs.com/wangyong/p/8513563.html
 - https://www.jianshu.com/p/00a6a6efd83d
 
+![](https://cwlseu.github.io/images/detection/RCNN-types.png)
+膜拜一下[RGB大神](http://www.rossgirshick.info/)
 ## FPN(feature pyramid networks for object detection)
 
 - 论文链接：https://arxiv.org/abs/1612.03144
