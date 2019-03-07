@@ -90,9 +90,14 @@ The basic SNPE workflow consists of only a few steps:
 * Prepare input data for the model.
 * Load and execute the model using SNPE runtime.
 
-[SNPE document](https://developer.qualcomm.com/docs/snpe/overview.html)
-[SNPE支持的网络层](https://developer.qualcomm.com/docs/snpe/network_layers.html)
-[SNPE用户自定义层JNI实现](https://blog.csdn.net/guvcolie/article/details/77937786)
+### 测试模型
+`./snpe-net-run --container ./modelname.dlc --input_list list.one --use_dsp`
+
+
+- [SNPE sdk download](https://developer.qualcomm.com/software/qualcomm-neural-processing-sdk)
+- [SNPE document](https://developer.qualcomm.com/docs/snpe/overview.html)
+- [SNPE支持的网络层](https://developer.qualcomm.com/docs/snpe/network_layers.html)
+- [SNPE用户自定义层JNI实现](https://blog.csdn.net/guvcolie/article/details/77937786)
 
 ## 参考链接
 
