@@ -91,6 +91,20 @@ The basic SNPE workflow consists of only a few steps:
 * Load and execute the model using SNPE runtime.
 
 ### 测试模型
+1. 添加环境变量
+```cpp
+#include <cstdlib>
+#if defined(__linux__) || defined(__ANDROID__)
+bool SetAdspLibraryPath(std::string nativeLibPath) {
+    std::stringstream path;
+    path << nativeLibPath << ";/system/lib/rfsa/adsp;/system/vendor/lib/rfsa/adsp;/dsp";
+    return setenv("ADSP_LIBRARY_PATH", path.str().c_str(), 1 /*override*/) == 0;
+}
+#else
+#error "the platform not support dsp"
+#endif
+```
+
 `./snpe-net-run --container ./modelname.dlc --input_list list.one --use_dsp`
 
 

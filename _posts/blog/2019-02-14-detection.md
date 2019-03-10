@@ -11,17 +11,26 @@ description: 物体检测算法概览
 {:toc}
 
 # 物体检测算法概述
-深度学习让物体检测从实验室走到生活。基于深度学习的物体检测算法分类两大类。一类是像RCNN类似的两stage方法，将ROI的选择和对ROI的分类score过程。另外一类是类似YOLO将ROI的选择和最终打分实现端到端一步完成。
+深度学习让物体检测从实验室走到生活。基于深度学习的物体检测算法分类两大类。一类是像RCNN类似的两stage方法，将ROI的选择和对ROI的分类score过程。
+另外一类是类似YOLO将ROI的选择和最终打分实现端到端一步完成。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。
 
 ![@物体检测算法概览图](https://cwlseu.github.io/images/detection/Detection-All.png)
 
 [各种检测算法之间的性能对比，准确率，速度，以及一些可能加速的tips](https://www.jianshu.com/p/0586fdb412bf?utm_source=oschina-app)
+
+## R-CNN的前世
+- HOG
+- DPM
+- Selective Search
+- [深度学习应用到物体检测以前](https://zhuanlan.zhihu.com/p/32564990)
 
 # 基于region proposals的方法（Two-Stage方法）
 - RCNN => Fast RCNN => Faster RCNN => FPN 
 ![@R-CNN、Fast R-CNN、Faster R-CNN三者关系](https://cwlseu.github.io/images/detection/RCNN-types2.png)
 
 ## RCNN
+在早期深度学习技术发展进程中，主要都是围绕分类问题展开研究，这是因为神经网络特有的结构输出将概率统计和分类问题结合，提供一种直观易行的思路。国内外研究人员虽然也在致力于将其他如目标检测领域和深度学习结合，但都没有取得成效，这种情况直到R-CNN算法出现才得以解决。
+
 - 论文链接：https://arxiv.org/pdf/1311.2524.pdf
 - 作者：Ross Girshick Jeff Donahue Trevor Darrell Jitendra Malik
 之前的视觉任务大多数考虑使用SIFT和HOG特征，而近年来CNN和ImageNet的出现使得图像分类问题取得重大突破，那么这方面的成功能否迁移到PASCAL VOC的目标检测任务上呢？基于这个问题，论文提出了R-CNN。
@@ -190,6 +199,9 @@ Feature Map进入RPN后，先经过一次$3*3$的卷积，同样，特征图大�
 ![@Mask Scoring RCNN的架构图](https://cwlseu.github.io/images/detection/MSRCNN.png)
 
 # One-stage方法
+以R-CNN算法为代表的two stage的方法由于RPN结构的存在，虽然检测精度越来越高，但是其速度却遇到瓶颈，比较难于满足部分场景实时性的需求。
+因此出现一种基于回归方法的one stage的目标检测算法，不同于two stage的方法的分步训练共享检测结果，one stage的方法能实现完整单次
+训练共享特征，且在保证一定准确率的前提下，速度得到极大提升。
 
 ### SSD原理与实现
 
