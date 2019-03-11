@@ -41,8 +41,9 @@ $$Precision = \frac{TP}{TP + FP} = \frac{TP}{all-detections}$$
 
 Recall is the ability of a model to find all the relevant cases (all ground truth bounding boxes). It is the percentage of true positive detected among all relevant ground truths and is given by:
 $$Recall = \frac{TP}{TP + FN} = \frac{TP}{all-groundtruths}$$
-
+![@混淆矩阵](http://cwlseu.github.io/images/detection/confusion-metrics.png)
 ## 评估方法Metrics
+* Receiver operating characteristics (ROC) curve
 * Precision x Recall curve
 * Average Precision
   * 11-point interpolation
@@ -52,3 +53,7 @@ $$Recall = \frac{TP}{TP + FN} = \frac{TP}{all-groundtruths}$$
 
 ## 参考文献
 1. [评估标准](https://github.com/cwlseu/Object-Detection-Metrics)
+2. [机器学习之分类性能度量指标 : ROC曲线、AUC值、正确率、召回率](https://www.jianshu.com/p/c61ae11cc5f6)
+3. [How and When to Use ROC Curves and Precision-Recall Curves for Classification in Python](https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/)
+4. [Precision-recall curves – what are they and how are they used](https://acutecaretesting.org/en/articles/precision-recall-curves-what-are-they-and-how-are-they-used)
+5. [精确率、召回率、F1 值、ROC、AUC 各自的优缺点是什么？](https://www.zhihu.com/question/30643044)
