@@ -53,3 +53,61 @@ raw_data[i+j*stride]
 Expression Template是个好东西。通过编译融合嵌入的方式，减少了大量的读写和计算。
 
 ## Curiously Recurring Template Pattern
+
+
+## [Eigen常见的坑](https://zhuanlan.zhihu.com/p/32226967)
+
+### 编译的时候最好-DEIGEN_MPL2_ONLY(详见: Eigen)
+这是因为Eigen虽然大部分是MPL2 licensed的，但是还有少部分代码是LGPL licensed的，如果修改了其代码，则必须开源。
+这可能产生法律风险，而遭到法务部门的Complain
+
+### 要注意alignment的问题
+```
+my_program: path/to/eigen/Eigen/src/Core/DenseStorage.h:44:
+Eigen::internal::matrix_array<T, Size, MatrixOptions, Align>::internal::matrix_array()
+[with T = double, int Size = 2, int MatrixOptions = 2, bool Align = true]:
+Assertion `(reinterpret_cast<size_t>(array) & (sizemask)) == 0 && "this assertion
+is explained here: http://eigen.tuxfamily.org/dox-devel/group__TopicUnalignedArrayAssert.html
+     READ THIS WEB PAGE !!! ****"' failed.
+There are 4 known causes for this issue. Please read on to understand them and learn how to fix them.
+```
+
+例如下面的代码都是有问题的，可能导致整个程序Crash。
+
+* 结构体含有Eigen类型的成员变量
+
+```cpp
+class Foo {
+  //...
+  Eigen::Vector2d v; // 这个类型只是一个例子，很多类型都有问题
+  //...
+};
+//...
+Foo *foo = new Foo;
+```
+
+* Eigen类型的变量被放到STL容器中
+
+```cpp
+// Eigen::Matrix2f这个类型只是一个例子，很多类型都有问题
+std::vector<Eigen::Matrix2f> my_vector;
+struct my_class { ... Eigen::Matrix2f m; ... }; 
+std::map<int, my_class> my_map;
+```
+
+* Eigen类型的变量被按值传入一个函数
+
+```cpp
+// Eigen::Vector4d只是一个例子，很多类型都有这个问题
+void func(Eigen::Vector4d v);
+```
+
+* 在栈上定义Eigen类型的变量(只有GCC4.4及以下版本 on Windows被发现有这个问题，例如MinGW or TDM-GCC)
+
+```cpp
+void foo() {
+  Eigen::Quaternionf q; // Eigen::Quaternionf只是一个例子，很多类型都有这个问题
+}
+```
+
+- [Explanation of the assertion on unaligned arrays](http://eigen.tuxfamily.org/dox/group__TopicUnalignedArrayAssert.html)
