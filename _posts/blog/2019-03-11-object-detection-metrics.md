@@ -50,6 +50,16 @@ $$Recall = \frac{TP}{TP + FN} = \frac{TP}{all-groundtruths}$$
   * Interpolating all points
 
 ## 物体检测中的损失函数
+### Gradient Harmonized Single-stage Detector
+- 论文地址：https://arxiv.org/pdf/1811.05181.pdf
+- 作者：Buyu Li, Yu Liu and Xiaogang Wang
+- 针对的的痛点：Huge difference in quantity between positive and negative examples as well as between easy and hard examples.
+- Abstract
+GHM can be easily embedded into both classification loss function like cross-entropy (CE) and regression
+loss function like smooth-L1 (SL1) loss.two novel loss functions called GHM-C and GHM-R are designed
+to balancing the gradient flow for anchor classification and bounding box refinement
+
+
 
 ## 参考文献
 1. [评估标准](https://github.com/cwlseu/Object-Detection-Metrics)

@@ -93,6 +93,7 @@ message BatchSampler {
 
 ## 小结
 同样的算法，数据增强能够显著提升算法的性能。不仅仅是因为我们采集的数据不够全面，而是我们专注的这个CV领域就是一个受多种因素影响的领域，光照，人物姿势，拍照角度，旋转角度等等。想要我们的CNN算子将所有这些影响因素都考虑进去，这是几乎不可能的。只有可能让它多学一点，多看一点，少犯一点错罢了。而数据增强就是能够让它可以多学一点不一样的东西，少一点死板在里面。
+https://github.com/mdbloice/Augmentor
 
 ## 可参考链接
 - [Discriminative Unsupervised Feature Learning
@@ -101,9 +102,9 @@ with Exemplar Convolutional Neural Networks](https://arxiv.org/pdf/1406.6909.pdf
 - [Bag of Freebies for Training Object Detection Neural Networks](https://arxiv.org/pdf/1902.04103.pdf)
 - [AutoAugment: Learning Augmentation Policies from Data](https://arxiv.org/abs/1805.09501v1)
 - [海康威视研究院ImageNet2016竞赛经验分享](https://zhuanlan.zhihu.com/p/23249000)
-- https://github.com/kevinlin311tw/caffe-augmentation 
-- https://github.com/codebox/image_augmentor
-- https://github.com/aleju/imgaug.git
+- [https://github.com/kevinlin311tw/caffe-augmentation](https://github.com/kevinlin311tw/caffe-augmentation)
+- [https://github.com/codebox/image_augmentor](https://github.com/codebox/image_augmentor)
+- [https://github.com/aleju/imgaug.git](https://github.com/aleju/imgaug.git)
 - [The art of Data Augmentation](http://lib.stat.cmu.edu/~brian/905-2009/all-papers/01-jcgs-art.pdf)
 - [Augmentation for small object detection](https://arxiv.org/abs/1902.07296)
 - [使用深度学习(CNN)算法进行图像识别工作时，有哪些data augmentation 的奇技淫巧？](https://www.zhihu.com/question/35339639)
