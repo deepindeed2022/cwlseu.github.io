@@ -3,7 +3,7 @@ layout: post
 comments: true
 title: "Object Detection Metrics"
 categories: [blog ]
-tags: [detection]
+tags: [detection,CV]
 description: 物体检测算法的评估方法
 ---
 

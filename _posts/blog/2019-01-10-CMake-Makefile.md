@@ -21,6 +21,7 @@ description:
 ## Makefile
 
 ### `ifeq`和`ifneq`之后要有个空格，否则不识别
+
 ```cmake
 ifeq ($(UNAME), linux)
      $(info "")
@@ -66,6 +67,7 @@ clean:
 
 
 ### makefile中调用.a库的编写
+
 ```
 #!Makefile
 CC = g++
@@ -112,6 +114,7 @@ make: *** [main] 错误 1
 ```
 
 ### makefile中的全局自变量
+
 `$@`目标文件名
 `@^`所有前提名，除副本
 `@＋`所有前提名，含副本
@@ -120,6 +123,7 @@ make: *** [main] 错误 1
 `@*`目标文件的基名称
 
 ### 是否输出执行过程
+
 ```
 #! Makefile
 SAMPLE_ENABLE ?= 1
@@ -136,6 +140,8 @@ target2:
 clean:
 	rm -rf out.o
 ```
+
+- [more samples ](https://github.com/cwlseu/recipes/tree/master/makepractise)
 
 ## CMake
 

@@ -2,7 +2,7 @@
 layout: post
 title: "C++ Programming Tricks--模板"
 categories: [blog ]
-tags: [C++, 开发]
+tags: [C++]
 description: 
 ---
 
