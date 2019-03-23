@@ -160,11 +160,10 @@ $$
 
 ## 拉格朗日对偶问题
 https://www.cnblogs.com/ooon/p/5723725.html#4200596
-
 未完，待续
 
 ## 参考链接
-* [](http://www.slimy.com/~steuard/teaching/tutorials/Lagrange.html)
+* [一个经典问题：最短路径问题](http://www.slimy.com/~steuard/teaching/tutorials/Lagrange.html)
 * [曲面上一点求法向量](https://zhidao.baidu.com/question/362692467232981652.html)
 * [拉格朗日乘子法与KKT条件](http://www.cnblogs.com/ooon/p/5721119.html)
 * [lagrange算子](https://en.wikipedia.org/wiki/Lagrange_multiplier)
@@ -172,3 +171,4 @@ https://www.cnblogs.com/ooon/p/5723725.html#4200596
 * http://www.csc.kth.se/utbildning/kth/kurser/DD3364/Lectures/KKT.pdf
 * http://www.csc.kth.se/utbildning/kth/kurser/DD3364/Lectures/Duality.pdf
 * [如何理解拉格朗日算子](https://www.zhihu.com/question/38586401)
+* [从SVM算法理解拉格朗日对偶问题](https://www.svm-tutorial.com/2016/09/duality-lagrange-multipliers/)
