@@ -64,12 +64,12 @@ HOG特征提取方法就是将一个image（你要检测的目标或者扫描窗
 
 图像中像素点的梯度：
 
-```latex
-G_x(x, y) = H(x+1, y) - H(x-1, y)
-G_y(x, y) = H(x, y+1) - H(x, y-1)
-G(x, y) = \sqrt{G_x(x, y)^2 + G_y(x, y)^2}
-\alpha(x, y) = tan^{-1}{\frac{G_y(x, y)}{G_x(x, y)}}
-```
+
+$$G_x(x, y) = H(x+1, y) - H(x-1, y)$$
+$$G_y(x, y) = H(x, y+1) - H(x, y-1)$$
+$$G(x, y) = \sqrt{G_x(x, y)^2 + G_y(x, y)^2}$$
+$$\alpha(x, y) = tan^{-1}{\frac{G_y(x, y)}{G_x(x, y)}}$$
+
 
 #### 将图像划分成小`cells`（例如16*16像素/cell）；
 

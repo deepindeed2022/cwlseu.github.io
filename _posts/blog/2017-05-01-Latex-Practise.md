@@ -18,7 +18,7 @@ description: 最近在写论文，用到latex进行编写，latex真是编辑神
 
 ## Latex简介
 
-```latex
+```tex
 \documentclass[12pt]{article} %声明要使用的类型为article，或者book
 \usepackage{xxxx}
 \begin{chinesetitle}
@@ -67,7 +67,7 @@ This is abstract
 
 5. 表格 
 
-```latex
+```tex
 \documentclass{article}
 
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables for horizontal lines
@@ -102,32 +102,24 @@ A reference to Table \ref{tab:template}.
 
 6. 编写公式
 
-```latex
+```tex
     \begin{align}
     & \hat{g}^{cx}_j =\frac{(g_j^{cx} - d_i^{cx})}{d_i^w} & \hat{g}^{cy}_j =\frac{(g_j^{cy} - d_i^{cy})}{d_i^h} & \\
     & \h pre
     at{g}^{w}_j =\log(\frac{g_j^w}{d_i^w}) & \hat{g}^{h}_j =\log(\frac{g_j^h}{d_i^h}) & 
     \end{align}
- ```
+```
+ 
 公式显示结果
-![@公式显示结果](https://cwlseu.github.io/images/latex/math.png)
+![@公式显示结果](https://cwlseu.github.io/images/latex/align.png)
 
 更多参考信息[Mathematics](https://en.wikibooks.org/wiki/LaTeX/Mathematics)
 
 ## 一些经验总结
 
-### 双栏带编号的公式
-```latex
-\begin{align}
-& \hat{g}^{cx}_j =\frac{(g_j^{cx} - d_i^{cx})}{d_i^w} & \hat{g}^{cy}_j =\frac{(g_j^{cy} - d_i^{cy})}{d_i^h} & \\
-& \hat{g}^{w}_j =\log(\frac{g_j^w}{d_i^w}) & \hat{g}^{h}_j =\log(\frac{g_j^h}{d_i^h}) & 
-\end{align}
-```
-显示出来是这样子的![@](https://cwlseu.github.io/images/latex/align.png)
-
 ### label让交叉引用更方便
 
-```latex
+```tex
 \subsection{Training}
 \label{sec:training}
 或者
@@ -137,19 +129,19 @@ A reference to Table \ref{tab:template}.
    \label{fig:b}
 \end{figure}
 ```
+
 引用的时候`\ref{fig:b}`或者`\ref{sec:training}`就可以了。
 
 
 ### 算法模块
 
-```latex
+```tex
 \usepackage[ruled]{algorithm2e}         
 \usepackage[ruled,vlined]{algorithm2e} 
 \usepackage[linesnumbered,boxed]{algorithm2e}
 ```
 
-
-```latex
+```tex
 \renewcommand{\algorithmcfname}{算法}
 \begin{algorithm}[H]
 %\SetAlgoNoLine
@@ -199,9 +191,48 @@ A reference to Table \ref{tab:template}.
 \end{algorithm}
 ```
 
-### ???的问题
+```tex
+\documentclass[8pt,a4paper,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm2e}
+% \usepackage{algorithm}  
+\usepackage{algorithmic} 
 
-```latex
+\begin{document}
+
+\begin{algorithm}
+	\caption{The algorithm of GetAllColumnIndices.}%算法标题
+	\begin{algorithmic}[1]%一行一个标行号
+		\REQUIRE{$\mathrm{thread\_start}$, $tid$}
+		\ENSURE{$\mathrm{col\_idxs}$}
+		\STATE {$ start\leftarrow \mathrm{thread\_start}[tid] + blockColStart$,
+		$curPos\leftarrow tid*\mathrm{NNZ\_PER\_THREAD} + bid*\mathrm{NNZ\_PER\_BLOCK}$
+		$left\leftarrow \mathrm{NNZ\_PER\_THREAD},len\leftarrow\mathrm{col\_len}[start + 1] - curPos$}
+		\STATE $i \leftarrow 0$
+		\WHILE{ $i < \mathrm{NNZ\_PER\_THREAD}$ }
+		\IF{$len \ge left$}
+			\FOR{$j=0$ to $left$}
+				\STATE  $\mathrm{col\_idxs}[i$$++$$] \leftarrow start$
+			\ENDFOR
+		\ELSE
+			\FOR{$j=0$ to $len$}
+				\STATE  $\mathrm{col\_idxs}[i$$++$$] \leftarrow start$
+			\ENDFOR
+			\STATE $ start\leftarrow start - 1$, $ left \leftarrow left - len$
+  			\STATE $ len \leftarrow \mathrm{col\_len}[start + 1] - curPos$
+		\ENDIF
+		\ENDWHILE
+	\end{algorithmic}
+\end{algorithm}
+
+\end{document}
+
+
+
+```
+### 内部reference出现`???`的问题
+
+```tex
     \begin{figure*}
         \centering
         \includegraphics[width=0.48\linewidth]{../Img/research/AlexNetLayerCompression.jpg}
@@ -211,7 +242,7 @@ A reference to Table \ref{tab:template}.
     \end{figure*}
 ```
 
-```latex
+```tex
     \begin{figure*}
         \label{AlexNetCpression}
         \centering
@@ -224,11 +255,13 @@ A reference to Table \ref{tab:template}.
 时候你就会发现，下面那种容易导致出现`cite`的位置是`??`，根本不知道去哪里找原因。真是一个自己挖的好坑啊。
 
 ### 符号资料
+
 [Algorithms](https://en.wikibooks.org/wiki/LaTeX/Algorithms)
 [Color](https://en.wikibooks.org/wiki/LaTeX/Colors)
 [Source Code List](https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings)
 
 ## 下载网址
+
 1. [CTEX](http://www.ctex.org/CTeXDownload)
 2. [中科院毕业论文模板](http://www.ctex.org/PackageCASthesis)
 3. [IEEE 会议论文模板](http://www.ieee.org/conferences_events/conferences/publishing/templates.html)
