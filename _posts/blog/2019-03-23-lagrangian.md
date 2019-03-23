@@ -28,21 +28,27 @@ $$\min_xf(x)$$
 ### 等式约束优化
 
 当目标函数加上约束条件之后：
+
 $$
 \begin{aligned}  
     &\min_{x } \  f(x)  \\
     &s.t.  \ \ \ g_i(x) = 0 , i = 1,2,...,m \\
 \end{aligned}
 $$
+
 约束条件会将解的范围限定在一个可行域，此时不一定能找到使得
 $\nabla_xf(x)$为 0 的点，只需找到在可行域内使得$f(x)$最小的值即可，
 常用的方法即为拉格朗日乘子法，该方法首先引入Lagrange Multiplier 
 $\alpha \in \mathbb{R}^m$，构建 Lagrangian 如下：
+
 $$L(x,\alpha) = f(x) + \sum_{i=1}^m \alpha_i g_i(x)$$
+
 求解方法，首先对Lagrangian关于$\alpha$和$x$求导数，令导数为0：
+
 $$
 \left \{ \begin{aligned}  \nabla_x L(x,\alpha)= 0  \\ \nabla_{ \alpha } L(x,\alpha)= 0 \end{aligned} \right.
 $$
+
 求得$x, \alpha$的值以后，将$x$带入$f(x)$即为在约束条件$h_i(x)$下的可行解。
 
 看一个示例，对于二维情况下的目标函数是$f(x,y)$，
@@ -63,16 +69,20 @@ $\nabla _xf(x) – \alpha \nabla_x g(x) = 0$
 
 ### 不等式约束
 当约束加上不等式之后，情况变得更加复杂，首先来看一个简单的情况，给定如下不等式约束问题
+
 $$
 \begin{aligned} 
     &\min_x \ f(x) \\
     & \ s.t. \ \  g(x) \le 0
 \end{aligned}
 $$
+
 对应的 Lagrangian 与图形分别如下所示,这时的可行解必须落在约束区域$g(x)$之内，下图给出了目标函数的等高线与约束
+
 $$
 L(x, \lambda) = f(x) + \lambda g(x)
 $$
+
 ![@拉格朗日不等式的情况](https://cwlseu.github.io/images/optmethods/LagrangeMultipliers-02.png)
 由图可见可行解$x$只能在$g(x)\le 0$的区域里取得：
 * 当可行解$x$落在$g(x)<0$的区域内，此时直接极小化$f(x)$即可；
@@ -81,6 +91,7 @@ $$
 > 当约束区域包含目标函数原有的的可行解时，此时加上约束可行解仍落在约束区域内部，对应$g(x)<0$的情况，这时约束条件不起作用；
 > 当约束区域不包含目标函数原有的可行解时，此时加上约束后可行解落在边界$g(x)=0$上。
 > 下图分别描述了两种情况，右图表示加上约束可行解会落在约束区域的边界上。
+
 ![@约束区域内是否包含目标函数的原有的可行解](https://cwlseu.github.io/images/optmethods/LagrangeMultipliers-03.png)
 
 以上两种情况就是说，要么可行解落在约束边界上即得$g(x)=0$, 
@@ -93,7 +104,9 @@ $\lambda g(x)=0$
 这便说明可行解$x$是落在约束区域的边界上的，**这时可行解应尽量靠近无约束时的解，
 所以在约束边界上，目标函数的负梯度方向应该远离约束区域朝向无约束时的解，
 此时正好可得约束函数的梯度方向与目标函数的负梯度方向应相同**：
+
 $$-\nabla_x f(x) = \lambda  \nabla_xg(x)$$
+
 上式需要满足的要求是拉格朗日乘子$\lambda>0$ ，这个问题可以举一个形象的例子，假设你去爬山，目标是山顶，但有一个障碍挡住了通向山顶的路，所以只能沿着障碍爬到尽可能靠近山顶的位置，然后望着山顶叹叹气，这里山顶便是目标函数的可行解，障碍便是约束函数的边界，此时的梯度方向一定是指向山顶的，与障碍的梯度同向，下图描述了这种情况:
 
 ![](https://cwlseu.github.io/images/optmethods/LagrangeMultipliers-04.png)
@@ -105,6 +118,7 @@ $$-\nabla_x f(x) = \lambda  \nabla_xg(x)$$
     任何不等式约束条件的函数凸优化问题，都可以转化为约束方程小于0且语义不变的形式，以便于使用KKT条件.
 
 可见对于不等式约束，只要满足一定的条件，依然可以使用拉格朗日乘子法解决，这里的条件便是KKT条件。接下来给出形式化的KKT条件 首先给出形式化的不等式约束优化问题：
+
 $$
 \begin{aligned}  
 &\min_x \  f(x)  \\
@@ -112,11 +126,15 @@ $$
 & \ \ \ \ \ \ \ \ \ \   g_j(x) \le 0, \  j = 1,2,...,n
 \end{aligned}
 $$
+
 列出 Lagrangian 得到无约束优化问题：
+
 $$
 L(x,\alpha,\beta) =f(x) + \sum_{i=1}^m \alpha_i h_i(x) + \sum_{j=1}^n\beta_ig_i(x)
 $$
+
 经过之前的分析，便得知加上不等式约束后可行解$x$需要满足的就是以下的 KKT 条件：
+
 $$
 \begin{aligned}
 \nabla_x L(x,\alpha,\beta) &= 0    \qquad\qquad\qquad\qquad(1)\\
