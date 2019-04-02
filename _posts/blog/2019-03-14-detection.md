@@ -445,4 +445,6 @@ SSD算法中是分为default box(下图中(b)中为default box示意图)和prior
 ### 参考文献
 1. [NMS的解释](https://www.cnblogs.com/makefile/p/nms.html)
 2. [附录中ROI的解释](http://www.cnblogs.com/rocbomb/p/4428946.html)
-3. [SSD算法](https://blog.csdn.net/u013989576/article/details/73439202/)
+3. [SSD算法](https://blog.csdn.net/u013989576/article/details/73439202/)'
+
+4. [One-Stage Detector, With Focal Loss and RetinaNet Using ResNet+FPN, Surpass the Accuracy of Two-Stage Detectors, Faster R-CNN](https://towardsdatascience.com/review-retinanet-focal-loss-object-detection-38fba6afabe4)

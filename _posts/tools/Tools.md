@@ -6,6 +6,7 @@ header-img: "images/bg28.jpg"
 ---
 
 ### Linux Manual
+
 [LinuxManual](http://man7.org/linux/man-pages/dir_section_1.html)
 
 ### 绘制图片
@@ -13,6 +14,7 @@ header-img: "images/bg28.jpg"
 [在线绘制实验结果vega](http://vega.github.io/vega-editor/)
 [matplot](http://matplotlib.org/gallery.html)
 [gnuplot](http://www.gnuplot.info/)
+[论文中绘制神经网络图的常用工具](https://blog.csdn.net/wzz18191171661/article/details/87886588#comments)
 
 ### Deep Learning Resource
 
