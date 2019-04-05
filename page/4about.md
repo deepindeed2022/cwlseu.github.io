@@ -29,12 +29,14 @@ description: "Welcome to my world!"
 ## 我的工作
 
 - 职位：SenseTime算法开发
-- 主要职责：CV算法的落地与性能优化
+- 主要技能：C++/Python/Caffe可训练，可添加新层；Pytorch|MxNet也用过；嵌入式神经网络引擎，SNPE，NNIE等。 SIMD/NEON优化也有相关经验，攒显卡，装机器挽起袖子就能干。总之，上到检测算法设计，下到新的网络层的实现与优化，:)干就是了。
+- 主要职责：CV算法的落地与性能优化；新的NN引擎的适配与集成；cv相关的sdk的封装与维护。
 - 业余爱好：物体检测算法，总结工作中的坑，周末打打羽毛球，动漫只看《海贼王》
 
 ## 内推时间
+
 1. [ippclub是一个东南大学科技社团，很棒](https://github.com/IppClub/Docs)
 2. [美国国家仪器责任有限公司](http://www.ni.com/zh-cn.html) 我本科实习公司，外企，工作氛围很舒适
 3. [PerfXLab公司CEO是著名开源项目OpenBlas的维护者](http://perfxlab.com/)
 4. [腾讯新闻手机版](https://xw.qq.com)，not APP版本，打开浏览器就可以看新闻，不用安装额外的软件，支持内容推荐，小视频等信息频道。
-5. [sensetime内推](http://hr.sensetime.com/)，可以直接发送邮件
+5. [sensetime内推](http://hr.sensetime.com/)，可以直接发送邮件caowenlong92(AT)gmail.com
