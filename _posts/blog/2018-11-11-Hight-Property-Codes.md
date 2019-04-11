@@ -286,6 +286,30 @@ ClassName operator(int)
    return tmp;
 }
 ``` 
+## unsigned类型的默认转化造成的苦恼
+
+u32Width是unsigned int类型的，在进行计算过程中如果`u32Width=2`，执行到`for (; j <= u32Width - 4; j += 4)`的时候，会出现问题：
+由于j是size_t类型的， `u32Width-4`会被转化为`unsigned int`类型，从而造成该判断可通过，从直观上看来就发生了 `j <= -2`(实际是`j <= 4294967294`)是为`true`的事情了。
+
+
+```cpp
+	const unsigned int blob_len = u32Num * u32Chn * u32Height;
+	for (size_t i = 0; i < blob_len; ++i) {
+		size_t j = 0;
+		for (; j <= u32Width - 4; j += 4) {
+			dataDstBlob[j] = (dst_type)(ps32Ptr[j] * NNIE_DATA_SCALE_INV);
+			dataDstBlob[j + 1] = (dst_type)(ps32Ptr[j + 1] * NNIE_DATA_SCALE_INV);
+			dataDstBlob[j + 2] = (dst_type)(ps32Ptr[j + 2] * NNIE_DATA_SCALE_INV);
+			dataDstBlob[j + 3] = (dst_type)(ps32Ptr[j + 3] * NNIE_DATA_SCALE_INV);
+		}
+		for (; j < u32Width; ++j) {
+			dataDstBlob[j] = (dst_type)(ps32Ptr[j] * NNIE_DATA_SCALE_INV);
+		}
+		dataDstBlob += u32Width;
+		ps32Ptr += blob->u32Stride / getElemSize(blob->enType);
+	}
+```
+
 
 ## C++中容易忽略的库bitset
 bitset是处理*进制转换*，*基于bit的算法*中简单算法，虽然也可以使用raw的char array替代，但是很多bitset自带的方法，可以让程序飞起来。
