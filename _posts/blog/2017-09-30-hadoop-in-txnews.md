@@ -8,6 +8,12 @@ description: Spark和hadoop的踩坑之路
 
 {:toc} 
 
+## 引言
+
+在tx新闻实习期间，接触到各种新的事物，Hadoop，spark作为内部开发的基础工具，上手是开展工作的基础。作为一个分布式小白，
+战战兢兢开始了在hadoop上的开发之旅。我的任务主要是使用Hadoop中的HBase作为数据存储，spark作数据清洗和模型训练，生成一个针对
+腾讯新闻网的圈子模型，上线新的新闻推荐频道，新的小视频推荐频道等。
+
 ## install jdk in centos 
 
 1. wget --no-cookies --no-check-certificate --header "Cookie:oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u91-b14/jdk-8u91-linux-x64.rpm"
@@ -16,13 +22,13 @@ description: Spark和hadoop的踩坑之路
 
 ## 查看开发端口
 
-netstat -nlp | grep tcp
+`netstat -nlp | grep tcp`
 
 ## install Hadoop
 
 ## 重新启动hadoop之后
 
-bin/hdfs namenode -format
+`bin/hdfs namenode -format`
 
 
 ## 运行Demo
@@ -174,6 +180,7 @@ LDA以**词频向量**表示的文档集合作为输入，输出结果提供：
 /data/pac_hadoop/spark/bin/spark-submit --executor-cores 1   --executor-memory 1g  --num-executors 2 --class KafkaWordCount --master spark:// xxxx.xxxx.xxx.xxx:7077 xw_personas_proj-1.0.jar  xxxx.xxxx.xxx.xxx:9092,xxxx.xxxx.xxx.xxx:9092,xxxx.xxxx.xxx.xxx:9092 xw_user_logs
 
 ## 执行jar-> spark
+
 /data/pac_hadoop/spark/bin/spark-submit --executor-cores 1   --executor-memory 1g  --num-executors 6 --class KafkaWordCount --master spark://xxxx.xxxx.xxx.xxx:7077 xw_personas_proj-1.0.jar xxxx.xxxx.xxx.xxx:9092 xw_user_logs
 
 从remove拉取文件
@@ -207,3 +214,5 @@ pip install virtualenv -i http://mirror-sng.oa.com/pypi/web/simple/ --trusted-ho
 `select count(a.article_id) from rcd_corpus_info b, pac_articles a where a.article_id=b.article_id and b.create_time between 1499137016 and 1499309816 order by b.create_time desc limit 30000 offset 0;`
 
 `ps -ef | grep "topics_corpus_update_hdfs.py" | awk '{print $2}'|xargs kill -9`
+
+## crontab定时任务

@@ -2,7 +2,7 @@
 layout: post
 title: "笔记：编译器中的一些options"
 categories: [blog ]
-tags: [linux开发]
+tags: [C++, 开发]
 description: "编译器中一些不太常用，但是有的时候很有用的options"
 ---
 
@@ -76,3 +76,7 @@ gcc/g++提供了`-Wl,--as-needed`和 `-Wl,--no-as-needed`两个选项，这两�
 **Reference**: [gcc链接选项--export-dynamic的一次问题记录](https://blog.csdn.net/u011644231/article/details/88880362)
 
 
+## 更多C++内容
+- http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/
+
+- http://deepindeed.cn/2019/03/18/cpp-program-trick/
