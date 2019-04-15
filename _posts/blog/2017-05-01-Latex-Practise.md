@@ -268,3 +268,25 @@ A reference to Table \ref{tab:template}.
 4. [Latex 网上book](https://en.wikibooks.org/wiki/LaTeX)
 5. [数学符号](https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols)
 6. [LaTeX 算法代码排版 --latex2e范例总结](http://www.cnblogs.com/tsingke/p/5833221.html)
+
+# tikz绘制论文的插图
+
+The error of ' ! I can't find file `tikzlibraryarrows.meta.code.tex'.'
+下载新的pgf库 https://ctan.org/pkg/pgf
+
+http://www.texample.net/tikz/examples/
+
+http://Altermundus.com
+An impressive collection of various TikZ-related packages and examples.
+
+[Graph Theory in LaTeX](http://graphtheoryinlatex.blogspot.com/)
+A gallery of (combinatorial) graphs produced by using LaTeX
+
+用tikz绘制流程图
+
+https://blog.csdn.net/xiahn1a/article/details/46547981
+
+Ubuntu下安装缺失的package
+
+https://yq.aliyun.com/articles/523588
+https://tex.stackexchange.com/questions/307933/the-error-of-i-cant-find-file-tikzlibraryarrows-meta-code-tex
