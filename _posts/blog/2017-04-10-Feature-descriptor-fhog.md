@@ -1288,7 +1288,7 @@ void HOGDescriptor::detectMultiScaleROI(const cv::Mat& img,
 ## FHOG
 源代码下载：<http://www.codeforge.com/read/465952/FHOG.cpp__html>
 FHOG是在HOG基础上，将冗余计算去除之后改进的算法。下面进行介绍
-
+![@31个向量](https://cwlseu.github.io/images/fhog/FHOG31.jpg)
 # 参考资料
 
 1. [hog中快速算法的三线插值将得很详细]<http://hi.baidu.com/susongzhi/item/3a3c758d7ff5cbdc5e0ec172>
