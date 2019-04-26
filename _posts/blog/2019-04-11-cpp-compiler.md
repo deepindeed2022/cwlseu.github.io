@@ -75,8 +75,35 @@ gcc/g++提供了`-Wl,--as-needed`和 `-Wl,--no-as-needed`两个选项，这两�
 
 **Reference**: [gcc链接选项--export-dynamic的一次问题记录](https://blog.csdn.net/u011644231/article/details/88880362)
 
+## `_GLIBCXX_USE_CXX11_ABI`
+在GCC 5.1版本中，libstdc++引入了一个新的ABI，其中包括std::string和std::list的新实现。为了符合2011年c++标准，这些更改是必要的，该标准禁止复制即写字符串，并要求列表跟踪字符串的大小。
+为了保持与libstdc++链接的现有代码的向后兼容性，库的soname没有更改，并且仍然支持与新实现并行的旧实现。这是通过在内联命名空间中定义新的实现来实现的，因此它们具有不同的用于链接目的的名称，例如，`std::list`的新版本实际上定义为`std:: _cxx11::list`。因为新实现的符号有不同的名称，所以两个版本的定义可以出现在同一个库中。
+`_GLIBCXX_USE_CXX11_ABI`宏控制库头中的声明是使用旧ABI还是新ABI。因此，可以为正在编译的每个源文件分别决定使用哪个ABI。使用GCC的默认配置选项，宏的默认值为1，这将导致新的ABI处于活动状态，因此要使用旧的ABI，必须在包含任何库头之前显式地将宏定义为0。(**注意，一些GNU/Linux发行版对GCC 5的配置不同，因此宏的默认值是0，用户必须将它定义为1才能启用新的ABI**)。
+
+```cmake
+IF(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.1")
+	ADD_DEFINITIONS(-D_GLIBCXX_USE_CXX11_ABI=0)
+ENDIF()
+```
+
+## -Wl,--allow-shlib-undefined
+
+`SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--allow-shlib-undefined")`
+
+### Linking errors with “-Wl,--no-undefined -Wl,--no-allow-shlib-undefined”
+第二个参数的默认值是`--allow-shlib-undefined`。如果您选择该选项，代码可能会生成。
+第二个参数处理构建时检查，启用它意味着检查您所链接的库是否在构建时连接了其依赖项。
+
+第一个参数确保您没有忘记声明对运行时库的依赖项(也可能是运行时库对另一个运行时库的依赖项)。
+例如，如果您调用的函数的实现位于示例运行时库“libfunc”中。然后这个库会调用另一个运行时库中的函数libext。然后通过声明对libfunc的“func”和“ext”的依赖关系。因此，将在内部生成一个对libext的依赖引用。
+如果您省略`--no undefined`并忘记添加依赖项声明，那么构建仍然会成功，因为您相信运行时链接器将在运行时解析依赖项。
+由于构建成功了，您可能会相信一切都会好起来，而不知道构建已经将责任推迟到运行时链接器。
+但大多数情况下，运行时链接器的设计目的不是搜索未解析的引用，而是希望找到运行时库中声明的此类依赖项。如果没有这样的引用，您将得到一个运行时错误。
+运行时错误通常比解决编译时错误要昂贵得多。
 
 ## 更多C++内容
 - http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/
 
 - http://deepindeed.cn/2019/03/18/cpp-program-trick/
+
+- libstdc++关于dual ABI文档: https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
