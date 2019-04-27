@@ -107,3 +107,29 @@ ENDIF()
 - http://deepindeed.cn/2019/03/18/cpp-program-trick/
 
 - libstdc++关于dual ABI文档: https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
+
+
+# GCC不同版本中一些东西
+
+## GCC4.9.4
+> The `-Wdate-time` option has been added for the C, C++ and Fortran compilers, which warns when the `__DATE__`, `__TIME__` or `__TIMESTAMP__` macros are used. Those macros might prevent bit-wise-identical reproducible compilations.
+
+> With the new `#pragma GCC ivdep`, the user can assert that there are no loop-carried dependencies which would prevent concurrent execution of consecutive iterations using SIMD (single instruction multiple data) instructions.
+
+### Inter-procedural optimization improvements:
+* New type inheritance analysis module improving devirtualization. Devirtualization now takes into account anonymous name-spaces and the C++11 final keyword.
+* New speculative devirtualization pass (controlled by `-fdevirtualize-speculatively`.
+* Calls that were speculatively made direct are turned back to indirect where direct call is not cheaper.
+* Local aliases are introduced for symbols that are known to be semantically equivalent across shared libraries improving dynamic linking times.
+
+### Feedback directed optimization improvements:
+
+* Profiling of programs using C++ inline functions is now more reliable.
+* New time profiling determines typical order in which functions are executed.
+* A new function reordering pass (controlled by -freorder-functions) significantly reduces startup time of large applications. Until binutils support is completed, it is effective only with link-time optimization.
+* Feedback driven indirect call removal and devirtualization now handle cross-module calls when link-time optimization is enabled.
+
+https://gcc.gnu.org/gcc-4.9/porting_to.html
+
+## GCC 5.4 
+未完,待续
