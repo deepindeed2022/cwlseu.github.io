@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "笔记：编译器中的一些options"
+title: "gcc编译器不可不知的options"
 categories: [blog ]
 tags: [C++, 开发]
 description: "编译器中一些不太常用，但是有的时候很有用的options"
@@ -10,12 +10,14 @@ description: "编译器中一些不太常用，但是有的时候很有用的opt
 {:toc}
 
 ## 引言
-记录开发工作中与编译器相关的一些控制项目，方便日后查阅。
+编译器是我们开发人员与机器指令之间的翻译,现在编译器越来越优化,而且基于一些开源的编译器项目(gcc,clang)等,相继出现不同platform下的编译器。这篇文章将主要将开发工作中与编译器相关的一些options和配置参数进行总结,方便在后面的项目遇到相似的问题进行查阅与借鉴.
 
+## 包含静态库中所有符号的option
+编译器编译动态库或者运行程序的时候，会对依赖的静态库中进行基于`.o`的选择，但是有的时候我们希望我们编译的动态库能够包含所有的函数实现给用户使用。
 
-## gcc包含静态库中所有符号的option
+### gcc
 
-`-Wl,--whole-archive xxxxx_lib -Wl,--no-whole-archive`
+而链接控制选项`-Wl,--whole-archive xxxxx_lib -Wl,--no-whole-archive`就可以实现类似功能。
 
 ```cmake
 target_link_libraries(xxxx_export 
@@ -23,26 +25,22 @@ target_link_libraries(xxxx_export
                     "-Wl,--no-whole-archive -Wl,--exclude-libs,ALL")
 ```
 
-## `--exclude-libs` affected by the `--whole-archive` option.
-
-### Problem
+#### 其他可能问题
 
 `--exclude-libs` does not work for static libraries affected by the `--whole-archive` option.
 
-### Description
+* `--exclude-libs` creates a list of static library paths and does library lookups in this list.
+* `--whole-archive` splits the static libraries that follow it into separate objects. As a result, lld no longer sees static libraries among linked files and does no `--exclude-libs` lookups.
 
-`--exclude-libs` creates a list of static library paths and does library lookups in this list.
-`--whole-archive` splits the static libraries that follow it into separate objects. As a result, lld no longer sees static libraries among linked files and does no `--exclude-libs` lookups.
-
-### Solution
+#### Solution
 
 The proposed solution is to make `--exclude-libs` consider object files too. When lld finds an object file it checks whether this file originates from an archive and, if so, looks the archive up in the `--exclude-libs` list.
 
 **Reference**: https://reviews.llvm.org/D39353
 
+### windows
 
-## windows下export所有的符号
-
+在windows常用的编译器是VS里面的cl编译器。我们要实现上述
 cmake使用`cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE`
 
     Enable this boolean property to automatically create a module definition (.def) file with all global symbols found in the input .obj files for a SHARED library on Windows. The module definition file will be passed to the linker causing all symbols to be exported from the .dll. For global data symbols, __declspec(dllimport) must still be used when compiling against the code in the .dll. All other function symbols will be automatically exported and imported by callers. This simplifies porting projects to Windows by reducing the need for explicit dllexport markup, even in C++ classes.
@@ -76,6 +74,7 @@ gcc/g++提供了`-Wl,--as-needed`和 `-Wl,--no-as-needed`两个选项，这两�
 **Reference**: [gcc链接选项--export-dynamic的一次问题记录](https://blog.csdn.net/u011644231/article/details/88880362)
 
 ## `_GLIBCXX_USE_CXX11_ABI`
+
 在GCC 5.1版本中，libstdc++引入了一个新的ABI，其中包括std::string和std::list的新实现。为了符合2011年c++标准，这些更改是必要的，该标准禁止复制即写字符串，并要求列表跟踪字符串的大小。
 为了保持与libstdc++链接的现有代码的向后兼容性，库的soname没有更改，并且仍然支持与新实现并行的旧实现。这是通过在内联命名空间中定义新的实现来实现的，因此它们具有不同的用于链接目的的名称，例如，`std::list`的新版本实际上定义为`std:: _cxx11::list`。因为新实现的符号有不同的名称，所以两个版本的定义可以出现在同一个库中。
 `_GLIBCXX_USE_CXX11_ABI`宏控制库头中的声明是使用旧ABI还是新ABI。因此，可以为正在编译的每个源文件分别决定使用哪个ABI。使用GCC的默认配置选项，宏的默认值为1，这将导致新的ABI处于活动状态，因此要使用旧的ABI，必须在包含任何库头之前显式地将宏定义为0。(**注意，一些GNU/Linux发行版对GCC 5的配置不同，因此宏的默认值是0，用户必须将它定义为1才能启用新的ABI**)。
@@ -87,10 +86,12 @@ ENDIF()
 ```
 
 ## -Wl,--allow-shlib-undefined
+在交叉编译程序过程中，往往会有这样的情况，依赖的target系统上的动态库（例如android上的OpenCL.so）又依赖其他的许多动态库，这个时候，我们希望链接target系统上的这个动态库的时候，我们可以不要去找OpenCL相关的依赖符号。
 
 `SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--allow-shlib-undefined")`
 
 ### Linking errors with “-Wl,--no-undefined -Wl,--no-allow-shlib-undefined”
+
 第二个参数的默认值是`--allow-shlib-undefined`。如果您选择该选项，代码可能会生成。
 第二个参数处理构建时检查，启用它意味着检查您所链接的库是否在构建时连接了其依赖项。
 
@@ -132,4 +133,52 @@ ENDIF()
 https://gcc.gnu.org/gcc-4.9/porting_to.html
 
 ## GCC 5.4 
-未完,待续
+
+* The default mode for C is now -std=gnu11 instead of -std=gnu89.
+* The C++ runtime library (libstdc++) uses a new ABI by default (see below).
+* The non-standard C++0x type traits `has_trivial_default_constructor`, `has_trivial_copy_constructor` and `has_trivial_copy_assign` have been deprecated and will be removed in a future version. The standard C++11 traits `is_trivially_default_constructible`, `is_trivially_copy_constructible` and `is_trivially_copy_assignable` should be used instead.
+
+* 添加`-fipa-icf`的配置项目
+> An Identical Code Folding (ICF) pass (controlled via -fipa-icf) has been added. Compared to the identical code folding performed by the Gold linker this pass does not require function sections. It also performs merging before inlining, so inter-procedural optimizations are aware of the code re-use. On the other hand not all unifications performed by a linker are doable by GCC which must honor aliasing information.
+
+* The devirtualization pass was significantly improved by adding better support for speculative devirtualization and dynamic type detection.
+
+* 虚表进行了优化以减少动态链接时间
+Virtual tables are now optimized. Local aliases are used to reduce dynamic linking time of C++ virtual tables on ELF targets and data alignment has been reduced to limit data segment bloat.
+
+* 添加针对不允许插入导出符号的shared库，添加了控制项目以提高代码质量
+> A new -fno-semantic-interposition option can be used to improve code quality of shared libraries where interposition of exported symbols is not allowed.
+
+* 内联可以控制
+> With profile feedback the function inliner can now bypass --param inline-insns-auto and --param inline-insns-single limits for hot calls.
+
+* 常量的过程间传播现在也传播指针参数的对齐。
+> The interprocedural propagation of constants now also propagates alignments of pointer parameters. This for example means that the vectorizer often does not need to generate loop prologues and epilogues to make up for potential misalignments.
+
+* 内存使用上一些优化
+》 Memory usage and link times were improved. Tree merging was sped up, memory usage of GIMPLE declarations and types was reduced, and, support for on-demand streaming of variable constructors was added.
+
+### libstd++上的优化
+* Dual ABI
+* A new implementation of std::string is enabled by default, using the small string optimization(SSO) instead of copy-on-write(COW) reference counting.
+* A new implementation of std::list is enabled by default, with an O(1) size() function;
+
+
+## GCC dump preprocessor defines
+- 最常用的
+
+`gcc -dM -E - < /dev/null`
+
+`g++ -dM -E -x c++ - < /dev/null`
+
+- How do I dump preprocessor macros coming from a particular header file?
+
+`echo "#include <sys/socket.h>" | gcc -E -dM -`
+
+- 添加某些options之后的
+
+`gcc -dM -E -msse4 - < /dev/null | grep SSE[34]`
+> #define __SSE3__ 1 \
+> #define __SSE4_1__ 1 \
+> #define __SSE4_2__ 1 \
+> #define __SSSE3__ 1
