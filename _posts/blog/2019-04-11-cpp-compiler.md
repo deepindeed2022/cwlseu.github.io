@@ -165,7 +165,7 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 
 
 ## GCC dump preprocessor defines
-- 最常用的
+- 最常用的输出编译器预定义的宏
 
 `gcc -dM -E - < /dev/null`
 
@@ -182,3 +182,13 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 > #define __SSE4_1__ 1 \
 > #define __SSE4_2__ 1 \
 > #define __SSSE3__ 1
+
+## TODO
+
+* 常用的交叉编译的选项
+* -O3和-O2之间的差别
+* 不同平台之间之间的差别
+* 如何给不同版本的gcc打补丁
+
+在文章http://deepindeed.cn/2017/03/17/Algorithm-Optimization/中介绍了一些有利于优化性能的函数，感兴趣可以结合不同平台的优化指令一起学习使用。
+
