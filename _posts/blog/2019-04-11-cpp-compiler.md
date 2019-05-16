@@ -102,6 +102,48 @@ ENDIF()
 但大多数情况下，运行时链接器的设计目的不是搜索未解析的引用，而是希望找到运行时库中声明的此类依赖项。如果没有这样的引用，您将得到一个运行时错误。
 运行时错误通常比解决编译时错误要昂贵得多。
 
+### `TARGET_LINK_LIBRARY` & `LINK_LIBRARY`
+target_link_libraries 会将需要链接的库作为属性挂在目标库上，
+后面用户用到这个库的时候可以通过`get_target_property(interface_link_libs ${} TARGET_LINK_LIBRARIES)`进行获取相应的值。
+
+## 编译运行查找头文件和库的顺序
+
+### 头文件
+
+gcc 在编译时如何去寻找所需要的头文件：
+* 所以header file的搜寻会从-I开始
+* 然后找gcc的环境变量 C_INCLUDE_PATH，CPLUS_INCLUDE_PATH，OBJC_INCLUDE_PATH
+* 再找内定目录
+
+/usr/include
+/usr/local/include
+
+gcc的一系列自带目录
+`CPLUS_INCLUDE_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.9.4/include:/usr/include/c++/4.9.4``
+
+### 库文件
+
+编译的时候：
+* gcc会去找-L
+* 再找gcc的环境变量LIBRARY_PATH
+* 再找内定目录
+/lib和/lib64
+
+/usr/lib 和/usr/lib64
+
+/usr/local/lib和/usr/local/lib64
+
+这是当初compile gcc时写在程序内的
+
+### 运行时动态库的搜索路径
+
+动态库的搜索路径搜索的先后顺序是：
+1. 编译目标代码时指定的动态库搜索路径；
+2. 环境变量LD_LIBRARY_PATH指定的动态库搜索路径；
+3. 配置文件/etc/ld.so.conf中指定的动态库搜索路径；
+4. 默认的动态库搜索路径/lib；
+5. 默认的动态库搜索路径/usr/lib。
+
 ## 更多C++内容
 - http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/
 
