@@ -234,3 +234,13 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 
 在文章http://deepindeed.cn/2017/03/17/Algorithm-Optimization/中介绍了一些有利于优化性能的函数，感兴趣可以结合不同平台的优化指令一起学习使用。
 
+
+
+# GCC different platform的配置项
+Using static and shared libraries across platforms
+
+
+![@](https://cwlseu.github.io/images/gcc/compilerflag_1.png)
+![@](https://cwlseu.github.io/images/gcc/compilerflag_2.png)
+
+http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
