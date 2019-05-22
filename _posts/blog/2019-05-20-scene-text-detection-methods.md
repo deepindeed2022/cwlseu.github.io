@@ -33,12 +33,13 @@ https://blog.csdn.net/liuxiaoheng1992/article/details/85305871
 
 #### 笔画宽度变换（Stroke Width Transform）
 这一步输出图像和输入图像大小一样，只是输出图像像素为笔画的宽度，具体如下。
-<en-media type="image/png" hash="5f512fc62c5b003b317252912ba9ed1a"></en-media>
+![](../../images/ocr/SWT_01.png)
 
 如上图所示，通过边缘检测得到上图a，假设现在从边缘上的点p开始，根据p点梯度的反方向找到边缘另一边的点q，如果p点的梯度与q点梯度的反方向夹角在$\pm\pi/6$之间，那么这两点间的距离为一个笔画宽度，那么p点和q点以及它们之间的像素在SWT输出图像中对应位置的值为p和q点的距离大小。
 
 按照上述的计算方法会有两种情况需要考虑。如下图所示，
-<en-media type="image/png" hash="64fc6088d8f2e9ea1c27571b2872312d"></en-media>
+
+![](../../images/ocr/SWT_02.png)
 
 下图a表示一个笔画中的像素可能得到两个笔画宽度，这种情况下将红点出的笔画宽度设置为最小的那个值，下图b表示当一个笔画出现更为复杂情况，b图中的红点计算出的两个笔画宽度用两个红线表示，这两红线都无法真正表示笔画的宽度，这时候笔画宽度取这里面所有像素计算得到的笔画宽度的中值作为红点出的笔画宽度。
 
@@ -86,6 +87,57 @@ MSER最大极值稳定区域的提取步骤：
 * 稳定区域判定
 * 区域拟合
 * 区域归一化
+
+
+# 数据预处理中的算法
+## Levenshtein distances
+该距离是俄罗斯科学家Vladimir Levenshtein在1965年发明的，也叫做编辑距离（实际上编辑距离代表一大类算法），距离代表着从s到t需要删、插、代替单个字符的最小步骤数。主要应用：
+* Spell checking 检查拼写
+* Speech recognition 语音识别
+* DNA analysis DNA分析
+* Plagiarism detection 检测抄袭
+
+- http://www.levenshtein.net/index.html
+
+## 判断是否为汉字
+```cpp
+inline bool isChineseChar(const wchar_t c)
+{
+	return c >= 0x4e00 && c <= 0x9fa5;
+}
+```
+
+# 深度学习与NLP
+
+## rlstm(Reverse LSTM)整体架构如下，其中需要用到Reverse这种Layer
+
+![](../../images/ocr/shuffle_1.png)
+
+## ChannelShuffle
+
+![](../../images/ocr/shuffle_2.png)
+
+一般的分组卷积(如ResNeXt的)仅对$3\times3$的层进行了分组操作，然而$1\times1$的pointwise卷积占据了绝大多数的乘加操作，在小模型中为了减少运算量只能减少通道数，然而减少通道数会大幅损害模型精度。作者提出了对$1\times1$也进行分组操作，但是如图１(a)所示，输出只由部分输入通道决定。为了解决这个问题，作者提出了图(c)中的通道混淆(channel shuffle)操作来分享组间的信息，假设一个卷基层有g groups，每个group有n个channel，因此shuffle后会有$g\times n$个通道，首先将输出的通道维度变形为(g, n)，然后转置(transpose)、展平(flatten)，shuffle操作也是可导的。
+
+![](../../images/ocr/shuffle_3.png)
+
+
+图２(a)是一个将卷积替换为depthwise卷积的residual block，(b)中将两个$1\times1$卷积都换为pointwise group convolution，然后添加了channel shuffle，为了简便，没有在第二个pointwise group convolution后面加channel shuffle。根据Xception的论文，depthwise卷积后面没有使用ReLU。(c)为stride > 1的情况，此时在shotcut path上使用$3\times3$的平均池化，并将加法换做通道concatenation来增加输出通道数(一般的设计中，stride=2的同时输出通道数乘2)。
+
+对于$c \times h \times w$的输入大小，bottleneck channels为m，则ResNet unit需要$hw(2cm + 9m^2)FLOPs$，ResNeXt需要$hw(2cm + 9m^2/g)FLOPs$，ShuffleNet unit只需要$hw(2cm/g + 9m)FLOPs$，g表示卷积分组数。换句话说，在有限计算资源有限的情况下，ShuffleNet可以使用更宽的特征图，作者发现对于小型网络这很重要。
+
+即使depthwise卷积理论上只有很少的运算量，但是在移动设备上的实际实现不够高效，和其他密集操作(dense operation)相比，depthwise卷积的computation/memory access ratio很糟糕。因此作者只在bottleneck里实现了depthwise卷积。
+
+![](../../images/ocr/covertCNN5.jpg)
+
+https://arxiv.org/pdf/1610.02357.pdf
+
+#### 场景文字检测—CTPN原理与实现
+
+https://zhuanlan.zhihu.com/p/34757009
+
+白翔主页: http://cloud.eic.hust.edu.cn:8071/~xbai/
+
 
 # Scene Text Localization & Recognition Resources
 A curated list of resources dedicated to scene text localization and recognition. Any suggestions and pull requests are welcome.
