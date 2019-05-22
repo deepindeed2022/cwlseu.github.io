@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Scene text detection
+title: 自然场景文本检测与识别
 tags: [计算机视觉] 
 categories: [blog ]
 notebook: 视觉算法
@@ -12,6 +12,22 @@ notebook: 视觉算法
 ## 定义
 the process of predicting the presence of text and localizing each instance (if any), usually at word or line level, in natural scenes
 <!-- the process of converting text regions into computer readable and editable symbols -->
+传统光学字符识别主要面向高质量的文档图像，此类技术假设输入图像背景干净、字体简单且文字排布整齐，在符合要求的情况下能够达到很高的识别水平。
+与文档文字识别不同，自然场景中的文字识别：
+* 图像背景复杂
+* 分辨率低下
+* 字体多样
+* 分布随意等
+现在我们只想单纯地想对字符进行识别，可以采取的策略：
+* 使用谷歌开源OCR引擎Tesseract(需要对tesseract整理)
+* 使用大公司的OCR开放平台（比如百度），使用他们的字符识别API(不适合商业应用)
+* 传统方法做字符的特征提取，输入分类器，得出OCR模型
+* 暴力的字符模板匹配法(计算量不小)
+* 大杀器：基于深度学习下的CNN字符识别
+
+## Tesseract源码分析
+
+# 经典算法
 
 ## SWT算子
 - [Detecting Text in Natural Scenes with Stroke Width Transform](http://cmp.felk.cvut.cz/~cernyad2/TextCaptchaPdf/Detecting%20Text%20in%20Natural%20Scenes%20with%20Stroke%20Width%20Transform.pdf)
