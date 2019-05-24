@@ -214,5 +214,3 @@ pip install virtualenv -i http://mirror-sng.oa.com/pypi/web/simple/ --trusted-ho
 `select count(a.article_id) from rcd_corpus_info b, pac_articles a where a.article_id=b.article_id and b.create_time between 1499137016 and 1499309816 order by b.create_time desc limit 30000 offset 0;`
 
 `ps -ef | grep "topics_corpus_update_hdfs.py" | awk '{print $2}'|xargs kill -9`
-
-## crontab定时任务

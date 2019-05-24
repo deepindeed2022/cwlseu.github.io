@@ -26,7 +26,10 @@ the process of predicting the presence of text and localizing each instance (if 
 * 大杀器：基于深度学习下的CNN字符识别
 
 ## Tesseract源码分析
-
+二值化与版面分析
+https://www.jianshu.com/p/7c63fd62ea28
+识别与纠错
+https://www.jianshu.com/p/5731116f54b8
 # 经典算法
 
 ## SWT算子
@@ -153,6 +156,8 @@ https://arxiv.org/pdf/1610.02357.pdf
 https://zhuanlan.zhihu.com/p/34757009
 
 白翔主页: http://cloud.eic.hust.edu.cn:8071/~xbai/
+
+文字检测与识别资料整理（数据库，代码，博客）https://www.cnblogs.com/lillylin/p/6893500.html
 
 
 # Scene Text Localization & Recognition Resources

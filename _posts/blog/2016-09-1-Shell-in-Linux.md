@@ -42,7 +42,7 @@ fi
 * [Linux下Sort命令的一些使用技巧](http://www.hustyx.com/ubuntu/72/)
 * [LINUX SHELL脚本攻略笔记[速查]](http://www.wklken.me/posts/2013/07/04/note-of-linux-shell-scripting-cookbook.html)
 
-## #返回值
+## 返回值
 
 原来shell脚本的返回值不是直接返回啊，而是通过
 linux中shell变量`$#`,`$@`,`$0`,`$1`,`$2`的含义解释: 
@@ -77,10 +77,10 @@ linux中shell变量`$#`,`$@`,`$0`,`$1`,`$2`的含义解释:
 ```
 按照默认sort 情况下，上述文件是有序的。但是实际上总体来说，我们需要返回该文件为无序的，因此，sort的方案只好作罢。
 
-## #数字比较
+## 数字比较
 后来看看之前那个实现的逻辑，应该是没有什么大问题的呀。
 
-#### 数字的比较
+### 数字的比较
 
 -eq 相等（equal）
 -ne 不等（not equal）
@@ -89,7 +89,7 @@ linux中shell变量`$#`,`$@`,`$0`,`$1`,`$2`的含义解释:
 -ge 大于等于 （greater than or equal）
 -le 小于等于 （less than or equal）
 
-#### 字符串的比较
+### 字符串的比较
 
 `[ $str1 = $str2 ]` #等于
 `[ $str1 != $str2 ]` #不等于
@@ -142,6 +142,73 @@ is_sorted $1
 调用函数的方法为 `is_sorted datafilename` 
 或者调用bash脚本 `bashfilename.sh datafilename`
 
+## 一个脚本
+
+### 功能介绍
+* 支持简单模型，符合模型的解压
+* 支持目录下所有模型的解压
+* 解压模型按照模型名称创建目录
+
+### 编写过程中一些问题总结
+
+1. models=(`find .  -name "*.model"`) 
+将找到的结果保存为一个数组需要加一个 (),否则是独立的多个元素； 
+2. 善于利用linux提供的命令工具
+
+例如通过basename的操作将文件的路径前缀（文件夹路径）去掉。强烈推荐
+[linux开发常用的文本处理命令](http://deepindeed.cn/2017/04/01/Better-linuxer/)
+
+
+```shell
+#!/bin/sh
+# Decrypt the model 
+# create: 2019-05-22 
+function export_tar_model() {
+	tar_name=$1
+	target="${tar_name%.*}"
+	if [ -d ${target} ]; then  rm -rf ${target}; fi
+	mkdir ${target}
+	tar -xf ${tar_fname} -C ${target}
+	cd ${target}
+	models=(`find .  -name "*.model"`) # 将找到的结果保存为一个数组需要加 () 	
+	for model in $models; do
+		base_m=`basename ${model}`     # 通过basename的操作将文件的文件夹路径去掉
+		# echo $base_m 
+		t="${base_m%.*}"
+		mkdir ${t}
+		tar -xf ${base_m} -C ${t}      # 解压子模型
+	done
+	cd .. 
+}
+function decrypt() {
+	input=$1
+	tar_fname="${input%.*}.tar"
+	target="${input%.*}"
+	model_tool decrypt $1 ${tar_fname} 
+	export_tar_model ${tar_fname}
+	rm $tar_fname
+}
+function decrypt_models() {
+	cd $1
+	models=(`find .  -name "*.model"`) # 将找到的结果保存为一个数组需要加 () 	
+	for model in $models; do
+		decrypt $model 
+	done
+}
+decrypt $1
+# decrypt_models $1
+```
+## crontab定时任务
+
+这个功能在linux下定时执行一个任务，特别适合我这种需要每天查看日志，分析日志的人。比如现在我们的组项目中的dailybuild，被我写了一个脚本，每天将问题提取之后的内容分发的各位同事，非常方便。
+
+### 使用注意
+
+* 执行时间要再三确认，往往配置crontab之后，3~5min之后才会生效
+* 需要用的语言解析器，例如python2.7, 要写绝对路径，绝对路径，绝对路径，这个比较保险。
+* 运行的输出最好重定向到文件，方便查看问题
+`/usr/bin/python2.7 /data/xxxxx.py > runtime.log 2>&1`
+
 ## LeetCode Shell Test
 ### #[Word Frequency](https://leetcode.com/problems/word-frequency/)
 Write a bash script to calculate the frequency of each word in a text file words.txt.
@@ -160,6 +227,6 @@ Words are separated by one or more whitespace characters.
 * `sort -r`: -r means sorting in descending order
 * `awk '{ print $2, $1 }'`: To format the output, see here.
 
-[Linux 中使用awk](https://linux.cn/article-3945-1.html)
-[awk_1line](http://www.pement.org/awk/awk1line.txt)
-[shell基础知识](http://github.com/cwlseu/cwlseu.github.io/raw/master/pdf/#Shell programming.pdf)
+- [Linux 中使用awk](https://linux.cn/article-3945-1.html)
+- [awk_1line](http://www.pement.org/awk/awk1line.txt)
+- [shell基础知识](http://github.com/cwlseu/cwlseu.github.io/raw/master/pdf/#Shell programming.pdf)
