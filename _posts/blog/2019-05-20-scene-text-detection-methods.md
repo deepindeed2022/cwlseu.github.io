@@ -30,6 +30,13 @@ the process of predicting the presence of text and localizing each instance (if 
 https://www.jianshu.com/p/7c63fd62ea28
 识别与纠错
 https://www.jianshu.com/p/5731116f54b8
+
+# 开源数据集合
+
+![@](https://cwlseu.github.io/images/ocr/ocr-opendataset.png)
+
+![@](https://cwlseu.github.io/images/ocr/ocr-opendataset2.png)
+
 # 经典算法
 
 ## SWT算子
