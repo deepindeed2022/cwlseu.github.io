@@ -9,7 +9,7 @@ notebook: 视觉算法
 * content
 {:toc}
 
-## 定义
+# 定义
 the process of predicting the presence of text and localizing each instance (if any), usually at word or line level, in natural scenes
 <!-- the process of converting text regions into computer readable and editable symbols -->
 传统光学字符识别主要面向高质量的文档图像，此类技术假设输入图像背景干净、字体简单且文字排布整齐，在符合要求的情况下能够达到很高的识别水平。
@@ -25,11 +25,409 @@ the process of predicting the presence of text and localizing each instance (if 
 * 暴力的字符模板匹配法(计算量不小)
 * 大杀器：基于深度学习下的CNN字符识别
 
-## Tesseract源码分析
-二值化与版面分析
+# Tesseract源码分析
+
+## 二值化与版面分析
+主要将图像处理为二值图像和对版面结构进行学习处理；
+识别出哪些部分是文字，哪些部分不是文字。
+二值化的方法有很多，有全局二值化方法OTSU(大津法)，又局部二值化方法[Jean-Michel Jolion](https://perso.liris.cnrs.fr/christian.wolf/papers/icpr2002v.pdf)
 https://www.jianshu.com/p/7c63fd62ea28
-识别与纠错
+
+Page Layout 分析步骤
+### 二值化(算法: OTSU)
+
+调用栈
+```
+main[api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages[api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage[api/baseapi.cpp] ->
+    TessBaseAPI::Recognize[api/baseapi.cpp] ->
+    TessBaseAPI::FindLines[api/baseapi.cpp] ->
+    TessBaseAPI::Threshold[api/baseapi.cpp] ->
+    ImageThresholder::ThresholdToPix[ccmain/thresholder.cpp] ->
+    ImageThresholder::OtsuThresholdRectToPix [ccmain/thresholder.cpp]
+```
+
+OTSU 是一个全局二值化算法. 如果图片中包含阴影而且阴影不平均，二值化算法效果就会比较差。OCRus利用一个局部的二值化算法，olf Jolion， 对包含有阴影的图片也有比较好的二值化结果。
+切分处理
+
+### Remove vertical lines
+This step removes vertical and horizontal lines in the image.
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+TessBaseAPI::Recognize [api/baseapi.cpp] ->
+TessBaseAPI::FindLines [api/baseapi.cpp] ->
+Tesseract::SegmentPage [ccmain/pagesegmain.cpp] ->
+Tesseract::AutoPageSeg [ccmain/ pagesegmain.cpp] ->
+Tesseract::SetupPageSegAndDetectOrientation [ccmain/ pagesegmain.cpp]
+LineFinder::FindAndRemoveLines [textord/linefind.cpp]
+```
+
+
+### Remove images
+This step remove images from the picture.
+
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::FindLines [api/baseapi.cpp] ->
+    Tesseract::SegmentPage [ccmain/pagesegmain.cpp] ->
+    Tesseract::AutoPageSeg [ccmain/ pagesegmain.cpp] ->
+    Tesseract::SetupPageSegAndDetectOrientation [ccmain/ pagesegmain.cpp]
+    ImageFind::FindImages [textord/linefind.cpp]
+```
+I never try this function successfully. May be the image needs to satisfy some conditions.
+
+
+### Filter connected component
+This step generate all the connected components and filter the noise blobs.
+
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::FindLines [api/baseapi.cpp] ->
+    Tesseract::SegmentPage [ccmain/pagesegmain.cpp] ->
+    Tesseract::AutoPageSeg [ccmain/ pagesegmain.cpp] ->
+    Tesseract::SetupPageSegAndDetectOrientation [ccmain/ pagesegmain.cpp] ->
+        (i) Textord::find_components [textord/tordmain.cpp] ->
+
+        {
+            extract_edges[textord/edgblob.cpp] //extract outlines and assign outlines to blobs
+            assign_blobs_to_blocks2[textord/edgblob.cpp] //assign normal, noise, rejected blobs to TO_BLOCK_LIST for further filter blobs operations
+            Textord::filter_blobs[textord/tordmain.cpp] ->
+            Textord::filter_noise_blobs[textord/tordmain.cpp] //Move small blobs to a separate list
+        }
+
+        (ii) ColumnFinder::SetupAndFilterNoise [textord/colfind.cpp]
+```
+
+This step will generate the intermediate result, refer to http://blog.csdn.net/kaelsass/article/details/46874627
+
+
+### Finding candidate tab-stop components
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::FindLines [api/baseapi.cpp] ->
+    Tesseract::SegmentPage [ccmain/pagesegmain.cpp] ->
+    Tesseract::AutoPageSeg [ccmain/ pagesegmain.cpp] ->
+    ColumnFinder::FindBlocks [textord/ colfind.cpp] ->
+    TabFind::FindInitialTabVectors[textord/tabfind.cpp] ->
+    TabFind::FindTabBoxes [textord/tabfind.cpp]
+```
+This step finds the initial candidate tab-stop CCs by a radial search starting at every filtered CC from preprocessing. Results can refer to http://blog.csdn.net/kaelsass/article/details/46874627
+
+
+### Finding the column layout
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::FindLines [api/baseapi.cpp] ->
+    Tesseract::SegmentPage [ccmain/pagesegmain.cpp] ->
+    Tesseract::AutoPageSeg [ccmain/ pagesegmain.cpp] ->
+    ColumnFinder::FindBlocks [textord/ colfind.cpp] ->
+    ColumnFinder::FindBlocks (begin at line 369) [textord/ colfind.cpp]
+```
+This step finds the column layout of the page
+
+
+### Finding the regions
+
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::FindLines [api/baseapi.cpp] ->
+    Tesseract::SegmentPage [ccmain/pagesegmain.cpp] ->
+    Tesseract::AutoPageSeg [ccmain/ pagesegmain.cpp] ->
+    ColumnFinder::FindBlocks [textord/ colfind.cpp]
+```
+This step recognizes the different type of blocks
+
+
+## 识别与纠错
+
+对上步中识别出来的文字进行识别，从而实现图像到文本的转化。
+
 https://www.jianshu.com/p/5731116f54b8
+
+字符识别
+
+### pass 1 recongnize
+Classify the blobs in the word and permute the results.  Find the worst blob in the word and chop it up.  Continue this process until a good answer has been found or all the blobs have been chopped up enough.  The results are returned in the WERD_RES.
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::RecogAllWordsPassN [ccmain/control.cpp] ->
+    Tesseract::classify_word_and_language [ccmain/ control.cpp] ->
+    Tesseract::classify_word_pass1 [ccmain/ control.cpp] ->
+    Tesseract::match_word_pass_n [ccmain/ control.cpp] ->
+    Tesseract::tess_segment_pass_n [ccmain/ tessbox.cpp] ->
+    ** Wordrec::set_pass1() [wordrec/ tface.cpp] -> **
+    Tesseract::recog_word [ccmain/ tfacepp.cpp] ->
+    Tesseract::recog_word_recursive [ccmain/ tfacepp.cpp] ->
+    Wordrec::cc_recog [wordrec/ tface.cpp] ->
+    Wordrec::chop_word_main [wordrec/ chopper.cpp]
+```
+
+
+### pass 2 recongnize
+The processing difference of pass 1 and pass 2 is at the word set style which is in font-weight.
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::RecogAllWordsPassN [ccmain/control.cpp] ->
+    Tesseract::classify_word_and_language [ccmain/ control.cpp] ->
+    Tesseract::classify_word_pass2 [ccmain/ control.cpp] ->
+    Tesseract::match_word_pass_n [ccmain/ control.cpp] ->
+    Tesseract::tess_segment_pass_n [ccmain/ tessbox.cpp] ->
+    ** Wordrec::set_pass2() [wordrec/ tface.cpp] -> **
+    Tesseract::recog_word [ccmain/ tfacepp.cpp] ->
+    Tesseract::recog_word_recursive [ccmain/ tfacepp.cpp] ->
+    Wordrec::cc_recog [wordrec/ tface.cpp] ->
+    Wordrec::chop_word_main [wordrec/ chopper.cpp]
+```
+### LSTM recongnize contained in pass 1 recongnize
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::RecogAllWordsPassN [ccmain/control.cpp] ->
+    Tesseract::classify_word_and_language [ccmain/ control.cpp] ->
+    Tesseract::classify_word_pass1 [ccmain/ control.cpp] ->
+    Tesseract::LSTMRecognizeWord [ccmain/linerec.cpp] ->
+    LSTMRecognizer::RecognizeLine [lstm/lstmrecognizer.cpp] ->
+    LSTMRecognizer::RecognizeLine [lstm/lstmrecognizer.cpp] ->
+    Tesseract::SearchWords [ccmain/linerec.cpp]
+```
+The next passes are only required for Tess-only
+
+### pass 3 recongnize
+
+Walk over the page finding sequences of words joined by fuzzy spaces. Extract them as a sublist, process the sublist to find the optimal arrangement of spaces then replace the sublist in the ROW_RES.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::fix_fuzzy_spaces [ccmain/fixspace.cpp] ->
+    Tesseract::fix_sp_fp_word [ccmain/fixspace.cpp] ->
+    Tesseract::fix_fuzzy_space_list [ccmain/fixspace.cpp]
+```
+### pass 4 recongnize
+
+dictionary_correction_pass
+If a word has multiple alternates check if the best choice is in the dictionary. If not, replace it with an alternate that exists in the dictionary.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::dictionary_correction_pass [ccmain/control.cpp]
+```
+
+### bigram_correction_pass
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::bigram_correction_pass [ccmain/control.cpp]
+```
+### pass 5 recongnize
+Gather statistics on rejects.
+```
+main [api/tesseractmain.cpp] ->
+TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+TessBaseAPI::Recognize [api/baseapi.cpp] ->
+Tesseract::recog_all_words [ccmain/control.cpp] ->
+Tesseract::rejection_passes [ccmain/control.cpp] ->
+REJMAP::rej_word_bad_quality [ccstruct/rejctmap.cpp]
+```
+
+### pass 6 recongnize
+Do whole document or whole block rejection pass
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::rejection_passes [ccmain/control.cpp] ->
+    Tesseract::quality_based_rejection [ccmain/docqual.cpp] ->
+    Tesseract::doc_and_block_rejection [ccmain/docqual.cpp] ->
+    reject_whole_page [ccmain/docqual.cpp] ->
+    REJMAP::rej_word_block_rej [ccstruct/rejctmap.cpp]
+```
+It seems to lack the pass 7 recongnize in the source code.
+
+### pass 8 recongnize
+Smooth the fonts for the document.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::font_recognition_pass [ccmain/control.cpp]
+```
+
+### pass 9 recongnize
+Check the correctness of the final results.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::blamer_pass [ccmain/control.cpp] ->
+    Tesseract::script_pos_pass [ccmain/control.cpp]
+```
+After all the recongnization, Tess removes empty words, as these mess up the result iterators.
+
+## 段落检测
+
+This is called after rows have been identified and words are recognized. Much of this could be implemented before word recognition, but text helps to identify bulleted lists and gives good signals for sentence boundaries.
+
+### pass 1 detection
+
+Detect sequences of lines that all contain leader dots (.....) These are likely Tables of Contents.  If there are three text lines in a row with leader dots, it's pretty safe to say the middle one should be a paragraph of its own.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::DetectParagraphs [api/baseapi.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    SeparateSimpleLeaderLines [ccmain/paragraphs.cpp] ->
+    LeftoverSegments [ccmain/paragraphs.cpp]
+```
+
+### pass 2a detection
+
+Find any strongly evidenced start-of-paragraph lines.  If they're followed by two lines that look like body lines, make a paragraph model for that and see if that model applies throughout the text (that is, "smear" it).
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::DetectParagraphs [api/baseapi.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    StrongEvidenceClassify [ccmain/paragraphs.cpp]
+```
+
+### pass 2b detection
+
+If we had any luck in pass 2a, we got part of the page and didn't know how to classify a few runs of rows. Take the segments that didn't find a model and reprocess them individually.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::DetectParagraphs [api/baseapi.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    LeftoverSegments [ccmain/paragraphs.cpp] ->
+    StrongEvidenceClassify [ccmain/paragraphs.cpp]
+```
+
+### pass 3 detection
+
+These are the dregs for which we didn't have enough strong textual and geometric clues to form matching models for.  Let's see if the geometric clues are simple enough that we could just use those.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::DetectParagraphs [api/baseapi.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    LeftoverSegments [ccmain/paragraphs.cpp] ->
+    GeometricClassify [ccmain/paragraphs.cpp] ->
+    DowngradeWeakestToCrowns [ccmain/paragraphs.cpp]
+```
+
+### pass 4 detection
+
+Take everything that's still not marked up well and clear all markings.
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    TessBaseAPI::DetectParagraphs [api/baseapi.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    DetectParagraphs [ccmain/paragraphs.cpp] ->
+    LeftoverSegments [ccmain/paragraphs.cpp] ->
+    SetUnknown [ccmain/paragraphs_internal.h]
+```
+Convert all of the unique hypothesis runs to PARAs.
+ConvertHypothesizedModelRunsToParagraphs [ccmain/paragraphs.cpp]
+
+Finally, clean up any dangling NULL row paragraph parents.
+CanonicalizeDetectionResults [ccmain/paragraphs.cpp]
+
+## 纠错
+
+dictionary error correction
+Verify whether the recongnized word is in the word_dic (unicharset)
+
+调用栈
+```
+main [api/tesseractmain.cpp] ->
+    TessBaseAPI::ProcessPages [api/baseapi.cpp] ->
+    TessBaseAPI::ProcessPage [api/baseapi.cpp] ->
+    TessBaseAPI::Recognize [api/baseapi.cpp] ->
+    Tesseract::recog_all_words [ccmain/control.cpp] ->
+    Tesseract::RecogAllWordsPassN [ccmain/control.cpp] ->
+    Tesseract::classify_word_and_language [ccmain/ control.cpp] ->
+    Tesseract::classify_word_pass1 [ccmain/ control.cpp] ->
+    Tesseract::tess_segment_pass_n [ccmain/ tessbox.cpp] ->
+    Tesseract::recog_word [ccmain/ tfacepp.cpp] ->
+    Wordrec::dict_word [wordrec/ tface.cpp] ->
+    Dict::valid_word [dict/ dict.cpp]
+```
 
 # 开源数据集合
 
@@ -54,10 +452,10 @@ https://blog.csdn.net/liuxiaoheng1992/article/details/85305871
 * 通过自定义的规则过滤一些连通域，得到候选连通域
 * 将连通域合并得到文本行
 
-#### 利用canny算子检测图片的边界
+### 利用canny算子检测图片的边界
 这步不用多说，基础的图像处理知识，利用OpenCV 的Canny函数可以得到图片边缘检测的结果。
 
-#### 笔画宽度变换（Stroke Width Transform）
+### 笔画宽度变换（Stroke Width Transform）
 这一步输出图像和输入图像大小一样，只是输出图像像素为笔画的宽度，具体如下。
 ![](../../images/ocr/SWT_01.png)
 
@@ -71,11 +469,11 @@ https://blog.csdn.net/liuxiaoheng1992/article/details/85305871
 
 因为有文字比背景更亮和背景比文字更亮两种情况，这样会导致边缘的梯度方向相反，所以这一个步骤要执行两遍。这个步骤结束后得到一张SWT图像。
 
-#### 通过SWT图像得到多个连通域
+### 通过SWT图像得到多个连通域
 
 在通过上述步骤得到SWT输出图像后，该图像大小与原图像大小一致，图像中的像素值为对应像素所在笔画的宽度（下面称为SWT值）。现将相邻像素SWT值比不超过3.0的归为一个连通域。这样就能得到多个连通域。
 
-#### 过滤连通域
+### 过滤连通域
 上述步骤输出的多个连通域中，并不是所有的连通域都被认为是笔画候选区域，需要过滤一些噪声的影响，过滤的规则有：
 * 如果某连通域的方差过大（方差大于连通域的一半为方差过大为过大），则认为该连通域不是有效的
 * 如果某连通域过大（宽大于300）或者过小（宽小于10），则认为该连通域不是有效的（代码中只过滤了过大的连通域，连通域的长宽为连通域外接矩形的长宽）
@@ -83,7 +481,7 @@ https://blog.csdn.net/liuxiaoheng1992/article/details/85305871
 * 如果某连通域的外接矩形包含其他两个连通域，则认为该连通域不是有效的（代码中判定，如果某个连通域的外接矩形包含两个或两个以上连通域外接矩形的中心时，认为其包含了两个连通域）
 上述条件都满足的连通域，认为是笔画候选区域，用于输入给下一步操作。
 
-#### 将连通域合并得到文本行
+### 将连通域合并得到文本行
 
 文中认为，在自然场景中，一般不会只有单个字母出现，所有将连通域合并为文本有利于进一步将噪声排除。
 
@@ -158,7 +556,7 @@ inline bool isChineseChar(const wchar_t c)
 
 https://arxiv.org/pdf/1610.02357.pdf
 
-#### 场景文字检测—CTPN原理与实现
+## 场景文字检测—CTPN原理与实现
 
 https://zhuanlan.zhihu.com/p/34757009
 
@@ -167,17 +565,17 @@ https://zhuanlan.zhihu.com/p/34757009
 文字检测与识别资料整理（数据库，代码，博客）https://www.cnblogs.com/lillylin/p/6893500.html
 
 
-# Scene Text Localization & Recognition Resources
+## Scene Text Localization & Recognition Resources
 A curated list of resources dedicated to scene text localization and recognition. Any suggestions and pull requests are welcome.
 
-## Papers & Code
+# Papers & Code
 
-### Overview
+## Overview
 - [2015-PAMI] Text Detection and Recognition in Imagery: A Survey [`paper`](http://lampsrv02.umiacs.umd.edu/pubs/Papers/qixiangye-14/qixiangye-14.pdf)
 - [2014-Front.Comput.Sci] Scene Text Detection and Recognition: Recent Advances and Future Trends [`paper`](http://mc.eistar.net/uploadfiles/Papers/FCS_TextSurvey_2015.pdf)
 
 
-### Visual Geometry Group, University of Oxford
+## Visual Geometry Group, University of Oxford
 - [2016-IJCV, [M. Jaderberg](http://www.maxjaderberg.com)] Reading Text in the Wild with Convolutional Neural Networks  [`paper`](http://arxiv.org/abs/1412.1842) [`demo`](http://zeus.robots.ox.ac.uk/textsearch/#/search/)  [`homepage`](http://www.robots.ox.ac.uk/~vgg/research/text/)
 - [2016-CVPR, [A Gupta](http://www.robots.ox.ac.uk/~ankush/)] Synthetic Data for Text Localisation in Natural Images [`paper`](http://www.robots.ox.ac.uk/~vgg/data/scenetext/gupta16.pdf) [`code`](https://github.com/ankush-me/SynthText) [`data`](http://www.robots.ox.ac.uk/~vgg/data/scenetext/)
 - [2015-ICLR, [M. Jaderberg](http://www.maxjaderberg.com)] Deep structured output learning for unconstrained text recognition [`paper`](http://arxiv.org/abs/1412.5903)
@@ -186,23 +584,23 @@ A curated list of resources dedicated to scene text localization and recognition
 - [2014-ECCV, [M. Jaderberg](http://www.maxjaderberg.com)] Deep Features for Text Spotting [`paper`](http://www.robots.ox.ac.uk/~vgg/publications/2014/Jaderberg14/jaderberg14.pdf) [`code`](https://bitbucket.org/jaderberg/eccv2014_textspotting) [`model`](https://bitbucket.org/jaderberg/eccv2014_textspotting) [`GitXiv`](http://gitxiv.com/posts/uB4y7QdD5XquEJ69c/deep-features-for-text-spotting)
 - [2014-NIPS, [M. Jaderberg](http://www.maxjaderberg.com)] Synthetic Data and Artificial Neural Networks for Natural Scene Text Recognition [`paper`](http://www.robots.ox.ac.uk/~vgg/publications/2014/Jaderberg14c/jaderberg14c.pdf)  [`homepage`](http://www.robots.ox.ac.uk/~vgg/publications/2014/Jaderberg14c/) [`model`](http://www.robots.ox.ac.uk/~vgg/research/text/model_release.tar.gz)
 
-### CUHK & SIAT
+## CUHK & SIAT
 - [2016-arXiv] Accurate Text Localization in Natural Image with Cascaded Convolutional Text Network
  [`paper`](http://arxiv.org/abs/1603.09423)
 - [2016-AAAI] Reading Scene Text in Deep Convolutional Sequences [`paper`](http://whuang.org/papers/phe2016_aaai.pdf)
 - [2016-TIP] Text-Attentional Convolutional Neural Networks for Scene Text Detection [`paper`](http://whuang.org/papers/the2016_tip.pdf)
 - [2014-ECCV] Robust Scene Text Detection with Convolution Neural Network Induced MSER Trees [`paper`](http://www.whuang.org/papers/whuang2014_eccv.pdf)
 
-### Media and Communication Lab, HUST
+## Media and Communication Lab, HUST
 - [2016-CVPR] Robust scene text recognition with automatic rectification [`paper`](http://arxiv.org/pdf/1603.03915v2.pdf)
 - [2016-CVPR] Multi-oriented text detection with fully convolutional networks    [`paper`](http://mclab.eic.hust.edu.cn/UpLoadFiles/Papers/TextDectionFCN_CVPR16.pdf)
 - [2015-CoRR] An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition [`paper`](http://arxiv.org/pdf/1507.05717v1.pdf) [`code`](http://mclab.eic.hust.edu.cn/~xbai/CRNN/crnn_code.zip) [`github`](https://github.com/bgshih/crnn)
 
-### AI Lab, Stanford
+## AI Lab, Stanford
 - [2012-ICPR, [Wang](http://cs.stanford.edu/people/twangcat/)] End-to-End Text Recognition with Convolutional Neural Networks [`paper`](http://www.cs.stanford.edu/~acoates/papers/wangwucoatesng_icpr2012.pdf) [`code`](http://cs.stanford.edu/people/twangcat/ICPR2012_code/SceneTextCNN_demo.tar) [`SVHN Dataset`](http://ufldl.stanford.edu/housenumbers/)
 - [2012-PhD thesis, [David Wu](https://crypto.stanford.edu/people/dwu4/)] End-to-End Text Recognition with Convolutional Neural Networks [`paper`](http://cs.stanford.edu/people/dwu4/HonorThesis.pdf)
 
-### Others
+## Others
 - [2018-CVPR] FOTS: Fast Oriented Text Spotting With a Unified Network [`paper`](http://openaccess.thecvf.com/content_cvpr_2018/html/Liu_FOTS_Fast_Oriented_CVPR_2018_paper.html)
 - [2018-IJCAI] IncepText: A New Inception-Text Module with Deformable PSROI Pooling for Multi-Oriented Scene Text Detection [`paper`](https://arxiv.org/abs/1805.01167)
 - [2018-AAAI] PixelLink: Detecting Scene Text via Instance Segmentation [`paper`](https://arxiv.org/abs/1801.01315) [`code`](https://github.com/ZJULearning/pixel_link)
