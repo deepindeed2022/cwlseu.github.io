@@ -31,6 +31,67 @@ comments: true
 | Flattened convolutions|[Flattened convolutional neural networks for feedforward acceleration](https://arxiv.org/abs/1412.5474) | |computation costs due to the significant reduction of learning parameters.|
 
 
+## Normalization
+![@归一化方法](https://cwlseu.github.io/images/detection/normalization-methods.jpg)
+每个子图表示一个feature map张量，以$N$为批处理轴，$C$为通道轴，$(H,W)$作为空间轴。其中蓝色区域内的像素使用相同的均值和方差进行归一化，并通过聚合计算获得这些像素的值。从示意图中可以看出，GN没有在N维度方向上进行拓展，因此batch size之间是独立的，GPU并行化容易得多。
+
+* batchNorm是在batch上，对NHW做归一化，对小batchsize效果不好；
+* layerNorm在通道方向上，对CHW归一化，主要对RNN作用明显；
+* instanceNorm在图像像素上，对HW做归一化，用在风格化迁移；
+* GroupNorm将channel分组，然后再做归一化；
+* SwitchableNorm是将BN、LN、IN结合，赋予权重，让网络自己去学习归一化层应该使用什么方法。
+
+
+### Batch Normalization
+需要比较大的Batch Size，需要更强的计算硬件的支持。
+
+> A small batch leads to inaccurate estimation of the batch statistics, and reducing BN’s batch size increases the model error dramatically
+
+尤其是在某些需要高精度输入的任务中，BN有很大局限性。同时，BN的实现是在Batch size之间进行的，需要大量的数据交换。
+
+> batch normalization存在以下缺点：
+
+* 对batchsize的大小比较敏感，由于每次计算均值和方差是在一个batch上，所以如果batchsize太小，则计算的均值、方差不足以代表整个数据分布；
+* BN实际使用时需要计算并且保存某一层神经网络batch的均值和方差等统计信息，对于对一个固定深度的前向神经网络（DNN，CNN）使用BN，很方便；但对于RNN来说，sequence的长度是不一致的，换句话说RNN的深度不是固定的，不同的time-step需要保存不同的statics特征，可能存在一个特殊sequence比其他sequence长很多，这样training时，计算很麻烦。（参考于https://blog.csdn.net/lqfarmer/article/details/71439314）
+
+### Layer Normalizaiton
+
+LN中同层神经元输入拥有相同的均值和方差，不同的输入样本有不同的均值和方差；
+BN中则针对不同神经元输入计算均值和方差，同一个batch中的输入拥有相同的均值和方差。
+
+所以，LN不依赖于batch的大小和输入sequence的深度，因此可以用于batchsize为1和RNN中对边长的输入sequence的normalize操作。
+
+### Instance Normalization
+
+BN注重对每个batch进行归一化，保证数据分布一致，因为判别模型中结果取决于数据整体分布。
+
+但是图像风格化中，生成结果主要依赖于某个图像实例，所以对整个batch归一化不适合图像风格化中，因而对HW做归一化。可以加速模型收敛，并且保持每个图像实例之间的独立。
+
+### Group Normalization
+> GN does not exploit the batch dimension, and its
+computation is independent of batch sizes.
+
+![@BN,LN,IN,GN result comparison](https://cwlseu.github.io/images/detection/GN-Results.png)
+从实验结果中可以看出在训练集合上GN的valid error低于BN，但是测试结果上逊色一些。这个
+可能是因为BN的均值和方差计算的时候，通过*随机批量抽样（stochastic batch sampling）*引入了不确定性因素，这有助于模型参数正则化。
+**而这种不确定性在GN方法中是缺失的，这个将来可能通过使用不同的正则化算法进行改进。**
+
+### LRN（Local Response Normalization）
+动机：
+在神经深武学有一个概念叫做侧抑制(lateral inhibitio)，指的是被激活的神经元抑制相邻的神经元。
+归一化的目的就是“抑制”，局部响应归一化就是借鉴侧抑制的思想来实现局部抑制，尤其是当我们使用ReLU
+的时候，这种侧抑制很管用。
+好处： 有利于增加泛化能力，做了平滑处理，识别率提高1~2%
+
+### 参考文献
+
+- [Batch Normalization: Accelerating Deep Network Training by  Reducing Internal Covariate Shift](https://arxiv.org/abs/1502.03167v2)
+- [Jimmy Lei Ba, Jamie Ryan Kiros, Geoffrey E. Hinton. Layer normalization.](https://arxiv.org/abs/1607.06450)
+- [Group Normalization](https://arxiv.org/pdf/1803.08494.pdf)
+- [AlexNet中提出的LRN](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
+- [VGG：Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/abs/1409.1556)
+- [](https://blog.csdn.net/liuxiao214/article/details/81037416)
+
 ## 优化
 ### 梯度下降法（Gradient Descent）
 梯度下降法是最早最简单，也是最为常用的最优化方法。梯度下降法实现简单，当目标函数是凸函数时，梯度下降法的解是全局解。
