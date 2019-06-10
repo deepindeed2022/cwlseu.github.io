@@ -530,7 +530,7 @@ inline bool isChineseChar(const wchar_t c)
 	return c >= 0x4e00 && c <= 0x9fa5;
 }
 ```
-
+<!-- 
 # 深度学习与NLP
 
 ## rlstm(Reverse LSTM)整体架构如下，其中需要用到Reverse这种Layer
@@ -562,8 +562,7 @@ https://zhuanlan.zhihu.com/p/34757009
 
 白翔主页: http://cloud.eic.hust.edu.cn:8071/~xbai/
 
-文字检测与识别资料整理（数据库，代码，博客）https://www.cnblogs.com/lillylin/p/6893500.html
-
+文字检测与识别资料整理（数据库，代码，博客）https://www.cnblogs.com/lillylin/p/6893500.html 
 
 ## Scene Text Localization & Recognition Resources
 A curated list of resources dedicated to scene text localization and recognition. Any suggestions and pull requests are welcome.
@@ -699,3 +698,5 @@ Recognition Framework [`paper`](http://openaccess.thecvf.com/content_ICCV_2017/p
 - [Using deep learning to break a Captcha system](https://deepmlblog.wordpress.com/2016/01/03/how-to-break-a-captcha-system/) [`report`](http://web.stanford.edu/~jurafsky/burszstein_2010_captcha.pdf) [`github`](https://github.com/arunpatala/captcha)
 - [Breaking reddit captcha with 96% accuracy](https://deepmlblog.wordpress.com/2016/01/05/breaking-reddit-captcha-with-96-accuracy/) [`github`](https://github.com/arunpatala/reddit.captcha)
 [Scene Text Recognition in iOS 11](https://medium.com/@khurram.pak522/scene-text-recognition-in-ios-11-2d0df8412151)[`github`](https://github.com/khurram18/SceneTextRecognitioniOS)
+
+ -->
