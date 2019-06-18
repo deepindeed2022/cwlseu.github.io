@@ -6,12 +6,13 @@ categories: [blog ]
 notebook: 视觉算法
 ---
 
-##
+## 国内外知名学者
 
 白翔主页: http://cloud.eic.hust.edu.cn:8071/~xbai/
 文字检测与识别资料整理（数据库，代码，博客）https://www.cnblogs.com/lillylin/p/6893500.html 
 
 ## papers & 任务方向
+
 ### word spotting and word recognition
 In word spotting, the goal is to find all instances of a query word in a dataset of images. In recognition, the goal is to recognize the content of the word image, usually aided by a dictionary or lexicon. 
 - [2014-TPAMI] Word Spotting and Recognition with Embedded Attributes	 [`paper`](http://www.cvc.uab.es/~afornes/publi/journals/2014_PAMI_Almazan.pdf) [`homepage`](http://www.cvc.uab.es/~almazan/index/projects/words-att/index.html) [`code`](https://github.com/almazan/watts)

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 自然场景文本检测与识别
+title: 自然场景文本检测与识别（1）
 tags: [计算机视觉] 
 categories: [blog ]
 notebook: 视觉算法
@@ -10,6 +10,7 @@ notebook: 视觉算法
 {:toc}
 
 # 定义
+
 the process of predicting the presence of text and localizing each instance (if any), usually at word or line level, in natural scenes
 <!-- the process of converting text regions into computer readable and editable symbols -->
 传统光学字符识别主要面向高质量的文档图像，此类技术假设输入图像背景干净、字体简单且文字排布整齐，在符合要求的情况下能够达到很高的识别水平。
@@ -28,12 +29,14 @@ the process of predicting the presence of text and localizing each instance (if 
 # Tesseract源码分析
 
 ## 二值化与版面分析
+
 主要将图像处理为二值图像和对版面结构进行学习处理；
 识别出哪些部分是文字，哪些部分不是文字。
 二值化的方法有很多，有全局二值化方法OTSU(大津法)，又局部二值化方法[Jean-Michel Jolion](https://perso.liris.cnrs.fr/christian.wolf/papers/icpr2002v.pdf)
 https://www.jianshu.com/p/7c63fd62ea28
 
 Page Layout 分析步骤
+
 ### 二值化(算法: OTSU)
 
 调用栈
@@ -52,6 +55,7 @@ OTSU 是一个全局二值化算法. 如果图片中包含阴影而且阴影不�
 切分处理
 
 ### Remove vertical lines
+
 This step removes vertical and horizontal lines in the image.
 
 调用栈
@@ -69,6 +73,7 @@ LineFinder::FindAndRemoveLines [textord/linefind.cpp]
 
 
 ### Remove images
+
 This step remove images from the picture.
 
 
