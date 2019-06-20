@@ -182,9 +182,17 @@ $$
 
 ## rlstm(Reverse LSTM)
 
+### LSTM RNN中的关键模块
+
+原文：http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+译文：https://www.jianshu.com/p/4b4701beba92
+
+循环神经网络：https://zybuluo.com/hanbingtao/note/541458
+
+### Reverse LSTM
 整体架构如下，其中需要用到Reverse这种Layer
 
-![](http://cwlseu.github.io/images/ocr/shuffle_1.png)
+![](http://cwlseu.github.io/images/ocr/rlstm.png)
 
 ## ChannelShuffle
 
