@@ -226,6 +226,7 @@ def LMS():
 * 虹膜识别
 
 ## 参考链接
+
 1. [The Science of Pattern Recognition. Achievements and Perspectives](https://link.springer.com/chapter/10.1007/978-3-540-71984-7_10)
 
 	Automatic pattern recognition is usually considered as an engineering area which focusses on the development and evaluation of systems that imitate or assist humans in their ability of recognizing patterns. It may, however, also be considered as a science that studies the faculty of human beings (and possibly other biological systems) to discover, distinguish, characterize patterns in their environment and accordingly identify new observations. The engineering approach to pattern recognition is in this view an attempt to build systems that simulate this phenomenon. By doing that, scientific understanding is gained of what is needed in order to recognize patterns, in general.

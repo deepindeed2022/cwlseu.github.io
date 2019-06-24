@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "DeepLearning资料总结"
+title: "卷积，优化和语料"
 categories: [blog ]
 tags: [深度学习]
 description: 学习深度学习中的一些有意思的东西

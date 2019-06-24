@@ -9,6 +9,9 @@ description: 探究linux 0.11的一些神奇的东西，课程教师杨立祥，
 * content
 {:toc}
 
+## 引言
+大部分的开发者离不开linux操作系统。而在国科大有一个团队对linux 0.11版本的core进行了详细解读，并且发表了《Linux内核设计的艺术》一书。
+
 ## linux设计的作者
 
 [Linus](https://en.wikipedia.org/wiki/Linus_Torvalds)
@@ -99,7 +102,7 @@ process 0 第一次调度和后面调度，schedule运行的机制是不同的�
 	}
 ```
 
-`ljmp 0 \n\t`这个得查看IA-32手册，就会发现，IA-32架构中允许同种特权级之间相互切换，但是不同特权级之间切换是不允许的。但是0特权级的进程0是如何切换到3特权级的进程1呢？就要引入'门'的概念了。具体参见[手册](http://www.intel.cn/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf).门是允许点到点的，不同特权级之间的切换。
+`ljmp 0 \n\t`这个得查看IA-32手册，就会发现，IA-32架构中允许同种特权级之间相互切换，但是不同特权级之间切换是不允许的。但是0特权级的进程0是如何切换到3特权级的进程1呢？就要引入'门'的概念了。具体参见[手册](http://www.intel.cn/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf). 门是允许点到点的，不同特权级之间的切换。
 
 那么当进程1运行过之后，再次由进程0切换到进程1时，由于进程切换都是0特权级，此时，此时就不需要经过什么门了，IA32是允许同特权级之间进行进程切换的。
 
@@ -235,6 +238,7 @@ Linux0.11 中没有实现预读和预写功能,而是将预读功能转化为普
 ```
 
 ## 重新编译替换内核
+
 先看一下当前linux的版本号`uname -a`
 下载linux某个版本的linux内核源代码，如3.19.8,将源代码解压到/usr/src/目录下。
 

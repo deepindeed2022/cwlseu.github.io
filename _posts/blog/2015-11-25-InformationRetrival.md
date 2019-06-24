@@ -22,7 +22,7 @@ description: 信息检索系课程回顾与课程设计
 
 ## 课程设计
 
-### 任务内容
+### 任务内容 
 
 #### Part 1:
 
@@ -38,6 +38,7 @@ description: 信息检索系课程回顾与课程设计
 解压命令： `tar zxvf shakespear-merchant.trec.tgz`
 
 [github项目托管](https://github.com/Riozhcd/BKing.git)
+
 #### Part 2:
 
 采用类似 TREC 竞赛的形式
@@ -57,8 +58,8 @@ description: 信息检索系课程回顾与课程设计
 
 第二部分是research能力与开发能力并重的，可以使用开源软件提升检索能力，也可以自己实现检索器
 
-
 ### TREC-Research
+
 It's preferred to use Python and with python package unittest for unit test to imply the part one while C++ implement is optional.
 
 关于TREC数据集合构建索引查询分析的实验
@@ -125,7 +126,7 @@ CD2 contains data for the following: WTX024 .. WTX048, each directory contains 5
 CD3 contains data for the following: WTX049 .. WTX072, each directory contains 50 bundle files B01.gz .. B50.gz
 CD4 contains data for the following: WTX073 .. WTX096, each directory contains 50 bundle files B01.gz .. B50.gz
 CD5 contains data for the following: WTX097 .. WTX104, each directory contains 50 bundle files B01.gz .. B50.gz
-                                                       except WTX104, containing 7 bundle files B01.gz .. B07.gz
+except WTX104, containing 7 bundle files B01.gz .. B07.gz
 CD5 also contains:                   info, which has additional information generated for WT10g data, described below.
 
 Note well: The contents of this directory ( WT10g::CD5::info ) do not

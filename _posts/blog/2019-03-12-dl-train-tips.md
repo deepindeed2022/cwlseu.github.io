@@ -128,6 +128,3 @@ https://yq.aliyun.com/articles/598429
 
 http://www.cnblogs.com/ooon/p/4964441.html
 
-## 问题： 模型大小与功耗
-https://zhuanlan.zhihu.com/p/48269250
-

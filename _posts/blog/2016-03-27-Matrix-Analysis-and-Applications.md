@@ -8,10 +8,6 @@ description: 矩阵分析、应用与实践；主讲教师：Baobin Li
 
 {:toc}
 
-
-- 作者: [cwlseu]
-
-
 ## 引言
 
 矩阵也许就是为了计算机而出现的一门学科吧。虽然以前大学学习矩阵，好像感觉没有什么用处，但是当接触到图像之后发现，数字图像全是矩阵，矩阵成为每天必须面对的话题。
@@ -169,3 +165,59 @@ $[AB]ij = \sum_{k=0}^{k=n}a_{ik}b_{kj}$
 
 >注意:
     Matrix multiplication isn't commutative:*AB != BA*
+
+
+
+## 专题：病态系统
+
+噪声是信号处理和图像处理中很让人厌烦的东西，往往我们想方设法去消除噪声或者减弱噪声，恢复原来的信号或者图像。可是，在矩阵运算过程中，
+我们可能会遇到一些特殊的矩阵，计算复杂度如噪声毛刺一般，比周围领域内的计算复杂度许多。([病态系统](http://www.cnblogs.com/pegasus/archive/2011/11/21/2257262.html))这就象*simplex algorithm*算法一样，按照常规思维看的话
+需要`O(m^2n)`的计算复杂度，可是往往我们实验结果是线性的。这是为什么呢？这可以用[smoothedcomplexity](http://bioinfo.ict.ac.cn/~dbu/AlgorithmCourses/Lectures/Lec8-smoothedcomplexity.pdf)来解释。
+
+## matlab病态矩阵实验
+
+构造病态矩阵 A,例如 n = 5 时  A 如下
+
+     1     0     0     0     1
+    -1     1     0     0     1
+    -1    -1     1     0     1
+    -1    -1    -1     1     1
+    -1    -1    -1    -1     1
+
+
+### Test Code
+
+```matlab	
+	% The script for ill-conditioned system example.
+	% date: 2015-11-22
+	n = 80;
+	b = randn(n,1);
+
+	A = tril(ones(n) - ones(n)*2 + 2*eye(n));
+	A(:,end) = 1;
+  	x = A\b;
+	disp('The ill-condition error :');
+	disp(norm(A*x - b));
+
+	% add noise to the matrix A
+	A = A + rand(n,n,'double');
+	x = A\b;
+	disp('After add noise to matrix A error:');
+	disp(norm(A*x - b));
+```
+
+### Test Result
+
+    The ill-condition error :
+        7.2116
+
+    After add noise to matrix A error:
+       7.6684e-14
+
+## 结论
+
+噪声有时也是好的，可以噪声对原有的病态系统进行平滑，取得意想不到效果。
+
+## Why the Simplex Algorithm Usually Takes Polynomial Time
+[Somothed Analysis of Algorithm](http://bioinfo.ict.ac.cn/~dbu/AlgorithmCourses/Lectures/Lec8-smoothedcomplexity.pdf)
+
