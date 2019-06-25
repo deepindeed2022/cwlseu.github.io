@@ -84,7 +84,7 @@ solution. Otherwise, the system is said to be well-conditioned
 ### 行阶梯形式和矩阵的秩
 
 #### 矩阵的秩
-假设 $A_{m*n} 通过行变换为阶梯矩阵形式 E,那么A的秩被定义为如下：
+假设 $A_{m\times n}$ 通过行变换为阶梯矩阵形式$E$,那么$A$的秩被定义为如下：
 
     rank(A) = number of pivots  
             = number of nonzero rows in E  
@@ -95,47 +95,49 @@ A的基本列为包含主元位置的列的集合。
 
 ### 线性系统的系统的相容性 (Consistency of Linear Systems)
 
-#### 增广矩阵 [A|b] 是一致的  （要求AX = b的解)
+#### 增广矩阵$[A|b]$是一致的  （要求$AX = b$的解)
 * 增广矩阵的约简形式不会出现（0 0 .... 0 | a), where a != 0
 * b 不是增广矩阵基本列
-* rank([A|b]) = rank(A)
+* $rank([A|b]) = rank(A)$
 * b 可以由A基本列线性表示
 
 #### 齐次线性方程组
 0 是Homogeneous System的平凡解
-假设 A_{m*n} 是系数矩阵，m个等式，n个未知数。同时假设rank(A) = r
+假设 $A_{m\times n}$ 是系数矩阵，m个等式，n个未知数。同时假设$rank(A) = r$
 *基本变量* 基本列对应位置的变量称为基本变量
 *自由变量* 未知数中对应于非基本列称为自由变量
 因此这个方程中存在着r个基本变量和 n-r个自由变量
-通解为 $x = x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}$
+通解为 
+$$ x = x_{f_1}h_1 +x_{f_2}h_2+... + x_{f_{n-r}}h_{n-r}$$
 
 #### 非次线性方程组
-非齐次线性方程组通解为 $x = p+ x_f_1h_1 +ｘ_f_2h_2+... + x_f_{n-r}h_{n-r}$
+非齐次线性方程组通解为 
+$$x = p + x_{f_1}h_1 +x_{f_2}h_2+... + x_{f_{n-r}}h_{n-r}$$
 
 
 ## 矩阵代数
 ### 矩阵加法
 
-$[A+B]_{ij} = A_{ij} + B_{ij}$
-Additive inverse of A : (-A) = [-a_{ij}]
+$$[A+B]_{ij} = A_{ij} + B_{ij}$$
+Additive inverse of $A$ : $(-A) = [-a_{ij}]$
 遵循交换律、结合律、加法恒等率
 
 ### 数乘
 
-$[aA]_{ij} = a[A]_{ij}$
+$$[aA]_{ij} = a[A]_{ij}$$
 
 #### 数乘的性质
 
-* 结合律： (ab)A = a(bA)
+* 结合律： $(ab)A = a(bA)$
 * Distributive property: 
-    - a(A + B) = aA + aB
-    - (a + b) A = aA + bA
+    - $a(A + B) = aA + aB$
+    - $(a + b) A = aA + bA$
 * Identity property: 1A = A
 
 #### 转置
 
-$[A]_{ij} = [A^T]_{ji}$
-(AB)^T = B^TA^T
+$$[A]_{ij} = [A^T]_{ji}$$
+$$(AB)^T = B^TA^T$$
 
 #### 共轭转置 conjugate transpose
 
@@ -150,18 +152,18 @@ skew-symmetrix matrix whenever $A^T = -A$
 ### Linear Fucntion
 
 线性系统满足
-* f(x + y) = f(x) + f(y)
-* f(ax) = af(x)
-例如：过原点的直线f(x) = kx或者过原点的平面
+* $f(x + y) = f(x) + f(y)$
+* $f(ax) = af(x)$
+例如：过原点的直线$f(x) = kx$或者过原点的平面
 或者简化为如下一个条件：
-*f(ax + y) = af(x) + f(y)*
+*$f(ax + y) = af(x) + f(y)$*
 
 ### 矩阵乘法
 
 这个是重点讲解的地方，我们主要从三个方面对这个知识点进行解释：
-$[AB]ij = \sum_{k=0}^{k=n}a_{ik}b_{kj}$
-[AB]i* <=> A的第i行与B的乘积
-[AB]*j <=> A与B的第j列的乘积
+$$[AB]ij = \sum_{k=0}^{k=n}a_{ik}b_{kj}$$
+- $[AB]i*$ <=> A的第i行与B的乘积
+- $[AB]*j$ <=> A与B的第j列的乘积
 
 >注意:
     Matrix multiplication isn't commutative:*AB != BA*
