@@ -144,6 +144,10 @@ gcc的一系列自带目录
 4. 默认的动态库搜索路径/lib；
 5. 默认的动态库搜索路径/usr/lib。
 
+### 动态库中的static变量
+
+> In all cases, static global variables (or functions) are never visible from outside a module (dll/so or executable). The C++ standard requires that these have internal linkage, meaning that they are not visible outside the translation unit (which becomes an object file) in which they are defined.
+
 ## 更多C++内容
 - http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/
 
