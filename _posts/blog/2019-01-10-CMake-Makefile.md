@@ -30,6 +30,7 @@ else
      $(error $(HAVE_SSHSERVER))
 endif 
 ```
+
 ### 定义变量 
 
 `HAVE_THE_VALUE :=`   # 新定义一个变量
@@ -37,6 +38,27 @@ endif
 `HAVE_THE_VALUE +=`  # 往变量中append数据
 
 这个地方有点像pascal，不要与shell中混淆了
+
+
+### 变量赋值
+**后面一定不要有空格，回车之类的空白符号**，否则可能会将你整疯了的。
+就拿caffe中的Makefile.config中
+
+`USE_LEVELDB := 1`
+
+`USE_LEVELDB := 1 `
+
+这两行的区别在于，第二行赋值操作后面有一个空格。在Makefile中通过如下代码进行添加编译需要的宏。
+
+```makefile
+
+ifeq ($(USE_LEVELDB), 1)
+  CXX_FLAGS += -DUSE_LEVELDB
+endif
+```
+结果编译的时候打开的开关会与设想的不一样。
+
+### Makefile案例
 
 ```makefile
 #! Makefile
@@ -68,7 +90,7 @@ clean:
 
 ### makefile中调用.a库的编写
 
-```
+```makefile
 #!Makefile
 CC = g++
 
