@@ -248,3 +248,5 @@ Using static and shared libraries across platforms
 ![@](https://cwlseu.github.io/images/gcc/compilerflag_2.png)
 
 http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
+
+[gcc与g++的区别](https://www.cnblogs.com/liushui-sky/p/7729838.html)
