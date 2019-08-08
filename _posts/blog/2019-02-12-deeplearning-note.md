@@ -36,6 +36,13 @@ comments: true
 | Deconvolutions | [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/) | DSSD |                   |
 | Flattened convolutions|[Flattened convolutional neural networks for feedforward acceleration](https://arxiv.org/abs/1412.5474) | |computation costs due to the significant reduction of learning parameters.|
 
+其实，深度学习中的卷积对应于数学中的 cross correlation. 计算卷积的方法有很多种，常见的有以下几种方法:
+* 滑窗：这种方法是最直观最简单的方法。但是，该方法不容易实现大规模加速，因此，通常情况下不采用这种方法 (但是也不是绝对不会用，在一些特定的条件下该方法反而是最高效的.)
+* im2col: 目前几乎所有的主流计算框架包括[Caffe][^1], MXNet等都实现了该方法。该方法把整个卷积过程转化成了GEMM过程，而GEMM在各种BLAS库中都是被极致优化的，一般来说，速度较快.
+* FFT: 傅里叶变换和快速傅里叶变化是在经典图像处理里面经常使用的计算方法，但是，在 ConvNet 中通常不采用，主要是因为在 ConvNet 中的卷积模板通常都比较小，例如3×3 等，这种情况下，FFT 的时间开销反而更大.
+* [Winograd][^2]: Winograd 是存在已久最近被重新发现的方法，在大部分场景中，Winograd 方法都显示和较大的优势，目前cudnn中计算卷积就使用了该方法.
+
+
 
 ## Normalization
 ![@归一化方法](https://cwlseu.github.io/images/detection/normalization-methods.jpg)
@@ -98,6 +105,9 @@ computation is independent of batch sizes.
 - [VGG：Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/abs/1409.1556)
 - [BatchNormalization、LayerNormalization、InstanceNorm、GroupNorm、SwitchableNorm总结](https://blog.csdn.net/liuxiao214/article/details/81037416)
 - [Fast Algorithms for Convolutional Neural Networks](https://arxiv.org/abs/1509.09308v2)
+
+[^1]: https://github.com/BVLC/caffe/blob/master/src/caffe/util/im2col.cpp
+[^2]: https://arxiv.org/abs/1509.09308v2
 
 ## 优化
 ### 梯度下降法（Gradient Descent）

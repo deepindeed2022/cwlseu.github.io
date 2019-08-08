@@ -9,6 +9,7 @@ description:  腾讯前不久开源了一个关于手机上卷积加速优化的
 {:toc}  
 
 ## 从C++ 到android
+
 在ncnn中是用C++写的，没玩过android很是愧疚。幸好项目中有android依赖链的cmake文件。
 ```
 	Android CMake toolchain file, for use with the Android NDK r5-r10d 
