@@ -11,6 +11,7 @@ description: 物体检测算法的评估方法
 {:toc}
 
 ## 物体检测效果评估相关的定义 
+
 ### Intersection Over Union (IOU)
 Intersection Over Union (IOU) is measure based on Jaccard Index that evaluates the overlap between two bounding boxes. It requires a ground truth bounding box  $B_{gt}$and a predicted bounding box $B_p$ By applying the IOU we can tell if a detection is valid (True Positive) or not (False Positive).  
 IOU is given by the overlapping area between the predicted bounding box and the ground truth bounding box divided by the area of union between them:  
@@ -42,7 +43,9 @@ $$Precision = \frac{TP}{TP + FP} = \frac{TP}{all-detections}$$
 Recall is the ability of a model to find all the relevant cases (all ground truth bounding boxes). It is the percentage of true positive detected among all relevant ground truths and is given by:
 $$Recall = \frac{TP}{TP + FN} = \frac{TP}{all-groundtruths}$$
 ![@混淆矩阵](http://cwlseu.github.io/images/detection/confusion-metrics.png)
+
 ## 评估方法Metrics
+
 * Receiver operating characteristics (ROC) curve
 * Precision x Recall curve
 * Average Precision
@@ -53,6 +56,7 @@ $$Recall = \frac{TP}{TP + FN} = \frac{TP}{all-groundtruths}$$
 
 
 ## 参考文献
+
 1. [评估标准](https://github.com/cwlseu/Object-Detection-Metrics)
 2. [机器学习之分类性能度量指标 : ROC曲线、AUC值、正确率、召回率](https://www.jianshu.com/p/c61ae11cc5f6)
 3. [How and When to Use ROC Curves and Precision-Recall Curves for Classification in Python](https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/)

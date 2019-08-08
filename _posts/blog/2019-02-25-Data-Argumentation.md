@@ -54,7 +54,7 @@ comments: true
 只发现mirror、scale、crop三种。 其中Data_Transformer被调用的时候，会采用1/2的随机镜像，以及对应输入参数的scale和crop进行生成新的样本，输出到下一层网络中。因此，我们使用caffe训练的时候，只训练一个epoch就可以的情况是万万不能的。即使是同一个图片，同一套参数，也要进行多次采样才行。每个epoch进行shuffle一次，每次的batch中的分布就会发生变化，同样一张图片，虽然是同一套参数，也可能会出现不同的结果。在训练过程中的数据采样，随机性让样本不至于将噪声过度的学习。
 
 ## SSD中的数据增强
-SSD中的数据采样，在caffe中数据采样的基础上，进行了充分扩充，增强方式包括resize，crop，distort，...
+SSD中的数据采样，在caffe中数据采样的基础上，进行了充分扩充，增强方式包括`resize`，`crop`，`distort`，...
 更重要的是引入BatchSampler, 以Batch中的数据基础，达到真正的增加不同overlap的数据的目的，使得检测能力极大增强。因此，我一度认为，SSD的成功不是One-Stage在Detection的突破，而是数据增强方法的提升。
 
 ```

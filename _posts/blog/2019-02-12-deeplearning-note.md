@@ -10,7 +10,13 @@ comments: true
 * content
 {:toc}
 
+## 引言
+
+一个基于神经网络模型的视觉模型中，卷积和归一化层是最为耗时的两种layer。卷积数据计算密集类型，今年来大量的优化主要集中在各种设备上的卷积加速。
+添加归一化层作为提高算法性能的很好的一种策略，但由于像BatchNormalization遭受数据同步延时的问题，现在逐渐被一些新的normalization所替代。
+
 ## 什么是卷积
+
 * [A Comprehensive Introduction to Different Types of Convolutions in Deep Learning](https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215)
 * [A Tutorial on Filter Groups (Grouped Convolution)](https://blog.yani.io/filter-group-tutorial/)
   * AlexNet
@@ -90,7 +96,8 @@ computation is independent of batch sizes.
 - [Group Normalization](https://arxiv.org/pdf/1803.08494.pdf)
 - [AlexNet中提出的LRN](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
 - [VGG：Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/abs/1409.1556)
-- [](https://blog.csdn.net/liuxiao214/article/details/81037416)
+- [BatchNormalization、LayerNormalization、InstanceNorm、GroupNorm、SwitchableNorm总结](https://blog.csdn.net/liuxiao214/article/details/81037416)
+- [Fast Algorithms for Convolutional Neural Networks](https://arxiv.org/abs/1509.09308v2)
 
 ## 优化
 ### 梯度下降法（Gradient Descent）
@@ -179,3 +186,4 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
 ## more dataset
 - [机器之心整理的数据集合](https://www.jiqizhixin.com/articles/2018-09-05-2)
 - [DHCD_Dataset](https://github.com/Prasanna1991/DHCD_Dataset)
+
