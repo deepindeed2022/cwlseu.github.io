@@ -10,14 +10,14 @@ description: "编译器中一些不太常用，但是有的时候很有用的opt
 {:toc}
 
 ## 引言
-编译器是我们开发人员与机器指令之间的翻译,现在编译器越来越优化,而且基于一些开源的编译器项目(gcc,clang)等,相继出现不同platform下的编译器。这篇文章将主要将开发工作中与编译器相关的一些options和配置参数进行总结,方便在后面的项目遇到相似的问题进行查阅与借鉴.
+
+编译器是我们开发人员与机器指令之间的翻译,现在编译器越来越优化,而且基于一些开源的编译器项目(gcc,clang)等,相继出现不同platform下的编译器。
+此外，各种芯片、开发板层出不穷，各个商业公司都针对自己出产的开发板定制特定的编译链条。例如华为hisi系列的himix100中提供的编译链中，包括编译器，链接器，打包器之外，还提供了nm，gdb，gcov，gprof等等开发工具。
+这篇文章将主要将开发工作中与编译器（这篇文章中不作特殊说明，指的是gnu gcc编译器）相关的一些options和配置参数进行总结,方便在后面的项目遇到相似的问题进行查阅与借鉴。
 
 ## 包含静态库中所有符号的option
-编译器编译动态库或者运行程序的时候，会对依赖的静态库中进行基于`.o`的选择，但是有的时候我们希望我们编译的动态库能够包含所有的函数实现给用户使用。
 
-### gcc
-
-而链接控制选项`-Wl,--whole-archive xxxxx_lib -Wl,--no-whole-archive`就可以实现类似功能。
+编译器编译动态库或者运行程序的时候，会对依赖的静态库中进行基于`.o`的选择，但是有的时候我们希望我们编译的动态库能够包含所有的函数实现给用户使用。gcc中的链接控制选项`-Wl,--whole-archive xxxxx_lib -Wl,--no-whole-archive`就可以实现类似功能。
 
 ```cmake
 target_link_libraries(xxxx_export 
@@ -112,14 +112,13 @@ target_link_libraries 会将需要链接的库作为属性挂在目标库上，
 
 gcc 在编译时如何去寻找所需要的头文件：
 * 所以header file的搜寻会从-I开始
-* 然后找gcc的环境变量 C_INCLUDE_PATH，CPLUS_INCLUDE_PATH，OBJC_INCLUDE_PATH
+* 然后找gcc的环境变量 `C_INCLUDE_PATH`，`CPLUS_INCLUDE_PATH`，`OBJC_INCLUDE_PATH`
 * 再找内定目录
-
-/usr/include
-/usr/local/include
+  * `/usr/include`
+  * `/usr/local/include`
 
 gcc的一系列自带目录
-`CPLUS_INCLUDE_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.9.4/include:/usr/include/c++/4.9.4``
+`CPLUS_INCLUDE_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.9.4/include:/usr/include/c++/4.9.4`
 
 ### 库文件
 
@@ -127,11 +126,9 @@ gcc的一系列自带目录
 * gcc会去找-L
 * 再找gcc的环境变量LIBRARY_PATH
 * 再找内定目录
-/lib和/lib64
-
-/usr/lib 和/usr/lib64
-
-/usr/local/lib和/usr/local/lib64
+  * `/lib`和`/lib64`
+  * `/usr/lib` 和`/usr/lib64`
+  * `/usr/local/lib`和`/usr/local/lib64`
 
 这是当初compile gcc时写在程序内的
 
@@ -139,22 +136,14 @@ gcc的一系列自带目录
 
 动态库的搜索路径搜索的先后顺序是：
 1. 编译目标代码时指定的动态库搜索路径；
-2. 环境变量LD_LIBRARY_PATH指定的动态库搜索路径；
-3. 配置文件/etc/ld.so.conf中指定的动态库搜索路径；
-4. 默认的动态库搜索路径/lib；
-5. 默认的动态库搜索路径/usr/lib。
+2. 环境变量`LD_LIBRARY_PATH`指定的动态库搜索路径；
+3. 配置文件`/etc/ld.so.conf`中指定的动态库搜索路径；
+4. 默认的动态库搜索路径`/lib`；
+5. 默认的动态库搜索路径`/usr/lib`。
 
 ### 动态库中的static变量
 
 > In all cases, static global variables (or functions) are never visible from outside a module (dll/so or executable). The C++ standard requires that these have internal linkage, meaning that they are not visible outside the translation unit (which becomes an object file) in which they are defined.
-
-## 更多C++内容
-- http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/
-
-- http://deepindeed.cn/2019/03/18/cpp-program-trick/
-
-- libstdc++关于dual ABI文档: https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
-
 
 # GCC不同版本中一些东西
 
@@ -202,7 +191,7 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 > The interprocedural propagation of constants now also propagates alignments of pointer parameters. This for example means that the vectorizer often does not need to generate loop prologues and epilogues to make up for potential misalignments.
 
 * 内存使用上一些优化
-》 Memory usage and link times were improved. Tree merging was sped up, memory usage of GIMPLE declarations and types was reduced, and, support for on-demand streaming of variable constructors was added.
+> Memory usage and link times were improved. Tree merging was sped up, memory usage of GIMPLE declarations and types was reduced, and, support for on-demand streaming of variable constructors was added.
 
 ### libstd++上的优化
 * Dual ABI
@@ -211,6 +200,7 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 
 
 ## GCC dump preprocessor defines
+
 - 最常用的输出编译器预定义的宏
 
 `gcc -dM -E - < /dev/null`
@@ -236,17 +226,61 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 * 不同平台之间之间的差别
 * 如何给不同版本的gcc打补丁
 
-在文章http://deepindeed.cn/2017/03/17/Algorithm-Optimization/中介绍了一些有利于优化性能的函数，感兴趣可以结合不同平台的优化指令一起学习使用。
+在文章[Algorithm-Optimization][^4]中介绍了一些有利于优化性能的函数，感兴趣可以结合不同平台的优化指令一起学习使用。
 
 
 
 # GCC different platform的配置项
-Using static and shared libraries across platforms
+
+[Using static and shared libraries across platforms][^3]
 
 
 ![@](https://cwlseu.github.io/images/gcc/compilerflag_1.png)
 ![@](https://cwlseu.github.io/images/gcc/compilerflag_2.png)
 
-http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
+## 更多C++内容
+- http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/
+- http://deepindeed.cn/2019/03/18/cpp-program-trick/
+- libstdc++关于dual ABI文档: https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
 
-[gcc与g++的区别](https://www.cnblogs.com/liushui-sky/p/7729838.html)
+## 其他
+- [gcc与g++的区别][^1]
+- [ARM？华为？][^2]
+- himix100的交叉编译链
+```
+➜  arm-himix100-linux tree -L 2 ./host_bin 
+./host_bin
+├── arm-linux-androideabi-addr2line
+├── arm-linux-androideabi-ar
+├── arm-linux-androideabi-as
+├── arm-linux-androideabi-c++
+├── arm-linux-androideabi-c++filt
+├── arm-linux-androideabi-cpp
+├── arm-linux-androideabi-elfedit
+├── arm-linux-androideabi-g++
+├── arm-linux-androideabi-gcc
+├── arm-linux-androideabi-gcc-6.3.0
+├── arm-linux-androideabi-gcc-ar
+├── arm-linux-androideabi-gcc-nm
+├── arm-linux-androideabi-gcc-ranlib
+├── arm-linux-androideabi-gcov
+├── arm-linux-androideabi-gcov-tool
+├── arm-linux-androideabi-gdb
+├── arm-linux-androideabi-gprof
+├── arm-linux-androideabi-ld
+├── arm-linux-androideabi-ld.bfd
+├── arm-linux-androideabi-nm
+├── arm-linux-androideabi-objcopy
+├── arm-linux-androideabi-objdump
+├── arm-linux-androideabi-ranlib
+├── arm-linux-androideabi-readelf
+├── arm-linux-androideabi-run
+├── arm-linux-androideabi-size
+├── arm-linux-androideabi-strings
+├── arm-linux-androideabi-strip
+```
+
+[^1]: https://www.cnblogs.com/liushui-sky/p/7729838.html
+[^2]: https://news.mydrivers.com/1/628/628308.htm
+[^3]: http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
+[^4]:http://deepindeed.cn/2017/03/17/Algorithm-Optimization/
