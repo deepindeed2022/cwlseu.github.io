@@ -12,7 +12,6 @@ notebook: 视觉算法
 # 定义
 
 the process of predicting the presence of text and localizing each instance (if any), usually at word or line level, in natural scenes
-<!-- the process of converting text regions into computer readable and editable symbols -->
 传统光学字符识别主要面向高质量的文档图像，此类技术假设输入图像背景干净、字体简单且文字排布整齐，在符合要求的情况下能够达到很高的识别水平。
 与文档文字识别不同，自然场景中的文字识别：
 * 图像背景复杂
