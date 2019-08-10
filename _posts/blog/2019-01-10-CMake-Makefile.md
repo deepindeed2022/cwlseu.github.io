@@ -437,5 +437,5 @@ INSTALL(TARGETS libdeepindeed
 - [3] [CMake Practice](https://app.yinxiang.com/shard/s40/res/ecb203bd-889b-4eb3-8ee6-d0b0e88765f6/CMake%20Practice.pdf?search=Cmake)
 - [4] [Makefile中文简明教程(陈皓)](https://app.yinxiang.com/shard/s40/res/67a665d8-3622-49d1-ac10-2b21c8f29277/Makefile%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B.pdf?search=Cmake)
 - [5] [CMake如何查找链接库---find_package的使用方法](https://blog.csdn.net/u011092188/article/details/61425924)
-- [6]. 练习CMake的项目: https://github.com/cwlseu/LibsForDev.git
+- [6]. 练习CMake的项目: https://github.com/cwlseu/brick
 
