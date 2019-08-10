@@ -9,8 +9,8 @@ description: PVANet for Faster RCNN
 {:toc}
 
 ## 论文下载
-论文：<https://www.arxiv.org/pdf/1608.08021v3.pdf>
-code：<https://github.com/sanghoon/pva-faster-rcnn>
+- [arxiv paper](https://www.arxiv.org/pdf/1608.08021v3.pdf)
+- [code](https://github.com/sanghoon/pva-faster-rcnn)
 
 ## Abstract
 1. 使用"Feature Extraction+Region Proposal+RoI Classification" 的结构，主要对Feature Extraction进行重新设计。因为，Region Proposal部分计算量不太大而且classification部分可以使用通用的技术(例如：Truncated SVD) 进行有效的压缩。
@@ -6888,8 +6888,7 @@ layer {
 ```
 
 ## Reference
-[^1]. [PVANet: Lightweight Deep Neural Networks for Real-time Object Detection](https://www.arxiv.org/pdf/1608.08021v3.pdf)
-[code:https://github.com/sanghoon/pva-faster-rcnn](https://github.com/sanghoon/pva-faster-rcnn)
-[^2] [HyperNet: Towards Accurate Region Proposal Generation and Joint](http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Kong_HyperNet_Towards_Accurate_CVPR_2016_paper.pdf)
-[^3] [Going Deeper with Convolutions](https://arxiv.org/pdf/1409.4842v1.pdf)
-
+[^1]: https://www.arxiv.org/pdf/1608.08021v3.pdf "PVANet: Lightweight Deep Neural Networks for Real-time Object Detection"
+[^2]: https://github.com/sanghoon/pva-faster-rcnn
+[^3]: http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Kong_HyperNet_Towards_Accurate_CVPR_2016_paper.pdf "HyperNet: Towards Accurate Region Proposal Generation and Joint"
+[^4]: https://arxiv.org/pdf/1409.4842v1.pdf "Going Deeper with Convolutions"

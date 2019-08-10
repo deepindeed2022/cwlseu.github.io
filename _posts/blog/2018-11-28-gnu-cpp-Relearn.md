@@ -638,8 +638,6 @@ static struct swsusp_header {
 } __attribute__((packed, aligned(PAGE_SIZE))) swsusp_header;
 ```
 
-
-
 ## 导出链接库的所有符号
 
 $$A -> B -> C$$
@@ -652,6 +650,9 @@ $$A -> B -> C$$
 ## 参考链接
 
 1. [Function Attributes](https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html#Function-Attributes)
+
 2. [Visibility Pragmas](https://gcc.gnu.org/onlinedocs/gcc/Visibility-Pragmas.html#Visibility-Pragmas)
+
 3. [GCC扩展 __attribute__ ((visibility("hidden")))](http://liulixiaoyao.blog.51cto.com/1361095/814329)
+
 4. [【IBM】Linux 内核中的 GCC 特性](https://www.ibm.com/developerworks/cn/linux/l-gcc-hacks/)

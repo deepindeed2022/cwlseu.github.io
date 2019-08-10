@@ -10,7 +10,7 @@ description: 最近在写论文，用到latex进行编写，latex真是编辑神
 
 ## 引言
 
-最近在写论文，用到latex进行编写，latex真是编辑神器，科研工作者 必备啊，在这向唐纳德*克努斯先生致敬。当年先生写《计算机程序设计的艺术》，感觉这排版工具用得太不爽了，就手撸一把,Tex就被撸出来了，而且版本号为数字PI的截断表示，听着更牛掰的是悬赏bug, 指数级悬赏bug，还带签名哦。
+最近在写论文，用到latex进行编写，latex真是编辑神器，科研工作者 必备啊，在这向*唐纳德*克努斯先生致敬。当年先生写《计算机程序设计的艺术》，感觉这排版工具用得太不爽了，就手撸一把,Tex就被撸出来了，而且版本号为数字PI的截断表示，听着更牛掰的是悬赏bug, 指数级悬赏bug，还带签名哦。
 
 ## 环境搭建
 
@@ -271,22 +271,22 @@ A reference to Table \ref{tab:template}.
 
 # tikz绘制论文的插图
 
-The error of ' ! I can't find file `tikzlibraryarrows.meta.code.tex'.'
-下载新的pgf库 https://ctan.org/pkg/pgf
+The error of ' ! I can't find file `tikzlibraryarrows.meta.code.tex.`
+- [下载新的pgf库](https://ctan.org/pkg/pgf)
 
-http://www.texample.net/tikz/examples/
+- http://www.texample.net/tikz/examples/
 
-http://Altermundus.com
+- http://Altermundus.com
 An impressive collection of various TikZ-related packages and examples.
 
-[Graph Theory in LaTeX](http://graphtheoryinlatex.blogspot.com/)
+- [Graph Theory in LaTeX](http://graphtheoryinlatex.blogspot.com/)
 A gallery of (combinatorial) graphs produced by using LaTeX
 
 用tikz绘制流程图
 
-https://blog.csdn.net/xiahn1a/article/details/46547981
+- https://blog.csdn.net/xiahn1a/article/details/46547981
 
 Ubuntu下安装缺失的package
 
-https://yq.aliyun.com/articles/523588
-https://tex.stackexchange.com/questions/307933/the-error-of-i-cant-find-file-tikzlibraryarrows-meta-code-tex
+- https://yq.aliyun.com/articles/523588
+- https://tex.stackexchange.com/questions/307933/the-error-of-i-cant-find-file-tikzlibraryarrows-meta-code-tex
