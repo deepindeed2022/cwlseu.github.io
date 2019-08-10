@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 自然场景文本检测与识别（2）
+title: 自然场景文本检测与识别
 tags: [计算机视觉] 
 categories: [blog ]
 notebook: 视觉算法
