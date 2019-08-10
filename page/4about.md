@@ -31,7 +31,7 @@ description: "Welcome to my world!"
 - 职位：SenseTime算法开发
 
 - 主要技能：C++/python/caffe可训练，可拓展新层；pytorch/mxnet也用过；嵌入式神经网络引擎，SNPE，NNIE等。 SIMD/NEON优化也有相关经验，攒显卡，装机器挽起袖子就能干。总之，上到检测算法设计，下到新的网络层的实现与优化，:)干就是了。
-- 主要职责：CV算法的落地与性能优化；新的NN引擎的适配与集成；cv相关的sdk的封装与维护。
+- 主要职责：CV算法的落地与性能优化；最近在做OCR应用相关的算法研究。
 - 业余爱好：物体检测算法，总结工作中的坑，周末打打羽毛球，动漫只看《海贼王》
 - [sensetime内推](http://hr.sensetime.com/)，可以直接发送邮件caowenlong92(AT)gmail.com
 
