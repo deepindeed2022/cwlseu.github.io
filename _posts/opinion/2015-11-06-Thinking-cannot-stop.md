@@ -1,7 +1,7 @@
 ---
-layout: post
+layout: page
 title: 胡思乱想：活着
-categories: [opinion]
+categories: [opinion ]
 tags: [随笔]
 description: 平时闲来没事，胡思乱想。Thinking all the time
 ---

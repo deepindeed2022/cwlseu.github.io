@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: "2017年，那人，那事儿"
 categories: [opinion]
 tags: [随笔]

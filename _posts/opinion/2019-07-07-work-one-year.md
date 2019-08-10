@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: 纪念工作一周年
 categories: [opinion ]
 tags: [随笔, ]

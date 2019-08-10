@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: 胡思乱想：过年
 categories: [opinion ]
 tags: [随笔, ]

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: 写在2016年元旦
 categories: [opinion ]
 tags: [随笔, ]

@@ -1,7 +1,7 @@
 ---
-layout: post
+layout: page
 title: 菜鸟实习初体验--IN NI
-categories: [opinion]
+categories: [opinion ]
 tags: [随笔, ]
 description: Working hard, Playing hard.
 ---
