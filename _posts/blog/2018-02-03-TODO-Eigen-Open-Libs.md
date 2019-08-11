@@ -2,7 +2,7 @@
 layout: post
 title: "开发笔记：Eigen开源库的应用"
 categories: [blog]
-tags: [工具]
+tags: [tools]
 description: Eigen开源库的入门
 ---
 

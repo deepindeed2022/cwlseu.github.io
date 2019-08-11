@@ -3,7 +3,7 @@ layout: post
 comments: true
 title: "Detection算法Overview"
 categories: [blog ]
-tags: [detection, CV]
+tags: [detection, CV算法]
 description: 物体检测算法概览
 ---
 

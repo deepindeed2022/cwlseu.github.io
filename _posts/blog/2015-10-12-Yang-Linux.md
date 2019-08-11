@@ -2,7 +2,7 @@
 layout: post
 title: 探究Linux的奇妙之旅
 categories: [blog ]
-tags: [linux, 操作系统]
+tags: [linux开发, 操作系统]
 description: 探究linux 0.11的一些神奇的东西，课程教师杨立祥，一个成功的实现财富自由的男人。
 ---
 

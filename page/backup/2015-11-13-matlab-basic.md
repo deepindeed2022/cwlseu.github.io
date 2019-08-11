@@ -2,7 +2,7 @@
 layout: post
 title: "matlab基础"
 categories: [blog ]
-tags: [数学基础, 工具]
+tags: [数学基础, tools]
 description: Matlab基础和病态系统基本介绍
 ---
 

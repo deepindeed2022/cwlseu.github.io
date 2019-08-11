@@ -2,7 +2,7 @@
 layout: post
 title: "深度学习：玩转caffe之安装"
 categories: [blog ]
-tags: [Caffe, 深度学习]
+tags: [Caffe, 深度学习, tools]
 description: Caffe install in Ubuntu
 ---
 * content

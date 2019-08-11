@@ -2,7 +2,7 @@
 layout: post
 title: Hadoop到Spark的踩坑
 categories: [blog ]
-tags: [开发]
+tags: [开发, tools]
 description: Spark和hadoop的踩坑之路
 --- 
 

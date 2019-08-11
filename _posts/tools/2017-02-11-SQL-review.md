@@ -2,7 +2,7 @@
 layout: post
 title: "计算机基础-SQL操作"
 categories: [blog ]
-tags: [工具]
+tags: [tools]
 description: "SQL是数据库操作的基础语言，使用SQL可以说是和数据库交流沟通的工具"
 ---
 
