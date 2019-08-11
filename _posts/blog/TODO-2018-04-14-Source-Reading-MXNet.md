@@ -8,9 +8,7 @@ description: mxnet源代码阅读笔记
 
 {:toc} 
 
-## 快速安装
-
-参考地址：`https://mxnet.incubator.apache.org/install/index.html`
+## 快速安装[^1],[^2]
 
 ```shell
 # 安装 build tools 和git
@@ -34,7 +32,7 @@ make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas
 
 当然，如果GPU版本的，需要先安装CUDA和cuDNN，然后添加`export LD_LIBRARY_PATH=/usr/local/cuda/lib64/:$LD_LIBRARY_PATH`
 
-## 干脆配置一个notebook服务器
+## 干脆配置一个notebook服务器[^4]
 
 ```shell
 ## 首先从这里下载http://anaconda.com/downloads.html anaconda进行安装
@@ -43,7 +41,6 @@ sudo apt-get install ipython
 pip install jupyter
 # 
 ```
-参考地址： http://www.cnblogs.com/McKean/p/6391380.html
 
 ## 源代码阅读
 
@@ -112,10 +109,9 @@ mlp = mx.symbol.Custom(data=fc3, name='softmax', op_type='softmax')
 	The forward function takes a list of input and a list of output NDArrays. For convenience, we called .asnumpy() on the first NDArray in input and convert it to a CPU-based NumPy array. This can be very slow. If you want the best performance, keep data in the NDArray format and use operators under mx.nd to do the computation.
 
 ## 预处理数据
-
-
+基本的简单数据在`mxnet.test_utils`都可以找到，可以用来测试模型正确性。
+`mx.io.DataIter`
 ## Fine-tune with Pretrained Models
-
 
 ### 多种
 
@@ -124,5 +120,7 @@ mlp = mx.symbol.Custom(data=fc3, name='softmax', op_type='softmax')
 
 ## 参考地址
 
-[1] MXNet源代码下载: https://github.com/apache/incubator-mxnet
-[1] 基础结构解析 http://www.jianshu.com/p/b9ce6258a75d
+[^1]: https://github.com/apache/incubator-mxnet "MXNet源代码下载"
+[^2]: https://mxnet.incubator.apache.org/install/index.html "安装文档"
+[^3]: http://www.jianshu.com/p/b9ce6258a75d " 基础结构解析 "
+[^4]: http://www.cnblogs.com/McKean/p/6391380.html

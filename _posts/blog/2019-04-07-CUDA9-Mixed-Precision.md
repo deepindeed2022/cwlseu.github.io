@@ -50,9 +50,9 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
 * 精度问题
   - 模型以FP32进行保存
   - 不同算子的区别处理
-    - 计算密集型算子（ MatMul/Conv）
+    - 计算密集型算子（MatMul/Conv）
       输入为FP16，FP32累加中间结果，输出为FP32，计算基于TensorCore
-    - 访存密集型算法（ Add/Reduce/…)
+    - 访存密集型算法（Add/Reduce/…)
       输入输出均为FP16，计算为FP16/FP32, 不使用TensorCore，访存量减少
   - Loss scaling策略解决gradient underflow问题
   - 表达精度问题： FP32->FP16
@@ -72,11 +72,13 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
 * 1.3~3X time-to-accuracy speed-up
   与PAI-TAO	Compiler联合使用可以达到1+1>2的加速收益
 
-## 幻想
+## 题外思考
 
-现在我们的训练应该是没有引入混合精度训练的，而且inference框架中没有混合精度的苗头。我们的inference
-应该可以先支持起混合精度的，然后后面慢慢地在训练框架中添加相关功能。然后重构节点之间的数据交换代码，加大
-对混合精度训练的时候并行度，进一步降低训练模型的成本。
+现在我们的训练应该是没有引入混合精度训练的，而且inference框架中没有混合精度的苗头。
+我们的inference应该可以先支持起混合精度的，然后后面慢慢地在训练框架中添加相关功能。
+然后重构节点之间的数据交换代码，加大对混合精度训练的时候并行度，进一步降低训练模型的成本。
+尤其是弱计算能力的芯片上，通过添加混合计算功能，能够在加速的同时，追求更高的精度。
+现在很多AI推理芯片如华为himix200中，支持int8和int16的计算，而且同一个模型可以混合int8和int16的精度类型。
 
 ## 参考文献
 
@@ -92,6 +94,6 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
 
 [6]. [Training-Mixed-Precision-User-Guide](https://docs.nvidia.com/deeplearning/sdk/pdf/Training-Mixed-Precision-User-Guide.pdf)
 
-PAI自动混合精度训练的实现与应用-阿里巴巴+高级算法工程师王梦娣
+[7]. [英伟达发布全新AI芯片Jetson Xavier](http://m.elecfans.com/article/640489.html)
+<!-- PAI自动混合精度训练的实现与应用-阿里巴巴+高级算法工程师王梦娣 -->
 
-[英伟达发布全新AI芯片Jetson Xavier](http://m.elecfans.com/article/640489.html)
