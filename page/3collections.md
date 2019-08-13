@@ -22,7 +22,7 @@ type: page
 - [在线神经网路结构](https://dgschwend.github.io/netscope/#/editor)
 - [在线绘制实验结果vega](http://vega.github.io/vega-editor/)
 - [GraphvizOnline](http://dreampuf.github.io/GraphvizOnline/)
-- [matplot](http://matplotlib.org/gallery.html)
+- [matplot画廊](http://matplotlib.org/gallery.html)
 - [gnuplot](http://www.gnuplot.info/)
 - [论文中绘制神经网络图的常用工具](https://blog.csdn.net/wzz18191171661/article/details/87886588#comments)
 - [手工绘制图片的工具](https://www.autodraw.com/)
@@ -33,8 +33,10 @@ type: page
 - [Deep Learning](http://deeplearning.net/tutorial/)
 - [Tutorials](http://yanirseroussi.com/deep-learning-resources/)
 - [Notes](http://cs231n.github.io/)
+- [sciencenewsforstudents](https://www.sciencenewsforstudents.org/)
+- [towardsdatascience](https://towardsdatascience.com/)
 
-### Convert 
+<!-- ### Convert 
 
 - [Shorten](http://www.waqiang.com/index.php/url/shorten) 网址转换
 - [Damotou](http://www.damotou.com/index.php) 在线转换工具 Icon 图标
@@ -43,6 +45,4 @@ type: page
 - [Speedyshare](http://www.speedyshare.com/) 在线文件分享 
 - [Feedex](http://feedex.net/) Rss 烧录  
 - [ClipConverter](http://www.clipconverter.cc/) 转换和下载 Youtube 视频
-- [Worditout](http://worditout.com/) Tags Cloud
-- https://www.sciencenewsforstudents.org/
-- https://towardsdatascience.com/
+- [Worditout](http://worditout.com/) Tags Cloud -->
