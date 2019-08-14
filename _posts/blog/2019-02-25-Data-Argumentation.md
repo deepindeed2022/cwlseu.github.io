@@ -84,6 +84,13 @@ message BatchSampler {
   - 一是使用Scale Jittering，VGG和ResNet模型的训练都用了这种方法。
   - 二是尺度和长宽比增强变换，最早是Google提出来训练他们的Inception网络的。我们对其进行了改进，提出Supervised Data Augmentation方法。
 
+## 学习的数据增强策略
+在分类模型中，常见的数据增广策略有尺度、平移、旋转。在目标检测任务中，较多使用镜像和多尺度训练进行数据增广。除此以外，一些方法在图像上随机增加噪声、遮挡等，或者在训练图像上增加新物体。当前大多数图像分类器使用人工数据增广方法，目前有一些工作[^4]不再使用人工数据增广方法，而是使用从数据中学习到的策略以提升图像分类模型的性能。学习到的数据增广策略对小数据有较大帮助，避免过拟合。对于一个增广策略，将其分解成K个子策略，在训练过程中随机选择每个子策略，将该策略应用到当前图像上。其中，每个子策略包括N个图像变换。将搜寻最佳数据增广策略的问题就转换成在搜索空间中的离散优化问题。当前存在许多解决离散优化问题的方法，包括强化学习，基于序列模型的优化等。[^6]将离散优化问题构建为RNN的输出空间，并采用强化学习来更新模型的权重。[^5]
+
+[^4]: https://arxiv.org/pdf/1805.09501.pdf "AutoAugment:Learning Augmentation Strategies from Data"
+[^5]: https://zhuanlan.zhihu.com/p/76446741 "目标检测之Data Augmentation"
+[^6]: https://arxiv.org/pdf/1906.11172.pdf "Learning Data Augmentation Strategies for Object Detection"
+
 ## 启发点
 
 * 并不是越多越好，要在多的基础上保持随机性，因为应用场景的不是固定的输入
