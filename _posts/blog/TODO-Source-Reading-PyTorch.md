@@ -1,6 +1,6 @@
 ---
 layout: post
-title: PyTorch实战
+title: Tensorflow源码阅读
 tags: [] 
 categories: [blog ]
 notebook: 视觉算法
