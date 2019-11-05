@@ -235,6 +235,20 @@ FOREACH (sample ${samples})
 ENDFOREACH() # foreach 结束
 
 ```
+
+## windows指定编译器
+
+```cmake
+cmake \
+-DCMAKE_MODULE_PATH:PATH=Y:\\cmake  -DCMAKE_CONFIGURATION_TYPES=release \
+-DCMAKE_INSTALL_PREFIX=C:\\cygwin\\data\\windows-x86_64\\test \
+-G "Visual Studio 12 Win64" -T "v120_xp" ..
+
+cmake -G"Visual Studio 12 2013" -A x64 -DCMAKE_BUILD_TYPE=RELEASE ..
+cmake -G"Visual Studio 12 2013" -A Win32 -DCMAKE_BUILD_TYPE=RELEASE ..
+```
+有的时候在windows下，buildtype为debug和release表现不同，而且概率还是比较高的。
+
 ### 官网提供的入门教程中的案例
 
 ```python
@@ -438,4 +452,6 @@ INSTALL(TARGETS libdeepindeed
 - [4] [Makefile中文简明教程(陈皓)](https://app.yinxiang.com/shard/s40/res/67a665d8-3622-49d1-ac10-2b21c8f29277/Makefile%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B.pdf?search=Cmake)
 - [5] [CMake如何查找链接库---find_package的使用方法](https://blog.csdn.net/u011092188/article/details/61425924)
 - [6]. 练习CMake的项目: https://github.com/cwlseu/brick
+
+
 
