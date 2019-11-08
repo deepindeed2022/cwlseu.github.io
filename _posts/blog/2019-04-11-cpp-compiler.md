@@ -49,6 +49,11 @@ cmake使用`cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TR
 
 **Reference**: [`WINDOWS_EXPORT_ALL_SYMBOLS`](https://cmake.org/cmake/help/v3.4/prop_tgt/WINDOWS_EXPORT_ALL_SYMBOLS.html)
 
+#### windows下路径长度不能太长
+
+**error MSB3491: Could n ot write lines to file**
+https://stackoverflow.com/questions/31765909/node-socket-io-client-windows-path-too-long-to-install
+
 
 ## gcc/g++的`--as-needed`
 
