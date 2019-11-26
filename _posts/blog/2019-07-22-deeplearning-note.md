@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "卷积，优化和语料"
+title: "认识神经网络：卷积，归一化，优化和语料"
 categories: [blog ]
 tags: [深度学习]
 description: 学习深度学习中的一些有意思的东西
@@ -10,13 +10,25 @@ comments: true
 * content
 {:toc}
 
-## 引言
+# 引言
 
-一个基于神经网络模型的视觉模型中，卷积和归一化层是最为耗时的两种layer。卷积数据计算密集类型，今年来大量的优化主要集中在各种设备上的卷积加速。
-添加归一化层作为提高算法性能的很好的一种策略，但由于像BatchNormalization遭受数据同步延时的问题，现在逐渐被一些新的normalization所替代。
+一个基于神经网络模型的视觉模型中，*卷积*和*归一化层*是最为耗时的两种layer。卷积数据计算密集类型，今年来大量的优化主要集中在各种设备上的卷积加速。
+归一化层通过计算一个批量中的均值与方差来进行特征归一化。众多实践证明，它利于优化且使得深度网络易于收敛。批统计的随机不确定性也作为一个有利于泛化的正则化项。BN 已经成为了许多顶级计算机视觉算法的基础。添加归一化层作为提高算法性能的很好的一种策略，但由于像BN遭受数据同步延时的问题，现在逐渐被一些新的normalization方式所替代。
 
-## 什么是卷积
+# 卷积
 
+### 认识卷积
+
+> 卷积定义
+$$h(x) = f(x)*g(x) = \int_{ - \infty }^{ + \infty } {f(t)g(x - t)dt}$$
+$f(t)$先不动， $g(-t)$相当于$g(t)$函数的图像沿y轴（t=0）做了一次翻转。$g(x-t)$相当于$g(-t)$的整个图像沿着t轴进行了平移，向右平移了x个单位。他们相乘之后围起来的面积就是$h(x)$。
+
+> 离散卷积的定义
+$$h(x) = f(x)*g(x) = \sum_{\tau = -\infty}^{+\infty}f(\tau)g(x-\tau)$$
+
+其实，深度学习中的卷积对应于数学中的cross correlation. 从卷积的定义来看，我们当前在深度学习中训练的卷积核是**翻转之后的卷积核**。
+
+下面是一些介绍卷积的文章和常见卷积类型统计表：
 * [A Comprehensive Introduction to Different Types of Convolutions in Deep Learning](https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215)
 * [A Tutorial on Filter Groups (Grouped Convolution)](https://blog.yani.io/filter-group-tutorial/)
   * AlexNet
@@ -32,17 +44,19 @@ comments: true
 | Dilated convolution | [Multi-Scale Context Aggregation by Dilated Convolutions ](https://arxiv.org/abs/1511.07122) |语义分割|support exponentially expanding receptive fields without losing resolution or coverage. Upsampling/poolinglayer(e.g. bilinear interpolation) is deterministic. (a.k.a. not learnable); <br> 内部数据结构丢失, 空间层级化信息丢失; <br>小物体信息无法重建 (假设有四个pooling layer则任何小于$2^4=16$pixel的物体信息将理论上无法重建。)<br>[如何理解空洞卷积](https://www.jianshu.com/p/aa1027f95b90) |
 | Group Convolution| [Deep Roots:Improving CNN Efficiency with Hierarchical Filter Groups](https://arxiv.org/pdf/1605.06489.pdf) |   MobileNet, [ResNeXt](https://arxiv.org/abs/1611.05431) ||
 | Pointwise grouped convolution|  | ShuffleNet|  |
-| Depthwise separable convolution|[Xception: Deep Learning with Depthwise Separable Convolutions](https://arxiv.org/abs/1610.02357)|Xception||
-| Deconvolutions | [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/) | DSSD |                   |
+| Depthwise separable convolution|[Xception: Deep Learning with Depthwise Separable Convolutions](https://arxiv.org/abs/1610.02357)|Xception|MobileNet是典型的代表，通过该卷积，大大降低了计算复杂度和模型大小。也是现在落地产品中移动端常用的操作。|
+| Deconvolutions | [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/) | DSSD |Deconvolution也是一种常用的上采样方式，在物体分割和多尺度检测都可用到|
 | Flattened convolutions|[Flattened convolutional neural networks for feedforward acceleration](https://arxiv.org/abs/1412.5474) | |computation costs due to the significant reduction of learning parameters.|
 
-其实，深度学习中的卷积对应于数学中的 cross correlation. 计算卷积的方法有很多种，常见的有以下几种方法:
+### 卷积的实现
+
+计算卷积的方法有很多种，常见的有以下几种方法:
 * 滑窗：这种方法是最直观最简单的方法。但是，该方法不容易实现大规模加速，因此，通常情况下不采用这种方法 (但是也不是绝对不会用，在一些特定的条件下该方法反而是最高效的.)
 * im2col: 目前几乎所有的主流计算框架包括[Caffe][^1], MXNet等都实现了该方法。该方法把整个卷积过程转化成了GEMM过程，而GEMM在各种BLAS库中都是被极致优化的，一般来说，速度较快.
 * FFT: 傅里叶变换和快速傅里叶变化是在经典图像处理里面经常使用的计算方法，但是，在 ConvNet 中通常不采用，主要是因为在 ConvNet 中的卷积模板通常都比较小，例如3×3 等，这种情况下，FFT 的时间开销反而更大.
 * [Winograd][^2]: Winograd 是存在已久最近被重新发现的方法，在大部分场景中，Winograd 方法都显示和较大的优势，目前cudnn中计算卷积就使用了该方法.
 
-## 计算复杂度分析
+### 计算复杂度分析
 
 - 假设输入$I = R^{C_0H_0W_0}$, 卷积核大小为$k$, 输出$O = R^{C_1H_1W_1}$，
 则卷积过程的计算量为：
@@ -55,12 +69,15 @@ $$
 \frac{(k^2*H_1W_1*C_0 + C_0C_1*H_1W_1)}{(k^2C_0*H_1W_1)*C_1} 
 =\frac{1}{C_1} + \frac{1}{k^2} \approx \frac{1}{k^2}
 $$
+
 一般情况下，$k^2 << C_1$, 所以当$k=3$的时候，计算量之比约为原来的$\frac{1}{9}$.
 
 - 假设input的$H_0 = W_0$，用$w$表示，$k$是卷积核的大小，$p$表示填充的大小，$s$表示stride步长
+
 $$o = \frac{w - k + 2p}{s} + 1$$
 
-## Normalization
+# Normalization
+
 ![@归一化方法](https://cwlseu.github.io/images/detection/normalization-methods.jpg)
 每个子图表示一个feature map张量，以$N$为批处理轴，$C$为通道轴，$(H,W)$作为空间轴。其中蓝色区域内的像素使用相同的均值和方差进行归一化，并通过聚合计算获得这些像素的值。从示意图中可以看出，GN没有在N维度方向上进行拓展，因此batch size之间是独立的，GPU并行化容易得多。
 
@@ -72,6 +89,7 @@ $$o = \frac{w - k + 2p}{s} + 1$$
 
 
 ### Batch Normalization
+
 需要比较大的Batch Size，需要更强的计算硬件的支持。
 
 > A small batch leads to inaccurate estimation of the batch statistics, and reducing BN’s batch size increases the model error dramatically
@@ -97,6 +115,7 @@ BN注重对每个batch进行归一化，保证数据分布一致，因为判别�
 但是图像风格化中，生成结果主要依赖于某个图像实例，所以对整个batch归一化不适合图像风格化中，因而对HW做归一化。可以加速模型收敛，并且保持每个图像实例之间的独立。
 
 ### Group Normalization
+
 > GN does not exploit the batch dimension, and its
 computation is independent of batch sizes.
 
@@ -106,11 +125,16 @@ computation is independent of batch sizes.
 **而这种不确定性在GN方法中是缺失的，这个将来可能通过使用不同的正则化算法进行改进。**
 
 ### LRN（Local Response Normalization）
-动机：
+
+> 动机
+
 在神经深武学有一个概念叫做侧抑制(lateral inhibitio)，指的是被激活的神经元抑制相邻的神经元。
 归一化的目的就是“抑制”，局部响应归一化就是借鉴侧抑制的思想来实现局部抑制，尤其是当我们使用ReLU
 的时候，这种侧抑制很管用。
-好处： 有利于增加泛化能力，做了平滑处理，识别率提高1~2%
+
+> 好处
+
+有利于增加泛化能力，做了平滑处理，识别率提高1~2%
 
 ### 参考文献
 
@@ -125,8 +149,10 @@ computation is independent of batch sizes.
 [^1]: https://github.com/BVLC/caffe/blob/master/src/caffe/util/im2col.cpp
 [^2]: https://arxiv.org/abs/1509.09308v2
 
-## 优化
+# 优化
+
 ### 梯度下降法（Gradient Descent）
+
 梯度下降法是最早最简单，也是最为常用的最优化方法。梯度下降法实现简单，当目标函数是凸函数时，梯度下降法的解是全局解。
 一般情况下，其解不保证是全局最优解，梯度下降法的速度也未必是最快的。梯度下降法的优化思想是用当前位置负梯度方向作为搜索方向，
 因为该方向为当前位置的最快下降方向，所以也被称为是”最速下降法“。最速下降法越接近目标值，步长越小，前进越慢。
@@ -139,9 +165,12 @@ computation is independent of batch sizes.
 ![@梯度下降法的之字形示意图](http://cwlseu.github.io/images/optmethods/gd2.png)
 
 ### 参考文献
+
 * [梯度下降(gradient descent)](https://www.quora.com/What-is-the-purpose-for-the-use-of-gradient-descent-in-machine-learning?__filter__=&__nsrc__=2&__snid3__=2889908801&redirected_qid=31223828)
 * [梯度下降优化算法](http://ruder.io/optimizing-gradient-descent/)
 * [常见的几种最优化方法](http://www.cnblogs.com/shixiangwan/p/7532830.html)
+
+# 其他参考文献
 
 ## 深度学习教程
 [CS231n: Convolutional Neural Networks for Visual Recognition.](https://cs231n.github.io/)
@@ -152,7 +181,7 @@ computation is independent of batch sizes.
 2. [linux上编译arm交叉编译链](https://www.acmesystems.it/arm9_toolchain)
 3. [How to Build a GCC Cross-Compiler](http://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/)
 
-## 数据集合
+# 常用数据集合
 
 https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learning-datasets/
 这里我们列出了一组高质量的数据集，研究这些数据集将使你成为一个更好的数据科学家。
@@ -196,6 +225,7 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
 |[VoxCeleb](http://www.robots.ox.ac.uk/~vgg/data/voxceleb/)|150MB|VoxCeleb: a large-scale speaker identification dataset]()|大型的说话人识别数据集。 它包含约1,200名来自YouTube视频的约10万个话语。 数据在性别是平衡的（男性占55％）。说话人跨越不同的口音，职业和年龄。 可用来对说话者的身份进行识别。|
 
 ### Analytics Vidhya实践问题
+
 * [Twitter情绪分析](https://datahack.analyticsvidhya.com/contest/practice-problem-age-detection/register)
   * 描述：识别是否包含种族歧视及性别歧视的推文。
   * 大小：3MB
@@ -209,7 +239,8 @@ https://www.analyticsvidhya.com/blog/2018/03/comprehensive-collection-deep-learn
   * 大小：训练数据集3GB，训练数据集2GB。
   * 8732 labeled sound excerpts (<=4s) of urban sounds from 10 classes
 
-## more dataset
+### more dataset
+
 - [机器之心整理的数据集合](https://www.jiqizhixin.com/articles/2018-09-05-2)
 - [DHCD_Dataset](https://github.com/Prasanna1991/DHCD_Dataset)
 
