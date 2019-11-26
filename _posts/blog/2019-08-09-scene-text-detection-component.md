@@ -1,25 +1,31 @@
 ---
 layout: post
 title: 自然场景文本检测与识别
-tags: [计算机视觉, CV算法] 
-categories: [blog ]
+tags: [OCR]
+categories: [blog]
 notebook: 视觉算法
 ---
 
 * content
 {:toc}
 
-## 引言
+# 引言
+
 基于深度学习算法的的自然场景文本检测，经过几年的研究，针对解决实际问题中的某些问题，涌现出CTC, LSTM等大量的单元。在深度学习之前，已经有大量的优秀工作如SWT，MSER等算法被提出，这里我将先对一些OCR领域的经典作品进行介绍，然后再引入OCR中的深度学习算法。
 
+# 经典算法在OCR应用中的问题[^9]
 
-## 开源数据集合
+- 文本定位，尤其是非水平的文本定位问题，例如SWT算子是比较常用的文本定位算法，但针对非水平文本定位存在一定的局限性。
+- 无法处理序列不定长的问题
+- 文字大小不一的问题
 
-![@](https://cwlseu.github.io/images/ocr/ocr-opendataset.png)
+# 开源数据集合
 
-![@](https://cwlseu.github.io/images/ocr/ocr-opendataset2.png)
+![@数据集合用途统计](https://cwlseu.github.io/images/ocr/ocr-opendataset.png)
 
-## SWT算子[^1]
+![@数据集合标注属性统计](https://cwlseu.github.io/images/ocr/ocr-opendataset2.png)
+
+# SWT算子[^1]
 
 - [`Paper: Detecting Text in Natural Scenes with Stroke Width Transform`](http://cmp.felk.cvut.cz/~cernyad2/TextCaptchaPdf/Detecting%20Text%20in%20Natural%20Scenes%20with%20Stroke%20Width%20Transform.pdf)
 - [`github: https://github.com/aperrau/DetectText`](https://github.com/aperrau/DetectText)
@@ -32,11 +38,11 @@ notebook: 视觉算法
 * 通过自定义的规则过滤一些连通域，得到候选连通域
 * 将连通域合并得到文本行
 
-### 利用canny算子检测图片的边界
+### Step 1：利用canny算子检测图片的边界
 
 这步不用多说，基础的图像处理知识，利用OpenCV 的Canny函数可以得到图片边缘检测的结果。
 
-### 笔画宽度变换（Stroke Width Transform）
+### Step 2：笔画宽度变换（Stroke Width Transform）
 
 这一步输出图像和输入图像大小一样，只是输出图像像素为笔画的宽度，具体如下。
 ![](http://cwlseu.github.io/images/ocr/SWT_01.png)
@@ -51,11 +57,11 @@ notebook: 视觉算法
 
 因为有文字比背景更亮和背景比文字更亮两种情况，这样会导致边缘的梯度方向相反，所以这一个步骤要执行两遍。这个步骤结束后得到一张SWT图像。
 
-### 通过SWT图像得到多个连通域
+### Step 3：通过SWT图像得到多个连通域
 
 在通过上述步骤得到SWT输出图像后，该图像大小与原图像大小一致，图像中的像素值为对应像素所在笔画的宽度（下面称为SWT值）。现将相邻像素SWT值比不超过3.0的归为一个连通域。这样就能得到多个连通域。
 
-### 过滤连通域
+### Step 4：过滤连通域
 
 上述步骤输出的多个连通域中，并不是所有的连通域都被认为是笔画候选区域，需要过滤一些噪声的影响，过滤的规则有：
 * 如果某连通域的方差过大（方差大于连通域的一半为方差过大为过大），则认为该连通域不是有效的
@@ -64,7 +70,7 @@ notebook: 视觉算法
 * 如果某连通域的外接矩形包含其他两个连通域，则认为该连通域不是有效的（代码中判定，如果某个连通域的外接矩形包含两个或两个以上连通域外接矩形的中心时，认为其包含了两个连通域）
 上述条件都满足的连通域，认为是笔画候选区域，用于输入给下一步操作。
 
-### 将连通域合并得到文本行
+### Step 5：将连通域合并得到文本行
 
 文中认为，在自然场景中，一般不会只有单个字母出现，所有将连通域合并为文本有利于进一步将噪声排除。
 
@@ -73,11 +79,12 @@ notebook: 视觉算法
 * 两个连通域高的比小于2.0（连通域的高，指其外界矩形的高）
 * 两个连通域之间的距离小于较宽的连通域宽度的3倍（连通域之间的距离为连通域外界矩形中心点之间的距离）
 * 两个连通域的颜色相似（代码用两个连通域对应于原图区域的像素均值代表该连通域的颜色）
+
 得到两两连通域组成的多对连通域后，如果有两对连通域有共享的连通域，共享的连通域都在连通域对的一端（即连通域的首端或者尾端），且方向相同（方向用一个连通域中心到另一个连通域中心的方向），就将这两对连通域合并为一个新的连通域组，依次进行，知道没有连通域对需要合并则合并结束。
 
 最后将合并完的结果中滤除小于3的连通域的连通域组得到的最终结果，认为是一行文字。
 
-## 最大极值稳定区域MSER分析[^2]
+# 最大极值稳定区域MSER分析[^2]
 
 最大稳定极值区域MSER是一种类似分水岭图像的分割与匹配算法，它具有仿射不变性。极值区域反映的就是集合中的像素灰度值总大于或小于其邻域区域像素的灰度值。对于最大稳定区域，通过局部阈值集操作，区域内的像素数量变化是最小的。
 
@@ -85,7 +92,10 @@ MSER的基本原理是对一幅灰度图像（灰度值为0～255）取阈值进
 
 上述做法只能检测出灰度图像的黑色区域，不能检测出白色区域，因此还需要对原图进行反转，然后再进行阈值从0～255的二值化处理过程。这两种操作又分别称为MSER+和MSER-。
 
-MSER是当前认为性能最好的仿射不变性区域的检测方法，其使用不同灰度阈值对图像进行二值化来得到最稳定区域，表现特征有以下三点：对图像灰度仿射变化具有不变性，对区域支持相对灰度变化具有稳定性，对区域不同精细程度的大小区域都能进行检测。
+MSER是当前认为性能最好的仿射不变性区域的检测方法，其使用不同灰度阈值对图像进行二值化来得到最稳定区域，表现特征有以下三点：
+* 对图像灰度仿射变化具有不变性，
+* 对区域支持相对灰度变化具有稳定性，
+* 对区域不同精细程度的大小区域都能进行检测。
 
 MSER最大极值稳定区域的提取步骤：
 * 像素点排序
@@ -94,13 +104,7 @@ MSER最大极值稳定区域的提取步骤：
 * 区域拟合
 * 区域归一化
 
-## 经典算法在OCR应用中的问题
-
-- 文本定位，尤其是非水平的文本定位问题
-- 无法处理序列不定长的问题
-- 文字大小不一的问题
-
-## HMM & CTC
+# HMM & CTC
 
 ### 问题
 序列学习任务需要从未分割的输入数据中预测序列的结果。HMM模型与CRF模型是序列标签任务中主要使用的框架，这些方法对于许多问题已经获得了较好的效果，但是它们也有缺点：
@@ -163,7 +167,7 @@ $$where\quad \pi^* = \arg\max_{\pi \in N^t}p(\pi|\mathbf{x})$$
 
 实践中，前缀搜索在这个启发式下工作得很好，通常超过了最佳路径解码，但是在有些情况下，效果不佳。
 
-## CTC网络训练
+# CTC网络训练
 
 目标函数是由极大似然原理导出的。也就是说，最小化它可以最大化目标标签的对数可能性。有了损失函数之后就可以使用依靠梯度进行优化的算法进行最优化。
 
@@ -263,7 +267,7 @@ $$
 p(\mathbf{l} | \mathbf{x})=\sum_{s=1}^{\left|\mathbf{l}^{\prime}\right|} \frac{\alpha_{t}(s) \beta_{t}(s)}{y_{1_{s}^{\prime}}^{t}}
 $$
 
-## RLSTM(Reverse LSTM)
+# RLSTM(Reverse LSTM)
 
 - RNN[^6]
 - LSTM[^7][^8]
@@ -274,7 +278,7 @@ $$
 
 ![](http://cwlseu.github.io/images/ocr/rlstm.png)
 
-## ChannelShuffle
+# ChannelShuffle
 
 ![](http://cwlseu.github.io/images/ocr/shuffle_2.png)
 
@@ -283,7 +287,7 @@ $$
 ![](http://cwlseu.github.io/images/ocr/shuffle_3.png)
 
 
-图２(a)是一个将卷积替换为depthwise卷积[^3]的residual block，(b)中将两个$1\times1$卷积都换为pointwise group convolution，然后添加了channel shuffle，为了简便，没有在第二个pointwise group convolution后面加channel shuffle。根据Xception的论文，depthwise卷积后面没有使用ReLU。(c)为stride > 1的情况，此时在shotcut path上使用$3\times3$的平均池化，并将加法换做通道concatenation来增加输出通道数(一般的设计中，stride=2的同时输出通道数乘2)。
+图2 (a)是一个将卷积替换为depthwise卷积[^3]的residual block，(b)中将两个$1\times1$卷积都换为pointwise group convolution，然后添加了channel shuffle，为了简便，没有在第二个pointwise group convolution后面加channel shuffle。根据Xception的论文，depthwise卷积后面没有使用ReLU。(c)为stride > 1的情况，此时在shotcut path上使用$3\times3$的平均池化，并将加法换做通道concatenation来增加输出通道数(一般的设计中，stride=2的同时输出通道数乘2)。
 
 对于$c \times h \times w$的输入大小，bottleneck channels为m，则ResNet unit需要$hw(2cm + 9m^2)FLOPs$，ResNeXt需要$hw(2cm + 9m^2/g)FLOPs$，ShuffleNet unit只需要$hw(2cm/g + 9m)FLOPs$，g表示卷积分组数。换句话说，在有限计算资源有限的情况下，ShuffleNet可以使用更宽的特征图，作者发现对于小型网络这很重要。
 
@@ -292,16 +296,16 @@ $$
 ![](http://cwlseu.github.io/images/ocr/covertCNN5.jpg)
 
 
-## 其他相关算法
+# 其他相关算法
 
 `Levenshtein distances`[^5]是俄罗斯科学家Vladimir Levenshtein在1965年发明的，也叫做编辑距离（实际上编辑距离代表一大类算法），距离代表着从s到t需要删、插、代替单个字符的最小步骤数。主要应用：
-* Spell checking 检查拼写
-* Speech recognition 语音识别
-* DNA analysis DNA分析
-* Plagiarism detection 检测抄袭
+* `Spell checking` 检查拼写
+* `Speech recognition` 语音识别
+* `DNA analysis` DNA分析
+* `Plagiarism detection` 检测抄袭
 
 
-## 引用
+# 引用
 
 [^1]: https://blog.csdn.net/liuxiaoheng1992/article/details/85305871 "SWT博客"
 [^2]: https://www.cnblogs.com/shangd/p/6164916.html "MSER 博客"
@@ -311,3 +315,4 @@ $$
 [^6]: https://zybuluo.com/hanbingtao/note/541458 "循环神经网络"
 [^7]: http://colah.github.io/posts/2015-08-Understanding-LSTMs/ "理解LSTM"
 [^8]: https://www.jianshu.com/p/4b4701beba92 "理解LSTM中文"
+[^9]: https://www.jianshu.com/p/56f8c714f372 "自然场景文本检测识别技术综述"
