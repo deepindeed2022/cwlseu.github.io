@@ -26,11 +26,11 @@ comments: true
 * [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/)
 
 | Convolution Name | 参考文献 | 典型代表 | 附录 |
-| :-------------- | :--------  | :------------:| :------------:|
+| :-------------- | :--------  | :---------| :---------|
 | Convolution  |  |  AlexNet, VGG|                   |
-| 1x1 | [Network in Network](https://arxiv.org/abs/1312.4400) | GoogLeNet, Inception|(1). Dimensionality reduction for efficient computations; (2).Efficient low dimensional embedding, or feature pooling; (3).Applying nonlinearity again after convolution|
-| Dilated convolution | [Multi-Scale Context Aggregation by Dilated Convolutions ](https://arxiv.org/abs/1511.07122) |  |support exponentially expanding receptive fields without losing resolution or coverage.|
-| Group Convolution| [Deep Roots:Improving CNN Efficiency with Hierarchical Filter Groups](https://arxiv.org/pdf/1605.06489.pdf) |   MobileNet, [ResNeXt](https://arxiv.org/abs/1611.05431) |
+| 1x1 | [Network in Network](https://arxiv.org/abs/1312.4400) | GoogLeNet, Inception|(1). Dimensionality reduction for efficient computations;<br>(2).Efficient low dimensional embedding, or feature pooling; <br>(3). Applying nonlinearity again after convolution|
+| Dilated convolution | [Multi-Scale Context Aggregation by Dilated Convolutions ](https://arxiv.org/abs/1511.07122) |语义分割|support exponentially expanding receptive fields without losing resolution or coverage. Upsampling/poolinglayer(e.g. bilinear interpolation) is deterministic. (a.k.a. not learnable); <br> 内部数据结构丢失, 空间层级化信息丢失; <br>小物体信息无法重建 (假设有四个pooling layer则任何小于$2^4=16$pixel的物体信息将理论上无法重建。)<br>[如何理解空洞卷积](https://www.jianshu.com/p/aa1027f95b90) |
+| Group Convolution| [Deep Roots:Improving CNN Efficiency with Hierarchical Filter Groups](https://arxiv.org/pdf/1605.06489.pdf) |   MobileNet, [ResNeXt](https://arxiv.org/abs/1611.05431) ||
 | Pointwise grouped convolution|  | ShuffleNet|  |
 | Depthwise separable convolution|[Xception: Deep Learning with Depthwise Separable Convolutions](https://arxiv.org/abs/1610.02357)|Xception||
 | Deconvolutions | [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/) | DSSD |                   |
@@ -42,7 +42,23 @@ comments: true
 * FFT: 傅里叶变换和快速傅里叶变化是在经典图像处理里面经常使用的计算方法，但是，在 ConvNet 中通常不采用，主要是因为在 ConvNet 中的卷积模板通常都比较小，例如3×3 等，这种情况下，FFT 的时间开销反而更大.
 * [Winograd][^2]: Winograd 是存在已久最近被重新发现的方法，在大部分场景中，Winograd 方法都显示和较大的优势，目前cudnn中计算卷积就使用了该方法.
 
+## 计算复杂度分析
 
+- 假设输入$I = R^{C_0H_0W_0}$, 卷积核大小为$k$, 输出$O = R^{C_1H_1W_1}$，
+则卷积过程的计算量为：
+$$(k^2C_0*H_1W_1)*C_1$$
+使用Depthwise separable convolution卷积的计算量为:
+$$(k^2*H_1W_1*C_0 + C_0C_1*H_1W_1)$$
+
+那么计算量之比为
+$$
+\frac{(k^2*H_1W_1*C_0 + C_0C_1*H_1W_1)}{(k^2C_0*H_1W_1)*C_1} 
+=\frac{1}{C_1} + \frac{1}{k^2} \approx \frac{1}{k^2}
+$$
+一般情况下，$k^2 << C_1$, 所以当$k=3$的时候，计算量之比约为原来的$\frac{1}{9}$.
+
+- 假设input的$H_0 = W_0$，用$w$表示，$k$是卷积核的大小，$p$表示填充的大小，$s$表示stride步长
+$$o = \frac{w - k + 2p}{s} + 1$$
 
 ## Normalization
 ![@归一化方法](https://cwlseu.github.io/images/detection/normalization-methods.jpg)
