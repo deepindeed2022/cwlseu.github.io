@@ -73,7 +73,9 @@ template <class T> inline void copy(T* source,T* destination,int n) {
         typename __type_traits<T>::has_trivial_copy_constructor());
 }
 ```
+
 POD意思是Plain Old Data,也就是标量性别或者传统的C struct型别。POD性别必然拥有trivial ctor/doct/copy/assignment 函数,因此我们就可以对POD型别采用最为有效的复制方法，而对non-POD型别采用最保险安全的方法
+
 ```cpp
 // uninitialized_copy
 // Valid if copy construction is equivalent to assignment, and if the
@@ -190,6 +192,7 @@ int main(int argc, char const *argv[])
 2. 声明+特化在头文件中，实际定义在cpp文件中。这种情况往往特化几种就是几种。
 
 ### 模板invoke模板函数
+
 两个模板函数, 如果**被调用的模板函数的只有声明在头文件中,定义与特化**. 而模板的实际定义在cpp文件中，就会出现undefined的问题.
 
 这是由于在头文件中进行调用模板函数过程中，找不到特化的被调用函数.
@@ -241,6 +244,7 @@ T safe_cast(TFrom &input) {
 ```
 
 ### `cv::Mat` 与`cv::Mat_<T>`就是典型的案例
+
 1. 采用enum类型或者整数类型进行区分类型
 2. 采用`trait`技术将自定义类型与系统类型映射
 3. 采用模板继承接口，实现接口的统一调用
