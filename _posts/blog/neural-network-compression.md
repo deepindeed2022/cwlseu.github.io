@@ -33,11 +33,6 @@ $$y^{(k)} = \gamma^{(k)}\hat{x}^{(k)} + \beta^{(k)}$$
 
 这个思路还是很巧妙。但是，这个方法工程上会有一个需要注意的地方。根据BN原理，需要训练的因子有两种，scale和shift。$\gamma$是相乘因子，之后还要加上一个shift，$\beta$.那么，$\gamma$很小的时候，beta是不是很大？
 
-[^1]: https://cloud.tencent.com/developer/article/1157136 "深入理解Batch Normalization批标准化"
-[^2]: https://www.cnblogs.com/eilearn/p/9780696.html "深度学习-BN的理解"
-[^3]: https://cloud.tencent.com/developer/article/1157135 "数据降维的方法(PCA/LDAb/LLE)"
-[^4]: https://arxiv.org/pdf/1502.03167.pdf
-
 ## SSS: 侧重于channel prune 乃至group/block等结构上稀疏化的方法[^10]
 
 - paper: https://arxiv.org/abs/1707.01213
@@ -120,3 +115,10 @@ $$y^{(k)} = \gamma^{(k)}\hat{x}^{(k)} + \beta^{(k)}$$
 [34]	R. Girshick,  Fast R-CNN[C]. in the International Conference on Computer Vision, 2015, pp. 1–9.
 
 [35]	H. Liu, R. Ji, Y. Wu, and G. Hua, Supervised Matrix Factorization for Cross-Modality Hashing[C]. in International Joint Conference on Artificail Intelligent(IJCAI), pp. 1767–1773, 2016.
+
+## 参考文献
+
+[^1]: https://cloud.tencent.com/developer/article/1157136 "深入理解Batch Normalization批标准化"
+[^2]: https://www.cnblogs.com/eilearn/p/9780696.html "深度学习-BN的理解"
+[^3]: https://cloud.tencent.com/developer/article/1157135 "数据降维的方法(PCA/LDAb/LLE)"
+[^4]: https://arxiv.org/pdf/1502.03167.pdf
