@@ -10,21 +10,36 @@ description: "TF社区中相继出现相关的应用，为了更快的在Pytorch
 {:toc}
 
 
-## 引言
+# 引言
 
-CUDA在推出7.5的时候提出了 可以计算16位浮点数据的新特性。定义了两种新的数据类型half和half2. cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference. 
-之前在网上看到半精度memory copy与计算，发现copy的代价会减少一半，而计算的提升并不是很理想。后来看到了《[why cublasHgemm is slower more than cublasSgemm when I use?](https://devtalk.nvidia.com/default/topic/972337/gpu-accelerated-libraries/why-cublashgemm-is-slower-more-than-cublassgemm-when-i-use-/)》这个帖子，终于发现其中的一点规律。
+CUDA在推出7.5的时候提出了 可以计算16位浮点数据的新特性。定义了两种新的数据类型`half`和`half2`.
+NVIDIA GPUs implement the IEEE 754 floating point standard (2008), which defines half-precision numbers as follows (see Figure 1).
 
-问题的提出者问，为什么在GTX1070上运行 cublasHgemm（半精度计算） 比 cublasSgemm（单精度计算）计算的慢呢？nv官方的回答说，当前的Pascal架构的GPU只有的 P100 的FP16计算快于 FP32。并且给出了编程手册的吞吐量的表。
+- Sign: 1 bit
+- Exponent width: 5 bits
+- Significand precision: 11 bits (10 explicitly stored)
+The range of half-precision numbers is approximately $5.96 \times 10^{-8} \ldots 6.55 \times 10^4$. `half2` structures store two half values in the space of a single 32-bit word, as the bottom of Figure 1 shows.
 
-## Alibaba PAI: Auto-Mixed Precision Training Techniques
+![@Figure 1:16-bit half-precision data formats. Top: single `half` value. Bottom: `half2` vector representation.](https://devblogs.nvidia.com/wp-content/uploads/2015/07/fp16_format-624x146.png)
 
-PAI-TAO是alibaba内部一个关于混合精度训练的一个研究项目。在整个AI模型的生命周期中的位置如下：
+CUDA-9中已经开始支持混合精度训练[^6]，TensorRT作为NVIDIA的inference引擎，同样支持混合精度的神经网络inference计算. 
+之前在网上看到半精度memory copy与计算，发现copy的代价会减少一半，而计算的提升并不是很理想。后来看到了《[`why cublasHgemm is slower more than cublasSgemm when I use?`](https://devtalk.nvidia.com/default/topic/972337/gpu-accelerated-libraries/why-cublashgemm-is-slower-more-than-cublassgemm-when-i-use-/)》这个帖子，终于发现其中的一点规律。
+
+问题的提出者问，为什么在GTX1070上运行`cublasHgemm`（半精度计算） 比 `cublasSgemm`（单精度计算）计算的慢呢？NVIDIA官方的回答说，当前Pascal架构的GPU只有的P100的FP16计算快于FP32。并且给出了编程手册的吞吐量的表[^5]。
+
+# Alibaba PAI: Auto-Mixed Precision Training Techniques
+
+随着NVIDIA release的APEX[^1]，利用Volta架构和混合精度在Pytorch上进行拓展，实现了训练的精度混合。腾讯[^2]和百度[^3]分别发表关于混合精度训练的文章.PAI-TAO是alibaba内部一个关于混合精度训练的一个研究项目。
+在整个AI模型的生命周期中的位置如下：
+
 ![@PAI-TAO](http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png)
+
 从中可以看出，自动混合精度主要是在训练过程中，为了加快计算节点之间的数据交换和层之间的数据交换与计算，采用FP16来替换FP32，这样在计算结果精度几乎不损失的情况下，带了数据交换和计算速度方面的性能提升，从而加快模型训练速度。
 
 而这项任务的成功，与CUDA9中支持TensorCore的特性是息息相关的。下面对TensorCode进行简单介绍。 
+
 ![@tensor core](http://cwlseu.github.io/images/mixed-precision/tensorcore.png)
+
 TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩阵的计算模块。
 以前NVIDIA的GPU中只有FP32和FP64计算单元，在TensorCore中，特别针对FP16做了相应的补充，
 来补充在半精度浮点方面的不足。TensorCore相比较直接进行FP32的计算，速度有了很大的提升。
@@ -33,7 +48,7 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
 
 #### Mixed-precision的优势
 
-* 充分发挥Volta架构引入的TensorCore计算性能 (15->120TFLOPs, 8X)
+* 充分发挥Volta架构引入的TensorCore计算性能 (`15`->`120TFLOPs`, 8X)
 * 减少了访存带宽
 
 #### No free-lunch
@@ -69,10 +84,10 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
 * No laborious FP32/FP16 casting work anymore
 * Already supporting diversified internal workloads:
   NLP/CNN/Bert/Graph Embedding
-* 1.3~3X time-to-accuracy speed-up
+* `1.3~3x` time-to-accuracy speed-up
   与PAI-TAO	Compiler联合使用可以达到1+1>2的加速收益
 
-## 题外思考
+# 题外思考
 
 现在我们的训练应该是没有引入混合精度训练的，而且inference框架中没有混合精度的苗头。
 我们的inference应该可以先支持起混合精度的，然后后面慢慢地在训练框架中添加相关功能。
@@ -80,20 +95,12 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
 尤其是弱计算能力的芯片上，通过添加混合计算功能，能够在加速的同时，追求更高的精度。
 现在很多AI推理芯片如华为himix200中，支持int8和int16的计算，而且同一个模型可以混合int8和int16的精度类型。
 
-## 参考文献
+# 参考文献
 
-[1]. [混合精度训练之APEX](https://cloud.tencent.com/developer/news/254121)
-
-[2]. [一种具有混合精度的高度可扩展的深度学习训练系统](http://m.elecfans.com/article/721085.html)
-
-[3]. [百度和NVIDIA联合出品：MIXED PRECISION TRAINING](https://arxiv.org/pdf/1710.03740.pdf)
-
-[4]. [Code for testing the native float16 matrix multiplication performance on Tesla P100 and V100 GPU based on cublasHgemm](https://github.com/hma02/cublasHgemm-P100)
-
-[5]. https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#arithmetic-instructions
-
-[6]. [Training-Mixed-Precision-User-Guide](https://docs.nvidia.com/deeplearning/sdk/pdf/Training-Mixed-Precision-User-Guide.pdf)
-
-[7]. [英伟达发布全新AI芯片Jetson Xavier](http://m.elecfans.com/article/640489.html)
-<!-- PAI自动混合精度训练的实现与应用-阿里巴巴+高级算法工程师王梦娣 -->
-
+[^1]: https://cloud.tencent.com/developer/news/254121 "混合精度训练之APEX"
+[^2]: http://m.elecfans.com/article/721085.html "一种具有混合精度的高度可扩展的深度学习训练系统"
+[^3]: https://arxiv.org/pdf/1710.03740.pdf "百度和NVIDIA联合出品：MIXED PRECISION TRAINING"
+[^4]: https://github.com/hma02/cublasHgemm-P100 "Code for testing the native float16 matrix multiplication performance on Tesla P100 and V100 GPU based on cublasHgemm"
+[^5]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#arithmetic-instructions "throughputs of the arithmetic instructions"
+[^6]: https://docs.nvidia.com/deeplearning/sdk/pdf/Training-Mixed-Precision-User-Guide.pdf "Training-Mixed-Precision-User-Guide"
+<!-- [^7]: http://m.elecfans.com/article/640489.html "英伟达发布全新AI芯片Jetson Xavier" -->
