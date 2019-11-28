@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "gcc编译器不可不知的options"
+title: "关于开发中常见的编译器技巧"
 categories: [blog ]
 tags: [C++, 开发]
 description: "编译器中一些不太常用，但是有的时候很有用的options"
@@ -9,13 +9,15 @@ description: "编译器中一些不太常用，但是有的时候很有用的opt
 * content
 {:toc}
 
-## 引言
+# 引言
 
 编译器是我们开发人员与机器指令之间的翻译,现在编译器越来越优化,而且基于一些开源的编译器项目(gcc,clang)等,相继出现不同platform下的编译器。
 此外，各种芯片、开发板层出不穷，各个商业公司都针对自己出产的开发板定制特定的编译链条。例如华为hisi系列的himix100中提供的编译链中，包括编译器，链接器，打包器之外，还提供了nm，gdb，gcov，gprof等等开发工具。
 这篇文章将主要将开发工作中与编译器（这篇文章中不作特殊说明，指的是gnu gcc编译器）相关的一些options和配置参数进行总结,方便在后面的项目遇到相似的问题进行查阅与借鉴。
 
-## 包含静态库中所有符号的option
+# 编译常见问题
+
+### 包含静态库中所有符号的option
 
 编译器编译动态库或者运行程序的时候，会对依赖的静态库中进行基于`.o`的选择，但是有的时候我们希望我们编译的动态库能够包含所有的函数实现给用户使用。gcc中的链接控制选项`-Wl,--whole-archive xxxxx_lib -Wl,--no-whole-archive`就可以实现类似功能。
 
@@ -25,97 +27,24 @@ target_link_libraries(xxxx_export
                     "-Wl,--no-whole-archive -Wl,--exclude-libs,ALL")
 ```
 
-#### 其他可能问题
+### 其他可能问题
 
 `--exclude-libs` does not work for static libraries affected by the `--whole-archive` option.
 
 * `--exclude-libs` creates a list of static library paths and does library lookups in this list.
 * `--whole-archive` splits the static libraries that follow it into separate objects. As a result, lld no longer sees static libraries among linked files and does no `--exclude-libs` lookups.
 
-#### Solution
+### Solution
 
 The proposed solution is to make `--exclude-libs` consider object files too. When lld finds an object file it checks whether this file originates from an archive and, if so, looks the archive up in the `--exclude-libs` list.
 
 **Reference**: https://reviews.llvm.org/D39353
 
-### windows
 
-在windows常用的编译器是VS里面的cl编译器。我们要实现上述
-cmake使用`cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE`
+### 编译运行查找头文件和库的顺序
 
-    Enable this boolean property to automatically create a module definition (.def) file with all global symbols found in the input .obj files for a SHARED library on Windows. The module definition file will be passed to the linker causing all symbols to be exported from the .dll. For global data symbols, __declspec(dllimport) must still be used when compiling against the code in the .dll. All other function symbols will be automatically exported and imported by callers. This simplifies porting projects to Windows by reducing the need for explicit dllexport markup, even in C++ classes.
+> gcc 在编译时如何去寻找所需要的头文件:
 
-    This property is initialized by the value of the CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS variable if it is set when a target is created.
-
-**Reference**: [`WINDOWS_EXPORT_ALL_SYMBOLS`](https://cmake.org/cmake/help/v3.4/prop_tgt/WINDOWS_EXPORT_ALL_SYMBOLS.html)
-
-#### windows下路径长度不能太长
-
-**error MSB3491: Could n ot write lines to file**
-https://stackoverflow.com/questions/31765909/node-socket-io-client-windows-path-too-long-to-install
-
-
-## gcc/g++的`--as-needed`
-
-gcc/g++提供了`-Wl,--as-needed`和 `-Wl,--no-as-needed`两个选项，这两个选项一个是开启特性，一个是取消该特性。
-
-在生成可执行文件的时候，通过 -lxxx 选项指定需要链接的库文件。以动态库为例，如果我们指定了一个需要链接的库，则连接器会在可执行文件的文件头中会记录下该库的信息。而后，在可执行文件运行的时候，动态加载器会读取文件头信息，并加载所有的链接库。在这个过程中，如果用户指定链接了一个毫不相关的库，则这个库在最终的可执行程序运行时也会被加载，如果类似这样的不相关库很多，会明显拖慢程序启动过程。
-
-这时，通过指定`-Wl,--as-needed`选项，链接过程中，链接器会检查所有的依赖库，没有实际被引用的库，不再写入可执行文件头。最终生成的可执行文件头中包含的都是必要的链接库信息。`-Wl,--no-as-needed`选项不会做这样的检查，会把用户指定的链接库完全写入可执行文件中。
-
-**Reference**: [GCC/G++选项 -Wl,--as-needed](https://my.oschina.net/yepanl/blog/2222870)
-
-
-## -rdynamic
-
-    Pass the flag `-export-dynamic` to the ELF linker, on targets that support
-    it. This instructs the linker to add all symbols, not only used ones, to the dynamic symbol table. This option is needed for some uses of `dlopen` or to allow obtaining backtraces from within a program.
-
-关键的不同是：`-Wl,--export-dynamic -pthread`
-`-Wl`:指示后面的选项是给链接器的
-`-pthread`: 链接程序的时包含libpthread.so
-`--export-dynamic`：就是这个选项让主程序内定义的全局函数对库函数可见。
-
-**Reference**: [gcc链接选项--export-dynamic的一次问题记录](https://blog.csdn.net/u011644231/article/details/88880362)
-
-## `_GLIBCXX_USE_CXX11_ABI`
-
-在GCC 5.1版本中，libstdc++引入了一个新的ABI，其中包括std::string和std::list的新实现。为了符合2011年c++标准，这些更改是必要的，该标准禁止复制即写字符串，并要求列表跟踪字符串的大小。
-为了保持与libstdc++链接的现有代码的向后兼容性，库的soname没有更改，并且仍然支持与新实现并行的旧实现。这是通过在内联命名空间中定义新的实现来实现的，因此它们具有不同的用于链接目的的名称，例如，`std::list`的新版本实际上定义为`std:: _cxx11::list`。因为新实现的符号有不同的名称，所以两个版本的定义可以出现在同一个库中。
-`_GLIBCXX_USE_CXX11_ABI`宏控制库头中的声明是使用旧ABI还是新ABI。因此，可以为正在编译的每个源文件分别决定使用哪个ABI。使用GCC的默认配置选项，宏的默认值为1，这将导致新的ABI处于活动状态，因此要使用旧的ABI，必须在包含任何库头之前显式地将宏定义为0。(**注意，一些GNU/Linux发行版对GCC 5的配置不同，因此宏的默认值是0，用户必须将它定义为1才能启用新的ABI**)。
-
-```cmake
-IF(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.1")
-	ADD_DEFINITIONS(-D_GLIBCXX_USE_CXX11_ABI=0)
-ENDIF()
-```
-
-## -Wl,--allow-shlib-undefined
-在交叉编译程序过程中，往往会有这样的情况，依赖的target系统上的动态库（例如android上的OpenCL.so）又依赖其他的许多动态库，这个时候，我们希望链接target系统上的这个动态库的时候，我们可以不要去找OpenCL相关的依赖符号。
-
-`SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--allow-shlib-undefined")`
-
-### Linking errors with “-Wl,--no-undefined -Wl,--no-allow-shlib-undefined”
-
-第二个参数的默认值是`--allow-shlib-undefined`。如果您选择该选项，代码可能会生成。
-第二个参数处理构建时检查，启用它意味着检查您所链接的库是否在构建时连接了其依赖项。
-
-第一个参数确保您没有忘记声明对运行时库的依赖项(也可能是运行时库对另一个运行时库的依赖项)。
-例如，如果您调用的函数的实现位于示例运行时库“libfunc”中。然后这个库会调用另一个运行时库中的函数libext。然后通过声明对libfunc的“func”和“ext”的依赖关系。因此，将在内部生成一个对libext的依赖引用。
-如果您省略`--no undefined`并忘记添加依赖项声明，那么构建仍然会成功，因为您相信运行时链接器将在运行时解析依赖项。
-由于构建成功了，您可能会相信一切都会好起来，而不知道构建已经将责任推迟到运行时链接器。
-但大多数情况下，运行时链接器的设计目的不是搜索未解析的引用，而是希望找到运行时库中声明的此类依赖项。如果没有这样的引用，您将得到一个运行时错误。
-运行时错误通常比解决编译时错误要昂贵得多。
-
-### `TARGET_LINK_LIBRARY` & `LINK_LIBRARY`
-target_link_libraries 会将需要链接的库作为属性挂在目标库上，
-后面用户用到这个库的时候可以通过`get_target_property(interface_link_libs ${} TARGET_LINK_LIBRARIES)`进行获取相应的值。
-
-## 编译运行查找头文件和库的顺序
-
-### 头文件
-
-gcc 在编译时如何去寻找所需要的头文件：
 * 所以header file的搜寻会从-I开始
 * 然后找gcc的环境变量 `C_INCLUDE_PATH`，`CPLUS_INCLUDE_PATH`，`OBJC_INCLUDE_PATH`
 * 再找内定目录
@@ -125,7 +54,7 @@ gcc 在编译时如何去寻找所需要的头文件：
 gcc的一系列自带目录
 `CPLUS_INCLUDE_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.9.4/include:/usr/include/c++/4.9.4`
 
-### 库文件
+> 库文件
 
 编译的时候：
 * gcc会去找-L
@@ -149,6 +78,131 @@ gcc的一系列自带目录
 ### 动态库中的static变量
 
 > In all cases, static global variables (or functions) are never visible from outside a module (dll/so or executable). The C++ standard requires that these have internal linkage, meaning that they are not visible outside the translation unit (which becomes an object file) in which they are defined.
+
+
+# windows编译
+
+在windows常用的编译器是VS里面的cl编译器。我们要实现上述
+cmake使用`cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE`
+
+    Enable this boolean property to automatically create a module definition (.def) file with all global symbols found in the input .obj files for a SHARED library on Windows. The module definition file will be passed to the linker causing all symbols to be exported from the .dll. For global data symbols, __declspec(dllimport) must still be used when compiling against the code in the .dll. All other function symbols will be automatically exported and imported by callers. This simplifies porting projects to Windows by reducing the need for explicit dllexport markup, even in C++ classes.
+
+    This property is initialized by the value of the CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS variable if it is set when a target is created.
+
+**Reference**: [`WINDOWS_EXPORT_ALL_SYMBOLS`](https://cmake.org/cmake/help/v3.4/prop_tgt/WINDOWS_EXPORT_ALL_SYMBOLS.html)
+
+### windows下路径长度不能太长
+
+**error MSB3491: Could n ot write lines to file**
+https://stackoverflow.com/questions/31765909/node-socket-io-client-windows-path-too-long-to-install
+
+### MSVC中预定义宏[^5]
+
+- `_M_IX86` Defined as the integer literal value 600 for compilations that target x86 processors. This macro isn't defined for x64 or ARM compilation targets.
+
+- `_M_IX86_FP` Defined as an integer literal value that indicates the `/arch` compiler option that was set, or the default. This macro is always defined when the compilation target is an x86 processor. Otherwise, undefined. When defined, the value is:
+  - 0 if the `/arch:IA32` compiler option was set.
+  - 1 if the `/arch:SSE` compiler option was set.
+  - 2 if the `/arch:SSE2`, `/arch:AVX`, `/arch:AVX2`, or `/arch:AVX512` compiler option was set. This value is the default if an /arch compiler option wasn't specified. When `/arch:AVX` is specified, the macro `__AVX__` is also defined. When `/arch:AVX2` is specified, both `__AVX__` and `__AVX2__` are also defined. When /arch:AVX512 is specified, `__AVX__`, `__AVX2__`, `__AVX512BW__`, `__AVX512CD__`, `__AVX512DQ__`, `__AVX512F__` and `__AVX512VL__` are also defined.
+
+  For more information, see /arch (x86).
+
+- `_M_X64` Defined as the integer literal value 100 for compilations that target x64 processors. Otherwise, undefined.
+
+- `_MSC_VER` Defined as an integer literal that encodes the major and minor number elements of the compiler's version number. The major number is the first element of the period-delimited version number and the minor number is the second element. For example, if the version number of the Microsoft C/C++ compiler is 17.00.51106.1, the `_MSC_VER` macro evaluates to 1700. Enter `cl /?` at the command line to view the compiler's version number. This macro is always defined.
+
+
+    |Visual Studio version| `_MSC_VER` |
+    |:-------:|:------:|
+    |Visual Studio 6.0	| 1200 |
+    |Visual Studio .NET 2002 (7.0)	| 1300 |
+    |Visual Studio .NET 2003 (7.1)	| 1310 |
+    |Visual Studio 2005 (8.0)	| 1400 |
+    |Visual Studio 2008 (9.0)	| 1500 |
+    |Visual Studio 2010 (10.0)	| 1600 |
+    |Visual Studio 2012 (11.0)	| 1700 |
+    |Visual Studio 2013 (12.0)	| 1800 |
+    |Visual Studio 2015 (14.0)	| 1900 |
+    |Visual Studio 2017 RTW (15.0)	| 1910 |
+    |Visual Studio 2017 version 15.3	| 1911 |
+    |Visual Studio 2017 version 15.5	| 1912 |
+    |Visual Studio 2017 version 15.6	| 1913 |
+    |Visual Studio 2017 version 15.7	| 1914 |
+    |Visual Studio 2017 version 15.8	| 1915 |
+    |Visual Studio 2017 version 15.9	| 1916 |
+    |Visual Studio 2019 RTW (16.0)	| 1920 |
+    |Visual Studio 2019 version 16.1	| 1921 |
+    |Visual Studio 2019 version 16.2	| 1922 |
+    |Visual Studio 2019 version 16.3	| 1923 |
+
+- `_MSVC_LANG` Defined as an integer literal that specifies the C++ language standard targeted by the compiler. It's set only in code compiled as C++. The macro is the integer literal value 201402L by default, or when the `/std:c++14` compiler option is specified. The macro is set to 201703L if the `/std:c++17` compiler option is specified. It's set to a higher, unspecified value when the `/std:c++latest` option is specified. Otherwise, the macro is undefined. The `_MSVC_LANG` macro and `/std (Specify Language Standard Version)` compiler options are available beginning in Visual Studio 2015 Update 3.
+
+- `_MT` Defined as 1 when /MD or /MDd (Multithreaded DLL) or /MT or /MTd (Multithreaded) is specified. Otherwise, undefined.
+
+- `_WIN32` Defined as 1 when the compilation target is 32-bit ARM, 64-bit ARM, x86, or x64. Otherwise, undefined.
+
+- `_WIN64` Defined as 1 when the compilation target is 64-bit ARM or x64. Otherwise, undefined.
+
+
+# GNU 编译器
+
+### gcc/g++的`--as-needed`
+
+gcc/g++提供了`-Wl,--as-needed`和 `-Wl,--no-as-needed`两个选项，这两个选项一个是开启特性，一个是取消该特性。
+
+在生成可执行文件的时候，通过 -lxxx 选项指定需要链接的库文件。以动态库为例，如果我们指定了一个需要链接的库，则连接器会在可执行文件的文件头中会记录下该库的信息。而后，在可执行文件运行的时候，动态加载器会读取文件头信息，并加载所有的链接库。在这个过程中，如果用户指定链接了一个毫不相关的库，则这个库在最终的可执行程序运行时也会被加载，如果类似这样的不相关库很多，会明显拖慢程序启动过程。
+
+这时，通过指定`-Wl,--as-needed`选项，链接过程中，链接器会检查所有的依赖库，没有实际被引用的库，不再写入可执行文件头。最终生成的可执行文件头中包含的都是必要的链接库信息。`-Wl,--no-as-needed`选项不会做这样的检查，会把用户指定的链接库完全写入可执行文件中。
+
+**Reference**: [GCC/G++选项 -Wl,--as-needed](https://my.oschina.net/yepanl/blog/2222870)
+
+
+### -rdynamic
+
+    Pass the flag `-export-dynamic` to the ELF linker, on targets that support
+    it. This instructs the linker to add all symbols, not only used ones, to the dynamic symbol table. This option is needed for some uses of `dlopen` or to allow obtaining backtraces from within a program.
+
+关键的不同是：`-Wl,--export-dynamic -pthread`
+`-Wl`:指示后面的选项是给链接器的
+`-pthread`: 链接程序的时包含libpthread.so
+`--export-dynamic`：就是这个选项让主程序内定义的全局函数对库函数可见。
+
+**Reference**: [gcc链接选项--export-dynamic的一次问题记录](https://blog.csdn.net/u011644231/article/details/88880362)
+
+### `_GLIBCXX_USE_CXX11_ABI`
+
+在GCC 5.1版本中，libstdc++引入了一个新的ABI，其中包括std::string和std::list的新实现。为了符合2011年c++标准，这些更改是必要的，该标准禁止复制即写字符串，并要求列表跟踪字符串的大小。
+为了保持与libstdc++链接的现有代码的向后兼容性，库的soname没有更改，并且仍然支持与新实现并行的旧实现。这是通过在内联命名空间中定义新的实现来实现的，因此它们具有不同的用于链接目的的名称，例如，`std::list`的新版本实际上定义为`std:: _cxx11::list`。因为新实现的符号有不同的名称，所以两个版本的定义可以出现在同一个库中。
+`_GLIBCXX_USE_CXX11_ABI`宏控制库头中的声明是使用旧ABI还是新ABI。因此，可以为正在编译的每个源文件分别决定使用哪个ABI。使用GCC的默认配置选项，宏的默认值为1，这将导致新的ABI处于活动状态，因此要使用旧的ABI，必须在包含任何库头之前显式地将宏定义为0。(**注意，一些GNU/Linux发行版对GCC 5的配置不同，因此宏的默认值是0，用户必须将它定义为1才能启用新的ABI**)。
+
+```cmake
+IF(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.1")
+	ADD_DEFINITIONS(-D_GLIBCXX_USE_CXX11_ABI=0)
+ENDIF()
+```
+
+### -Wl,--allow-shlib-undefined
+
+在交叉编译程序过程中，往往会有这样的情况，依赖的target系统上的动态库（例如android上的OpenCL.so）又依赖其他的许多动态库，这个时候，我们希望链接target系统上的这个动态库的时候，我们可以不要去找OpenCL相关的依赖符号。
+
+`SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--allow-shlib-undefined")`
+
+> Linking errors with “-Wl,--no-undefined -Wl,--no-allow-shlib-undefined”
+
+第二个参数的默认值是`--allow-shlib-undefined`。如果您选择该选项，代码可能会生成。
+第二个参数处理构建时检查，启用它意味着检查您所链接的库是否在构建时连接了其依赖项。
+
+第一个参数确保您没有忘记声明对运行时库的依赖项(也可能是运行时库对另一个运行时库的依赖项)。
+例如，如果您调用的函数的实现位于示例运行时库“libfunc”中。然后这个库会调用另一个运行时库中的函数libext。然后通过声明对libfunc的“func”和“ext”的依赖关系。因此，将在内部生成一个对libext的依赖引用。
+如果您省略`--no undefined`并忘记添加依赖项声明，那么构建仍然会成功，因为您相信运行时链接器将在运行时解析依赖项。
+由于构建成功了，您可能会相信一切都会好起来，而不知道构建已经将责任推迟到运行时链接器。
+但大多数情况下，运行时链接器的设计目的不是搜索未解析的引用，而是希望找到运行时库中声明的此类依赖项。如果没有这样的引用，您将得到一个运行时错误。
+运行时错误通常比解决编译时错误要昂贵得多。
+
+### `TARGET_LINK_LIBRARY` & `LINK_LIBRARY`
+
+target_link_libraries 会将需要链接的库作为属性挂在目标库上，
+后面用户用到这个库的时候可以通过`get_target_property(interface_link_libs ${} TARGET_LINK_LIBRARIES)`进行获取相应的值。
 
 # GCC不同版本中一些东西
 
@@ -249,6 +303,7 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 - libstdc++关于dual ABI文档: https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
 
 ## 其他
+
 - [gcc与g++的区别][^1]
 - [ARM？华为？][^2]
 - himix100的交叉编译链
@@ -285,7 +340,8 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 ├── arm-linux-androideabi-strip
 ```
 
-[^1]: https://www.cnblogs.com/liushui-sky/p/7729838.html
+[^1]: https://www.cnblogs.com/liushui-sky/p/7729838.html "gcc和g++的区别"
 [^2]: https://news.mydrivers.com/1/628/628308.htm
-[^3]: http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
-[^4]:http://deepindeed.cn/2017/03/17/Algorithm-Optimization/
+[^3]: http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html "Using static and shared libraries across platforms"
+[^4]: http://deepindeed.cn/2017/03/17/Algorithm-Optimization/
+[^5]: https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2017 "Predefined macros"
