@@ -39,7 +39,23 @@ CBR代码：https://github.com/jiyanggao/CBR
 Learning Latent Super-Events to Detect Multiple Activities in Videos
 代码：https://github.com/piergiaj/super-events-cvpr18
 
+
+| method | UCF101 | HMDB51 | Kinetics | Jester| ActivityNet|
+| :----- | :---:  | :---:  | :---:    | :---: |:----:|
+| TSM[^1] | 94.4/99.5|||||
+| I3D pre-training|
+|ARTNet with TSN|
+| TRN |
+| T3D |
+| R(2+1)D(RGB)|
+|S3D(RGB) |
+
+[^1]: Temporal Shift Module for Efficient Video Understanding
+    - paper: https://arxiv.org/abs/1811.08383
+    - code: https://github.com/mit-han-lab/temporal-shift-module
+
 # 参考文献
-[^1]: https://blog.csdn.net/Miracle_520/article/details/84991358 "Temporal Action Detection (时序动作检测)综述"
+
+[^10]: https://blog.csdn.net/Miracle_520/article/details/84991358 "Temporal Action Detection (时序动作检测)综述"
 https://blog.csdn.net/wzmsltw/article/details/70849132
 https://blog.csdn.net/qq_41590635/article/details/101478277

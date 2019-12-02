@@ -293,8 +293,14 @@ $$
 
 即使depthwise卷积理论上只有很少的运算量，但是在移动设备上的实际实现不够高效，和其他密集操作(dense operation)相比，depthwise卷积的computation/memory access ratio很糟糕。因此作者只在bottleneck里实现了depthwise卷积。
 
-![](http://cwlseu.github.io/images/ocr/covertCNN5.jpg)
 
+
+# CTPN
+![@The-Arch-of-CTPN](http://cwlseu.github.io/images/ocr/CTPN.png)
+
+
+解释一下conv5 feature map如何从$N\times C \times H \times W$变为$N \times 9C \times H \times W$
+![](http://cwlseu.github.io/images/ocr/covertCNN5.jpg)
 
 # 其他相关算法
 
