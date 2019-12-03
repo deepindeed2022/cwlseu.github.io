@@ -295,12 +295,136 @@ $$
 
 
 
-# CTPN
+# CTPN[^4]
 ![@The-Arch-of-CTPN](http://cwlseu.github.io/images/ocr/CTPN.png)
+```python
 
+class BasicConv(nn.Module):
+    def __init__(self, in_planes, out_planes,
+                 kernel_size, stride=1, padding=0,
+                 dilation=1, groups=1,
+                 relu=True, bn=True, bias=True):
+        super(BasicConv, self).__init__()
+        self.out_channels = out_planes
+        self.conv = nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation, groups=groups, bias=bias)
+        self.bn = nn.BatchNorm2d(out_planes, eps=1e-5, momentum=0.01, affine=True) if bn else None
+        self.relu = nn.ReLU(inplace=True) if relu else None
+
+    def forward(self, x):
+        x = self.conv(x)
+        if self.bn is not None:
+            x = self.bn(x)
+        if self.relu is not None:
+            x = self.relu(x)
+        return x
+
+Commom_C = 512
+anchor_k = 10
+
+class CTPN_Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        base_model = models.vgg16(pretrained=False)
+        layers = list(base_model.features)[:-1]
+        self.base_layers = nn.Sequential(*layers)  # block5_conv3 output
+        self.prelstm = BasicConv(Commom_C, Commom_C, 3,1,1,bn=False)
+        self.bilstm = nn.GRU(Commom_C, Commom_C/2, bidirectional=True, batch_first=True)
+        self.lstm_fc = BasicConv(Commom_C, Commom_C, 1, 1, relu=True, bn=False)
+        self.rpn_class = BasicConv(Commom_C, anchor_k*2, 1, 1, relu=False,bn=False)
+        self.rpn_regress = BasicConv(Commom_C, anchor_k*2, 1, 1, relu=False, bn=False)
+
+    def forward(self, x):
+        #
+        # basebone network run
+        #
+        x = self.base_layers(x)
+        #
+        # Convert feature map to lstm input
+        #
+        x = self.prelstm(x)
+        x1 = x.permute(0,2,3,1).contiguous()  # channels last
+        b = x1.size()  # batch_size, h, w, c
+        x1 = x1.view(b[0]*b[1], b[2], b[3])
+        #
+        # BiLSTM
+        #
+        x2, _ = self.bilstm(x1)
+
+        xsz = x.size()
+        x3 = x2.view(xsz[0], xsz[2], xsz[3], 256)  # torch.Size([4, 20, 20, 256])
+
+        x3 = x3.permute(0,3,1,2).contiguous()  # channels first
+        x3 = self.lstm_fc(x3)
+        x = x3
+        #
+        # RPN
+        #
+        rpn_cls = self.rpn_class(x)
+        rpn_regr = self.rpn_regress(x)
+
+        rpn_cls = rpn_cls.permute(0,2,3,1).contiguous()
+        rpn_regr = rpn_regr.permute(0,2,3,1).contiguous()
+
+        rpn_cls = rpn_cls.view(rpn_cls.size(0), rpn_cls.size(1)*rpn_cls.size(2)*anchor_k, 2)
+        rpn_regr = rpn_regr.view(rpn_regr.size(0), rpn_regr.size(1)*rpn_regr.size(2)*anchor_k, 2)
+
+        return rpn_cls, rpn_regr
+```
 
 解释一下conv5 feature map如何从$N\times C \times H \times W$变为$N \times 9C \times H \times W$
 ![](http://cwlseu.github.io/images/ocr/covertCNN5.jpg)
+
+在原版caffe代码中是用im2col提取每个点附近的9点临近点，然后每行都如此处理：
+
+$H\times W \rightarrow 9 \times H \times W$ 
+
+接着每个通道都如此处理：
+$C\times H\times W \rightarrow 9C\times H \times W$ 
+
+而im2col是用于卷积加速的操作，即将卷积变为矩阵乘法，从而使用Blas库快速计算。到了tf，没有这种操作，所以一般是用conv2d代替im2col，即强行卷积$C\rightarrow 9C$ 。
+
+再将这个feature map进行Reshape
+
+$$N \times 9C \times H \times W \xrightarrow{\text{reshape}} (NH)\times W\times 9C$$
+
+然后以Batch = NH 且最大时间长度$T_{max} = W$的数据流输入双向LSTM,学习每一行的序列特征。双向LSTM输出为$(NH)\times W\times 256$,再经Reshape恢复形状
+$(NH)\times W \times 256 \xrightarrow{reshape} N \times 256 \times H \times W$
+
+该特征即包含空间特性，也包含LSTM学到的序列特征。
+
+然后经过"FC"卷积层，变为$N\times512\times H \times W$的特征
+最后经过类似Faster R-CNN的RPN网络，获得text proposals.
+
+## 文本线构造算法
+![](https://pic1.zhimg.com/80/v2-822f0709d3e30df470a8e17f09a25de0_hd.jpg)
+
+为了说明问题，假设某张图有图9所示的2个text proposal，即蓝色和红色2组Anchor，CTPN采用如下算法构造文本线：
+
+按照水平$x$坐标排序anchor
+按照规则依次计算每个anchor $box_i$的$pair(box_j)$，组成$pair(box_i, box_j)$
+通过$pair(box_i, box_j)$建立一个Connect graph，最终获得文本检测框
+
+下面详细解释。假设每个anchor index如绿色数字，同时每个anchor Softmax score如黑色数字。
+
+文本线构造算法通过如下方式建立每个anchor $box_i$的$pair(box_i, box_j)$:
+
+> 正向寻找:
+
+- 沿水平正方向，寻找和$box_i$水平距离小于50的候选anchor
+- 从候选anchor中，挑出与$box_i$**竖直方向**$overlap_v \gt 0.7$的anchor
+- 挑出符合条件2中Softmax score最大的$box_j$
+
+> 反向寻找:
+
+- 沿水平负方向，寻找和$box_j$水平距离小于50的候选Anchor
+- 从候选Anchor中，挑出与$box_j$竖直方向$overlap_v \gt 0.7$的anchor
+- 挑出符合条件2中Softmax score最大的$box_k$
+
+> 对比$score_i$和$score_k$:
+
+如果$score_i \ge score_k$，则这是一个最长连接，那么设置$Graph(i, j) = True$
+如果$score_i \lt score_k$，说明这不是一个最长的连接（即该连接肯定包含在另外一个更长的连接中）。
+
 
 # 其他相关算法
 
@@ -317,6 +441,7 @@ $$
 [^2]: https://www.cnblogs.com/shangd/p/6164916.html "MSER 博客"
 [^3]: https://arxiv.org/pdf/1610.02357.pdf "Xception"
 [^4]: https://zhuanlan.zhihu.com/p/34757009 "场景文字检测—CTPN原理与实现"
+    - tf code: https://github.com/eragonruan/text-detection-ctpn
 [^5]: http://www.levenshtein.net/index.html "编辑距离"
 [^6]: https://zybuluo.com/hanbingtao/note/541458 "循环神经网络"
 [^7]: http://colah.github.io/posts/2015-08-Understanding-LSTMs/ "理解LSTM"

@@ -480,3 +480,17 @@ one-stage网络最终学习的anchor有很多，但是只有少数anchor对最�
 
 * 设置权重
 在目标置信度损失计算时，将背景anchor的权重设置得很小，非背景anchor的权重设置得很大。
+
+### 四步交替训练Faster RCNN
+
+[训练RPN网络](https://zhuanlan.zhihu.com/p/34327246)
+
+Faster RCNN有两种训练方式，一种是四步交替训练法，一种是end-to-end训练法。主文件位于/tools/train_fast_rcnn_alt_opt.py。
+
+第一步，训练RPN，该网络用ImageNet预训练的模型初始化，并端到端微调，用于生成region proposal;
+
+第二步，由imageNet model初始化，利用第一步的RPN生成的region proposals作为输入数据，训练Fast R-CNN一个单独的检测网络，这时候两个网络还没有共享卷积层;
+
+第三步，用第二步的fast-rcnn model初始化RPN再次进行训练，但固定共享的卷积层，并且只微调RPN独有的层，现在两个网络共享卷积层了;
+
+第四步，由第三步的RPN model初始化fast-RCNN网络，输入数据为第三步生成的proposals。保持共享的卷积层固定，微调Fast R-CNN的fc层。这样，两个网络共享相同的卷积层，构成一个统一的网络。
