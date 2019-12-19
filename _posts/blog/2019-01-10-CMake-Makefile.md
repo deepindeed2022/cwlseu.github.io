@@ -453,5 +453,9 @@ INSTALL(TARGETS libdeepindeed
 - [5] [CMake如何查找链接库---find_package的使用方法](https://blog.csdn.net/u011092188/article/details/61425924)
 - [6]. 练习CMake的项目: https://github.com/cwlseu/brick
 
+## CMake manual
 
-
+- [cmake buildsystem](https://cmake.org/cmake/help/v3.12/manual/cmake-buildsystem.7.html)
+- cmake packages
+  - [creating-packages](https://cmake.org/cmake/help/v3.12/manual/cmake-packages.7.html#creating-packages)
+- 

@@ -494,3 +494,13 @@ Faster RCNN有两种训练方式，一种是四步交替训练法，一种是end
 第三步，用第二步的fast-rcnn model初始化RPN再次进行训练，但固定共享的卷积层，并且只微调RPN独有的层，现在两个网络共享卷积层了;
 
 第四步，由第三步的RPN model初始化fast-RCNN网络，输入数据为第三步生成的proposals。保持共享的卷积层固定，微调Fast R-CNN的fc层。这样，两个网络共享相同的卷积层，构成一个统一的网络。
+
+## Faster-RCNN和YOLO的anchor有什么区别
+
+![@FasterRCNN generator anchor](https://img-blog.csdnimg.cn/20190116235428577.jpg)
+
+可以看到yolov3是直接对你的训练样本进行k-means聚类，由训练样本得来的先验框（anchor），也就是对样本聚类的结果。Kmeans因为初始点敏感，所以每次运行得到的anchor值不一样，但是对应的avg iou稳定。用于训练的话就需要统计多组anchor，针对固定的测试集比较了。
+
+- https://blog.csdn.net/xiqi4145/article/details/86516511
+
+- https://blog.csdn.net/cgt19910923/article/details/82154401
