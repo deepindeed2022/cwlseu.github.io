@@ -94,19 +94,19 @@ clean:
 #!Makefile
 CC = g++
 
-PERFCV_DIR = /home/caowenlong/PerfCV
-PERFCV_INCLUDE_DIR = $(PERFCV_DIR)/include
-LIB_DIR = $(PERFCV_DIR)/build
+TINYCV_DIR = /home/cwl/TinyCV
+TINYCV_INCLUDE_DIR = $(TINYCV_DIR)/include
+LIB_DIR = $(TINYCV_DIR)/build
 
 CXX_FLAG = -O3 -std=c++11 -Wall -Werror -fPIC
 
 all: main
 
 main: main.o
-  $(CC) $< $(CXX_FLAG) -I$(PERFCV_INCLUDE_DIR) -L$(LIB_DIR) -lperfcv -o $@
+  $(CC) $< $(CXX_FLAG) -I$(TINYCV_INCLUDE_DIR) -L$(LIB_DIR) -ltinycv -o $@
 
 main.o: main.cpp
-  $(CC) $(CXX_FLAG) -I$(PERFCV_INCLUDE_DIR) -c $<
+  $(CC) $(CXX_FLAG) -I$(TINYCV_INCLUDE_DIR) -c $<
 
 clean:
   rm -f *.o main
@@ -115,22 +115,22 @@ clean:
 需要注意的是下面这句中`$<`是指输入文件main.o，此处紧跟gcc
 ```
 main: main.o
-  $(CC) $< $(CXX_FLAG) -I$(PERFCV_INCLUDE_DIR) -L$(LIB_DIR) -lperfcv -o $@
+  $(CC) $< $(CXX_FLAG) -I$(TINYCV_INCLUDE_DIR) -L$(LIB_DIR) -ltinycv -o $@
 ```
 但是如果变为如下情形，就会出现后面中的错误
 ```
 main: main.o
-  $(CC) $(CXX_FLAG) -I$(PERFCV_INCLUDE_DIR) -L$(LIB_DIR) -lperfcv -o $@  $<
+  $(CC) $(CXX_FLAG) -I$(TINYCV_INCLUDE_DIR) -L$(LIB_DIR) -ltinycv -o $@  $<
 ```
 错误：
 ```
 caowenlong@Server-NF5280M3:~/Test$ make
-g++ -O3 -std=c++11 -Wall -Werror -fPIC -I/home/caowenlong/PerfCV/include -c main.cpp
-g++ -O3 -std=c++11 -Wall -Werror -fPIC -I/home/caowenlong/PerfCV/include -L/home/caowenlong/PerfCV/build -lperfcv -o main main.o
+g++ -O3 -std=c++11 -Wall -Werror -fPIC -I/home/cwl/TinyCV/include -c main.cpp
+g++ -O3 -std=c++11 -Wall -Werror -fPIC -I/home/cwl/TinyCV/include -L/home/cwl/TinyCV/build -ltinycv -o main main.o
 main.o：在函数‘main’中：
-main.cpp:(.text.startup+0x3b)：对‘perfcv::imread(std::string const&, int)’未定义的引用
-main.cpp:(.text.startup+0x43)：对‘perfcv::Mat<unsigned char>::Mat()’未定义的引用
-main.cpp:(.text.startup+0x63)：对‘double perfcv::threshold<unsigned char>(perfcv::Mat<unsigned char> const&, perfcv::Mat<unsigned char>&, double, double, int)’未定义的引用
+main.cpp:(.text.startup+0x3b)：对‘tinycv::imread(std::string const&, int)’未定义的引用
+main.cpp:(.text.startup+0x43)：对‘tinycv::Mat<unsigned char>::Mat()’未定义的引用
+main.cpp:(.text.startup+0x63)：对‘double tinycv::threshold<unsigned char>(tinycv::Mat<unsigned char> const&, tinycv::Mat<unsigned char>&, double, double, int)’未定义的引用
 collect2: error: ld returned 1 exit status
 make: *** [main] 错误 1
 ```
@@ -458,4 +458,4 @@ INSTALL(TARGETS libdeepindeed
 - [cmake buildsystem](https://cmake.org/cmake/help/v3.12/manual/cmake-buildsystem.7.html)
 - cmake packages
   - [creating-packages](https://cmake.org/cmake/help/v3.12/manual/cmake-packages.7.html#creating-packages)
-- 
+  - [cmaketest sample](https://github.com/cwlseu/codefeeling/tree/master/cmaketest/createpackage)
