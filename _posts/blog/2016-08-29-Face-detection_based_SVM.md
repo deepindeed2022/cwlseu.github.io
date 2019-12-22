@@ -233,8 +233,9 @@ $f = \exp(-\gamma || x - x'||^2)$
 
 **表格 1: 关于测试集合人名标记结果的正确率，召回率和F1**
 
+
 | # |Precision|	Recall|	F1|	Support|
-| ------------- |:-------------:| -----:|------|
+| -----|:----:|:----:|:-----:|:------:|
 |Ariel Sharon|	1.00	|0.85|	0.92|	13|
 |Colin Powell|0.86 |0.95|	0.90|60|
 |Donald Rumsfeld	|0.88	|0.81|	0.85|   	27|
@@ -243,6 +244,7 @@ $f = \exp(-\gamma || x - x'||^2)$
 |Hugo Chavez	|1.00	|0.60|	0.75|	15|
 |Tony Blair	|0.91	|0.86	|0.89	|36|
 |Avg/Total	|0.91	|0.90	|0.90	|322|
+
 
 这么高的准确率，是由于我们仅仅选取了每个标识人名数目> 70的人名，但是大量的仅仅出现1次的人名存在。如果考虑这种数据稀疏性，将大大降低结果的准确率。但是，真实应用中，数据稀疏性问题是不得不考虑的问题。
  ![这里写图片描述](http://cwlseu.github.io/images/svm-based-face/20160829211022165.jpg)
@@ -263,10 +265,10 @@ Data Mining, Inference, and Prediction](http://link.springer.com/book/10.1007%2F
 ## SVM设计原理
 
 > Train data:
+
 $$ (x_i, y_i), i = 1,...l,   where \quad x_i  \in  R^n  and \quad y \in \{1, -1\}^l$$
 
 > 优化目标函数
+
 $$ min_{W,b,\epsilon} \frac{1}{2}W^tW + C \sum_{i = 1}^l{\epsilon_i} $$
 $$s.t.  \quad y_i(W^T\phi(x_i) + b) \geq 1- \epsilon_i $$
-
-## TODO: 完善SVM算法的介绍

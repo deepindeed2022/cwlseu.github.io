@@ -107,8 +107,8 @@ time LeNet training on CPU for 10 iterations
 
 ## 为什么要用Google Protocol Buffer序列化协议
 
-|:-----:   |:----:   |:-----:  |:-------:|:-----:        |:-----:   |:-------:     |:-----:    |
-|          |protobuf | jackson | xstream | serialization | hessian2 | hessian2压缩 | hessian 1 |
+| #|protobuf | jackson | xstream | serialization | hessian2 | hessian2压缩 | hessian 1 |
+|:-----:|:----:|:-----:|:-------:|:-----:|:-----:|:-------:|:-----:|
 | 序列化 ns| 1154    | 5421    | 92406   |  10189        | 26794    | 100766       | 29027     |
 |反序列化ns| 1334    | 8743    | 117329  |         64027 | 37871    | 188432       | 37596     |
 | bytes    | 97      | 311     | 664     | 824           | 374      | 283          | 495       |
@@ -127,9 +127,6 @@ time LeNet training on CPU for 10 iterations
 以后在内部系统，数据cache存储上可以考虑使用protobuf。跟外部系统交互上可以考虑使用json。
 
 ## 参考文献
-
-
-## Reference
 
 1. [caffe]<https://github.com/cwlseu/caffe/tree/ssdplus>
 
