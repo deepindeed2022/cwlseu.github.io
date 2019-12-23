@@ -61,6 +61,17 @@ if __name__ == '__main__':
 
 ## twice pass shuffle的其他问题处理与性能分析[^4]
 
+## 如何训练过程中，随机从一个超大数据集合中获取训练数据[^5]
+
+The `Dataset.shuffle()` implementation is designed for data that could be shuffled in memory; we're considering whether to add support for external-memory shuffles, but this is in the early stages. In case it works for you, here's the usual approach we use when the data are too large to fit in memory:
+
+1. Randomly shuffle the entire data once using a MapReduce/Spark/Beam/etc. job to create a set of roughly equal-sized files ("shards").
+2. In each epoch:
+  * Randomly shuffle the list of shard filenames, using `Dataset.list_files(...).shuffle(num_shards)`.
+  * Use `dataset.interleave(lambda filename: tf.data.TextLineDataset(filename), cycle_length=N)` to mix together records from `N` different shards.
+  * Use `dataset.shuffle(B)` to shuffle the resulting dataset. Setting `B` might require some experimentation, but you will probably want to set it to some value larger than the number of records in a single shard.
+
 [^2]: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle "Fisher Yates shuffle"
 [^3]: https://blog.janestreet.com/how-to-shuffle-a-big-dataset/#whyshuffle "why shuffle"
 [^4]: https://blog.janestreet.com/how-to-shuffle-a-big-dataset "how to shuffle a big dataset"
+[^5]: https://github.com/tensorflow/tensorflow/issues/14857
