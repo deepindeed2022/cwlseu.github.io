@@ -37,13 +37,19 @@ description: C++的发展历史
 |2013 | 《C++编程语言第四版》 | The C++ Programming Language, 4th edition||
 | 2014 | C++14 (2014 final draft ) | 1. 新语言特性：变量模板（variable templates）、多态lambda（polymorphic lambdas）、λ动捕获（move capture for lambdas）、**new/delete elision**、常量表达式函数放宽限制（relax restrictions on constexpr functions）、二值文本（binary literals）、数字分隔符（digit separators）、函数返回类型推演（return type deduction for functions）、用大括号或等号初始符集合初始化类<br> 2. 新库特性：std::make_unique、std::shared_mutex和std::shared_lock、std::index_sequence、std::exchange、std::quoted，还有许多针对现有库的小改进，比如一些算法的双距离重载（two-range overloads for some algorithms）、类型特征的类型别名版本（type alias versions of type traits）、用户定义字符串（user-defined string）、持续期（duration）和复杂数字文本（complex number literals）等等<br> 3.搜集错误报告修复：149号库（149 library issues） 基础库技术规范（Library fundamentals TS）, 文件系统技术规范（Filesystem TS）和其他专业技术规范（ experimental technical specifications）|
 
-## 不同编译器对C++
+## 不同编译器对c++标准的支持
+cfront x.x就是Bjarne Stroustrup的第一个C++编译器，将C++转换成C语言。在1993年，cfront 4.0因为尝试支持异常机制失败而被取消。我们开发者最长打交道的工具就是编译器了。我们只要通过编写程序语言，编译器会翻译成具体的更底层命令来控制计算机去实现我们的需要的功能。但C++语言标准是一个庞大的特性集合，而不同编译器厂商在根据这个统一标准做编译器的过程中，由于各种原因，不可能支持全部的标准中列举出来的特性。
+例如，C++11已经流行多年，很多特性是随着编译器版本release才逐渐支持的，如下图：
+
+![@](https://cwlseu.github.io/images/gcc/compiler_support.jpg)
+
+
+* [关于不同编译器对C++不同时期的语言特性的支持程度](https://en.cppreference.com/w/cpp/compiler_support)
+
+* [gnu gcc对C++语言特定的支持情况以及最低支持版本等信息](https://gcc.gnu.org/projects/cxx-status.html)
 
 ## 参考资料
 
-* [关于不同编译器对C++不同时期的语言特性的支持程度](https://en.cppreference.com/w/cpp/compiler_support)
-* [gnu gcc对C++语言特定的支持情况以及最低支持版本等信息](https://gcc.gnu.org/projects/cxx-status.html)
-![@](https://cwlseu.github.io/images/gcc/images/gcc/compiler_support.jpg)
 
 * [gnu gcc常见问题](https://gcc.gnu.org/onlinedocs/libstdc++/faq.html)
 * [C++官方的history页面](http://www.cplusplus.com/info/history/)
