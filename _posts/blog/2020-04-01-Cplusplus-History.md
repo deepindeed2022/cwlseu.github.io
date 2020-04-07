@@ -55,3 +55,4 @@ cfront x.x就是Bjarne Stroustrup的第一个C++编译器，将C++转换成C语�
 * [C++官方的history页面](http://www.cplusplus.com/info/history/)
 * [中文博客C++的历史与现状](https://www.cnblogs.com/fickleness/p/3154937.html)
 * [Feature-Test Macros and Policies](https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations)
+* [各编译器下载地址，包括vs2017社区版](https://isocpp.org/get-started)

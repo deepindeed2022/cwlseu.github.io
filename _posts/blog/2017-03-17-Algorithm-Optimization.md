@@ -326,6 +326,70 @@ if defined(__GNUC__) || defined(__GNUG__)
 
 ```
 
+
+## MemCopy汇编实现代码
+
+```cpp
+void CopyMMX(void* destination, void* sorce, int count )
+{
+    int nCount64 = ( count / 128 ) * 128;
+    int nRemainder = ( count % 128 );
+    _asm
+    {
+        MOV ESI, sorce
+        MOV EDI, destination
+        MOV ECX, nCount64
+        CMP ECX, 0
+        JZ BYTEBYTE
+        MOV EDX, 128
+        SHR ECX, 7
+        TOP:
+        PREFETCHNTA 64[ESI] // Pre-fetch data for Next loop
+        PREFETCHNTA 128[ESI]
+        // Copy data from source
+        MOVDQU XMM0, 0[ESI]
+        MOVDQU XMM1, 16[ESI]
+        MOVDQU XMM2, 32[ESI]
+        MOVDQU XMM3, 48[ESI]
+        MOVDQU XMM4, 64[ESI]
+        MOVDQU XMM5, 80[ESI]
+        MOVDQU XMM6, 96[ESI]
+        MOVDQU XMM7, 112[ESI]
+
+        // Save the data from MM registers to Destination
+        MOVNTDQ 0[EDI], XMM0 //(A)->Program gets crashed here
+        MOVNTDQ 16[EDI], XMM1
+        MOVNTDQ 32[EDI], XMM2
+        MOVNTDQ 48[EDI], XMM3
+        MOVNTDQ 64[EDI], XMM4
+        MOVNTDQ 80[EDI], XMM5
+        MOVNTDQ 96[EDI], XMM6
+        MOVNTDQ 112[EDI], XMM7
+
+        ADD ESI, EDX
+        ADD EDI, EDX
+        DEC ECX
+        JNZ TOP
+        // Copy remaining data BYTE by BYTE
+        BYTEBYTE:
+        MOV ECX, nRemainder
+        CMP ECX, 0
+        JZ ENDS
+        PREFETCHNTA [ESI+ECX]
+        REM:
+        MOV AL, 0[ESI]
+        MOV 0[EDI], AL
+        INC ESI
+        INC EDI
+        DEC ECX
+        JNZ REM
+        ENDS:
+        EMMS
+    }
+}
+```
+
+
 ## Reference
 
 1. [定义https://en.wikipedia.org/wiki/Intrinsic_function](https://en.wikipedia.org/wiki/Intrinsic_function)
