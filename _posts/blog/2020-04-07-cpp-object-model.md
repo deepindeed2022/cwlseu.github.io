@@ -11,7 +11,7 @@ description: "如果不了解编译器对我们的C++代码做了什么手脚，
 我尝试以一个编译器的设计者的角度去理解C++对象，该书中也提到了多种编译器，有的时候也会涉及一些不同编译器厂商在设计过程中的不同，虽然没有深入探究不同的原因以及优劣对比，
 但对于我这个新手来说已经开了很大的窗户。
 
-整个书籍通过横向切割方式分别从构造、数据成员、成员函数、
+整个书籍通过横向切割方式，分别从构造、数据成员、成员函数、运行时C++对象的特点来介绍，从缔造者的视角来理解C++对象的设计，有利于我们写出更加高效、简洁的程序。
 
 ## 关于对象
 ### C++对象比C struct对象在空间与时间的有额外负担吗？
@@ -129,6 +129,10 @@ protected:
 ## 构造函数
 
 ![](https://cwlseu.github.io/images/gcc/ctor.png)
+
 ## 参考链接
 
 [MSVC应对多重继承中的thunk技术](https://docs.microsoft.com/zh-cn/archive/blogs/zhanli/c-tips-adjustor-thunk-what-is-it-why-and-how-it-works)
+[C++对象模型详解](https://www.cnblogs.com/tgycoder/p/5426628.html)
+[图说C++对象模型：对象内存布局详解](https://www.cnblogs.com/QG-whz/p/4909359.html)
+[RTTI实现详解](https://blog.csdn.net/heyuhang112/article/details/41982929)
