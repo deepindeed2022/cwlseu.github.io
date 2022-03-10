@@ -1,3 +1,13 @@
+---
+layout: post
+comments: true
+title: "Label Noise Learning"
+categories: [blog ]
+tags: [自然语言处理]
+description: Label Noise Learning
+---
+
+
 # Label Noise Learning
 
 @(NLP)[噪声, 主动学习]
@@ -92,14 +102,14 @@ $$
 （3）则应用KL散度可以衡量预测与实际输出的分布差异。
 $$
 \begin{align*}
-KL(q\mid\mid p)&= H(q, p) - H(q) \\ 
+KL(q\mid\mid p)&= H(q, p) - H(q) \\
 \end{align*}
 $$
 （4）通过在基本损失函数基础上，引入DCE项，来
 $$
 \begin{align*}
 L_{DCE} &= - plog(\delta p+(1- \delta)q) \\
-L_{In\_trust} &= \alpha L_{CRF}+\beta L_{DCE} 
+L_{In\_trust} &= \alpha L_{CRF}+\beta L_{DCE}
 \end{align*}
 $$
 
@@ -131,7 +141,7 @@ AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranki
 
 作者提出使用threshold samples，作者从训练集合中抽样一部分数据出来作为threshold samples，这部分数据会人为的指定噪声标签，并且加入训练。最终这部分数据的AUM前从高到底排序的90分位值即可以作为AUM的阈值，用于划分噪声数据和非噪声数据。
 
-> 该方法通过最大化margin的角度，减少噪声的影响。 
+> 该方法通过最大化margin的角度，减少噪声的影响。
 
 ## 3、早停
 ![Alt text](./1646209122905.png)
