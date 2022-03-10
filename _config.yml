@@ -11,7 +11,7 @@ name: cwlseu
 # Short bio or description (displayed in the header)
 brief-intro: research之路其修远兮，我将上下而求索
 url: https://www.deepindeed.cn
-permalink: /:title/
+permalink: /:title
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://cwlseu.github.io/images/myface.jpg
