@@ -11,14 +11,14 @@ name: cwlseu
 # Short bio or description (displayed in the header)
 brief-intro: research之路其修远兮，我将上下而求索
 url: https://www.deepindeed.cn
-permalink: /:title
+permalink: /_posts/:title
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://cwlseu.github.io/images/myface.jpg
 # other links
 github_username: cwlseu
 email: caowenlong92@gmail.com
-zhihu_username: 
+zhihu_username:
 linkedIn_username: https://www.linkedin.com/in/cao-wenlong-7b691262/
 dribbble_username:
 
@@ -31,7 +31,7 @@ livere_shortname: deepindeed
 # Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
 google_analytics: UA-86501439-1
 
-baidu_analytics: 
+baidu_analytics:
 # Your website URL (e.g. http://barryclark.github.io or http://www.barryclark.co)
 # Used for Sitemap.xml and your RSS feed
 # Build settings
