@@ -1,3 +1,12 @@
+---
+layout: post
+comments: true
+title: "中文文本纠错"
+categories: [blog ]
+tags: [自然语言处理]
+description: 中文文本纠错
+---
+
 # 中文文本纠错
 
 @(自然语言处理)[纠错]
