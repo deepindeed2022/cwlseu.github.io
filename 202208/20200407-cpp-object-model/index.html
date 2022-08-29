@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="如果不了解编译器对我们的C++代码做了什么手脚，很多困惑永远都解不开。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ Object Model">
+<meta property="og:url" content="http://www.deepindeed.cn/202208/20200407-cpp-object-model/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="如果不了解编译器对我们的C++代码做了什么手脚，很多困惑永远都解不开。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/gcc/cppobjmodel_1.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/gcc/multi-inherited.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/gcc/ctor.png">
+<meta property="article:published_time" content="2022-08-29T15:04:26.120Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.120Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/gcc/cppobjmodel_1.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202208/20200407-cpp-object-model/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202208/20200407-cpp-object-model/","path":"202208/20200407-cpp-object-model/","title":"C++ Object Model"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C++ Object Model | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">关于对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#c%E5%AF%B9%E8%B1%A1%E6%AF%94c-struct%E5%AF%B9%E8%B1%A1%E5%9C%A8%E7%A9%BA%E9%97%B4%E4%B8%8E%E6%97%B6%E9%97%B4%E7%9A%84%E6%9C%89%E9%A2%9D%E5%A4%96%E8%B4%9F%E6%8B%85%E5%90%97"><span class="nav-number">2.1.</span> <span class="nav-text">C++对象比C
+struct对象在空间与时间的有额外负担吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">C++对象模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF"><span class="nav-number">2.3.</span> <span class="nav-text">多重继承</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank">StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202208/20200407-cpp-object-model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C++ Object Model | Deepindeed">
+      <meta itemprop="description" content="如果不了解编译器对我们的C++代码做了什么手脚，很多困惑永远都解不开。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++ Object Model
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-29 23:04:26" itemprop="dateCreated datePublished" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202208/20200407-cpp-object-model/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202208/20200407-cpp-object-model/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">如果不了解编译器对我们的C++代码做了什么手脚，很多困惑永远都解不开。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>面向对象的三大特征是抽象、继承、多态。《深度探索C++对象模型》一书中从数据的排布，C++对象函数的调用设计等等。
+我尝试以一个编译器的设计者的角度去理解C++对象，该书中也提到了多种编译器，有的时候也会涉及一些不同编译器厂商在设计过程中的不同，虽然没有深入探究不同的原因以及优劣对比，
+但对于我这个新手来说已经开了很大的窗户。</p>
+<p>整个书籍通过横向切割方式，分别从构造、数据成员、成员函数、运行时C++对象的特点来介绍，从缔造者的视角来理解C++对象的设计，有利于我们写出更加高效、简洁的程序。</p>
+<h2 id="关于对象">关于对象</h2>
+<h3 id="c对象比c-struct对象在空间与时间的有额外负担吗">C++对象比C
+struct对象在空间与时间的有额外负担吗？</h3>
+<p>封装的后布局成本与C struct是一样的。member
+functions虽然旱灾class的声明之内，却不出现在的object中。每一个non-inline
+memberfunction 只会诞生一个函数实例。
+C++在布局以及存取时间上的主要的额外负担是由virtual引起的，包括： *
+virtual function机制，引入vptr以及vtbl，支持一个有效率的"执行期绑定" *
+virtual base class，用以实现"多次出现在继承体系中的base
+class，有一个单一而被共享的实例" *
+多重继承下，派生类跟第二个以及后续基类之间的转换</p>
+<h3 id="c对象模型">C++对象模型</h3>
+<p>在C++中，有两种数据成员（class data members）：static
+和nonstatic,以及三种类成员函数（class member
+functions）:static、nonstatic和virtual: <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Base</span>(<span class="type">int</span> i) :<span class="built_in">baseI</span>(i)&#123;&#125;;    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">getI</span><span class="params">()</span></span>&#123; <span class="keyword">return</span> baseI; &#125; </span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">countI</span><span class="params">()</span></span>&#123;&#125;;   <span class="comment">//static</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">print</span><span class="params">(<span class="type">void</span>)</span></span>&#123; cout &lt;&lt; <span class="string">&quot;Base::print()&quot;</span>; &#125; <span class="comment">// virtual</span></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Base</span>()&#123;&#125;         <span class="comment">// virtual</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> baseI;  <span class="comment">// no static </span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> baseS;  <span class="comment">// static</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>在此模型下，nonstatic
+数据成员被置于每一个类对象中，而static数据成员被置于类对象之外。static与nonstatic函数也都放在类对象之外，而对于virtual
+函数，则通过虚函数表+虚指针来支持，具体如下： -
+每个类生成一个表格，称为虚表（virtual
+table，简称vtbl）。虚表中存放着一堆指针，这些指针指向该类每一个虚函数。虚表中的函数地址将按声明时的顺序排列，不过当子类有多个重载函数时例外，后面会讨论。
+-
+每个类对象都拥有一个虚表指针(vptr)，由编译器为其生成。虚表指针的设定与重置皆由类的复制控制（也即是构造函数、析构函数、赋值操作符）来完成。vptr的位置为编译器决定，传统上它被放在所有显示声明的成员之后，不过现在许多编译器把vptr放在一个类对象的最前端。关于数据成员布局的内容，在后面会详细分析。
+- 另外，虚函数表的前面设置了一个指向type_info的指针，用以支持RTTI（Run
+Time Type
+Identification，运行时类型识别）。RTTI是为多态而生成的信息，包括对象继承关系，对象本身的描述等，只有具有虚函数的对象在会生成。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/gcc/cppobjmodel_1.png"
+alt="@vs2015下对象的内存结构" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="vs2015下对象的内存结构">@vs2015下对象的内存结构</span></figcaption>
+</figure>
+<p>这个模型的优点在于它的空间和存取时间的效率；缺点如下：如果应用程序本身未改变，但当所使用的类的non
+static数据成员添加删除或修改时，需要重新编译。</p>
+<blockquote>
+<p>Note:
+针对析构函数，g++中的实现有一些令人疑惑的地方，~Base在虚表中出现了两次，我表示不能理解，网上也没有找到相关说明。</p>
+<p>Vtable for Base Base::_ZTV4Base: 6u entries 0 (int (<em>)(...))0 4
+(int (</em>)(...))(&amp; _ZTI4Base) 8 (int (<em>)(...))Base::print 12
+(int (</em>)(...))Base::~Base 16 (int (*)(...))Base::~Base</p>
+</blockquote>
+<p>我猜测可能是我们使用g++编译中合成根据我添加的~Base()合成了一个用于动态内存分配释放的析构函数和静态释放的析构函数。当然如果有大佬知道这个是为什么，请务必指导一番，不胜感激。</p>
+<h3 id="多重继承">多重继承</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base1</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">Base1</span>() &#123;&#125;;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">speakClearly</span><span class="params">()</span> </span>&#123;cout&lt;&lt;<span class="string">&quot;Base1::speakClearly()&quot;</span>&lt;&lt;endl;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> Base1 *<span class="title">clone</span><span class="params">()</span> <span class="type">const</span> </span>&#123;cout&lt;&lt;<span class="string">&quot;Base1::clone()&quot;</span>&lt;&lt;endl; <span class="keyword">return</span> <span class="keyword">new</span> Base1;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">float</span> data_Base1;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base2</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">Base2</span>() &#123;&#125;;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mumble</span><span class="params">()</span> </span>&#123;cout&lt;&lt;<span class="string">&quot;Base2::mumble()&quot;</span>&lt;&lt;endl;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> Base2 *<span class="title">clone</span><span class="params">()</span> <span class="type">const</span> </span>&#123;cout&lt;&lt;<span class="string">&quot;Base2::clone()&quot;</span>&lt;&lt;endl; <span class="keyword">return</span> <span class="keyword">new</span> Base2;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">float</span> data_Base2;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span> : <span class="keyword">public</span> Base1,<span class="keyword">public</span> Base2</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">Derived</span>()  &#123;cout&lt;&lt;<span class="string">&quot;Derived::~Derived()&quot;</span>&lt;&lt;endl;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> Derived *<span class="title">clone</span><span class="params">()</span> <span class="type">const</span> </span>&#123;cout&lt;&lt;<span class="string">&quot;Derived::clone()&quot;</span>&lt;&lt;endl; <span class="keyword">return</span> <span class="keyword">new</span> Derived;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">float</span> data_Derived;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure>
+<img data-src="https://cwlseu.github.io/images/gcc/multi-inherited.png"
+alt="@逻辑上的图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="逻辑上的图">@逻辑上的图</span></figcaption>
+</figure>
+<p>类似问题在vs2010中也有，<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/Microsues/article/details/6452249?depth_1-utm_source=distribute.pc_relevant.none-task-blog-OPENSEARCH-1&amp;utm_source=distribute.pc_relevant.none-task-blog-OPENSEARCH-1">主要是多重继承的时，将派生类赋值给第二个基类时</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1&gt;  Derived::$vftable@Base1@:</span><br><span class="line">1&gt;   | &amp;Derived_meta</span><br><span class="line">1&gt;   |  0</span><br><span class="line">1&gt;   0 | &amp;Derived::&#123;dtor&#125;</span><br><span class="line">1&gt;   1 | &amp;Base1::speakClearly</span><br><span class="line">1&gt;   2 | &amp;Derived::clone</span><br><span class="line">1&gt;  </span><br><span class="line">1&gt;  Derived::$vftable@Base2@:</span><br><span class="line">1&gt;   | -8</span><br><span class="line">1&gt;   0 | &amp;thunk: this-=8; goto Derived::&#123;dtor&#125;</span><br><span class="line">1&gt;   1 | &amp;Base2::mumble</span><br><span class="line">1&gt;   2 | &amp;thunk: this-=8; goto Base2* Derived::clone</span><br><span class="line">1&gt;   3 | &amp;thunk: this-=8; goto Derived* Derived::clone</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>派生类的虚函数表数目是它所有基类的虚函数数目之和，基类的虚函数表被复制到派生类的对应的虚函数表中。</p></li>
+<li><p>派生类中重写基类的虚拟函数时，该被重写的函数在派生类的虚函数列表中得到更新，派生类的虚析构函数覆盖基类的虚析构函数。</p></li>
+<li><p>派生类中新增加的虚函数被添加到与第一个基类相对应的虚函数表中。</p></li>
+<li><p>virtual
+table[1]中的clone分别为：<code>Base2* Derived::clone</code> 和 Derived*
+Derived::clone
+。这里为什么会比table[0]多一个<code>Base2* Derived::clone</code>呢？
+因为：如果将一个Derived对象地址指定给一个Base1指针或者Derived指针是，虚拟机制使用的是virtual
+table[0]
+；如果将一个Derived对象地址指定给一个Base2指针时，虚拟机制使用的是virtual
+table[1]。 （&lt;&lt;C++对象模型&gt;&gt; P164)</p></li>
+</ul>
+<!-- 1. "指针的类型"会教导编译器如何解释某个特定地址中的内存内容以及其大小（void*指针只能够持有一个地址，而不能通过它操作所指向的object）
+2. C++通过class的pointers和references来支持多态，付出的代价就是额外的间接性。它们之所以支持多态是因为它们并不引发内存中任何"与类型有关的内存委托操作(type-dependent commitment)"，会受到改变的，只有他们所指向的内存的"大小和内容的解释方式"而已。
+ -->
+<h2 id="构造函数">构造函数</h2>
+<p><img data-src="https://cwlseu.github.io/images/gcc/ctor.png" /></p>
+<h2 id="参考链接">参考链接</h2>
+<p><a
+target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/archive/blogs/zhanli/c-tips-adjustor-thunk-what-is-it-why-and-how-it-works">MSVC应对多重继承中的thunk技术</a>
+<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/tgycoder/p/5426628.html">C++对象模型详解</a>
+<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/QG-whz/p/4909359.html">图说C++对象模型：对象内存布局详解</a>
+<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/heyuhang112/article/details/41982929">RTTI实现详解</a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202208/20200407-cpp-object-model/" title="C++ Object Model">http://www.deepindeed.cn/202208/20200407-cpp-object-model/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202208/20160907-Flann/" rel="prev" title="近邻查询近似算法库FLANN">
+                  <i class="fa fa-chevron-left"></i> 近邻查询近似算法库FLANN
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">173k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:48</span>
+  </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/202208/20200407-cpp-object-model/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

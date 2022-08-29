@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="物体检测算法的评估方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object Detection Metrics">
+<meta property="og:url" content="http://www.deepindeed.cn/201903/20190311-object-detection-metrics/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="物体检测算法的评估方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/iou.png">
+<meta property="og:image" content="http://cwlseu.github.io/images/detection/confusion-metrics.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/HuberLoss.png">
+<meta property="article:published_time" content="2019-03-11T13:12:12.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.120Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="CV">
+<meta property="article:tag" content="detection">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/detection/iou.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201903/20190311-object-detection-metrics/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201903/20190311-object-detection-metrics/","path":"201903/20190311-object-detection-metrics/","title":"Object Detection Metrics"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Object Detection Metrics | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E4%BD%93%E6%A3%80%E6%B5%8B%E6%95%88%E6%9E%9C%E8%AF%84%E4%BC%B0%E7%9B%B8%E5%85%B3%E7%9A%84%E5%AE%9A%E4%B9%89-1"><span class="nav-number">1.</span> <span class="nav-text">物体检测效果评估相关的定义 1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#intersection-over-union-iou"><span class="nav-number">1.1.</span> <span class="nav-text">Intersection Over Union (IOU)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#true-positive-false-positive-false-negative-and-true-negative4"><span class="nav-number">1.2.</span> <span class="nav-text">True
+Positive, False Positive, False Negative and True Negative2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#precision"><span class="nav-number">1.3.</span> <span class="nav-text">Precision</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#recall"><span class="nav-number">1.4.</span> <span class="nav-text">Recall</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95metrics235"><span class="nav-number">2.</span> <span class="nav-text">评估方法Metrics345</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E4%BD%93%E6%A3%80%E6%B5%8B%E4%B8%AD%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">物体检测中的损失函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9D%87%E6%96%B9%E8%AF%AF%E5%B7%AE-l2%E6%8D%9F%E5%A4%B1"><span class="nav-number">3.0.1.</span> <span class="nav-text">均方误差 —— L2损失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E7%BB%9D%E5%AF%B9%E8%AF%AF%E5%B7%AEl1%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.0.2.</span> <span class="nav-text">平均绝对误差——L1损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#l1-v.s-l2%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B07"><span class="nav-number">3.0.3.</span> <span class="nav-text">L1 v.s L2损失函数6</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#huber%E6%8D%9F%E5%A4%B1%E5%B9%B3%E6%BB%91%E5%B9%B3%E5%9D%87%E7%BB%9D%E5%AF%B9%E8%AF%AF%E5%B7%AE"><span class="nav-number">3.0.4.</span> <span class="nav-text">Huber损失——平滑平均绝对误差</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank">StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201903/20190311-object-detection-metrics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Object Detection Metrics | Deepindeed">
+      <meta itemprop="description" content="物体检测算法的评估方法">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Object Detection Metrics
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-11 21:12:12" itemprop="dateCreated datePublished" datetime="2019-03-11T21:12:12+08:00">2019-03-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201903/20190311-object-detection-metrics/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201903/20190311-object-detection-metrics/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">物体检测算法的评估方法</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="物体检测效果评估相关的定义-1">物体检测效果评估相关的定义 <a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></h2>
+<h3 id="intersection-over-union-iou">Intersection Over Union (IOU)</h3>
+<p>Intersection Over Union (IOU) is measure based on Jaccard Index that
+evaluates the overlap between two bounding boxes. It requires a ground
+truth bounding box <span class="math inline">\(B_{gt}\)</span>and a
+predicted bounding box <span class="math inline">\(B_p\)</span> By
+applying the IOU we can tell if a detection is valid (True Positive) or
+not (False Positive).<br />
+IOU is given by the overlapping area between the predicted bounding box
+and the ground truth bounding box divided by the area of union between
+them:</p>
+<p><span class="math display">\[IOU = \frac{\text{area of
+overlap}}{\text{area of union}} = \frac{area(B_p \cap B_{gt})}{area(B_p
+\cup B_{gt})}\]</span></p>
+<p>The image below illustrates the IOU between a ground truth bounding
+box (in green) and a detected bounding box (in red).</p>
+<p align="center">
+<img data-src="https://cwlseu.github.io/images/detection/iou.png" align="center"/>
+</p>
+<h3
+id="true-positive-false-positive-false-negative-and-true-negative4">True
+Positive, False Positive, False Negative and True Negative<a href="#fn2"
+class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a></h3>
+<p>Some basic concepts used by the metrics:</p>
+<ul>
+<li><strong>True Positive (TP)</strong>: A correct detection. Detection
+with <code>IOU ≥ _threshold_</code></li>
+<li><strong>False Positive (FP)</strong>: A wrong detection. Detection
+with <code>IOU &lt; _threshold_</code></li>
+<li><strong>False Negative (FN)</strong>: A ground truth not
+detected</li>
+<li><strong>True Negative (TN)</strong>: Does not apply. It would
+represent a corrected misdetection. In the object detection task there
+are many possible bounding boxes that should not be detected within an
+image. Thus, TN would be all possible bounding boxes that were
+corrrectly not detected (so many possible boxes within an image). That's
+why it is not used by the metrics.</li>
+</ul>
+<p><code>_threshold_</code>: depending on the metric, it is usually set
+to 50%, 75% or 95%.</p>
+<h3 id="precision">Precision</h3>
+<p>Precision is the ability of a model to identify <strong>only</strong>
+the relevant objects. It is the percentage of correct positive
+predictions and is given by: <span class="math display">\[Precision =
+\frac{TP}{TP + FP} = \frac{TP}{all-detections}\]</span></p>
+<h3 id="recall">Recall</h3>
+<p>Recall is the ability of a model to find all the relevant cases (all
+ground truth bounding boxes). It is the percentage of true positive
+detected among all relevant ground truths and is given by: <span
+class="math display">\[Recall = \frac{TP}{TP + FN} =
+\frac{TP}{all-groundtruths}\]</span> <img data-src="http://cwlseu.github.io/images/detection/confusion-metrics.png"
+alt="@混淆矩阵" /></p>
+<h2 id="评估方法metrics235">评估方法Metrics<a href="#fn3"
+class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a><a
+href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a><a href="#fn5" class="footnote-ref"
+id="fnref5" role="doc-noteref"><sup>5</sup></a></h2>
+<ul>
+<li>Receiver operating characteristics (ROC) curve</li>
+<li>Precision x Recall curve</li>
+<li>Average Precision
+<ul>
+<li>11-point interpolation</li>
+<li>Interpolating all points</li>
+</ul></li>
+</ul>
+<h2 id="物体检测中的损失函数">物体检测中的损失函数</h2>
+<p><a
+target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/602858?utm_content=m_1000002415">【机器学习者都应该知道的五种损失函数！】</a>
+我们假设有<span class="math inline">\(n\)</span>个样本, 其中<span
+class="math inline">\(x_i\)</span>的gt值为<span
+class="math inline">\(y_i\)</span>, 算法<span
+class="math inline">\(f(x)\)</span>的预测结果为<span
+class="math inline">\(y_i^p\)</span></p>
+<h4 id="均方误差-l2损失">均方误差 —— L2损失</h4>
+<p>均方误差（MSE）是回归损失函数中最常用的误差，它是预测值与目标值之间差值的平方和，公式如下</p>
+<p><span class="math display">\[MSE = \frac{\sum_{i=1}^{n}(y_i -
+y_i^p)^2}{n}\]</span></p>
+<h4 id="平均绝对误差l1损失函数">平均绝对误差——L1损失函数</h4>
+<p>平均绝对误差（MAE）是另一种常用的回归损失函数，它是目标值与预测值之差绝对值的和，表示了预测值的平均误差幅度，而不需要考虑误差的方向（注：平均偏差误差MBE则是考虑的方向的误差，是残差的和），范围是0到<span
+class="math inline">\(\infin\)</span></p>
+<p><span class="math display">\[MAE = \frac{\sum_{i=1}^{n}|y_i -
+y_i^p|}{n}\]</span></p>
+<h4 id="l1-v.s-l2损失函数7">L1 v.s L2损失函数<a href="#fn6"
+class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a></h4>
+<p>通常，利用均方差更容易求解，但平方绝对误差则对于异常值更稳健。</p>
+<p>下面让我们对这两种损失函数进行具体的分析。无论哪一种机器学习模型，目标都是找到能使目标函数最小的点。在最小值处每一种损失函数都会得到最小值。</p>
+<p><a
+target="_blank" rel="noopener" href="http://nbviewer.ipython.org/github/rishy/rishy.github.io/blob/master/ipy_notebooks/L1%20vs.%20L2%20Loss.ipynb">可以运行相关代码进行分析</a><a
+href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a></p>
+<p>由于均方误差（MSE）在误差较大点时的损失远大于平均绝对误差（MAE），它会给异常值赋予更大的权重，模型会全力减小异常值造成的误差，从而使得模型的整体表现下降。所以当训练数据中含有较多的异常值时，平均绝对误差（MAE）更为有效。当我们对所有观测值进行处理时，如果利用MSE进行优化则我们会得到所有观测的均值，而使用MAE则能得到所有观测的中值。与均值相比，中值对于异常值的鲁棒性更好，这就意味着平均绝对误差对于异常值有着比均方误差更好的鲁棒性。</p>
+<p>但MAE也存在一个问题，特别是对于神经网络来说，它的<strong>梯度在极值点处会有很大的跃变</strong>，及时很小的损失值也会长生很大的误差，这很不利于学习过程。<strong>为了解决这个问题，需要在解决极值点的过程中动态减小学习率</strong>。MSE在极值点却有着良好的特性，及时在固定学习率下也能收敛。MSE的梯度随着损失函数的减小而减小，这一特性使得它在最后的训练过程中能得到更精确的结果。</p>
+<p>在实际训练过程中，如果异常值对于实际业务十分重要需要进行检测，MSE是更好的选择，而如果在异常值极有可能是坏点的情况下MAE则会带来更好的结果。</p>
+<p>总结：L1损失对于异常值更鲁棒，但它的导数不连续使得寻找最优解的过程低效；L2损失对于异常值敏感，但在优化过程中更为稳定和准确。更详细的L1和L2不同比较可以参考这篇文章。</p>
+<blockquote>
+<p>但现实中还存在两种损失都很难处理的问题。例如某个任务中90%的数据都符合目标值——150，而其余的10%数据取值则在0-30之间。那么利用MAE优化的模型将会得到150的预测值而忽略的剩下的10%（倾向于中值）；而对于MSE来说由于异常值会带来很大的损失，将使得模型倾向于在0-30的方向取值。这两种结果在实际的业务场景中都是我们不希望看到的。</p>
+</blockquote>
+<h4 id="huber损失平滑平均绝对误差">Huber损失——平滑平均绝对误差</h4>
+<p>Huber损失相比于平方损失来说对于异常值不敏感，但它同样保持了可微的特性。它基于绝对误差但在误差很小的时候变成了平方误差。我们可以使用超参数<span
+class="math inline">\(\delta\)</span>来调节这一误差的阈值。当<span
+class="math inline">\(\delta\)</span>趋向于0时它就退化成了MAE，而当<span
+class="math inline">\(\delta\)</span>趋向于无穷时则退化为了MSE，其表达式如下，是一个连续可微的分段函数：</p>
+<p><span class="math display">\[ L_\delta(y, f(x)) =
+   \begin{cases}
+    \frac{1}{2}(y - f(x))^2       &amp; \quad \text{if } |y - f(x)| \le
+\delta\\
+    \delta{|y - f(x)|} - \frac{1}{2}\delta^2  &amp; \quad
+\text{otherwise }\\
+  \end{cases} \]</span></p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/HuberLoss.png"
+alt="@HuberLoss with delta change" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="HuberLoss">@HuberLoss</span> with delta change</figcaption>
+</figure>
+<p>对于Huber损失来说，<span
+class="math inline">\(\delta\)</span>的选择十分重要，它决定了模型处理异常值的行为。当残差大于<span
+class="math inline">\(\delta\)</span>时使用L1损失，很小时则使用更为合适的L2损失来进行优化。</p>
+<p>Huber损失函数克服了MAE和MSE的缺点，不仅可以保持损失函数具有连续的导数，同时可以利用MSE梯度随误差减小的特性来得到更精确的最小值，也对异常值具有更好的鲁棒性。</p>
+<p>而Huber损失函数的良好表现得益于精心训练的超参数<span
+class="math inline">\(\delta\)</span>.</p>
+<h2 id="参考文献">参考文献</h2>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"
+role="doc-endnote"><p>https://github.com/cwlseu/Object-Detection-Metrics
+"评估标准"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"
+role="doc-endnote"><p>https://acutecaretesting.org/en/articles/precision-recall-curves-what-are-they-and-how-are-they-used
+"Precision-recall curves – what are they and how are they used"<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"
+role="doc-endnote"><p>https://www.jianshu.com/p/c61ae11cc5f6
+"机器学习之分类性能度量指标 : ROC曲线、AUC值、正确率、召回率"<a
+href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"
+role="doc-endnote"><p>https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/
+"How and When to Use ROC Curves and Precision-Recall Curves for
+Classification in Python"<a href="#fnref4" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"
+role="doc-endnote"><p>https://www.zhihu.com/question/30643044
+"精确率、召回率、F1 值、ROC、AUC 各自的优缺点是什么？"<a href="#fnref5"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"
+role="doc-endnote"><p>https://yq.aliyun.com/articles/602858?utm_content=m_1000002415
+"机器学习者都应该知道的五种损失函数！"<a href="#fnref6"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"
+role="doc-endnote"><p>http://rishy.github.io/ml/2015/07/28/l1-vs-l2-loss/?spm=a2c4e.10696291.0.0.170b19a44a9JnP<a
+href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201903/20190311-object-detection-metrics/" title="Object Detection Metrics">http://www.deepindeed.cn/201903/20190311-object-detection-metrics/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/CV/" rel="tag"># CV</a>
+              <a href="/tags/detection/" rel="tag"># detection</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201903/20190301-Hexagon-DSP/" rel="prev" title="高通芯片笔记">
+                  <i class="fa fa-chevron-left"></i> 高通芯片笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201904/20190407-cuda9-mixed-precision/" rel="next" title="笔记：混合精度训练技术报告">
+                  笔记：混合精度训练技术报告 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">173k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:48</span>
+  </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201903/20190311-object-detection-metrics/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

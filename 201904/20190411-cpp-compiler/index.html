@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="编译器中一些不太常用，但是有的时候很有用的options">
+<meta property="og:type" content="article">
+<meta property="og:title" content="开发中常见的编译器技巧">
+<meta property="og:url" content="http://www.deepindeed.cn/201904/20190411-cpp-compiler/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="编译器中一些不太常用，但是有的时候很有用的options">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/gcc/compilerflag_1.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/gcc/compilerflag_2.png">
+<meta property="article:published_time" content="2019-04-11T12:12:12.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.122Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Complier">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/gcc/compilerflag_1.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201904/20190411-cpp-compiler/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201904/20190411-cpp-compiler/","path":"201904/20190411-cpp-compiler/","title":"开发中常见的编译器技巧"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>开发中常见的编译器技巧 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">编译常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%85%E5%90%AB%E9%9D%99%E6%80%81%E5%BA%93%E4%B8%AD%E6%89%80%E6%9C%89%E7%AC%A6%E5%8F%B7%E7%9A%84option"><span class="nav-number">2.1.</span> <span class="nav-text">1、包含静态库中所有符号的option</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%AF%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-number">2.2.</span> <span class="nav-text">2、其他可能问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#solution"><span class="nav-number">2.2.1.</span> <span class="nav-text">Solution</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C%E6%9F%A5%E6%89%BE%E5%A4%B4%E6%96%87%E4%BB%B6%E5%92%8C%E5%BA%93%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="nav-number">2.3.</span> <span class="nav-text">3、编译运行查找头文件和库的顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%8A%A8%E6%80%81%E5%BA%93%E7%9A%84%E6%90%9C%E7%B4%A2%E8%B7%AF%E5%BE%84"><span class="nav-number">2.4.</span> <span class="nav-text">4、运行时动态库的搜索路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%AD%E7%9A%84static%E5%8F%98%E9%87%8F"><span class="nav-number">2.5.</span> <span class="nav-text">5、动态库中的static变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windows%E7%BC%96%E8%AF%91"><span class="nav-number">3.</span> <span class="nav-text">windows编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#windows%E4%B8%8B%E8%B7%AF%E5%BE%84%E9%95%BF%E5%BA%A6%E4%B8%8D%E8%83%BD%E5%A4%AA%E9%95%BF"><span class="nav-number">3.1.</span> <span class="nav-text">windows下路径长度不能太长</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msvc%E4%B8%AD%E9%A2%84%E5%AE%9A%E4%B9%89%E5%AE%8F5"><span class="nav-number">3.2.</span> <span class="nav-text">MSVC中预定义宏1</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gnu-%E7%BC%96%E8%AF%91%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">GNU 编译器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gccg%E7%9A%84--as-needed"><span class="nav-number">4.1.</span> <span class="nav-text">1、gcc&#x2F;g++的--as-needed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdynamic"><span class="nav-number">4.2.</span> <span class="nav-text">2、-rdynamic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#glibcxx_use_cxx11_abi"><span class="nav-number">4.3.</span> <span class="nav-text">3、_GLIBCXX_USE_CXX11_ABI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wl--allow-shlib-undefined"><span class="nav-number">4.4.</span> <span class="nav-text">4、-Wl,--allow-shlib-undefined</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#target_link_library-link_library"><span class="nav-number">4.5.</span> <span class="nav-text">5、TARGET_LINK_LIBRARY
+&amp; LINK_LIBRARY</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gcc%E4%B8%8D%E5%90%8C%E7%89%88%E6%9C%AC%E4%B8%AD%E4%B8%80%E4%BA%9B%E4%B8%9C%E8%A5%BF"><span class="nav-number">5.</span> <span class="nav-text">GCC不同版本中一些东西</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gcc4.9.4"><span class="nav-number">5.1.</span> <span class="nav-text">1、GCC4.9.4</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#inter-procedural-optimization-improvements"><span class="nav-number">5.1.1.</span> <span class="nav-text">Inter-procedural
+optimization improvements:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#feedback-directed-optimization-improvements"><span class="nav-number">5.1.2.</span> <span class="nav-text">Feedback directed
+optimization improvements:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gcc-5.4"><span class="nav-number">5.2.</span> <span class="nav-text">2、GCC 5.4</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#libstd%E4%B8%8A%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">5.2.1.</span> <span class="nav-text">libstd++上的优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gcc-dump-preprocessor-defines"><span class="nav-number">5.3.</span> <span class="nav-text">3、GCC dump preprocessor
+defines</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#todo"><span class="nav-number">5.4.</span> <span class="nav-text">4、TODO</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gcc-different-platform%E7%9A%84%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">6.</span> <span class="nav-text">GCC different
+platform的配置项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9Ac%E5%86%85%E5%AE%B9"><span class="nav-number">7.</span> <span class="nav-text">更多C++内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">8.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank">StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201904/20190411-cpp-compiler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="开发中常见的编译器技巧 | Deepindeed">
+      <meta itemprop="description" content="编译器中一些不太常用，但是有的时候很有用的options">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          开发中常见的编译器技巧
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-11 20:12:12" itemprop="dateCreated datePublished" datetime="2019-04-11T20:12:12+08:00">2019-04-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201904/20190411-cpp-compiler/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201904/20190411-cpp-compiler/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>23 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">编译器中一些不太常用，但是有的时候很有用的options</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>编译器是我们开发人员与机器指令之间的翻译,现在编译器越来越优化,而且基于一些开源的编译器项目(gcc,clang)等,相继出现不同platform下的编译器。
+此外，各种芯片、开发板层出不穷，各个商业公司都针对自己出产的开发板定制特定的编译链条。例如华为hisi系列的himix100中提供的编译链中，包括编译器，链接器，打包器之外，还提供了nm，gdb，gcov，gprof等等开发工具。
+这篇文章将主要将开发工作中与编译器（这篇文章中不作特殊说明，指的是gnu
+gcc编译器）相关的一些options和配置参数进行总结,方便在后面的项目遇到相似的问题进行查阅与借鉴。</p>
+<h2 id="编译常见问题">编译常见问题</h2>
+<h3
+id="包含静态库中所有符号的option">1、包含静态库中所有符号的option</h3>
+<p><span class="math display">\[A -&gt; B -&gt; C\]</span></p>
+<p>编译shared target
+B库的时候，gcc编译器默认是用什么区什么的原则，也就是说，依赖了库A中哪个.o文件中的东西，就会把相应的.o文件
+打包到最终的库中。但是，有的时候在这个库中我们并没有引用全部的符号，但是当其他库C依赖我们这个B库的时候，如果引用了B中未引用的A中的符号，这个时候会出现"undefined
+reference"的编译错误。<code>-Wl,--whole-archive</code>可以实现将所有库中的符号打包进去。</p>
+<p>编译器编译动态库或者运行程序的时候，会对依赖的静态库中进行基于<code>.o</code>的选择，但是有的时候我们希望我们编译的动态库能够包含所有的函数实现给用户使用。gcc中的链接控制选项<code>-Wl,--whole-archive xxxxx_lib -Wl,--no-whole-archive</code>就可以实现类似功能。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(xxxx_export </span><br><span class="line">            PRIVATE <span class="string">&quot;-Wl,--whole-archive&quot;</span> $&lt;TARGET_FILE:xxxxx_lib&gt;</span><br><span class="line">                    <span class="string">&quot;-Wl,--no-whole-archive -Wl,--exclude-libs,ALL&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="其他可能问题">2、其他可能问题</h3>
+<p><code>--exclude-libs</code> does not work for static libraries
+affected by the <code>--whole-archive</code> option.</p>
+<ul>
+<li><code>--exclude-libs</code> creates a list of static library paths
+and does library lookups in this list.</li>
+<li><code>--whole-archive</code> splits the static libraries that follow
+it into separate objects. As a result, lld no longer sees static
+libraries among linked files and does no <code>--exclude-libs</code>
+lookups.</li>
+</ul>
+<h4 id="solution">Solution</h4>
+<p>The proposed solution is to make <code>--exclude-libs</code> consider
+object files too. When lld finds an object file it checks whether this
+file originates from an archive and, if so, looks the archive up in the
+<code>--exclude-libs</code> list.</p>
+<p><strong>Reference</strong>: https://reviews.llvm.org/D39353</p>
+<h3
+id="编译运行查找头文件和库的顺序">3、编译运行查找头文件和库的顺序</h3>
+<blockquote>
+<p>gcc 在编译时如何去寻找所需要的头文件:</p>
+</blockquote>
+<ul>
+<li>所以header file的搜寻会从-I开始</li>
+<li>然后找gcc的环境变量
+<code>C_INCLUDE_PATH</code>，<code>CPLUS_INCLUDE_PATH</code>，<code>OBJC_INCLUDE_PATH</code></li>
+<li>再找内定目录
+<ul>
+<li><code>/usr/include</code></li>
+<li><code>/usr/local/include</code></li>
+</ul></li>
+</ul>
+<p>gcc的一系列自带目录
+<code>CPLUS_INCLUDE_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.9.4/include:/usr/include/c++/4.9.4</code></p>
+<blockquote>
+<p>库文件</p>
+</blockquote>
+<p>编译的时候： * gcc会去找-L * 再找gcc的环境变量LIBRARY_PATH *
+再找内定目录 * <code>/lib</code>和<code>/lib64</code> *
+<code>/usr/lib</code> 和<code>/usr/lib64</code> *
+<code>/usr/local/lib</code>和<code>/usr/local/lib64</code></p>
+<p>这是当初compile gcc时写在程序内的</p>
+<h3 id="运行时动态库的搜索路径">4、运行时动态库的搜索路径</h3>
+<p>动态库的搜索路径搜索的先后顺序是： 1.
+编译目标代码时指定的动态库搜索路径； 2.
+环境变量<code>LD_LIBRARY_PATH</code>指定的动态库搜索路径； 3.
+配置文件<code>/etc/ld.so.conf</code>中指定的动态库搜索路径； 4.
+默认的动态库搜索路径<code>/lib</code>； 5.
+默认的动态库搜索路径<code>/usr/lib</code>。</p>
+<h3 id="动态库中的static变量">5、动态库中的static变量</h3>
+<blockquote>
+<p>In all cases, static global variables (or functions) are never
+visible from outside a module (dll/so or executable). The C++ standard
+requires that these have internal linkage, meaning that they are not
+visible outside the translation unit (which becomes an object file) in
+which they are defined.</p>
+</blockquote>
+<h2 id="windows编译">windows编译</h2>
+<p>在windows常用的编译器是VS里面的cl编译器。我们要实现上述
+cmake使用<code>cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE</code></p>
+<pre><code>Enable this boolean property to automatically create a module definition (.def) file with all global symbols found in the input .obj files for a SHARED library on Windows. The module definition file will be passed to the linker causing all symbols to be exported from the .dll. For global data symbols, __declspec(dllimport) must still be used when compiling against the code in the .dll. All other function symbols will be automatically exported and imported by callers. This simplifies porting projects to Windows by reducing the need for explicit dllexport markup, even in C++ classes.
+
+This property is initialized by the value of the CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS variable if it is set when a target is created.</code></pre>
+<p><strong>Reference</strong>: <a
+target="_blank" rel="noopener" href="https://cmake.org/cmake/help/v3.4/prop_tgt/WINDOWS_EXPORT_ALL_SYMBOLS.html"><code>WINDOWS_EXPORT_ALL_SYMBOLS</code></a></p>
+<h3 id="windows下路径长度不能太长">windows下路径长度不能太长</h3>
+<p><strong>error MSB3491: Could n ot write lines to file</strong>
+https://stackoverflow.com/questions/31765909/node-socket-io-client-windows-path-too-long-to-install</p>
+<h3 id="msvc中预定义宏5">MSVC中预定义宏<a href="#fn1"
+class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></h3>
+<ul>
+<li><p><code>_M_IX86</code> Defined as the integer literal value 600 for
+compilations that target x86 processors. This macro isn't defined for
+x64 or ARM compilation targets.</p></li>
+<li><p><code>_M_IX86_FP</code> Defined as an integer literal value that
+indicates the <code>/arch</code> compiler option that was set, or the
+default. This macro is always defined when the compilation target is an
+x86 processor. Otherwise, undefined. When defined, the value is:</p>
+<ul>
+<li>0 if the <code>/arch:IA32</code> compiler option was set.</li>
+<li>1 if the <code>/arch:SSE</code> compiler option was set.</li>
+<li>2 if the <code>/arch:SSE2</code>, <code>/arch:AVX</code>,
+<code>/arch:AVX2</code>, or <code>/arch:AVX512</code> compiler option
+was set. This value is the default if an /arch compiler option wasn't
+specified. When <code>/arch:AVX</code> is specified, the macro
+<code>__AVX__</code> is also defined. When <code>/arch:AVX2</code> is
+specified, both <code>__AVX__</code> and <code>__AVX2__</code> are also
+defined. When /arch:AVX512 is specified, <code>__AVX__</code>,
+<code>__AVX2__</code>, <code>__AVX512BW__</code>,
+<code>__AVX512CD__</code>, <code>__AVX512DQ__</code>,
+<code>__AVX512F__</code> and <code>__AVX512VL__</code> are also
+defined.</li>
+</ul>
+<p>For more information, see /arch (x86).</p></li>
+<li><p><code>_M_X64</code> Defined as the integer literal value 100 for
+compilations that target x64 processors. Otherwise, undefined.</p></li>
+<li><p><code>_MSC_VER</code> Defined as an integer literal that encodes
+the major and minor number elements of the compiler's version number.
+The major number is the first element of the period-delimited version
+number and the minor number is the second element. For example, if the
+version number of the Microsoft C/C++ compiler is 17.00.51106.1, the
+<code>_MSC_VER</code> macro evaluates to 1700. Enter <code>cl /?</code>
+at the command line to view the compiler's version number. This macro is
+always defined.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Visual Studio version</th>
+<th style="text-align: center;"><code>_MSC_VER</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 6.0</td>
+<td style="text-align: center;">1200</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio .NET 2002 (7.0)</td>
+<td style="text-align: center;">1300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio .NET 2003 (7.1)</td>
+<td style="text-align: center;">1310</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2005 (8.0)</td>
+<td style="text-align: center;">1400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2008 (9.0)</td>
+<td style="text-align: center;">1500</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2010 (10.0)</td>
+<td style="text-align: center;">1600</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2012 (11.0)</td>
+<td style="text-align: center;">1700</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2013 (12.0)</td>
+<td style="text-align: center;">1800</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2015 (14.0)</td>
+<td style="text-align: center;">1900</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2017 RTW (15.0)</td>
+<td style="text-align: center;">1910</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2017 version 15.3</td>
+<td style="text-align: center;">1911</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2017 version 15.5</td>
+<td style="text-align: center;">1912</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2017 version 15.6</td>
+<td style="text-align: center;">1913</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2017 version 15.7</td>
+<td style="text-align: center;">1914</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2017 version 15.8</td>
+<td style="text-align: center;">1915</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2017 version 15.9</td>
+<td style="text-align: center;">1916</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2019 RTW (16.0)</td>
+<td style="text-align: center;">1920</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2019 version 16.1</td>
+<td style="text-align: center;">1921</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Visual Studio 2019 version 16.2</td>
+<td style="text-align: center;">1922</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Visual Studio 2019 version 16.3</td>
+<td style="text-align: center;">1923</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><code>_MSVC_LANG</code> Defined as an integer literal that
+specifies the C++ language standard targeted by the compiler. It's set
+only in code compiled as C++. The macro is the integer literal value
+201402L by default, or when the <code>/std:c++14</code> compiler option
+is specified. The macro is set to 201703L if the <code>/std:c++17</code>
+compiler option is specified. It's set to a higher, unspecified value
+when the <code>/std:c++latest</code> option is specified. Otherwise, the
+macro is undefined. The <code>_MSVC_LANG</code> macro and
+<code>/std (Specify Language Standard Version)</code> compiler options
+are available beginning in Visual Studio 2015 Update 3.</p></li>
+<li><p><code>_MT</code> Defined as 1 when /MD or /MDd (Multithreaded
+DLL) or /MT or /MTd (Multithreaded) is specified. Otherwise,
+undefined.</p></li>
+<li><p><code>_WIN32</code> Defined as 1 when the compilation target is
+32-bit ARM, 64-bit ARM, x86, or x64. Otherwise, undefined.</p></li>
+<li><p><code>_WIN64</code> Defined as 1 when the compilation target is
+64-bit ARM or x64. Otherwise, undefined.</p></li>
+</ul>
+<h2 id="gnu-编译器">GNU 编译器</h2>
+<h3 id="gccg的--as-needed">1、gcc/g++的<code>--as-needed</code></h3>
+<p>gcc/g++提供了<code>-Wl,--as-needed</code>和
+<code>-Wl,--no-as-needed</code>两个选项，这两个选项一个是开启特性，一个是取消该特性。</p>
+<p>在生成可执行文件的时候，通过 -lxxx
+选项指定需要链接的库文件。以动态库为例，如果我们指定了一个需要链接的库，则连接器会在可执行文件的文件头中会记录下该库的信息。而后，在可执行文件运行的时候，动态加载器会读取文件头信息，并加载所有的链接库。在这个过程中，如果用户指定链接了一个毫不相关的库，则这个库在最终的可执行程序运行时也会被加载，如果类似这样的不相关库很多，会明显拖慢程序启动过程。</p>
+<p>这时，通过指定<code>-Wl,--as-needed</code>选项，链接过程中，链接器会检查所有的依赖库，没有实际被引用的库，不再写入可执行文件头。最终生成的可执行文件头中包含的都是必要的链接库信息。<code>-Wl,--no-as-needed</code>选项不会做这样的检查，会把用户指定的链接库完全写入可执行文件中。</p>
+<p><strong>Reference</strong>: <a
+target="_blank" rel="noopener" href="https://my.oschina.net/yepanl/blog/2222870">GCC/G++选项
+-Wl,--as-needed</a></p>
+<h3 id="rdynamic">2、-rdynamic</h3>
+<pre><code>Pass the flag `-export-dynamic` to the ELF linker, on targets that support
+it. This instructs the linker to add all symbols, not only used ones, to the dynamic symbol table. This option is needed for some uses of `dlopen` or to allow obtaining backtraces from within a program.</code></pre>
+<p>关键的不同是：<code>-Wl,--export-dynamic -pthread</code>
+<code>-Wl</code>:指示后面的选项是给链接器的 <code>-pthread</code>:
+链接程序的时包含libpthread.so
+<code>--export-dynamic</code>：就是这个选项让主程序内定义的全局函数对库函数可见。</p>
+<p><strong>Reference</strong>: <a
+target="_blank" rel="noopener" href="https://blog.csdn.net/u011644231/article/details/88880362">gcc链接选项--export-dynamic的一次问题记录</a></p>
+<h3
+id="glibcxx_use_cxx11_abi">3、<code>_GLIBCXX_USE_CXX11_ABI</code></h3>
+<p>在GCC
+5.1版本中，libstdc++引入了一个新的ABI，其中包括std::string和std::list的新实现。为了符合2011年c++标准，这些更改是必要的，该标准禁止复制即写字符串，并要求列表跟踪字符串的大小。
+为了保持与libstdc++链接的现有代码的向后兼容性，库的soname没有更改，并且仍然支持与新实现并行的旧实现。这是通过在内联命名空间中定义新的实现来实现的，因此它们具有不同的用于链接目的的名称，例如，<code>std::list</code>的新版本实际上定义为<code>std:: _cxx11::list</code>。因为新实现的符号有不同的名称，所以两个版本的定义可以出现在同一个库中。
+<code>_GLIBCXX_USE_CXX11_ABI</code>宏控制库头中的声明是使用旧ABI还是新ABI。因此，可以为正在编译的每个源文件分别决定使用哪个ABI。使用GCC的默认配置选项，宏的默认值为1，这将导致新的ABI处于活动状态，因此要使用旧的ABI，必须在包含任何库头之前显式地将宏定义为0。(<strong>注意，一些GNU/Linux发行版对GCC
+5的配置不同，因此宏的默认值是0，用户必须将它定义为1才能启用新的ABI</strong>)。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">IF</span>(CMAKE_CXX_COMPILER_VERSION <span class="keyword">VERSION_LESS</span> <span class="string">&quot;5.1&quot;</span>)</span><br><span class="line">	<span class="keyword">ADD_DEFINITIONS</span>(-D_GLIBCXX_USE_CXX11_ABI=<span class="number">0</span>)</span><br><span class="line"><span class="keyword">ENDIF</span>()</span><br></pre></td></tr></table></figure>
+<h3 id="wl--allow-shlib-undefined">4、-Wl,--allow-shlib-undefined</h3>
+<p>在交叉编译程序过程中，往往会有这样的情况，依赖的target系统上的动态库（例如android上的OpenCL.so）又依赖其他的许多动态库，这个时候，我们希望链接target系统上的这个动态库的时候，我们可以不要去找OpenCL相关的依赖符号。</p>
+<p><code>SET(CMAKE_CXX_FLAGS "$&#123;CMAKE_CXX_FLAGS&#125; -Wl,--allow-shlib-undefined")</code></p>
+<blockquote>
+<p>Linking errors with “-Wl,--no-undefined
+-Wl,--no-allow-shlib-undefined”</p>
+</blockquote>
+<p>第二个参数的默认值是<code>--allow-shlib-undefined</code>。如果您选择该选项，代码可能会生成。
+第二个参数处理构建时检查，启用它意味着检查您所链接的库是否在构建时连接了其依赖项。</p>
+<p>第一个参数确保您没有忘记声明对运行时库的依赖项(也可能是运行时库对另一个运行时库的依赖项)。
+例如，如果您调用的函数的实现位于示例运行时库“libfunc”中。然后这个库会调用另一个运行时库中的函数libext。然后通过声明对libfunc的“func”和“ext”的依赖关系。因此，将在内部生成一个对libext的依赖引用。
+如果您省略<code>--no undefined</code>并忘记添加依赖项声明，那么构建仍然会成功，因为您相信运行时链接器将在运行时解析依赖项。
+由于构建成功了，您可能会相信一切都会好起来，而不知道构建已经将责任推迟到运行时链接器。
+但大多数情况下，运行时链接器的设计目的不是搜索未解析的引用，而是希望找到运行时库中声明的此类依赖项。如果没有这样的引用，您将得到一个运行时错误。
+运行时错误通常比解决编译时错误要昂贵得多。</p>
+<h3
+id="target_link_library-link_library">5、<code>TARGET_LINK_LIBRARY</code>
+&amp; <code>LINK_LIBRARY</code></h3>
+<p>target_link_libraries 会将需要链接的库作为属性挂在目标库上，
+后面用户用到这个库的时候可以通过<code>get_target_property(interface_link_libs $&#123;&#125; TARGET_LINK_LIBRARIES)</code>进行获取相应的值。</p>
+<h2 id="gcc不同版本中一些东西">GCC不同版本中一些东西</h2>
+<h3 id="gcc4.9.4">1、GCC4.9.4</h3>
+<blockquote>
+<p>The <code>-Wdate-time</code> option has been added for the C, C++ and
+Fortran compilers, which warns when the <code>__DATE__</code>,
+<code>__TIME__</code> or <code>__TIMESTAMP__</code> macros are used.
+Those macros might prevent bit-wise-identical reproducible
+compilations.</p>
+</blockquote>
+<blockquote>
+<p>With the new <code>#pragma GCC ivdep</code>, the user can assert that
+there are no loop-carried dependencies which would prevent concurrent
+execution of consecutive iterations using SIMD (single instruction
+multiple data) instructions.</p>
+</blockquote>
+<h4 id="inter-procedural-optimization-improvements">Inter-procedural
+optimization improvements:</h4>
+<ul>
+<li>New type inheritance analysis module improving devirtualization.
+Devirtualization now takes into account anonymous name-spaces and the
+C++11 final keyword.</li>
+<li>New speculative devirtualization pass (controlled by
+<code>-fdevirtualize-speculatively</code>.</li>
+<li>Calls that were speculatively made direct are turned back to
+indirect where direct call is not cheaper.</li>
+<li>Local aliases are introduced for symbols that are known to be
+semantically equivalent across shared libraries improving dynamic
+linking times.</li>
+</ul>
+<h4 id="feedback-directed-optimization-improvements">Feedback directed
+optimization improvements:</h4>
+<ul>
+<li>Profiling of programs using C++ inline functions is now more
+reliable.</li>
+<li>New time profiling determines typical order in which functions are
+executed.</li>
+<li>A new function reordering pass (controlled by -freorder-functions)
+significantly reduces startup time of large applications. Until binutils
+support is completed, it is effective only with link-time
+optimization.</li>
+<li>Feedback driven indirect call removal and devirtualization now
+handle cross-module calls when link-time optimization is enabled.</li>
+</ul>
+<p>https://gcc.gnu.org/gcc-4.9/porting_to.html</p>
+<h3 id="gcc-5.4">2、GCC 5.4</h3>
+<ul>
+<li><p>The default mode for C is now -std=gnu11 instead of
+-std=gnu89.</p></li>
+<li><p>The C++ runtime library (libstdc++) uses a new ABI by default
+(see below).</p></li>
+<li><p>The non-standard C++0x type traits
+<code>has_trivial_default_constructor</code>,
+<code>has_trivial_copy_constructor</code> and
+<code>has_trivial_copy_assign</code> have been deprecated and will be
+removed in a future version. The standard C++11 traits
+<code>is_trivially_default_constructible</code>,
+<code>is_trivially_copy_constructible</code> and
+<code>is_trivially_copy_assignable</code> should be used
+instead.</p></li>
+<li><p>添加<code>-fipa-icf</code>的配置项目 &gt; An Identical Code
+Folding (ICF) pass (controlled via -fipa-icf) has been added. Compared
+to the identical code folding performed by the Gold linker this pass
+does not require function sections. It also performs merging before
+inlining, so inter-procedural optimizations are aware of the code
+re-use. On the other hand not all unifications performed by a linker are
+doable by GCC which must honor aliasing information.</p></li>
+<li><p>The devirtualization pass was significantly improved by adding
+better support for speculative devirtualization and dynamic type
+detection.</p></li>
+<li><p>虚表进行了优化以减少动态链接时间 Virtual tables are now
+optimized. Local aliases are used to reduce dynamic linking time of C++
+virtual tables on ELF targets and data alignment has been reduced to
+limit data segment bloat.</p></li>
+<li><p>添加针对不允许插入导出符号的shared库，添加了控制项目以提高代码质量
+&gt; A new -fno-semantic-interposition option can be used to improve
+code quality of shared libraries where interposition of exported symbols
+is not allowed.</p></li>
+<li><p>内联可以控制 &gt; With profile feedback the function inliner can
+now bypass --param inline-insns-auto and --param inline-insns-single
+limits for hot calls.</p></li>
+<li><p>常量的过程间传播现在也传播指针参数的对齐。 &gt; The
+interprocedural propagation of constants now also propagates alignments
+of pointer parameters. This for example means that the vectorizer often
+does not need to generate loop prologues and epilogues to make up for
+potential misalignments.</p></li>
+<li><p>内存使用上一些优化 &gt; Memory usage and link times were
+improved. Tree merging was sped up, memory usage of GIMPLE declarations
+and types was reduced, and, support for on-demand streaming of variable
+constructors was added.</p></li>
+</ul>
+<h4 id="libstd上的优化">libstd++上的优化</h4>
+<ul>
+<li>Dual ABI</li>
+<li>A new implementation of std::string is enabled by default, using the
+small string optimization(SSO) instead of copy-on-write(COW) reference
+counting.</li>
+<li>A new implementation of std::list is enabled by default, with an
+O(1) size() function;</li>
+</ul>
+<h3 id="gcc-dump-preprocessor-defines">3、GCC dump preprocessor
+defines</h3>
+<ul>
+<li>最常用的输出编译器预定义的宏</li>
+</ul>
+<p><code>gcc -dM -E - &lt; /dev/null</code></p>
+<p><code>g++ -dM -E -x c++ - &lt; /dev/null</code></p>
+<ul>
+<li>How do I dump preprocessor macros coming from a particular header
+file?</li>
+</ul>
+<p><code>echo "#include &lt;sys/socket.h&gt;" | gcc -E -dM -</code></p>
+<ul>
+<li>添加某些options之后的</li>
+</ul>
+<p><code>gcc -dM -E -msse4 - &lt; /dev/null | grep SSE[34]</code> &gt;
+#define <strong>SSE3</strong> 1<br />
+&gt; #define <strong>SSE4_1</strong> 1<br />
+&gt; #define <strong>SSE4_2</strong> 1<br />
+&gt; #define <strong>SSSE3</strong> 1</p>
+<h3 id="todo">4、TODO</h3>
+<ul>
+<li>常用的交叉编译的选项</li>
+<li>-O3和-O2之间的差别</li>
+<li>不同平台之间之间的差别</li>
+<li>如何给不同版本的gcc打补丁</li>
+</ul>
+<p>在文章[Algorithm-Optimization]<a href="#fn2" class="footnote-ref"
+id="fnref2"
+role="doc-noteref"><sup>2</sup></a>中介绍了一些有利于优化性能的函数，感兴趣可以结合不同平台的优化指令一起学习使用。</p>
+<h2 id="gcc-different-platform的配置项">GCC different
+platform的配置项</h2>
+<p>[Using static and shared libraries across platforms]<a href="#fn3"
+class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p><img data-src="https://cwlseu.github.io/images/gcc/compilerflag_1.png"
+alt="@" /> <img data-src="https://cwlseu.github.io/images/gcc/compilerflag_2.png"
+alt="@" /></p>
+<h2 id="更多c内容">更多C++内容</h2>
+<ul>
+<li>http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/</li>
+<li>http://deepindeed.cn/2019/03/18/cpp-program-trick/</li>
+<li>libstdc++关于dual ABI文档:
+https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html</li>
+</ul>
+<h2 id="其他">其他</h2>
+<ul>
+<li>[gcc与g++的区别]<a href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a></li>
+<li>[ARM？华为？]<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a></li>
+<li>himix100的交叉编译链 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">➜  arm-himix100-linux tree -L 2 ./host_bin </span><br><span class="line">./host_bin</span><br><span class="line">├── arm-linux-androideabi-addr2line</span><br><span class="line">├── arm-linux-androideabi-ar</span><br><span class="line">├── arm-linux-androideabi-as</span><br><span class="line">├── arm-linux-androideabi-c++</span><br><span class="line">├── arm-linux-androideabi-c++filt</span><br><span class="line">├── arm-linux-androideabi-cpp</span><br><span class="line">├── arm-linux-androideabi-elfedit</span><br><span class="line">├── arm-linux-androideabi-g++</span><br><span class="line">├── arm-linux-androideabi-gcc</span><br><span class="line">├── arm-linux-androideabi-gcc-6.3.0</span><br><span class="line">├── arm-linux-androideabi-gcc-ar</span><br><span class="line">├── arm-linux-androideabi-gcc-nm</span><br><span class="line">├── arm-linux-androideabi-gcc-ranlib</span><br><span class="line">├── arm-linux-androideabi-gcov</span><br><span class="line">├── arm-linux-androideabi-gcov-tool</span><br><span class="line">├── arm-linux-androideabi-gdb</span><br><span class="line">├── arm-linux-androideabi-gprof</span><br><span class="line">├── arm-linux-androideabi-ld</span><br><span class="line">├── arm-linux-androideabi-ld.bfd</span><br><span class="line">├── arm-linux-androideabi-nm</span><br><span class="line">├── arm-linux-androideabi-objcopy</span><br><span class="line">├── arm-linux-androideabi-objdump</span><br><span class="line">├── arm-linux-androideabi-ranlib</span><br><span class="line">├── arm-linux-androideabi-readelf</span><br><span class="line">├── arm-linux-androideabi-run</span><br><span class="line">├── arm-linux-androideabi-size</span><br><span class="line">├── arm-linux-androideabi-strings</span><br><span class="line">├── arm-linux-androideabi-strip</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="参考文献">参考文献</h2>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"
+role="doc-endnote"><p>https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=vs-2017
+"Predefined macros"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"
+role="doc-endnote"><p>http://deepindeed.cn/2017/03/17/Algorithm-Optimization/<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"
+role="doc-endnote"><p>http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
+"Using static and shared libraries across platforms"<a href="#fnref3"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"
+role="doc-endnote"><p>https://www.cnblogs.com/liushui-sky/p/7729838.html
+"gcc和g++的区别"<a href="#fnref4" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"
+role="doc-endnote"><p>https://news.mydrivers.com/1/628/628308.htm<a
+href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201904/20190411-cpp-compiler/" title="开发中常见的编译器技巧">http://www.deepindeed.cn/201904/20190411-cpp-compiler/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Complier/" rel="tag"># Complier</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201904/20190407-cuda9-mixed-precision/" rel="prev" title="笔记：混合精度训练技术报告">
+                  <i class="fa fa-chevron-left"></i> 笔记：混合精度训练技术报告
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201907/20190714-detection/" rel="next" title="Detection算法Overview">
+                  Detection算法Overview <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">173k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:48</span>
+  </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201904/20190411-cpp-compiler/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
