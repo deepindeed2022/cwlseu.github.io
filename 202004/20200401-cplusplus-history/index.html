@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="C++的发展历史">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The history of C++">
+<meta property="og:url" content="http://www.deepindeed.cn/202004/20200401-cplusplus-history/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="C++的发展历史">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://isocpp.org/files/img/wg21-timeline-2019-07.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/gcc/compiler_support.jpg">
+<meta property="article:published_time" content="2020-04-01T13:05:18.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.116Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://isocpp.org/files/img/wg21-timeline-2019-07.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202004/20200401-cplusplus-history/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202004/20200401-cplusplus-history/","path":"202004/20200401-cplusplus-history/","title":"The history of C++"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>The history of C++ | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c-%E5%8E%86%E5%8F%B2%E5%A4%A7%E4%BA%8B%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">C++ 历史大事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">关键事件总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%BC%96%E8%AF%91%E5%99%A8%E5%AF%B9c%E6%A0%87%E5%87%86%E7%9A%84%E6%94%AF%E6%8C%81"><span class="nav-number">4.</span> <span class="nav-text">不同编译器对c++标准的支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202004/20200401-cplusplus-history/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="The history of C++ | Deepindeed">
+      <meta itemprop="description" content="C++的发展历史">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          The history of C++
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-04-01 21:05:18" itemprop="dateCreated datePublished" datetime="2020-04-01T21:05:18+08:00">2020-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202004/20200401-cplusplus-history/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202004/20200401-cplusplus-history/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">C++的发展历史</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言">前言</h2>
+<p>在阅读C++相关的技术书籍或博客时，常常会提到一些日常开发中不常接触的名词，如cfront
+2.0或者TR1等，这些名词在C++的历史发展中属于里程碑式的的名词。从C++不同时期的发展中可以看出对于程序员的开发需求逐渐满足，伴随着C++的标准的变化，编译器对语言的支持也逐渐完善。</p>
+<h2 id="c-历史大事件">C++ 历史大事件</h2>
+<figure>
+<img data-src="https://isocpp.org/files/img/wg21-timeline-2019-07.png"
+alt="@" />
+<figcaption aria-hidden="true">@</figcaption>
+</figure>
+<h2 id="关键事件总结">关键事件总结</h2>
+<table>
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 18%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">date</th>
+<th>feature</th>
+<th>details</th>
+<th>sample</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1979</td>
+<td>首次实现引入类的C</td>
+<td>C with Classes first implemented<br>1.
+新特性：<strong>类、成员函数、继承类</strong>、独立编译、<strong>公共和私有访问控制、友元、函数参数类型检查、默认参数、内联函数、赋值符号重载、构造函数、析构函数</strong>、f()相当于f(void)、调用函数和返回函数（同步机制，不是在C++中）</br>
+2. 库：并发任务程序库（不是在C++中）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1985</td>
+<td>编译器cfront 1.0</td>
+<td>1.
+新特性：<strong>虚函数、函数和操作符重载</strong>、<strong>引用</strong>、<strong>new和delete操作符</strong>、<strong>const关键词</strong>、范围解析运算符::<br>2.
+新加入的库：复数（complex）、字符串（string）、输入输出流（iostream）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1985</td>
+<td>《C++编程语言第一版》</td>
+<td>The C++ Programming Language, 1st edition</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1989</td>
+<td>编译器cfront 2.0</td>
+<td>1.新特性：多重继承、成员指针、保护访问控制、类型安全联接、抽象类、静态和常量成员函数、特定类的new和delete
+<br> 2. 新库：I/O 操作器 <br></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1990</td>
+<td>ANSI C++委员会成立（ANSI C++ Committee founded）</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1990</td>
+<td>《C++参考手册注解》</td>
+<td>The Annotated C++ Reference Manual was released.</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1991</td>
+<td>ISO C++委员会成立（ISO C++ Committee founded）</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1998</td>
+<td>C++98</td>
+<td>1. 新特性：<strong>运行时类型信息［RTTI（dynamic_cast,
+typeid）］</strong>、协变返回类型（covariant return types）、cast
+操作符、可变型、布尔型、声明情况、模板例示、成员模板、导出 <br> 2.
+新库：容器、算法、迭代器、函数对象（STL中）、区域设置、位集合、值向量、自动指针（auto_ptr）、模块化字符串、输入输出流和复数<br>
+the C++ standards committee published the first international standard
+for C++ ISO/IEC 14882:1998, which would be informally known as C++98.
+The Annotated C++ Reference Manual was said to be a large influence in
+the development of the standard. <strong>The Standard Template
+Library</strong>, which began its conceptual development in 1979, was
+also included.</td>
+<td>*****</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1999</td>
+<td>Boost由委员会成员成立，旨在开发新的高质量库以作为标准库的候选库</td>
+<td>Boost founded by the committee members to produce new high-quality
+candidate libraries for the standard</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2003</td>
+<td>C++03 (ISO/IEC 14882:2003)</td>
+<td>The committee responded to multiple problems that were reported with
+their 1998 standard, and revised it accordingly. The changed language
+was dubbed <strong>C++03</strong>.
+这是一个次要修订版本，修正了一些错误。</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2006</td>
+<td>Performance TR (ISO/IEC TR 18015:2006) (ISO Store ) (2006 draft
+)</td>
+<td>性能技术报告</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2007</td>
+<td>2007 Library extension TR1 (ISO/IEC TR 19768:2007) (ISO store )
+(2005 draft )</td>
+<td>1. 源自Boost：<strong>引用包装器（Reference
+wrapper）</strong>、<strong>智能指针（Smart
+pointers）</strong>、成员函数（Member function）、Result of
+、绑定（Binding）、函数（Function）、类型特征（type
+traits）、随机（Random）、数学特殊函数（Mathematical Special
+Functions）、元组（Tuple）、数组（Array）、无序容器［Unordered
+Containers包括哈希（Hash）］还有<strong>正则表达式（Regular
+Expressions）</strong> <br> 2.
+源自C99：math.h中同时也是新加入C99的数学函数、空白字符类、浮点环境（Floating-point
+environment）、十六进制浮点I/O操作符（hexfloat I/O
+Manipulator）、固定大小整数类型（fixed-size integral
+types）、长整型（the long long type）、va_copy、snprintf()
+和vscanf()函数族，还有C99 的printf()与scanf()函数族的指定转换。
+TR1除了一些特殊函数，大部分都被囊括进C++11。</td>
+<td>*****</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2010</td>
+<td>数学特殊函数技术报告［2010 Mathematical special functions TR
+(ISO/IEC 29124:2010)(ISO Store)］</td>
+<td>此TR是一个C++标准库扩展，加入了TR1中的部分特殊函数，但那些函数之前没有被包括进C++11：椭圆积分、指数积分、拉盖尔多项式（Laguerre
+polynomials）、勒让徳多项式（Legendre
+polynomials）、艾尔米特多项式（Hermite
+polynomials）、贝塞尔（Bessel）函数、纽曼（Newmann）函数、<span
+class="math inline">\(\beta\)</span>函数和黎曼（Riemann）<span
+class="math inline">\(\zeta\)</span>函数</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2011</td>
+<td>C++11 (ISO/IEC 14882:2011) (ISO Store) (ANSI Store )</td>
+<td>1.
+新语言特性：<strong>自动（auto）和类型获取（decltype）</strong>、默认和已删除函数（defaulted
+and deleted
+functions）、<strong>不可更改（final）和重载（override）</strong>、<strong>拖尾返回类型（trailing
+return type）</strong>、<strong>右值引用（rvalue
+references）</strong>、<strong>移动构造函数（move
+constructors）/移动赋值（move assignment）</strong>、作用域枚举（scoped
+enums）、常量表达式（constexpr）和文字类型（literal
+types）、<strong>列表初始化（list
+initialization）</strong>、授权（delegating）和<strong>继承构造器（inherited
+constructors）</strong>、大括号或等号（brace-or-equal）初始化器、<strong>空指针（nullptr）</strong>、长整型（long
+long）、char16_t和char32_t、类型别名（type
+aliases）、<strong>可变参数模板（variadic
+templates）</strong>、广义联合体（generalized
+unions）、广义POD、Unicode字符串文字（Unicode string
+literals）、自定义文字（user-defined
+literals）、属性（attributes）、<strong><span
+class="math inline">\(\lambda\)</span>表达式（lambda
+expressions）</strong>、无异常（noexcept）、对齐查询（alignof）和对齐指定（alignas）、<strong>多线程内存模型（multithreaded
+memory model）、线程本地存储（thread-local
+storage）</strong>、<strong>GC接口（GC interface）</strong>、range
+for(based on a Boost library)、静态断言［static assertions（based on a
+Boost library）］<br> 2.新库特性：原子操作库（atomic operations
+library）、<strong>emplace()</strong>和贯穿整个现有库的右值引用的使用、std::initializer_list、状态性的和作用域内的分配器（stateful
+and scoped
+allocators）、前向列表（forward_list）、<strong>计时库（chrono
+library）</strong>、分数库（ratio library）、新算法（new
+algorithms）、Unicode conversion facets
+<br>3.源自TR1：除了特殊的函数，TR1中全部都被囊括进来
+<br>4.源自Boost：线程库（The thread
+library）、异常指针（exception_ptr）、错误码（error_code）和错误情况（error_condition）、迭代器改进［iterator
+improvements（std::begin, std::end, std::next,
+std::prev）］<br>5.源自C：C风格的Unicode转换函数<br>6.搜集错误报告修复：363个错误在2008草案中被解决，另外有322个错误接着被修复。其中的错误包括530号，它使得std::basic_string对象相连。</td>
+<td>*****</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2011</td>
+<td>十进制浮点技术报告［Decimal floating-point TR (ISO/IEC TR
+24733:2011) (ISO Store ) (2009 draft )］</td>
+<td>这个TR根据IEEE 754-2008浮点算数标准（Floating Point
+Arithmetic）：std::decimal::decimal32、std::decimal::decimal64、std::decimal::decimal128</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2012</td>
+<td>标准C++基金会成立</td>
+<td>The Standard C++ Foundation founded</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2013</td>
+<td>《C++编程语言第四版》</td>
+<td>The C++ Programming Language, 4th edition</td>
+<td></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2014</td>
+<td>C++14 (2014 final draft )</td>
+<td>1. 新语言特性：变量模板（variable
+templates）、多态lambda（polymorphic lambdas）、λ动捕获（move capture
+for lambdas）、<strong>new/delete
+elision</strong>、常量表达式函数放宽限制（relax restrictions on
+constexpr functions）、二值文本（binary literals）、数字分隔符（digit
+separators）、函数返回类型推演（return type deduction for
+functions）、用大括号或等号初始符集合初始化类<br> 2.
+新库特性：std::make_unique、std::shared_mutex和std::shared_lock、std::index_sequence、std::exchange、std::quoted，还有许多针对现有库的小改进，比如一些算法的双距离重载（two-range
+overloads for some algorithms）、类型特征的类型别名版本（type alias
+versions of type traits）、用户定义字符串（user-defined
+string）、持续期（duration）和复杂数字文本（complex number
+literals）等等<br> 3.搜集错误报告修复：149号库（149 library issues）
+基础库技术规范（Library fundamentals TS）, 文件系统技术规范（Filesystem
+TS）和其他专业技术规范（ experimental technical specifications）</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="不同编译器对c标准的支持">不同编译器对c++标准的支持</h2>
+<p>cfront x.x就是Bjarne
+Stroustrup的第一个C++编译器，将C++转换成C语言。在1993年，cfront
+4.0因为尝试支持异常机制失败而被取消。我们开发者最长打交道的工具就是编译器了。我们只要通过编写程序语言，编译器会翻译成具体的更底层命令来控制计算机去实现我们的需要的功能。但C++语言标准是一个庞大的特性集合，而不同编译器厂商在根据这个统一标准做编译器的过程中，由于各种原因，不可能支持全部的标准中列举出来的特性。
+例如，C++11已经流行多年，很多特性是随着编译器版本release才逐渐支持的，如下图：</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/gcc/compiler_support.jpg"
+alt="@" />
+<figcaption aria-hidden="true">@</figcaption>
+</figure>
+<ul>
+<li><p><a
+target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/compiler_support">关于不同编译器对C++不同时期的语言特性的支持程度</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://gcc.gnu.org/projects/cxx-status.html">gnu
+gcc对C++语言特定的支持情况以及最低支持版本等信息</a></p></li>
+</ul>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://gcc.gnu.org/onlinedocs/libstdc++/faq.html">gnu
+gcc常见问题</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.cplusplus.com/info/history/">C++官方的history页面</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/fickleness/p/3154937.html">中文博客C++的历史与现状</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations">Feature-Test
+Macros and Policies</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://isocpp.org/get-started">各编译器下载地址，包括vs2017社区版</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202004/20200401-cplusplus-history/" title="The history of C++">http://www.deepindeed.cn/202004/20200401-cplusplus-history/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201911/20191120-TensorRT/" rel="prev" title="Inference Framework based TensorRT">
+                  <i class="fa fa-chevron-left"></i> Inference Framework based TensorRT
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/202004/20200407-cpp-object-model/" rel="next" title="C++ Object Model">
+                  C++ Object Model <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/202004/20200401-cplusplus-history/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="物体检测算法概览">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Detection算法Overview">
+<meta property="og:url" content="http://www.deepindeed.cn/201907/20190714-detection/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="物体检测算法概览">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/Detection-All.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/RCNN.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/SPPNet-arch.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/FasterRCNN.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/FasterCNN-RPN.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/RCNN-types.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/pyramidImage.jpg">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/FPN.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/FPN-multiScale.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/MSRCNN.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/Anchor.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/ROIPooling.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/ROIAlign-1.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/ROIAlign-2.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/SPPNet.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/FasterRCNN_NMS.jpeg">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/SSD-2.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/detection/SSD-3.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190116235428577.jpg">
+<meta property="article:published_time" content="2019-07-14T12:12:12.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:17:32.675Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="detection">
+<meta property="article:tag" content="CV">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/detection/Detection-All.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201907/20190714-detection/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201907/20190714-detection/","path":"201907/20190714-detection/","title":"Detection算法Overview"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Detection算法Overview | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E4%BD%93%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">物体检测算法概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#r-cnn%E7%9A%84%E5%89%8D%E4%B8%96"><span class="nav-number">1.1.</span> <span class="nav-text">R-CNN的前世</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Eregion-proposals%E7%9A%84%E6%96%B9%E6%B3%95two-stage%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">基于region
+proposals的方法（Two-Stage方法）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rcnn"><span class="nav-number">2.1.</span> <span class="nav-text">RCNN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.1.1.</span> <span class="nav-text">主要工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rcnn%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">2.1.2.</span> <span class="nav-text">RCNN的缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.3.</span> <span class="nav-text">优化思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spp-net"><span class="nav-number">2.2.</span> <span class="nav-text">SPP net</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spp-net%E7%9A%84%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3"><span class="nav-number">2.2.1.</span> <span class="nav-text">SPP-NET的主要思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%AF%B9%E4%BA%8Er-cnnspp-net%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">2.2.2.</span> <span class="nav-text">相对于R-CNN，SPP-net的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fast-rcnn"><span class="nav-number">2.3.</span> <span class="nav-text">Fast RCNN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6%E5%9B%BE"><span class="nav-number">2.3.1.</span> <span class="nav-text">算法框架图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.3.2.</span> <span class="nav-text">优点&amp;贡献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.3.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faster-rcnn"><span class="nav-number">2.4.</span> <span class="nav-text">Faster RCNN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#faster-rcnn%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6"><span class="nav-number">2.4.1.</span> <span class="nav-text">Faster RCNN算法框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">2.4.2.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fpnfeature-pyramid-networks-for-object-detection"><span class="nav-number">2.5.</span> <span class="nav-text">FPN(feature
+pyramid networks for object detection)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E9%87%91%E5%AD%97%E5%A1%94"><span class="nav-number">2.5.1.</span> <span class="nav-text">图像金字塔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E6%A6%82%E8%BF%B0"><span class="nav-number">2.5.2.</span> <span class="nav-text">论文概述：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-number">2.5.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mask-rcnn"><span class="nav-number">2.6.</span> <span class="nav-text">Mask-RCNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mask-scoring-r-cnn"><span class="nav-number">2.7.</span> <span class="nav-text">Mask Scoring R-CNN</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#one-stage%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">One-stage方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ssd%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.0.1.</span> <span class="nav-text">SSD原理与实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cornernet-%E4%BA%BA%E4%BD%93%E5%A7%BF%E6%80%81%E6%A3%80%E6%B5%8B"><span class="nav-number">3.1.</span> <span class="nav-text">CornerNet 人体姿态检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rpn%E4%B8%AD%E7%9A%84anchor"><span class="nav-number">3.2.</span> <span class="nav-text">RPN中的Anchor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95%E7%A0%94%E7%A9%B6%E9%97%AE%E9%A2%98%E5%B0%8F%E7%BB%93"><span class="nav-number">3.3.</span> <span class="nav-text">目标检测算法研究问题小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%89%B9%E6%AE%8A%E5%B1%82"><span class="nav-number">4.</span> <span class="nav-text">目标检测特殊层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#roipooling"><span class="nav-number">4.1.</span> <span class="nav-text">ROIpooling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9%E7%94%B1%E4%BA%8E%E4%B8%A4%E6%AC%A1%E9%87%8F%E5%8C%96%E5%B8%A6%E6%9D%A5%E7%9A%84%E8%AF%AF%E5%B7%AE"><span class="nav-number">4.1.1.</span> <span class="nav-text">缺点：由于两次量化带来的误差；</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="nav-number">4.1.2.</span> <span class="nav-text">案例说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#roi-align"><span class="nav-number">4.2.</span> <span class="nav-text">ROI Align</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nms%E7%AE%97%E6%B3%95%E4%BC%98%E5%8C%96%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="nav-number">4.3.</span> <span class="nav-text">NMS算法优化的必要性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nms%E7%AE%97%E6%B3%95%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">4.3.1.</span> <span class="nav-text">NMS算法的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8Er-cnn%E5%88%B0sppnet"><span class="nav-number">4.3.2.</span> <span class="nav-text">从R-CNN到SPPNet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#faster-rcnn-1"><span class="nav-number">4.3.2.1.</span> <span class="nav-text">Faster RCNN</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssd"><span class="nav-number">4.3.3.</span> <span class="nav-text">SSD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">4.3.4.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">4.3.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#one-stage%E5%92%8Ctwo-stage%E7%9A%84anchor-base-detection"><span class="nav-number">4.4.</span> <span class="nav-text">one-stage和two-stage的anchor-base
+detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88one-stage%E7%BD%91%E7%BB%9C%E9%80%9F%E5%BA%A6%E8%A6%81%E5%BF%AB%E5%BE%88%E5%A4%9A"><span class="nav-number">4.4.1.</span> <span class="nav-text">为什么one-stage网络速度要快很多？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88one-stage%E7%BD%91%E7%BB%9C%E7%9A%84%E5%87%86%E7%A1%AE%E6%80%A7%E8%A6%81%E6%AF%94two-stage%E7%BD%91%E7%BB%9C%E8%A6%81%E4%BD%8E"><span class="nav-number">4.4.2.</span> <span class="nav-text">为什么one-stage网络的准确性要比two-stage网络要低？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%A3%E4%B9%88%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E8%83%8C%E6%99%AFanchor%E4%B8%8D%E4%BC%9A%E6%8B%89%E4%BD%8E%E8%BF%99%E4%B8%AA%E5%87%86%E7%A1%AE%E7%8E%87%E5%91%A2"><span class="nav-number">4.4.3.</span> <span class="nav-text">那么什么情况下背景anchor不会拉低这个准确率呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3one-stage%E7%BD%91%E7%BB%9C%E8%83%8C%E6%99%AFanchor%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4%E7%9A%84%E4%B8%8D%E5%9D%87%E8%A1%A1%E9%97%AE%E9%A2%98%E6%96%B9%E6%A1%88"><span class="nav-number">4.4.4.</span> <span class="nav-text">解决one-stage网络背景anchor过多导致的不均衡问题方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E6%AD%A5%E4%BA%A4%E6%9B%BF%E8%AE%AD%E7%BB%83faster-rcnn"><span class="nav-number">4.4.5.</span> <span class="nav-text">四步交替训练Faster RCNN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faster-rcnn%E5%92%8Cyolo%E7%9A%84anchor%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">4.5.</span> <span class="nav-text">Faster-RCNN和YOLO的anchor有什么区别</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201907/20190714-detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Detection算法Overview | Deepindeed">
+      <meta itemprop="description" content="物体检测算法概览">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Detection算法Overview
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-07-14 20:12:12" itemprop="dateCreated datePublished" datetime="2019-07-14T20:12:12+08:00">2019-07-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:17:32" itemprop="dateModified" datetime="2022-08-29T23:17:32+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201907/20190714-detection/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201907/20190714-detection/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>17k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>29 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">物体检测算法概览</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="物体检测算法概述">物体检测算法概述</h1>
+<p>深度学习让物体检测从实验室走到生活。基于深度学习的物体检测算法分类两大类。一类是像RCNN类似的两stage方法，将ROI的选择和对ROI的分类score过程。
+另外一类是类似YOLO将ROI的选择和最终打分实现端到端一步完成。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/Detection-All.png"
+alt="@物体检测算法概览图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="物体检测算法概览图">@物体检测算法概览图</span></figcaption>
+</figure>
+<p><a
+target="_blank" rel="noopener" href="https://www.jianshu.com/p/0586fdb412bf?utm_source=oschina-app">各种检测算法之间的性能对比，准确率，速度，以及一些可能加速的tips</a></p>
+<h2 id="r-cnn的前世">R-CNN的前世</h2>
+<ul>
+<li>HOG</li>
+<li>DPM</li>
+<li>Selective Search</li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32564990">深度学习应用到物体检测以前</a></li>
+</ul>
+<h1 id="基于region-proposals的方法two-stage方法">基于region
+proposals的方法（Two-Stage方法）</h1>
+<ul>
+<li>RCNN =&gt; Fast RCNN =&gt; Faster RCNN =&gt; FPN <img
+src="https://cwlseu.github.io/images/detection/RCNN-types2.png"
+alt="@R-CNN、Fast R-CNN、Faster R-CNN三者关系" /></li>
+</ul>
+<h2 id="rcnn">RCNN</h2>
+<p>在早期深度学习技术发展进程中，主要都是围绕分类问题展开研究，这是因为神经网络特有的结构输出将概率统计和分类问题结合，提供一种直观易行的思路。国内外研究人员虽然也在致力于将其他如目标检测领域和深度学习结合，但都没有取得成效，这种情况直到R-CNN算法出现才得以解决。</p>
+<ul>
+<li>论文链接：https://arxiv.org/pdf/1311.2524.pdf</li>
+<li>作者：Ross Girshick Jeff Donahue Trevor Darrell Jitendra Malik
+之前的视觉任务大多数考虑使用SIFT和HOG特征，而近年来CNN和ImageNet的出现使得图像分类问题取得重大突破，那么这方面的成功能否迁移到PASCAL
+VOC的目标检测任务上呢？基于这个问题，论文提出了R-CNN。 R-CNN
+(Region-based CNN features) 性能：RCNN在VOC2007上的mAP是58%左右。</li>
+</ul>
+<h3 id="主要工作流程">主要工作流程</h3>
+<p><img data-src="https://cwlseu.github.io/images/detection/RCNN.png"
+alt="@R-CNN要完成目标定位，其流程主要分为四步" />
+R-CNN要完成目标定位，其流程主要分为四步： * 输入图像 *
+利用选择性搜索(Selective Search)这样的区域生成算法提取Region Proposal
+提案区域(2000个左右) * 将每个Region
+Proposal分别resize(因为训练好的CNN输入是固定的)后(也即下图中的warped
+region，文章中是归一化为227×227)作为CNN网络的输入。 *
+CNN网络提取到经过resize的region
+proposal的特征送入每一类的SVM分类器，判断是否属于该类</p>
+<h3 id="rcnn的缺点">RCNN的缺点</h3>
+<ul>
+<li>对于提取的每个Region
+Proposal，多数都是互相重叠，重叠部分会被多次重复提取feature)，都要分别进行CNN前向传播一次(相当于进行了2000吃提特征和SVM分类的过程)，计算量较大。</li>
+<li>CNN的模型确定的情况下只能接受固定大小的输入(也即wraped
+region的大小固定)</li>
+</ul>
+<h3 id="优化思路">优化思路</h3>
+<p>既然所有的Region
+Proposal都在输入图像中，与其提取后分别作为CNN的输入，为什么不考虑将带有Region
+Proposal的原图像直接作为CNN的输入呢？原图像在经过CNN的卷积层得到feature
+map，原图像中的Region
+Proposal经过特征映射(也即CNN的卷积下采样等操作)也与feature
+map中的一块儿区域相对应。</p>
+<h2 id="spp-net">SPP net</h2>
+<ul>
+<li>论文链接：]https://arxiv.org/abs/1406.4729</li>
+<li>作者：Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun 简述：SPP
+net中Region
+Proposal仍然是在原始输入图像中选取的，不过是通过CNN映射到了feature
+map中的一片区域。</li>
+</ul>
+<h3 id="spp-net的主要思想">SPP-NET的主要思想</h3>
+<p><img data-src="https://cwlseu.github.io/images/detection/SPPNet-arch.png"
+alt="@SPPNet架构图" /> * 对卷积层的feature map上的Region
+Proposal映射区域分别划分成1×1，2×2，4×4的窗口(window)， *
+在每个窗口内做max pooling，这样对于一个卷积核产生的feature
+map，就可以由SPP得到一个(1×1+2×2+4×4)维的特征向量。 *
+论文中采用的网络结构最后一层卷积层共有256个卷积核，所以最后会得到一个固定维度的特征向量(1×1+2×2+4×4)×256维)，并用此特征向量作为全连接层的输入后做分类。</p>
+<h3 id="相对于r-cnnspp-net的优势">相对于R-CNN，SPP-net的优势</h3>
+<ul>
+<li>使用原始图像作为CNN网络的输入来计算feature map(R-CNN中是每个Region
+Proposal都要经历一次CNN计算)，大大减少了计算量。</li>
+<li>RCNN要resize，易于失真，而SPP-net不需要，原因是，SPP net中Region
+Proposal仍然是通过选择性搜索等算法在输入图像中生成的，通过映射的方式得到feature
+map中对应的区域，并对Region Proposal在feature
+map中对应区域做空间金字塔池化。通过空间金字塔池化操作，对于任意尺寸的候选区域，经过SPP后都会得到固定长度的特征向量。</li>
+</ul>
+<!-- ### SPP-net缺点
+* 训练分多个阶段，步骤繁琐(微调网络+训练SVM+训练边框回归器)
+* SPP net在微调网络的时候固定了卷积层，只对全连接层进行微调 -->
+<h2 id="fast-rcnn">Fast RCNN</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1504.08083"><code>Fast R-CNN</code></a></li>
+<li>作者：Ross Girshick 性能：在VOC2007上的mAP也提高到了68%</li>
+</ul>
+<h3 id="算法框架图">算法框架图</h3>
+<p><img
+src="https://cwlseu.github.io/images/detection/FastRCNN-1.png" /> <img
+src="https://cwlseu.github.io/images/detection/FastRCNN.png" /></p>
+<h3 id="优点贡献">优点&amp;贡献</h3>
+<ul>
+<li>Fast R-CNN引入了RoI 池化层(相当于是一层SPP)，对于图像中的Region
+Poposal(也即RoI)，通过映射关系(图中的RoI projection)可以得到feature
+map中Region Proposal对应的区域。</li>
+<li>RoI Pooling层的操作是将feature
+map上的RoI区域划分为7×7的窗口，在每个窗口内进行max
+pooling，然后得到(7×7)×256的输出，最后连接到全连接层得到固定长度的RoI特征向量。</li>
+<li>前面得到的RoI特征向量再通过全连接层作为Softmax和Regressor的输入,训练过程可以更新所有的网络层</li>
+<li>训练过程是端到端的(Sigle-stage),并使用了一个多任务的损失函数(也即将边框回归直接加入到CNN网络中后,Fast
+R-CNN网络的损失函数包含了Softmax的损失和Regressor的损失)</li>
+</ul>
+<h3 id="小结">小结</h3>
+<p>在前面三种目标检测框架中(R-CNN，SPP net，Fast R-CNN)，Region
+Proposal都是通过区域生成的算法(选择性搜索等)在原始输入图像中产生的，不过在SPP
+net及Fast R-CNN中都是输入图像中的Region
+Proposal通过映射关系映射到CNN中feature map上再操作的。Fast
+R-CNN中RoI池化的对象是输入图像中产生的proposal在feature
+map上的映射区域</p>
+<h2 id="faster-rcnn">Faster RCNN</h2>
+<ul>
+<li>论文链接：https://arxiv.org/pdf/1506.01497.pdf</li>
+<li>作者：Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun</li>
+</ul>
+<h3 id="faster-rcnn算法框架">Faster RCNN算法框架</h3>
+<p><img data-src="https://cwlseu.github.io/images/detection/FasterRCNN.png"
+alt="@faster RCNN的算法框架" />
+我们先整体的介绍下上图中各层主要的功能</p>
+<ul>
+<li><strong>卷积网络提取特征图</strong>：</li>
+</ul>
+<p>作为一种CNN网络目标检测方法，Faster
+RCNN首先使用一组基础的conv+relu+pooling层提取input image的feature
+maps,该feature maps会用于后续的RPN层和全连接层。</p>
+<ul>
+<li><strong>RPN(Region Proposal Networks,区域提议网络)</strong>:</li>
+</ul>
+<p>RPN网络主要用于生成region proposals， - 首先生成一堆Anchor
+box，对其进行裁剪过滤后通过softmax判断anchors属于前景(foreground)或者后景(background)，即是物体or不是物体，所以这是一个二分类；
+- 另一分支bounding box regression修正anchor
+box，形成较精确的proposal（注：这里的较精确是相对于后面全连接层的再一次box
+regression而言）</p>
+<p>Feature Map进入RPN后，先经过一次<span
+class="math inline">\(3*3\)</span>的卷积，同样，特征图大小依然是<span
+class="math inline">\(60*40\)</span>,数量512，这样做的目的应该是进一步集中特征信息，接着看到两个全卷积,即kernel_size=1*1,p=0,stride=1;
+- cls layer 逐像素对其9个Anchor box进行二分类 - reg layer
+逐像素得到其9个Anchor box四个坐标信息</p>
+<p>特征图大小为60<em>40，所以会一共生成60</em>40*9=21600个Anchor box</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/FasterCNN-RPN.png"
+alt="@FasterRCNN-RPN" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="FasterRCNN-RPN">@FasterRCNN-RPN</span></figcaption>
+</figure>
+<ul>
+<li><strong>Roi Pooling</strong>：</li>
+</ul>
+<p>该层利用RPN生成的proposals和VGG16最后一层得到的feature
+map，得到固定大小的proposal feature
+map,进入到后面可利用全连接操作来进行目标识别和定位</p>
+<ul>
+<li><strong>Classifier</strong>：</li>
+</ul>
+<p>会将ROI Pooling层形成固定大小的feature
+map进行全连接操作，利用Softmax进行具体类别的分类，同时，利用SmoothL1Loss完成bounding
+box regression回归操作获得物体的精确位置。</p>
+<p><img
+src="https://cwlseu.github.io/images/detection/FasterRCNN-Arch.png"
+alt="@FasterRCNN算法详细过程图" /> <img
+src="https://cwlseu.github.io/images/detection/FasterRCNNNetwork.png"
+alt="@FasterRCNN proposal&amp;RPN Netscope" /></p>
+<h3 id="参考链接">参考链接</h3>
+<ul>
+<li>[1]. https://www.cnblogs.com/wangyong/p/8513563.html</li>
+<li>[2]. https://www.jianshu.com/p/00a6a6efd83d</li>
+<li>[3]. https://www.cnblogs.com/liaohuiqiang/p/9740382.html</li>
+<li>[4]. https://blog.csdn.net/u011436429/article/details/80414615</li>
+<li>[5]. https://blog.csdn.net/xiaoye5606/article/details/71191429</li>
+</ul>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/RCNN-types.png"
+alt="@RCNN系列对比总结表" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="RCNN系列对比总结表">@RCNN系列对比总结表</span></figcaption>
+</figure>
+<p>向<a target="_blank" rel="noopener" href="http://www.rossgirshick.info/">RGB大神</a>,<a
+target="_blank" rel="noopener" href="http://kaiminghe.com/">He Kaiming</a>致敬！</p>
+<h2 id="fpnfeature-pyramid-networks-for-object-detection">FPN(feature
+pyramid networks for object detection)</h2>
+<ul>
+<li>论文链接：https://arxiv.org/abs/1612.03144</li>
+<li>poster链接：
+https://vision.cornell.edu/se3/wp-content/uploads/2017/07/fpn-poster.pdf</li>
+<li>caffe实现: https://github.com/unsky/FPN</li>
+<li>作者：Tsung-Yi Lin, Piotr Dollár, Ross Girshick, Kaiming He, Bharath
+Hariharan, Serge Belongie</li>
+</ul>
+<h3 id="图像金字塔">图像金字塔</h3>
+<p>图像金字塔,在很多的经典算法里面都有它的身影，比如SIFT、HOG等算法。
+我们常用的是高斯金字塔，所谓的高斯金字塔是通过高斯平滑和亚采样获得
+一些下采样图像，也就是说第K层高斯金字塔通过平滑、亚采样操作就可以
+获得K+1层高斯图像，高斯金字塔包含了一系列低通滤波器，其截止频率从
+上一层到下一层是以因子2逐渐增加，所以高斯金字塔可以跨越很大的频率范围。
+总之，我们输入一张图片，我们可以获得多张不同尺度的图像，我们将这些
+不同尺度的图像的4个顶点连接起来，就可以构造出一个类似真实金字塔的一
+个图像金字塔。通过这个操作，我们可以为2维图像增加一个尺度维度（或者说是深度），
+这样我们可以从中获得更多的有用信息。整个过程类似于人眼看一个目标由远及近的
+过程（近大远小原理）。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/pyramidImage.jpg"
+alt="@图像金字塔" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="图像金字塔">@图像金字塔</span></figcaption>
+</figure>
+<h3 id="论文概述">论文概述：</h3>
+<p>作者提出的多尺度的object detection算法：FPN（feature pyramid
+networks）。原来多数的object
+detection算法都是只采用顶层特征做预测，但我们知道低层的特征语义信息比较少，但是目标位置准确；高层的特征语义信息比较丰富，但是目标位置比较粗略。另外虽然也有些算法采用多尺度特征融合的方式，但是一般是采用融合后的特征做预测，而本文不一样的地方在于预测是在不同特征层独立进行的。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/FPN.png"
+alt="@FPN架构图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="FPN架构图">@FPN架构图</span></figcaption>
+</figure>
+<p>前面已经提到了高斯金字塔，由于它可以在一定程度上面提高算法的性能，
+因此很多经典的算法中都包含它。但是这些都是在传统的算法中使用，当然也可以将
+这种方法直应用在深度神经网络上面，但是由于它需要大量的运算和大量的内存。
+但是我们的特征金字塔可以在速度和准确率之间进行权衡，可以通过它获得更加鲁棒
+的语义信息，这是其中的一个原因。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/FPN-multiScale.png"
+alt="@FPN不同层识别的目标不同" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="FPN不同层识别的目标不同">@FPN不同层识别的目标不同</span></figcaption>
+</figure>
+<p>如上图所示，我们可以看到我们的图像中存在不同尺寸的目标，而不同的目标具有不同的特征，
+利用浅层的特征就可以将简单的目标的区分开来；
+利用深层的特征可以将复杂的目标区分开来；这样我们就需要这样的一个特征金字塔来完成这件事。
+图中我们在第1层（请看绿色标注）输出较大目标的实例分割结果，
+在第2层输出次大目标的实例检测结果，在第3层输出较小目标的实例分割结果。
+检测也是一样，我们会在第1层输出简单的目标，第2层输出较复杂的目标，第3层输出复杂的目标。</p>
+<h3 id="小结-1">小结</h3>
+<p>作者提出的FPN（Feature Pyramid
+Network）算法同时利用低层特征高分辨率和高层特征的高语义信息，通过融合这些不同层的特征达到预测的效果。并且预测是在每个融合后的特征层上单独进行的，这和常规的特征融合方式不同。</p>
+<h2 id="mask-rcnn">Mask-RCNN</h2>
+<ul>
+<li>论文地址：https://arxiv.org/abs/1703.06870</li>
+<li>作者：Kaiming He，Georgia Gkioxari，Piotr Dollar，Ross Girshick</li>
+<li>FAIR Detectron：https://github.com/facebookresearch/Detectron</li>
+<li>tensorflow: https://github.com/matterport/Mask_RCNN</li>
+</ul>
+<h2 id="mask-scoring-r-cnn">Mask Scoring R-CNN</h2>
+<ul>
+<li>论文地址：https://arxiv.org/abs/1903.00241</li>
+<li>github: https://github.com/zjhuang22/maskscoring_rcnn</li>
+</ul>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/MSRCNN.png"
+alt="@Mask Scoring RCNN的架构图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="Mask">@Mask</span> Scoring RCNN的架构图</figcaption>
+</figure>
+<h1 id="one-stage方法">One-stage方法</h1>
+<p>以R-CNN算法为代表的two
+stage的方法由于RPN结构的存在，虽然检测精度越来越高，但是其速度却遇到瓶颈，比较难于满足部分场景实时性的需求。
+因此出现一种基于回归方法的one stage的目标检测算法，不同于two
+stage的方法的分步训练共享检测结果，one stage的方法能实现完整单次
+训练共享特征，且在保证一定准确率的前提下，速度得到极大提升。</p>
+<h3 id="ssd原理与实现">SSD原理与实现</h3>
+<p>https://blog.csdn.net/u010712012/article/details/86555814
+https://github.com/amdegroot/ssd.pytorch
+http://www.cs.unc.edu/~wliu/papers/ssd_eccv2016_slide.pdf</p>
+<h2 id="cornernet-人体姿态检测">CornerNet 人体姿态检测</h2>
+<ul>
+<li>paper出处：https://arxiv.org/abs/1808.01244</li>
+<li>https://zhuanlan.zhihu.com/p/46505759</li>
+</ul>
+<h2 id="rpn中的anchor">RPN中的Anchor</h2>
+<p>Anchor是RPN网络的核心。需要确定每个滑窗中心对应感受野内存在目标与否。由于目标大小和长宽比例不一，需要多个尺度的窗。Anchor即给出一个基准窗大小，按照倍数和长宽比例得到不同大小的窗。有了Anchor之后，才能通过Select
+Search的方法Windows方法进行选取ROI的。</p>
+<p>首先我们需要知道anchor的本质是什么，本质是SPP(spatial pyramid
+pooling)思想的逆向。而SPP本身是做什么的呢，就是将不同尺寸的输入resize成为相同尺寸的输出。所以SPP的逆向就是，将相同尺寸的输出，倒推得到不同尺寸的输入。</p>
+<p>接下来是anchor的窗口尺寸，这个不难理解，三个面积尺寸（128<sup>2，256</sup>2，512^2），然后在每个面积尺寸下，取三种不同的长宽比例（1:1,1:2,2:1）.这样一来，我们得到了一共9种面积尺寸各异的anchor。示意图如下：
+<img data-src="https://cwlseu.github.io/images/detection/Anchor.png"
+alt="@9个Anchor示意图" />
+至于这个anchor到底是怎么用的，这个是理解整个问题的关键。</p>
+<ul>
+<li>Faster RCNN</li>
+<li>SSD</li>
+<li>YOLO</li>
+<li>Guided Anchor: https://arxiv.org/abs/1901.03278</li>
+</ul>
+<h2 id="目标检测算法研究问题小结">目标检测算法研究问题小结</h2>
+<p>目标检测领域的深度学习算法，需要进行目标定位和物体识别，算法相对来说还是很复杂的。当前各种新算法也是层不出穷，但模型之间有很强的延续性，大部分模型算法都是借鉴了前人的思想，站在巨人的肩膀上。我们需要知道经典模型的特点，这些tricks是为了解决什么问题，以及为什么解决了这些问题。这样才能举一反三，万变不离其宗。综合下来，目标检测领域主要的难点如下:</p>
+<ul>
+<li>检测速度：实时性要求高，故网络结构不能太复杂，参数不能太多，卷积层次也不能太多。</li>
+<li><strong>位置准确率</strong>：<code>(x y w h)</code>参数必须准确，也就是检测框大小尺寸要匹配，且重合度IOU要高。SSD和faster
+RCNN通过多个bounding box来优化这个问题</li>
+<li><strong>漏检率</strong>：必须尽量检测出所有目标物体，特别是靠的近的物体和尺寸小的物体。SSD和faster
+RCNN通过多个bounding box来优化这个问题</li>
+<li><strong>物体宽高比例不常见</strong>：SSD通过不同尺寸feature
+map，yoloV2通过不同尺寸输入图片，来优化这个问题。</li>
+<li>靠的近的物体准确率低</li>
+<li>小尺寸物体准确率低：SSD取消全连接层，yoloV2增加pass through
+layer，采用高分辨率输入图片，来优化这个问题</li>
+</ul>
+<h1 id="目标检测特殊层">目标检测特殊层</h1>
+<h2 id="roipooling">ROIpooling</h2>
+<p>ROIs
+Pooling顾名思义，是Pooling层的一种，而且是针对RoIs的Pooling，他的特点是输入特征图尺寸不固定，但是输出特征图尺寸固定；</p>
+<blockquote>
+<p>ROI是Region of Interest的简写，指的是在“特征图上的框”; * 在Fast
+RCNN中， RoI是指Selective
+Search完成后得到的“候选框”在特征图上的映射，如下图中的红色框所示； *
+在Faster
+RCNN中，候选框是经过RPN产生的，然后再把各个“候选框”映射到特征图上，得到RoIs。</p>
+</blockquote>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/ROIPooling.png"
+alt="@" />
+<figcaption aria-hidden="true">@</figcaption>
+</figure>
+<p>参考faster rcnn中的ROI
+Pool层，功能是将不同size的ROI区域映射到固定大小的feature map上。</p>
+<h3 id="缺点由于两次量化带来的误差">缺点：由于两次量化带来的误差；</h3>
+<ul>
+<li>将候选框边界量化为整数点坐标值。</li>
+<li>将量化后的边界区域平均分割成<span class="math inline">\(k\times
+k\)</span>个单元(bin),对每一个单元的边界进行量化。</li>
+</ul>
+<h3 id="案例说明">案例说明</h3>
+<p>下面我们用直观的例子具体分析一下上述区域不匹配问题。如 图1
+所示，这是一个Faster-RCNN检测框架。输入一张<span
+class="math inline">\(800\times 800\)</span>的图片，图片上有一个<span
+class="math inline">\(665\times
+665\)</span>的包围框(框着一只狗)。图片经过主干网络提取特征后，特征图缩放步长（stride）为32。因此，图像和包围框的边长都是输入时的1/32。800正好可以被32整除变为25。但665除以32以后得到20.78，带有小数，于是ROI
+Pooling 直接将它量化成20。接下来需要把框内的特征池化<span
+class="math inline">\(7\times7\)</span>的大小，因此将上述包围框平均分割成<span
+class="math inline">\(7\times7\)</span>个矩形区域。显然，每个矩形区域的边长为2.86，又含有小数。于是ROI
+Pooling
+再次把它量化到2。经过这两次量化，候选区域已经出现了较明显的偏差（如图中绿色部分所示）。更重要的是，该层特征图上0.1个像素的偏差，缩放到原图就是3.2个像素。那么0.8的偏差，在原图上就是接近30个像素点的差别，这一差别不容小觑。</p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/ShaoqingRen/caffe/blob/062f2431162165c658a42d717baf8b74918aa18e/src/caffe/layers/roi_pooling_layer.cpp"><code>caffe中实现roi_pooling_layer.cpp</code></a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Dtype&gt;</span><br><span class="line"><span class="type">void</span> ROIPoolingLayer&lt;Dtype&gt;::<span class="built_in">Forward_cpu</span>(<span class="type">const</span> vector&lt;Blob&lt;Dtype&gt;*&gt;&amp; bottom,</span><br><span class="line">      <span class="type">const</span> vector&lt;Blob&lt;Dtype&gt;*&gt;&amp; top) &#123;</span><br><span class="line">  <span class="comment">//输入有两部分组成，data和rois</span></span><br><span class="line">  <span class="type">const</span> Dtype* bottom_data = bottom[<span class="number">0</span>]-&gt;<span class="built_in">cpu_data</span>();</span><br><span class="line">  <span class="type">const</span> Dtype* bottom_rois = bottom[<span class="number">1</span>]-&gt;<span class="built_in">cpu_data</span>();</span><br><span class="line">  <span class="comment">// ROIs的个数</span></span><br><span class="line">  <span class="type">int</span> num_rois = bottom[<span class="number">1</span>]-&gt;<span class="built_in">num</span>();</span><br><span class="line">  <span class="type">int</span> batch_size = bottom[<span class="number">0</span>]-&gt;<span class="built_in">num</span>();</span><br><span class="line">  <span class="type">int</span> top_count = top[<span class="number">0</span>]-&gt;<span class="built_in">count</span>();</span><br><span class="line">  Dtype* top_data = top[<span class="number">0</span>]-&gt;<span class="built_in">mutable_cpu_data</span>();</span><br><span class="line">  <span class="built_in">caffe_set</span>(top_count, <span class="built_in">Dtype</span>(-FLT_MAX), top_data);</span><br><span class="line">  <span class="type">int</span>* argmax_data = max_idx_.<span class="built_in">mutable_cpu_data</span>();</span><br><span class="line">  <span class="built_in">caffe_set</span>(top_count, <span class="number">-1</span>, argmax_data);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// For each ROI R = [batch_index x1 y1 x2 y2]: max pool over R</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> n = <span class="number">0</span>; n &lt; num_rois; ++n) &#123;</span><br><span class="line">    <span class="type">int</span> roi_batch_ind = bottom_rois[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">// 把原图的坐标映射到feature map上面</span></span><br><span class="line">    <span class="type">int</span> roi_start_w = <span class="built_in">round</span>(bottom_rois[<span class="number">1</span>] * spatial_scale_);</span><br><span class="line">    <span class="type">int</span> roi_start_h = <span class="built_in">round</span>(bottom_rois[<span class="number">2</span>] * spatial_scale_);</span><br><span class="line">    <span class="type">int</span> roi_end_w = <span class="built_in">round</span>(bottom_rois[<span class="number">3</span>] * spatial_scale_);</span><br><span class="line">    <span class="type">int</span> roi_end_h = <span class="built_in">round</span>(bottom_rois[<span class="number">4</span>] * spatial_scale_);</span><br><span class="line">    <span class="comment">// 计算每个roi在feature map上面的大小</span></span><br><span class="line">    <span class="type">int</span> roi_height = <span class="built_in">max</span>(roi_end_h - roi_start_h + <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="type">int</span> roi_width = <span class="built_in">max</span>(roi_end_w - roi_start_w + <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//pooling之后的feature map的一个值对应于pooling之前的feature map上的大小</span></span><br><span class="line">    <span class="comment">//注：由于roi的大小不一致，所以每次都需要计算一次</span></span><br><span class="line">    <span class="type">const</span> Dtype bin_size_h = <span class="built_in">static_cast</span>&lt;Dtype&gt;(roi_height)</span><br><span class="line">                             / <span class="built_in">static_cast</span>&lt;Dtype&gt;(pooled_height_);</span><br><span class="line">    <span class="type">const</span> Dtype bin_size_w = <span class="built_in">static_cast</span>&lt;Dtype&gt;(roi_width)</span><br><span class="line">                             / <span class="built_in">static_cast</span>&lt;Dtype&gt;(pooled_width_);</span><br><span class="line">    <span class="comment">//找到对应的roi的feature map，如果input data的batch size为1</span></span><br><span class="line">    <span class="comment">//那么roi_batch_ind=0</span></span><br><span class="line">    <span class="type">const</span> Dtype* batch_data = bottom_data + bottom[<span class="number">0</span>]-&gt;<span class="built_in">offset</span>(roi_batch_ind);</span><br><span class="line">    <span class="comment">//pooling的过程是针对每一个channel的，所以需要循环遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> c = <span class="number">0</span>; c &lt; channels_; ++c) &#123;</span><br><span class="line">      <span class="comment">//计算output的每一个值，所以需要遍历一遍output，然后求出所有值</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> ph = <span class="number">0</span>; ph &lt; pooled_height_; ++ph) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> pw = <span class="number">0</span>; pw &lt; pooled_width_; ++pw) &#123;</span><br><span class="line">          <span class="comment">// Compute pooling region for this output unit:</span></span><br><span class="line">          <span class="comment">//  start (included) = floor(ph * roi_height / pooled_height_)</span></span><br><span class="line">          <span class="comment">//  end (excluded) = ceil((ph + 1) * roi_height / pooled_height_)</span></span><br><span class="line">          <span class="comment">// 计算output上的一点对应于input上面区域的大小[hstart, wstart, hend, wend]</span></span><br><span class="line">          <span class="type">int</span> hstart = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">floor</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(ph)</span><br><span class="line">                                              * bin_size_h));</span><br><span class="line">          <span class="type">int</span> hend = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">ceil</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(ph + <span class="number">1</span>)</span><br><span class="line">                                           * bin_size_h));</span><br><span class="line">          <span class="type">int</span> wstart = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">floor</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(pw)</span><br><span class="line">                                              * bin_size_w));</span><br><span class="line">          <span class="type">int</span> wend = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">ceil</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(pw + <span class="number">1</span>)</span><br><span class="line">                                           * bin_size_w));</span><br><span class="line">          <span class="comment">//将映射后的区域平动到对应的位置[hstart, wstart, hend, wend]</span></span><br><span class="line">          hstart = <span class="built_in">min</span>(<span class="built_in">max</span>(hstart + roi_start_h, <span class="number">0</span>), height_);</span><br><span class="line">          hend = <span class="built_in">min</span>(<span class="built_in">max</span>(hend + roi_start_h, <span class="number">0</span>), height_);</span><br><span class="line">          wstart = <span class="built_in">min</span>(<span class="built_in">max</span>(wstart + roi_start_w, <span class="number">0</span>), width_);</span><br><span class="line">          wend = <span class="built_in">min</span>(<span class="built_in">max</span>(wend + roi_start_w, <span class="number">0</span>), width_);</span><br><span class="line">          <span class="comment">//如果映射后的矩形框不符合</span></span><br><span class="line">          <span class="type">bool</span> is_empty = (hend &lt;= hstart) || (wend &lt;= wstart);</span><br><span class="line">          <span class="comment">//pool_index指的是此时计算的output的值对应于output的位置</span></span><br><span class="line">          <span class="type">const</span> <span class="type">int</span> pool_index = ph * pooled_width_ + pw;</span><br><span class="line">          <span class="comment">//如果矩形不符合，此处output的值设为0，此处的对应于输入区域的最大值为-1</span></span><br><span class="line">          <span class="keyword">if</span> (is_empty) &#123;</span><br><span class="line">            top_data[pool_index] = <span class="number">0</span>;</span><br><span class="line">            argmax_data[pool_index] = <span class="number">-1</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">//遍历output的值对应于input的区域块</span></span><br><span class="line">          <span class="keyword">for</span> (<span class="type">int</span> h = hstart; h &lt; hend; ++h) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> w = wstart; w &lt; wend; ++w) &#123;</span><br><span class="line">             <span class="comment">// 对应于input上的位置</span></span><br><span class="line">              <span class="type">const</span> <span class="type">int</span> index = h * width_ + w;</span><br><span class="line">              <span class="comment">//计算区域块的最大值，保存在output对应的位置上</span></span><br><span class="line">              <span class="comment">//同时记录最大值的索引</span></span><br><span class="line">              <span class="keyword">if</span> (batch_data[index] &gt; top_data[pool_index]) &#123;</span><br><span class="line">                top_data[pool_index] = batch_data[index];</span><br><span class="line">                argmax_data[pool_index] = index;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// Increment all data pointers by one channel</span></span><br><span class="line">      batch_data += bottom[<span class="number">0</span>]-&gt;<span class="built_in">offset</span>(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">      top_data += top[<span class="number">0</span>]-&gt;<span class="built_in">offset</span>(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">      argmax_data += max_idx_.<span class="built_in">offset</span>(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Increment ROI data pointer</span></span><br><span class="line">    bottom_rois += bottom[<span class="number">1</span>]-&gt;<span class="built_in">offset</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="roi-align">ROI Align</h2>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/ROIAlign-1.png"
+alt="@ROIAlign模块使用示意图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="ROIAlign模块使用示意图">@ROIAlign模块使用示意图</span></figcaption>
+</figure>
+<p>为了解决ROI Pooling的上述缺点，作者提出了ROI Align这一改进的方法。ROI
+Align的思路很简单：取消量化操作，使用双线性内插的方法获得坐标为浮点数的像素点上的图像数值,从而将整个特征聚集过程转化为一个连续的操作。值得注意的是，在具体的算法操作上，ROI
+Align并不是简单地补充出候选区域边界上的坐标点，然后将这些坐标点进行池化，而是重新设计了一套比较优雅的流程，如下图所示：
+<img data-src="https://cwlseu.github.io/images/detection/ROIAlign-2.png"
+alt="@浮点坐标计算过程" /> *
+遍历每一个候选区域，保持浮点数边界不做量化。 * 将候选区域分割成<span
+class="math inline">\(k\times
+k\)</span>个单元，每个单元的边界也不做量化。 *
+在每个单元中计算固定四个坐标位置，用双线性内插的方法计算出这四个位置的值，然后进行最大池化操作。</p>
+<p>这里对上述步骤的第三点作一些说明：这个固定位置是指在每一个矩形单元（bin）中按照固定规则确定的位置。比如，如果采样点数是1，那么就是这个单元的中心点。如果采样点数是4，那么就是把这个单元平均分割成四个小方块以后它们分别的中心点。显然这些采样点的坐标通常是浮点数，所以需要使用插值的方法得到它的像素值。在相关实验中，作者发现将采样点设为4会获得最佳性能，甚至直接设为1在性能上也相差无几。
+事实上，ROIAlign在遍历取样点的数量上没有ROIPooling那么多，但却可以获得更好的性能，这主要归功于解决了<strong>misalignment</strong>的问题。值得一提的是，我在实验时发现，ROIAlign在<code>VOC2007</code>数据集上的提升效果并不如在<code>COCO</code>上明显。经过分析，造成这种区别的原因是<code>COCO</code>上小目标的数量更多，而小目标受<strong>misalignment</strong>问题的影响更大（比如，同样是0.5个像素点的偏差，对于较大的目标而言显得微不足道，但是对于小目标，误差的影响就要高很多）。ROIAlign层要将feature
+map固定为2*2大小，那些蓝色的点即为采样点，然后每个bin中有4个采样点，则这四个采样点经过MAX得到ROI
+output；</p>
+<blockquote>
+<p>通过双线性插值避免了量化操作，保存了原始ROI的空间分布，有效避免了误差的产生；小目标效果比较好</p>
+</blockquote>
+<h2 id="nms算法优化的必要性">NMS算法优化的必要性</h2>
+<h3 id="nms算法的功能">NMS算法的功能</h3>
+<p>非极大值抑制（NMS）非极大值抑制顾名思义就是抑制不是极大值的元素，搜索局部的极大值。例如在对象检测中，滑动窗口经提取特征，经分类器分类识别后，每个窗口都会得到一个分类及分数。但是滑动窗口会导致很多窗口与其他窗口存在包含或者大部分交叉的情况。这时就需要用到NMS来选取那些邻域里分数最高（是某类对象的概率最大），并且抑制那些分数低的窗口。印象最为深刻的就是Overfeat算法中的狗熊抓鱼图了。</p>
+<h3 id="从r-cnn到sppnet">从R-CNN到SPPNet</h3>
+<p><span
+class="math inline">\(RCNN\)</span>主要作用就是用于物体检测，就是首先通过<span
+class="math inline">\(selective search\)</span>选择<span
+class="math inline">\(2000\)</span>个候选区域，这些区域中有我们需要的所对应的物体的bounding-box，然后对于每一个region
+proposal都wrap到固定的大小的scale, <span
+class="math inline">\(227\times227\)</span>(AlexNet
+Input),对于每一个处理之后的图片，把他都放到CNN上去进行特征提取，得到每个region
+proposal的feature map,这些特征用固定长度的特征集合feature vector来表示。
+最后对于每一个类别，我们都会得到很多的feature
+vector，然后把这些特征向量直接放到SVM现行分类器去判断，当前region所对应的实物是background还是所对应的物体类别，每个region都会给出所对应的score，因为有些时候并不是说这些region中所包含的实物就一点都不存在，有些包含的多有些包含的少，包含的多少还需要合适的bounding
+box，所以我们才会对于每一region给出包含实物类别多少的分数，选出前几个对大数值，然后再用非极大值抑制canny来进行边缘检测，最后就会得到所对应的bounding
+box.</p>
+<p><img data-src="https://cwlseu.github.io/images/detection/SPPNet.png"
+alt="Alt text" /> 同样，SPPNet作者观察得，对selective
+search(ss)提供的2000多个候选区域都逐一进行卷积处理，势必会耗费大量的时间，
+所以SPPNet中先对一整张图进行卷积得到特征图，然后再将ss算法提供的2000多个候选区域的位置记录下来，通过比例映射到整张图的feature
+map上提取出候选区域的特征图B,然后将B送入到金字塔池化层中，进行权重计算.
+然后经过尝试，这种方法是可行的，于是在RCNN基础上，进行了这两个优化得到了这个新的网络SPPNet.</p>
+<h4 id="faster-rcnn-1">Faster RCNN</h4>
+<p>NMS算法，非极大值抑制算法，引入NMS算法的目的在于：根据事先提供的score向量，以及regions(由不同的bounding
+boxes，矩形窗口左上和右下点的坐标构成)
+的坐标信息，从中筛选出置信度较高的bounding boxes。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/FasterRCNN_NMS.jpeg"
+alt="@FasterRCNN中的NMS的作用" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="FasterRCNN中的NMS的作用">@FasterRCNN中的NMS的作用</span></figcaption>
+</figure>
+<p><img
+src="https://cwlseu.github.io/images/detection/FasterRCNN_anchor.jpeg"
+alt="@FasterRCNN中anchor推荐框的个数" /> Faster
+RCNN中输入s=600时，采用了三个尺度的anchor进行推荐，分别时128,256和512，其中推荐的框的个数为<span
+class="math inline">\(1106786\)</span>，需要将这<span
+class="math inline">\(1100k\)</span>的推荐框合并为<span
+class="math inline">\(2k\)</span>个。这个过程其实正是<span
+class="math inline">\(RPN\)</span>神经网络模型。</p>
+<h3 id="ssd">SSD</h3>
+<p>https://blog.csdn.net/wfei101/article/details/78176322
+SSD算法中是分为default box(下图中(b)中为default box示意图)和prior
+box(实际推荐的框) <img
+src="https://cwlseu.github.io/images/detection/SSD-1.png"
+alt="@SSD算法中的anchor box和default box示意图" /></p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/SSD-2.png"
+alt="@SSD算法架构图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="SSD算法架构图">@SSD算法架构图</span></figcaption>
+</figure>
+<figure>
+<img data-src="https://cwlseu.github.io/images/detection/SSD-3.png"
+alt="SSD算法推荐框的个数" />
+<figcaption aria-hidden="true">SSD算法推荐框的个数</figcaption>
+</figure>
+<h3 id="注意">注意</h3>
+<p>在图像处理领域，几点经验： 1.
+输入的图像越大，结果越准确，但是计算量也更多 2.
+推荐的框越多，定位准确的概率更高，但是计算量也是会增多 3.
+推荐的框往往远大于最终的定位的个数</p>
+<p>那么NMS存在什么问题呢，其中最主要的问题有这么几个： -
+物体重叠：如下面第一张图，会有一个最高分数的框，如果使用nms的话就会把其他置信度稍低，但是表示另一个物体的预测框删掉（由于和最高置信度的框overlap过大）
+-
+某些情况下，所有的bbox都预测不准，对于下面第二张图我们看到，不是所有的框都那么精准，有时甚至会出现某个物体周围的所有框都标出来了，但是都不准的情况
+-
+传统的NMS方法是基于分类分数的，只有最高分数的预测框能留下来，但是大多数情况下IoU和分类分数不是强相关，很多分类标签置信度高的框都位置都不是很准</p>
+<h3 id="参考文献">参考文献</h3>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/makefile/p/nms.html">NMS的解释</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.cnblogs.com/rocbomb/p/4428946.html">附录中ROI的解释</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/u013989576/article/details/73439202/">SSD算法</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://towardsdatascience.com/review-retinanet-focal-loss-object-detection-38fba6afabe4">One-Stage
+Detector, With Focal Loss and RetinaNet Using ResNet+FPN, Surpass the
+Accuracy of Two-Stage Detectors, Faster R-CNN</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/lcczzu/article/details/86518615">非极大值抑制算法的两个改进算法
+&amp; 传统NMS的问题</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://blog.prince2015.club/2018/07/23/NMS/">非极大值抑制算法（NMS）与源码分析</a></li>
+</ol>
+<h2
+id="one-stage和two-stage的anchor-base-detection">one-stage和two-stage的anchor-base
+detection</h2>
+<p>它们的主要区别 * one-stage网络速度要快很多 *
+one-stage网络的准确性要比two-stage网络要低</p>
+<h3
+id="为什么one-stage网络速度要快很多">为什么one-stage网络速度要快很多？</h3>
+<p>首先来看第一点这个好理解，one-stage网络生成的anchor框只是一个逻辑结构，或者只是一个数据块，只需要对这个数据块进行分类和回归就可以，不会像two-stage网络那样，生成的
+anchor框会映射到feature
+map的区域（rcnn除外），然后将该区域重新输入到全连接层进行分类和回归，每个anchor映射的区域都要进行这样的分类和回归，所以它非常耗时</p>
+<h3
+id="为什么one-stage网络的准确性要比two-stage网络要低">为什么one-stage网络的准确性要比two-stage网络要低？</h3>
+<p>我们来看RCNN，它是首先在原图上生成若干个候选区域，这个候选区域表示可能会是目标的候选区域，注意，这样的候选区域肯定不会特别多，假如我一张图像是<span
+class="math inline">\(100\times100\)</span>的，它可能会生成<code>2000</code>个候选框，然后再把这些候选框送到分类和回归网络中进行分类和回归，Fast
+R-CNN其实差不多，只不过它不是最开始将原图的这些候选区域送到网络中，而是在最后一个feature
+map将这个候选区域提出来，进行分类和回归，它可能最终进行分类和回归的候选区域也只有<code>2000</code>多个并不多。再来看Faster
+R-CNN，虽然Faster R-CNN它最终一个feature
+map它是每个像素点产生9个anchor，那么<span
+class="math inline">\(100\times100\)</span>假如到最终的feature
+map变成了<span
+class="math inline">\(26\times26\)</span>了，那么生成的anchor就是<span
+class="math display">\[26\times 26 \times 9 =
+6084\]</span>个，虽然看似很多，但是其实它在RPN网络结束后，它会不断的筛选留下<code>2000</code>多个，然后再从<code>2000</code>多个中筛选留下<code>300</code>多个，然后再将这<code>300</code>多个候选区域送到最终的分类和回归网络中进行训练，所以不管是R-CNN还是Fast-RCNN还是Faster-RCNN，它们最终进行训练的anchor其实并不多，几百到几千，不会存在特别严重的正负样本不均衡问题.
+但是我们再来看yolo系列网络，就拿yolo3来说吧，它有三种尺度，<span
+class="math inline">\(13\times 13\)</span>，<span
+class="math inline">\(26\times 26\)</span>，<span
+class="math inline">\(52\times
+52\)</span>，每种尺度的每个像素点生成三种anchor，那么它最终生成的anchor数目就是
+<span class="math display">\[(13\times 13+26\times 26+52\times52)\times
+3 =
+10647\]</span>个anchor，而真正负责预测的可能每种尺度的就那么几个，假如一张图片有3个目标，那么每种尺度有三个anchor负责预测，那么10647个anchor中总共也只有9个anchor负责预测，也就是正样本，其余的10638个anchor都是背景anchor，这存在一个严重的正负样本失衡问题，虽然位置损失，类别损失，这10638个anchor不需要参与，但是目标置信度损失，背景anchor参与了，因为</p>
+<p><span class="math display">\[总的损失 = 位置损失 + 目标置信度损失 +
+类别损失\]</span></p>
+<p>所以背景anchor对总的损失有了很大的贡献，但是我们其实不希望这样的，我们更希望的是非背景的anchor对总的损失贡献大一些，这样不利于正常负责预测anchor的学习，而two-stage网络就不存在这样的问题，two-stage网络最终参与训练的或者计算损失的也只有<code>2000</code>个或者<code>300</code>个，它不会有多大的样本不均衡问题，不管是正样本还是负样本对损失的贡献几乎都差不多，所以网络会更有利于负责预测anchor的学习，所以它最终的准确性肯定要高些</p>
+<blockquote>
+<p>总结</p>
+</blockquote>
+<p>one-stage网络最终学习的anchor有很多，但是只有少数anchor对最终网络的学习是有利的，而大部分anchor对最终网络的学习都是不利的，这部分的anchor很大程度上影响了整个网络的学习，拉低了整体的准确率；而two-stage网络最终学习的anchor虽然不多，但是背景anchor也就是对网络学习不利的anchor也不会特别多，它虽然也能影响整体的准确率，但是肯定没有one-stage影响得那么严重，所以它的准确率比one-stage肯定要高。</p>
+<h3
+id="那么什么情况下背景anchor不会拉低这个准确率呢">那么什么情况下背景anchor不会拉低这个准确率呢？</h3>
+<p>设置阀值，与真实GrundTruth
+IOU阀值设得小一点，只要大于这个阀值，就认为你是非背景anchor（注意这部分anchor只负责计算目标置信度损失，而位置、类别损失仍然还是那几个负责预测的anchor来负责）或者假如一个图片上有非常多的位置都是目标，这样很多anchor都不是背景anchor；总之保证背景anchor和非背景anchor比例差不多，那样可能就不会拉低这个准确率，但是只要它们比例相差比较大，那么就会拉低这个准确率，只是不同的比例，拉低的程度不同而已</p>
+<h3
+id="解决one-stage网络背景anchor过多导致的不均衡问题方案">解决one-stage网络背景anchor过多导致的不均衡问题方案</h3>
+<ul>
+<li>采用focal loss，将目标置信度这部分的损失换成focal loss</li>
+<li>增大非背景anchor的数量</li>
+</ul>
+<p>某个像素点生成的三个anchor，与真实GrundTruth重合最大那个负责预测，它负责计算位置损失、目标置信度损失、类别损失，这些不管，它还有另外两个anchor，虽然另外两个anchor不是与真实GrundTruth重合最大，但是只要重合大于某个阀值比如大于<code>0.7</code>，我就认为它是非背景anchor，但注意它只计算目标置信度损失，位置和类别损失不参与计算，而小于<code>0.3</code>的我直接不让它参与目标置信度损失的计算，实现也就是将它的权重置0，这个思想就类似two-stage网络那个筛选机制，从<code>2000</code>多个anchor中筛选<code>300</code>个参与训练或者计算目标置信度损失，相当于我把小于<code>0.3</code>的anchor我都筛选掉了，让它不参与损失计算</p>
+<ul>
+<li>设置权重
+在目标置信度损失计算时，将背景anchor的权重设置得很小，非背景anchor的权重设置得很大。</li>
+</ul>
+<h3 id="四步交替训练faster-rcnn">四步交替训练Faster RCNN</h3>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34327246">训练RPN网络</a></p>
+<p>Faster
+RCNN有两种训练方式，一种是四步交替训练法，一种是end-to-end训练法。主文件位于/tools/train_fast_rcnn_alt_opt.py。</p>
+<p>第一步，训练RPN，该网络用ImageNet预训练的模型初始化，并端到端微调，用于生成region
+proposal;</p>
+<p>第二步，由imageNet model初始化，利用第一步的RPN生成的region
+proposals作为输入数据，训练Fast
+R-CNN一个单独的检测网络，这时候两个网络还没有共享卷积层;</p>
+<p>第三步，用第二步的fast-rcnn
+model初始化RPN再次进行训练，但固定共享的卷积层，并且只微调RPN独有的层，现在两个网络共享卷积层了;</p>
+<p>第四步，由第三步的RPN
+model初始化fast-RCNN网络，输入数据为第三步生成的proposals。保持共享的卷积层固定，微调Fast
+R-CNN的fc层。这样，两个网络共享相同的卷积层，构成一个统一的网络。</p>
+<h2
+id="faster-rcnn和yolo的anchor有什么区别">Faster-RCNN和YOLO的anchor有什么区别</h2>
+<figure>
+<img data-src="https://img-blog.csdnimg.cn/20190116235428577.jpg"
+alt="@FasterRCNN generator anchor" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="FasterRCNN">@FasterRCNN</span> generator anchor</figcaption>
+</figure>
+<p>可以看到yolov3是直接对你的训练样本进行k-means聚类，由训练样本得来的先验框（anchor），也就是对样本聚类的结果。Kmeans因为初始点敏感，所以每次运行得到的anchor值不一样，但是对应的avg
+iou稳定。用于训练的话就需要统计多组anchor，针对固定的测试集比较了。</p>
+<ul>
+<li><p>https://blog.csdn.net/xiqi4145/article/details/86516511</p></li>
+<li><p>https://blog.csdn.net/cgt19910923/article/details/82154401</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201907/20190714-detection/" title="Detection算法Overview">http://www.deepindeed.cn/201907/20190714-detection/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/detection/" rel="tag"># detection</a>
+              <a href="/tags/CV/" rel="tag"># CV</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201904/20190411-cpp-compiler/" rel="prev" title="开发中常见的编译器技巧">
+                  <i class="fa fa-chevron-left"></i> 开发中常见的编译器技巧
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201907/20190722-deeplearning-note/" rel="next" title="认识神经网络：卷积，归一化，优化和语料">
+                  认识神经网络：卷积，归一化，优化和语料 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201907/20190714-detection/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

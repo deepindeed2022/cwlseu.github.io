@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TF社区中相继出现相关的应用，为了更快的在Pytorch中加入对Volta GPU的支持，并实现针对混合精度训练的优化，NVIDIA发布了Apex开源工具库。cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="笔记：混合精度训练技术报告">
+<meta property="og:url" content="http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="TF社区中相继出现相关的应用，为了更快的在Pytorch中加入对Volta GPU的支持，并实现针对混合精度训练的优化，NVIDIA发布了Apex开源工具库。cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png">
+<meta property="og:image" content="http://cwlseu.github.io/images/mixed-precision/tensorcore.png">
+<meta property="og:image" content="http://cwlseu.github.io/images/mixed-precision/scaling.png">
+<meta property="article:published_time" content="2019-04-07T14:12:22.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.121Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="CUDA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/","path":"201904/20190407-cuda9-mixed-precision/","title":"笔记：混合精度训练技术报告"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>笔记：混合精度训练技术报告 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#alibaba-pai-auto-mixed-precision-training-techniques"><span class="nav-number">2.</span> <span class="nav-text">Alibaba
+PAI: Auto-Mixed Precision Training Techniques</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%87%E7%94%A8ampauto-mixed-precision"><span class="nav-number">2.0.1.</span> <span class="nav-text">为什么采用AMP（Auto
+mixed-precision）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mixed-precision%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">Mixed-precision的优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#no-free-lunch"><span class="nav-number">2.0.1.2.</span> <span class="nav-text">No free-lunch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95ampdesign-philosophy"><span class="nav-number">2.0.2.</span> <span class="nav-text">如何AMP：Design Philosophy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">2.0.3.</span> <span class="nav-text">结果</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E6%80%9D%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">题外思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="笔记：混合精度训练技术报告 | Deepindeed">
+      <meta itemprop="description" content="TF社区中相继出现相关的应用，为了更快的在Pytorch中加入对Volta GPU的支持，并实现针对混合精度训练的优化，NVIDIA发布了Apex开源工具库。cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          笔记：混合精度训练技术报告
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-07 22:12:22" itemprop="dateCreated datePublished" datetime="2019-04-07T22:12:22+08:00">2019-04-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201904/20190407-cuda9-mixed-precision/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201904/20190407-cuda9-mixed-precision/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">TF社区中相继出现相关的应用，为了更快的在Pytorch中加入对Volta GPU的支持，并实现针对混合精度训练的优化，NVIDIA发布了Apex开源工具库。cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="引言">引言</h1>
+<p>CUDA在推出7.5的时候提出了
+可以计算16位浮点数据的新特性。定义了两种新的数据类型<code>half</code>和<code>half2</code>.
+NVIDIA GPUs implement the IEEE 754 floating point standard (2008), which
+defines half-precision numbers as follows (see Figure 1).</p>
+<ul>
+<li>Sign: 1 bit</li>
+<li>Exponent width: 5 bits</li>
+<li>Significand precision: 11 bits (10 explicitly stored) The range of
+half-precision numbers is approximately <span class="math inline">\(5.96
+\times 10^{-8} \ldots 6.55 \times 10^4\)</span>. <code>half2</code>
+structures store two half values in the space of a single 32-bit word,
+as the bottom of Figure 1 shows.</li>
+</ul>
+<figure>
+<img
+src="https://devblogs.nvidia.com/wp-content/uploads/2015/07/fp16_format-624x146.png"
+alt="@Figure 1:16-bit half-precision data formats. Top: single half value. Bottom: half2 vector representation." />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="Figure">@Figure</span> 1:16-bit half-precision data formats.
+Top: single <code>half</code> value. Bottom: <code>half2</code> vector
+representation.</figcaption>
+</figure>
+<p>CUDA-9中已经开始支持混合精度训练<a href="#fn1" class="footnote-ref"
+id="fnref1"
+role="doc-noteref"><sup>1</sup></a>，TensorRT作为NVIDIA的inference引擎，同样支持混合精度的神经网络inference计算.
+之前在网上看到半精度memory
+copy与计算，发现copy的代价会减少一半，而计算的提升并不是很理想。后来看到了《<a
+target="_blank" rel="noopener" href="https://devtalk.nvidia.com/default/topic/972337/gpu-accelerated-libraries/why-cublashgemm-is-slower-more-than-cublassgemm-when-i-use-/"><code>why cublasHgemm is slower more than cublasSgemm when I use?</code></a>》这个帖子，终于发现其中的一点规律。</p>
+<p>问题的提出者问，为什么在GTX1070上运行<code>cublasHgemm</code>（半精度计算）
+比
+<code>cublasSgemm</code>（单精度计算）计算的慢呢？NVIDIA官方的回答说，当前Pascal架构的GPU只有的P100的FP16计算快于FP32。并且给出了编程手册的吞吐量的表<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>。</p>
+<h1 id="alibaba-pai-auto-mixed-precision-training-techniques">Alibaba
+PAI: Auto-Mixed Precision Training Techniques</h1>
+<p>随着NVIDIA release的APEX<a href="#fn3" class="footnote-ref"
+id="fnref3"
+role="doc-noteref"><sup>3</sup></a>，利用Volta架构和混合精度在Pytorch上进行拓展，实现了训练的精度混合。腾讯<a
+href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a>和百度<a href="#fn5"
+class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a>分别发表关于混合精度训练的文章.PAI-TAO是alibaba内部一个关于混合精度训练的一个研究项目。
+在整个AI模型的生命周期中的位置如下：</p>
+<figure>
+<img data-src="http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png"
+alt="@PAI-TAO" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="PAI-TAO">@PAI-TAO</span></figcaption>
+</figure>
+<p>从中可以看出，自动混合精度主要是在训练过程中，为了加快计算节点之间的数据交换和层之间的数据交换与计算，采用FP16来替换FP32，这样在计算结果精度几乎不损失的情况下，带了数据交换和计算速度方面的性能提升，从而加快模型训练速度。</p>
+<p>而这项任务的成功，与CUDA9中支持TensorCore的特性是息息相关的。下面对TensorCode进行简单介绍。</p>
+<figure>
+<img data-src="http://cwlseu.github.io/images/mixed-precision/tensorcore.png"
+alt="@tensor core" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="tensor">@tensor</span> core</figcaption>
+</figure>
+<p>TensorCore是NVIDIA在Volta
+architecture下引入的，专门针对计算4x4矩阵的计算模块。
+以前NVIDIA的GPU中只有FP32和FP64计算单元，在TensorCore中，特别针对FP16做了相应的补充，
+来补充在半精度浮点方面的不足。TensorCore相比较直接进行FP32的计算，速度有了很大的提升。</p>
+<h3 id="为什么采用ampauto-mixed-precision">为什么采用AMP（Auto
+mixed-precision）</h3>
+<h4 id="mixed-precision的优势">Mixed-precision的优势</h4>
+<ul>
+<li>充分发挥Volta架构引入的TensorCore计算性能
+(<code>15</code>-&gt;<code>120TFLOPs</code>, 8X)</li>
+<li>减少了访存带宽</li>
+</ul>
+<h4 id="no-free-lunch">No free-lunch</h4>
+<ul>
+<li>用户模型改写的人力负担</li>
+<li>精度调优问题</li>
+<li>充分利用TensorCore的技术tricks
+<ul>
+<li>数据尺寸对齐问题</li>
+<li>Layout问题</li>
+</ul></li>
+<li>TensorCore将计算密集部分比例降低以后的进一步优化空间挖掘</li>
+</ul>
+<h3 id="如何ampdesign-philosophy">如何AMP：Design Philosophy</h3>
+<ul>
+<li>精度问题
+<ul>
+<li>模型以FP32进行保存</li>
+<li>不同算子的区别处理
+<ul>
+<li>计算密集型算子（MatMul/Conv）
+输入为FP16，FP32累加中间结果，输出为FP32，计算基于TensorCore</li>
+<li>访存密集型算法（Add/Reduce/…) 输入输出均为FP16，计算为FP16/FP32,
+不使用TensorCore，访存量减少</li>
+</ul></li>
+<li>Loss scaling策略解决gradient underflow问题</li>
+<li>表达精度问题： FP32-&gt;FP16
+<ul>
+<li>尾数位减少: precision gap in sum (Solution: 模型以FP32进行保存)</li>
+<li>指数位减少: gradient underflow</li>
+</ul></li>
+</ul></li>
+</ul>
+<figure>
+<img data-src="http://cwlseu.github.io/images/mixed-precision/scaling.png"
+alt="@scale在训练过程中的作用" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="scale在训练过程中的作用">@scale在训练过程中的作用</span></figcaption>
+</figure>
+<ul>
+<li>速度及易用性问题
+<ul>
+<li>通过图优化pass自动完成混合精度所需的图转换工作</li>
+</ul></li>
+</ul>
+<h3 id="结果">结果</h3>
+<ul>
+<li>No laborious FP32/FP16 casting work anymore</li>
+<li>Already supporting diversified internal workloads:
+NLP/CNN/Bert/Graph Embedding</li>
+<li><code>1.3~3x</code> time-to-accuracy speed-up 与PAI-TAO
+Compiler联合使用可以达到1+1&gt;2的加速收益</li>
+</ul>
+<h1 id="题外思考">题外思考</h1>
+<p>现在我们的训练应该是没有引入混合精度训练的，而且inference框架中没有混合精度的苗头。
+我们的inference应该可以先支持起混合精度的，然后后面慢慢地在训练框架中添加相关功能。
+然后重构节点之间的数据交换代码，加大对混合精度训练的时候并行度，进一步降低训练模型的成本。
+尤其是弱计算能力的芯片上，通过添加混合计算功能，能够在加速的同时，追求更高的精度。
+现在很多AI推理芯片如华为himix200中，支持int8和int16的计算，而且同一个模型可以混合int8和int16的精度类型。</p>
+<h1 id="参考文献">参考文献</h1>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"
+role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/sdk/pdf/Training-Mixed-Precision-User-Guide.pdf
+"Training-Mixed-Precision-User-Guide"
+<!-- [^7]: http://m.elecfans.com/article/640489.html "英伟达发布全新AI芯片Jetson Xavier" --><a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"
+role="doc-endnote"><p>https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#arithmetic-instructions
+"throughputs of the arithmetic instructions"<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"
+role="doc-endnote"><p>https://cloud.tencent.com/developer/news/254121
+"混合精度训练之APEX"<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"
+role="doc-endnote"><p>http://m.elecfans.com/article/721085.html
+"一种具有混合精度的高度可扩展的深度学习训练系统"<a href="#fnref4"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>https://arxiv.org/pdf/1710.03740.pdf
+"百度和NVIDIA联合出品：MIXED PRECISION TRAINING"<a href="#fnref5"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/" title="笔记：混合精度训练技术报告">http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/HPC/" rel="tag"># HPC</a>
+              <a href="/tags/CUDA/" rel="tag"># CUDA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201903/20190311-object-detection-metrics/" rel="prev" title="Object Detection Metrics">
+                  <i class="fa fa-chevron-left"></i> Object Detection Metrics
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201904/20190411-cpp-compiler/" rel="next" title="开发中常见的编译器技巧">
+                  开发中常见的编译器技巧 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201904/20190407-cuda9-mixed-precision/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

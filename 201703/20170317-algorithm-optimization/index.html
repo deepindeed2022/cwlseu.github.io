@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="向量化和编译器优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法优化的一些技巧">
+<meta property="og:url" content="http://www.deepindeed.cn/201703/20170317-algorithm-optimization/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="向量化和编译器优化">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-03-17T04:12:12.000Z">
+<meta property="article:modified_time" content="2022-08-30T00:37:05.186Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="linux开发">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201703/20170317-algorithm-optimization/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201703/20170317-algorithm-optimization/","path":"201703/20170317-algorithm-optimization/","title":"算法优化的一些技巧"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>算法优化的一些技巧 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E7%AE%97%E6%B3%95%E4%BC%98%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">实战算法优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#intrinsic-function1"><span class="nav-number">2.</span> <span class="nav-text">Intrinsic function[^1]</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">计算类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%86%85%E5%AD%98%E4%B8%AD%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">4.</span> <span class="nav-text">从内存中加载数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E4%B8%AD%E8%BF%9B%E8%A1%8C%E4%BA%AE%E7%82%B9%E6%9F%A5%E6%89%BE%E7%9A%84%E5%85%B3%E9%94%AE%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">图像中进行亮点查找的关键函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8buidin%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">编译器buidin函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#void-__builtin___clear_cache-char-begin-char-end"><span class="nav-number">6.1.</span> <span class="nav-text">void __builtin___clear_cache (char *begin, char *end)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#void-__builtin_prefetch-const-void-addr-..."><span class="nav-number">6.2.</span> <span class="nav-text">void __builtin_prefetch (const void *addr, ...)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-__builtin_clz-unsigned-int-x"><span class="nav-number">6.3.</span> <span class="nav-text">int __builtin_clz (unsigned int x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-__builtin_ctz-unsigned-int-x"><span class="nav-number">6.4.</span> <span class="nav-text">int __builtin_ctz (unsigned int x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-__builtin_clz-unsigned-int-x-1"><span class="nav-number">6.5.</span> <span class="nav-text">int __builtin_clz (unsigned int x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-__builtin_ffs-unsigned-int-x"><span class="nav-number">6.6.</span> <span class="nav-text">int __builtin_ffs (unsigned int x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-__builtin_popcount-unsigned-int-x"><span class="nav-number">6.7.</span> <span class="nav-text">int __builtin_popcount (unsigned int x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#int-__builtin_parity-unsigned-int-x"><span class="nav-number">6.8.</span> <span class="nav-text">int __builtin_parity (unsigned int x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">6.9.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#result"><span class="nav-number">6.10.</span> <span class="nav-text">Result:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#example%E5%AF%BB%E6%89%BE%E6%95%B0%E7%BB%84%E4%B8%AD%E7%AC%AC%E4%B8%80%E4%B8%AA%E9%9D%9E0%E5%85%83%E7%B4%A0%E7%9A%84%E4%BD%8D%E7%BD%AE%E7%9A%84intrinsic-%E5%87%BD%E6%95%B0"><span class="nav-number">7.</span> <span class="nav-text">Example:寻找数组中第一个非0元素的位置的intrinsic
+函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#memcopy%E6%B1%87%E7%BC%96%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">8.</span> <span class="nav-text">MemCopy汇编实现代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">9.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201703/20170317-algorithm-optimization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="算法优化的一些技巧 | Deepindeed">
+      <meta itemprop="description" content="向量化和编译器优化">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法优化的一些技巧
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-03-17 12:12:12" itemprop="dateCreated datePublished" datetime="2017-03-17T12:12:12+08:00">2017-03-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-30 08:37:05" itemprop="dateModified" datetime="2022-08-30T08:37:05+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201703/20170317-algorithm-optimization/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201703/20170317-algorithm-optimization/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>19 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">向量化和编译器优化</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="实战算法优化">实战算法优化</h2>
+<p>对于这方面的姿势，也是属于意外。在使用Caffe的过程中，需要依赖一个关于矩阵计算的库，可是
+使用atlas或者openblas, 当然有资金支持的话可以使用更快地MKL,
+而一个穷小白就只能从开源免费的计算库中选了，就选了OpenBlas。
+后来因为缘分，认识了OpenBlas的创始人，从他们公司的工作中了解到还有机器学习算法优化加速的这么个工作。其中涉及到如OpenMP,
+SIMD,
+当然编译器优化也是不容忽视的。在此，总结一下工作中用到的一些函数，免得下次见到不认识了。</p>
+<h2 id="intrinsic-function1">Intrinsic function[^1]</h2>
+<p><img
+src="https://cwlseu.github.io/images/optimization/intrinsics.png"
+alt="@intrinsics snapshot from intel" />
+我对这个的理解就是在汇编的基础上进行向量化的封装的一些宏或者函数,
+同时可以操作很多个数据，如使用SSE可以操作128位的数据，可以使4个int类型，也可以使用8个short类型也可以是16个char类型的数据。</p>
+<p>从intrinsic
+guide[^2]中就可以看出Intel关于SIMD方面的发展历程。MMX(主要是16位指令)到后面的SSE2
+SSE4.2(32位指令)等等。 查阅文档的时候后可以按照计算的类别：</p>
+<h3 id="计算类型">计算类型</h3>
+<p>计算类型根据操作数据的类型分别封装了加减乘除,文档中对接口函数说明得很是清楚，还包括生成目标指令是什么。如：</p>
+<pre><code> Synopsis
+    __m128i _mm_add_epi16 (__m128i a, __m128i b)
+    #include &quot;emmintrin.h&quot;
+    Instruction: paddw xmm, xmm
+    CPUID Flags: SSE2
+Description
+    Add packed 16-bit integers in a and b, and store the results in dst.
+Operation
+    FOR j := 0 to 7
+        i := j*16
+        dst[i+15:i] := a[i+15:i] + b[i+15:i]
+    ENDFOR</code></pre>
+<p>从外，函数命名很有规律 <code>_mm_操作_操作的数据类型</code>，
+数据类型<code>__m128i</code>
+表示integer类型的向量数组，<code>__m128</code>表示单精度类型的向量数组,<code>__128d</code>表示双精度类型的向量数组。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">__m128i _mm_add_epi16 (__m128i a, __m128i b); <span class="comment">//Add packed 16-bit integers in a and b</span></span><br><span class="line">__m128d _mm_div_pd (__m128d a, __m128d b); <span class="comment">// Divide packed double-precision (64-bit) floating-point elements in a by packed elements in b</span></span><br><span class="line">__m128d _mm_mul_sd (__m128d a, __m128d b); <span class="comment">// Multiply the lower double-precision (64-bit) floating-point element in a and b, store the result in the lower element of dst, and copy the upper element from a to the upper element of dst.</span></span><br><span class="line">__m128i _mm_subs_epi16 (__m128i a, __m128i b)</span><br><span class="line">__m128i _mm_subs_epu16 (__m128i a, __m128i b)</span><br></pre></td></tr></table></figure>
+<h2 id="设置">设置</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">__m128i _mm_set_epi16 (<span class="type">short</span> e7, <span class="type">short</span> e6, <span class="type">short</span> e5, <span class="type">short</span> e4, <span class="type">short</span> e3, <span class="type">short</span> e2, <span class="type">short</span> e1, <span class="type">short</span> e0);</span><br><span class="line">__m128i _mm_set_epi32 (<span class="type">int</span> e3, <span class="type">int</span> e2, <span class="type">int</span> e1, <span class="type">int</span> e0);</span><br><span class="line"></span><br><span class="line">__m128i _mm_set_epi8 (<span class="type">char</span> e15, <span class="type">char</span> e14, <span class="type">char</span> e13, <span class="type">char</span> e12, <span class="type">char</span> e11, <span class="type">char</span> e10, <span class="type">char</span> e9, <span class="type">char</span> e8, <span class="type">char</span> e7, <span class="type">char</span> e6, <span class="type">char</span> e5, <span class="type">char</span> e4, <span class="type">char</span> e3, <span class="type">char</span> e2, <span class="type">char</span> e1, <span class="type">char</span> e0);</span><br><span class="line"></span><br><span class="line">__m128d _mm_set_pd (<span class="type">double</span> e1, <span class="type">double</span> e0);</span><br><span class="line"></span><br><span class="line">__m128d _mm_set_pd1 (<span class="type">double</span> a); <span class="comment">// Broadcast double-precision (64-bit) floating-point value a to all elements of dst.</span></span><br><span class="line"></span><br><span class="line">__m128 _mm_set_ps (<span class="type">float</span> e3, <span class="type">float</span> e2, <span class="type">float</span> e1, <span class="type">float</span> e0);</span><br><span class="line">__m128 _mm_set_ps1 (<span class="type">float</span> a);</span><br><span class="line">__m128d _mm_set_sd (<span class="type">double</span> a);</span><br><span class="line">__m128 _mm_set_ss (<span class="type">float</span> a);</span><br><span class="line">__m128i _mm_set1_epi16 (<span class="type">short</span> a);</span><br><span class="line"></span><br><span class="line">__m128i _mm_set1_epi32 (<span class="type">int</span> a);</span><br><span class="line"></span><br><span class="line">__m128i _mm_set1_epi64 (__m64 a);</span><br><span class="line"></span><br><span class="line">__m128i _mm_set1_epi64x (__int64 a);</span><br><span class="line">__m128i _mm_set1_epi8 (<span class="type">char</span> a);</span><br><span class="line">__m128d _mm_set1_pd (<span class="type">double</span> a);</span><br><span class="line">__m128 _mm_set1_ps (<span class="type">float</span> a);</span><br><span class="line">__m128i _mm_setr_epi16 (<span class="type">short</span> e7, <span class="type">short</span> e6, <span class="type">short</span> e5, <span class="type">short</span> e4, <span class="type">short</span> e3, <span class="type">short</span> e2, <span class="type">short</span> e1, <span class="type">short</span> e0);</span><br><span class="line">__m128i _mm_setr_epi32 (<span class="type">int</span> e3, <span class="type">int</span> e2, <span class="type">int</span> e1, <span class="type">int</span> e0);</span><br><span class="line">__m128i _mm_setr_epi64 (__m64 e1, __m64 e0);</span><br><span class="line">__m128i _mm_setr_epi8 (<span class="type">char</span> e15, <span class="type">char</span> e14, <span class="type">char</span> e13, <span class="type">char</span> e12, <span class="type">char</span> e11, <span class="type">char</span> e10, <span class="type">char</span> e9, <span class="type">char</span> e8, <span class="type">char</span> e7, <span class="type">char</span> e6, <span class="type">char</span> e5, <span class="type">char</span> e4, <span class="type">char</span> e3, <span class="type">char</span> e2, <span class="type">char</span> e1, <span class="type">char</span> e0);</span><br><span class="line">__m128d _mm_setr_pd (<span class="type">double</span> e1, <span class="type">double</span> e0);</span><br><span class="line">__m128 _mm_setr_ps (<span class="type">float</span> e3, <span class="type">float</span> e2, <span class="type">float</span> e1, <span class="type">float</span> e0);</span><br><span class="line">__m128d _mm_setzero_pd (<span class="type">void</span>);</span><br><span class="line">__m128 _mm_setzero_ps (<span class="type">void</span>);</span><br><span class="line">__m128i _mm_setzero_si128 ();</span><br></pre></td></tr></table></figure>
+<h2 id="从内存中加载数据">从内存中加载数据</h2>
+<p>从内存中加载数据，根据数据的类型(整数，单精度浮点数，双精度浮点数，向量数组等类型)，数据存储地址是否对齐等属性有不同的函数接口封装。常常数据不对齐(SSE2函数名称中常常带一个u表示不要求地址对齐，
+SSE函数中常用1表示不要求地址对齐)的接口要比对齐的接口效率低很多。地址对齐常常是以16bit对齐。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*Load 128-bits of integer data from unaligned memory into dst. This intrinsic may perform better than _mm_loadu_si128 when the data crosses a cache line boundary.*/</span></span><br><span class="line">__m128i _mm_lddqu_si128 (__m128i <span class="type">const</span>* mem_addr)</span><br><span class="line">__m128 _mm_load_ps (<span class="type">float</span> <span class="type">const</span>* mem_addr)</span><br><span class="line">__m128 _mm_load_ps1 (<span class="type">float</span> <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line">__m128i _mm_load_si128 (__m128i <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*Load 128-bits of integer data from memory into dst. mem_addr does not need to be aligned on any particular boundary.*/</span></span><br><span class="line">__m128i _mm_loadu_si128 (__m128i <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*Load 64-bit integer from memory into the first element of dst.*/</span></span><br><span class="line">__m128i _mm_loadl_epi64 (__m128i <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line">__m128d _mm_loadl_pd (__m128d a, <span class="type">double</span> <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line">__m128 _mm_loadl_pi (__m128 a, __m64 <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> Load 2 double-precision (64-bit) floating-point elements from memory into dst in reverse order. mem_addr must be aligned on a 16-byte boundary or a general-protection exception may be generated. </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">__m128d _mm_loadr_pd (<span class="type">double</span> <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*Load 128-bits (composed of 2 packed double-precision (64-bit) floating-point elements) from memory into dst. mem_addr does not need to be aligned on any particular boundary.*/</span></span><br><span class="line">__m128d _mm_loadu_pd (<span class="type">double</span> <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br><span class="line">__m128 _mm_loadu_ps (<span class="type">float</span> <span class="type">const</span>* mem_addr)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="图像中进行亮点查找的关键函数">图像中进行亮点查找的关键函数</h2>
+<p><code>int _mm_movemask_epi8 (__m128i a)</code> Create mask from the
+most significant bit of each 8-bit element in a, and store the result in
+dst. 创建从签名的最高有效位的 16 位掩码 16 或在 a 和零的无符号 8
+位整数扩展上面的位。</p>
+<h2 id="编译器buidin函数">编译器buidin函数</h2>
+<h3
+id="void-__builtin___clear_cache-char-begin-char-end"><code>void __builtin___clear_cache (char *begin, char *end)</code></h3>
+<p>This function is used to flush the processor’s instruction cache for
+the region of memory between begin inclusive and end exclusive. Some
+targets require that the instruction cache be flushed, after modifying
+memory containing code, in order to obtain deterministic behavior.
+有的时候为了获取确定性的性能测试结果，使用该函数对处理器的指令和数据进行清空操作。</p>
+<p>If the target does not require instruction cache flushes,
+<code>__builtin___clear_cache</code> has no effect. Otherwise either
+instructions are emitted in-line to clear the instruction cache or a
+call to the <code>__clear_cache function</code>in libgcc is made.
+如何设置begin和end的信息，请参见[^5]</p>
+<h3
+id="void-__builtin_prefetch-const-void-addr-..."><code>void __builtin_prefetch (const void *addr, ...)</code></h3>
+<p>This function is used to minimize cache-miss latency by moving data
+into a cache before it is accessed. You can insert calls
+to<code>__builtin_prefetch</code> into code for which you know addresses
+of data in memory that is likely to be accessed soon. If the target
+supports them, data prefetch instructions are generated. If the prefetch
+is done early enough before the access then the data will be in the
+cache by the time it is accessed.</p>
+<p>The value of addr is the address of the memory to prefetch. There are
+two optional arguments, rw and locality. The value of rw is a
+compile-time constant one or zero; one means that the prefetch is
+preparing for a write to the memory address and zero, the default, means
+that the prefetch is preparing for a read. The value locality must be a
+compile-time constant integer between zero and three. A value of zero
+means that the data has no temporal locality, so it need not be left in
+the cache after the access. A value of three means that the data has a
+high degree of temporal locality and should be left in all levels of
+cache possible. Values of one and two mean, respectively, a low or
+moderate degree of temporal locality. The default is three.
+<code>__builtin_prefetch (const void *addr, ...)</code>它通过对数据手工预取的方法，在使用地址addr的值之前就将其放到cache中，减少了读取延迟，从而提高了性能，但该函数也需要
+CPU
+的支持。该函数可接受三个参数，第一个参数addr是要预取的数据的地址，第二个参数可设置为0或1（1表示我对地址addr要进行写操作，0表示要进行读操作），第三个参数可取0-3（0表示不用关心时间局部性，取完addr的值之后便不用留在cache中，而1、2、3表示时间局部性逐渐增强）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    a[i] = a[i] + b[i];</span><br><span class="line">    __builtin_prefetch (&amp;a[i+j], <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    __builtin_prefetch (&amp;b[i+j], <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">/* … */</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>Data prefetch does not generate faults if addr is invalid, but the
+address expression itself must be valid. For example, a prefetch of
+p-&gt;next does not fault if p-&gt;next is not a valid address, but
+evaluation faults if p is not a valid address.</p>
+<p>If the target does not support data prefetch, the address expression
+is evaluated if it includes side effects but no other code is generated
+and GCC does not issue a warning.</p>
+<h3
+id="int-__builtin_clz-unsigned-int-x"><code>int __builtin_clz (unsigned int x)</code></h3>
+<p>Returns the number of leading 0-bits in x, starting at the most
+significant bit position. If x is 0, the result is undefined.
+返回从左边起第一个1之前的0个个数</p>
+<h3
+id="int-__builtin_ctz-unsigned-int-x"><code>int __builtin_ctz (unsigned int x)</code></h3>
+<p>Returns the number of trailing 0-bits in x, starting at the least
+significant bit position. If x is 0, the result is undefined.
+返回从右边其第一个1之后的0个个数</p>
+<h3
+id="int-__builtin_clz-unsigned-int-x-1"><code>int __builtin_clz (unsigned int x)</code></h3>
+<p>Returns the number of leading 0-bits in x, starting at the most
+significant bit position. If x is 0, the result is undefined.
+返回左起第一个‘1’之前0的个数。</p>
+<h3
+id="int-__builtin_ffs-unsigned-int-x"><code>int __builtin_ffs (unsigned int x)</code></h3>
+<p>Returns one plus the index of the least significant 1-bit of x, or if
+x is zero, returns zero. 返回右起第一个‘1’的位置。</p>
+<h3
+id="int-__builtin_popcount-unsigned-int-x"><code>int __builtin_popcount (unsigned int x)</code></h3>
+<p>Returns the number of 1-bits in x. 返回‘1’的个数。</p>
+<h3
+id="int-__builtin_parity-unsigned-int-x"><code>int __builtin_parity (unsigned int x)</code></h3>
+<p>Returns the parity of x, i.e. the number of 1-bits in x modulo 2.
+返回‘1’的个数的奇偶性。</p>
+<h3 id="例子">例子</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> <span class="type">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(__GNUC__) || defined(__GNUG__)</span></span><br><span class="line">    <span class="comment">//printf(&quot;the number of trailing 0-bits in %d is %d \n&quot;, i,  __builtin_ctz(i));</span></span><br><span class="line">    <span class="comment">//printf(&quot;%d have %d 1-bits\n&quot;, i, __builtin_popcount(i));</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d parity value: %d\n&quot;</span>, i, __builtin_parity(i));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d swap32 %d\n&quot;</span>, i, __builtin_bswap32(i));</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(__GNUC__) || defined(__GNUG__)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;test __builtin___clear_cache\n&quot;</span>);</span><br><span class="line">    <span class="type">char</span>* a;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        __builtin___clear_cache(a, a + <span class="number">4096</span>);</span><br><span class="line">        a = <span class="keyword">new</span> <span class="type">char</span>[<span class="number">4096</span>];</span><br><span class="line">        <span class="keyword">delete</span>[] a;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="result">Result:</h3>
+<pre><code>0 have 0 1-bits
+0 parity value: 0
+0 swap32 0
+the number of trailing 0-bits in 1 is 0 
+1 have 1 1-bits
+1 parity value: 1
+1 swap32 16777216
+the number of trailing 0-bits in 2 is 1 
+2 have 1 1-bits
+2 parity value: 1
+2 swap32 33554432
+the number of trailing 0-bits in 3 is 0 
+3 have 2 1-bits
+3 parity value: 0
+3 swap32 50331648
+the number of trailing 0-bits in 4 is 2 
+4 have 1 1-bits
+4 parity value: 1
+4 swap32 67108864
+the number of trailing 0-bits in 5 is 0 
+5 have 2 1-bits
+5 parity value: 0
+5 swap32 83886080
+the number of trailing 0-bits in 6 is 1 
+6 have 2 1-bits
+6 parity value: 0
+6 swap32 100663296
+the number of trailing 0-bits in 7 is 0 
+7 have 3 1-bits
+7 parity value: 1
+7 swap32 117440512
+the number of trailing 0-bits in 8 is 3 
+8 have 1 1-bits
+8 parity value: 1
+8 swap32 134217728
+the number of trailing 0-bits in 9 is 0 
+9 have 2 1-bits
+9 parity value: 0
+9 swap32 150994944
+test __builtin___clear_cache</code></pre>
+<h2
+id="example寻找数组中第一个非0元素的位置的intrinsic-函数">Example:寻找数组中第一个非0元素的位置的intrinsic
+函数</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">findStartContourPoint</span><span class="params">(<span class="type">const</span> uchar *src_data,<span class="type">int</span> width, <span class="type">int</span> j)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span>  CV_SSE_4_2</span></span><br><span class="line">        __m128i v_zero = _mm_setzero_si128();</span><br><span class="line">        <span class="type">int</span> v_size = width - <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (; j &lt;= v_size; j += <span class="number">32</span>) &#123;</span><br><span class="line">            __m128i v_p1 = _mm_loadu_si128((<span class="type">const</span> __m128i*)(src_data + j));</span><br><span class="line">            __m128i v_p2 = _mm_loadu_si128((<span class="type">const</span> __m128i*)(src_data + j + <span class="number">16</span>));</span><br><span class="line"></span><br><span class="line">            __m128i v_cmp1 = _mm_cmpeq_epi8(v_p1, v_zero);</span><br><span class="line">            __m128i v_cmp2 = _mm_cmpeq_epi8(v_p2, v_zero);</span><br><span class="line"></span><br><span class="line">            <span class="type">unsigned</span> <span class="type">int</span> mask1 = _mm_movemask_epi8(v_cmp1);</span><br><span class="line">            <span class="type">unsigned</span> <span class="type">int</span> mask2 = _mm_movemask_epi8(v_cmp2);</span><br><span class="line"></span><br><span class="line">            mask1 ^= <span class="number">0x0000ffff</span>;</span><br><span class="line">            mask2 ^= <span class="number">0x0000ffff</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (mask1) &#123;</span><br><span class="line">                j += <span class="built_in">trailingZeros</span>(mask1);</span><br><span class="line">                <span class="keyword">return</span> j;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mask2) &#123;</span><br><span class="line">                j += <span class="built_in">trailingZeros</span>(mask2 &lt;&lt; <span class="number">16</span>);</span><br><span class="line">                <span class="keyword">return</span> j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (j &lt;= width - <span class="number">16</span>) &#123;</span><br><span class="line">            __m128i v_p = _mm_loadu_si128((<span class="type">const</span> __m128i*)(src_data + j));</span><br><span class="line"></span><br><span class="line">            <span class="type">unsigned</span> <span class="type">int</span> mask = _mm_movemask_epi8(_mm_cmpeq_epi8(v_p, v_zero)) ^ <span class="number">0x0000ffff</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (mask) &#123;</span><br><span class="line">                j += <span class="built_in">trailingZeros</span>(mask);</span><br><span class="line">                <span class="keyword">return</span> j;</span><br><span class="line">            &#125;</span><br><span class="line">            j += <span class="number">16</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="keyword">for</span> (; j &lt; width &amp;&amp; !src_data[j]; ++j)</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>trailingZeros</code>就是调用编译器的内置函数实现的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> CV_SSE_4_2</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title">trailingZeros</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> value)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">assert</span>(value != <span class="number">0</span>); <span class="comment">// undefined for zero input (https://en.wikipedia.org/wiki/Find_first_set)</span></span><br><span class="line"><span class="function"><span class="keyword">if</span> <span class="title">defined</span><span class="params">(__GNUC__)</span> || <span class="title">defined</span><span class="params">(__GNUG__)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">return</span> __<span class="title">builtin_ctz</span><span class="params">(value)</span></span>;</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(__ICC) || defined(__INTEL_COMPILER)</span></span><br><span class="line">    <span class="keyword">return</span> _bit_scan_forward(value);</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(__clang__)</span></span><br><span class="line">    <span class="keyword">return</span> llvm.cttz.<span class="built_in">i32</span>(value, <span class="literal">true</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> MultiplyDeBruijnBitPosition[<span class="number">32</span>] = &#123;</span><br><span class="line">        <span class="number">0</span>, <span class="number">1</span>, <span class="number">28</span>, <span class="number">2</span>, <span class="number">29</span>, <span class="number">14</span>, <span class="number">24</span>, <span class="number">3</span>, <span class="number">30</span>, <span class="number">22</span>, <span class="number">20</span>, <span class="number">15</span>, <span class="number">25</span>, <span class="number">17</span>, <span class="number">4</span>, <span class="number">8</span>,</span><br><span class="line">        <span class="number">31</span>, <span class="number">27</span>, <span class="number">13</span>, <span class="number">23</span>, <span class="number">21</span>, <span class="number">19</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">26</span>, <span class="number">12</span>, <span class="number">18</span>, <span class="number">6</span>, <span class="number">11</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">9</span> &#125;;</span><br><span class="line">    <span class="keyword">return</span> MultiplyDeBruijnBitPosition[((<span class="type">uint32_t</span>)((value &amp; -value) * <span class="number">0x077CB531</span>U)) &gt;&gt; <span class="number">27</span>];</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="memcopy汇编实现代码">MemCopy汇编实现代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">CopyMMX</span><span class="params">(<span class="type">void</span>* destination, <span class="type">void</span>* sorce, <span class="type">int</span> count )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> nCount64 = ( count / <span class="number">128</span> ) * <span class="number">128</span>;</span><br><span class="line">    <span class="type">int</span> nRemainder = ( count % <span class="number">128</span> );</span><br><span class="line">    _asm</span><br><span class="line">    &#123;</span><br><span class="line">        MOV ESI, sorce</span><br><span class="line">        MOV EDI, destination</span><br><span class="line">        MOV ECX, nCount64</span><br><span class="line">        CMP ECX, <span class="number">0</span></span><br><span class="line">        JZ BYTEBYTE</span><br><span class="line">        MOV EDX, <span class="number">128</span></span><br><span class="line">        SHR ECX, <span class="number">7</span></span><br><span class="line">        TOP:</span><br><span class="line">        PREFETCHNTA <span class="number">64</span>[ESI] <span class="comment">// Pre-fetch data for Next loop</span></span><br><span class="line">        PREFETCHNTA <span class="number">128</span>[ESI]</span><br><span class="line">        <span class="comment">// Copy data from source</span></span><br><span class="line">        MOVDQU XMM0, <span class="number">0</span>[ESI]</span><br><span class="line">        MOVDQU XMM1, <span class="number">16</span>[ESI]</span><br><span class="line">        MOVDQU XMM2, <span class="number">32</span>[ESI]</span><br><span class="line">        MOVDQU XMM3, <span class="number">48</span>[ESI]</span><br><span class="line">        MOVDQU XMM4, <span class="number">64</span>[ESI]</span><br><span class="line">        MOVDQU XMM5, <span class="number">80</span>[ESI]</span><br><span class="line">        MOVDQU XMM6, <span class="number">96</span>[ESI]</span><br><span class="line">        MOVDQU XMM7, <span class="number">112</span>[ESI]</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Save the data from MM registers to Destination</span></span><br><span class="line">        MOVNTDQ <span class="number">0</span>[EDI], XMM0 <span class="comment">//(A)-&gt;Program gets crashed here</span></span><br><span class="line">        MOVNTDQ <span class="number">16</span>[EDI], XMM1</span><br><span class="line">        MOVNTDQ <span class="number">32</span>[EDI], XMM2</span><br><span class="line">        MOVNTDQ <span class="number">48</span>[EDI], XMM3</span><br><span class="line">        MOVNTDQ <span class="number">64</span>[EDI], XMM4</span><br><span class="line">        MOVNTDQ <span class="number">80</span>[EDI], XMM5</span><br><span class="line">        MOVNTDQ <span class="number">96</span>[EDI], XMM6</span><br><span class="line">        MOVNTDQ <span class="number">112</span>[EDI], XMM7</span><br><span class="line"></span><br><span class="line">        ADD ESI, EDX</span><br><span class="line">        ADD EDI, EDX</span><br><span class="line">        DEC ECX</span><br><span class="line">        JNZ TOP</span><br><span class="line">        <span class="comment">// Copy remaining data BYTE by BYTE</span></span><br><span class="line">        BYTEBYTE:</span><br><span class="line">        MOV ECX, nRemainder</span><br><span class="line">        CMP ECX, <span class="number">0</span></span><br><span class="line">        JZ ENDS</span><br><span class="line">        PREFETCHNTA [ESI+ECX]</span><br><span class="line">        REM:</span><br><span class="line">        MOV AL, <span class="number">0</span>[ESI]</span><br><span class="line">        MOV <span class="number">0</span>[EDI], AL</span><br><span class="line">        INC ESI</span><br><span class="line">        INC EDI</span><br><span class="line">        DEC ECX</span><br><span class="line">        JNZ REM</span><br><span class="line">        ENDS:</span><br><span class="line">        EMMS</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="reference">Reference</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Intrinsic_function">定义https://en.wikipedia.org/wiki/Intrinsic_function</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://software.intel.com/sites/landingpage/IntrinsicsGuide">指令集API文档
+https://software.intel.com/sites/landingpage/IntrinsicsGuide</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://msdn.microsoft.com/zh-cn/library/0d4dtzhb(v=vs.110).aspx">微软对intrinsics的文档https://msdn.microsoft.com/zh-cn/library/</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html">GCC编译器文档https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work">stackoverflow关于<code>buildin_clear_cache</code>
+的讨论：http://stackoverflow.com/questions/35741814/how-does-builtin-clear-cache-work</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://software.intel.com/zh-cn/articles/introduction-to-intel-advanced-vector-extensions">intel-advanced-vector-extensions</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201703/20170317-algorithm-optimization/" title="算法优化的一些技巧">http://www.deepindeed.cn/201703/20170317-algorithm-optimization/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/HPC/" rel="tag"># HPC</a>
+              <a href="/tags/linux%E5%BC%80%E5%8F%91/" rel="tag"># linux开发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201703/20170315-based-algorithm-2/" rel="prev" title="算法的乐趣：再看深度优先搜索">
+                  <i class="fa fa-chevron-left"></i> 算法的乐趣：再看深度优先搜索
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201703/20170321-train-use-caffe/" rel="next" title="深度学习：玩转Caffe">
+                  深度学习：玩转Caffe <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201703/20170317-algorithm-optimization/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

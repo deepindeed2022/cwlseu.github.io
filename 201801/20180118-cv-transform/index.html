@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="图像处理的基本概念与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="笔记：OpenCV中的算法--透视和仿射变换">
+<meta property="og:url" content="http://www.deepindeed.cn/201801/20180118-cv-transform/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="图像处理的基本概念与算法">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-01-18T12:20:20.000Z">
+<meta property="article:modified_time" content="2022-08-30T00:30:13.173Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="ML">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201801/20180118-cv-transform/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201801/20180118-cv-transform/","path":"201801/20180118-cv-transform/","title":"笔记：OpenCV中的算法--透视和仿射变换"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>笔记：OpenCV中的算法--透视和仿射变换 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#warpperspective-%E5%92%8C-affinetransform%E7%9A%84%E8%BD%AC%E6%8D%A2%E7%9F%A9%E9%98%B5%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">warpPerspective
+和 affineTransform的转换矩阵的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%BF%99%E4%B8%AA%E5%87%BD%E6%95%B0%E5%A6%82%E6%9E%9C%E8%A6%81%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E5%A6%82%E4%BD%95%E6%B5%8B%E8%AF%95%E6%AD%A3%E7%A1%AE%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">问题：这个函数如果要自己实现，如何测试正确性？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E4%BF%A1%E6%81%AF%E5%8F%AF%E4%BB%A5%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">更多信息可以参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201801/20180118-cv-transform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="笔记：OpenCV中的算法--透视和仿射变换 | Deepindeed">
+      <meta itemprop="description" content="图像处理的基本概念与算法">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          笔记：OpenCV中的算法--透视和仿射变换
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-01-18 20:20:20" itemprop="dateCreated datePublished" datetime="2018-01-18T20:20:20+08:00">2018-01-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-30 08:30:13" itemprop="dateModified" datetime="2022-08-30T08:30:13+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201801/20180118-cv-transform/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201801/20180118-cv-transform/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">图像处理的基本概念与算法</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>仿射变换保证物体形状的“平直性”和“平行性”。透视变换不能保证物体形状的“平行性”。仿射变换是透视变换的特殊形式。</p>
+<p>仿射变换，又称仿射映射，是指在几何中，一个向量空间进行一次线性变换并接上一个平移，变换为另一个向量空间。仿射变换是在几何上定义为两个向量空间之间的一个仿射变换或者仿射映射（来自拉丁语，affine，“和…相关”）由一个非奇异的线性变换(运用一次函数进行的变换)接上一个平移变换组成。</p>
+<h2
+id="warpperspective-和-affinetransform的转换矩阵的区别">warpPerspective
+和 affineTransform的转换矩阵的区别</h2>
+<ol type="1">
+<li>affineTransform保持平行性，而warpPerspective不能保证</li>
+<li>warpPerspective至少4个点对，而 affineTransform至少三个点对
+下面是opencv中关于这两个变换矩阵的求解过程。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Calculates coefficients of perspective transformation</span></span><br><span class="line"><span class="comment"> * which maps (xi,yi) to (ui,vi), (i=1,2,3,4):</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *      c00*xi + c01*yi + c02</span></span><br><span class="line"><span class="comment"> * ui = ---------------------</span></span><br><span class="line"><span class="comment"> *      c20*xi + c21*yi + c22</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *      c10*xi + c11*yi + c12</span></span><br><span class="line"><span class="comment"> * vi = ---------------------</span></span><br><span class="line"><span class="comment"> *      c20*xi + c21*yi + c22</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Coefficients are calculated by solving linear system:</span></span><br><span class="line"><span class="comment"> * / x0 y0 1 0 0 0 -x0*u0 -y0*u0 \ /c00\ /u0\</span></span><br><span class="line"><span class="comment"> * | x1 y1 1 0 0 0 -x1*u1 -y1*u1 | |c01| |u1|</span></span><br><span class="line"><span class="comment"> * | x2 y2 1 0 0 0 -x2*u2 -y2*u2 | |c02| |u2|</span></span><br><span class="line"><span class="comment"> * | x3 y3 1 0 0 0 -x3*u3 -y3*u3 |.|c10|=|u3|,</span></span><br><span class="line"><span class="comment"> * | 0 0 0 x0 y0 1 -x0*v0 -y0*v0 | |c11| |v0|</span></span><br><span class="line"><span class="comment"> * | 0 0 0 x1 y1 1 -x1*v1 -y1*v1 | |c12| |v1|</span></span><br><span class="line"><span class="comment"> * | 0 0 0 x2 y2 1 -x2*v2 -y2*v2 | |c20| |v2|</span></span><br><span class="line"><span class="comment"> * \ 0 0 0 x3 y3 1 -x3*v3 -y3*v3 / \c21/ \v3/</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * where:</span></span><br><span class="line"><span class="comment"> * cij - matrix coefficients, c22 = 1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">cv::Mat <span class="title">cv::getPerspectiveTransform</span><span class="params">( <span class="type">const</span> Point2f src[], <span class="type">const</span> Point2f dst[] )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="function">Mat <span class="title">M</span><span class="params">(<span class="number">3</span>, <span class="number">3</span>, CV_64F)</span>, <span class="title">X</span><span class="params">(<span class="number">8</span>, <span class="number">1</span>, CV_64F, M.data)</span></span>;</span><br><span class="line">  <span class="type">double</span> a[<span class="number">8</span>][<span class="number">8</span>], b[<span class="number">8</span>];</span><br><span class="line">  <span class="function">Mat <span class="title">A</span><span class="params">(<span class="number">8</span>, <span class="number">8</span>, CV_64F, a)</span>, <span class="title">B</span><span class="params">(<span class="number">8</span>, <span class="number">1</span>, CV_64F, b)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>( <span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">  a[i][<span class="number">0</span>] = a[i+<span class="number">4</span>][<span class="number">3</span>] = src[i].x;</span><br><span class="line">  a[i][<span class="number">1</span>] = a[i+<span class="number">4</span>][<span class="number">4</span>] = src[i].y;</span><br><span class="line">  a[i][<span class="number">2</span>] = a[i+<span class="number">4</span>][<span class="number">5</span>] = <span class="number">1</span>;</span><br><span class="line">  a[i][<span class="number">3</span>] = a[i][<span class="number">4</span>] = a[i][<span class="number">5</span>] =</span><br><span class="line">  a[i+<span class="number">4</span>][<span class="number">0</span>] = a[i+<span class="number">4</span>][<span class="number">1</span>] = a[i+<span class="number">4</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">  a[i][<span class="number">6</span>] = -src[i].x*dst[i].x;</span><br><span class="line">  a[i][<span class="number">7</span>] = -src[i].y*dst[i].x;</span><br><span class="line">  a[i+<span class="number">4</span>][<span class="number">6</span>] = -src[i].x*dst[i].y;</span><br><span class="line">  a[i+<span class="number">4</span>][<span class="number">7</span>] = -src[i].y*dst[i].y;</span><br><span class="line">  b[i] = dst[i].x;</span><br><span class="line">  b[i+<span class="number">4</span>] = dst[i].y;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">solve</span>( A, B, X, DECOMP_SVD );</span><br><span class="line">  ((<span class="type">double</span>*)M.data)[<span class="number">8</span>] = <span class="number">1.</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> M;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Calculates coefficients of affine transformation</span></span><br><span class="line"><span class="comment"> * which maps (xi,yi) to (ui,vi), (i=1,2,3):</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * ui = c00*xi + c01*yi + c02</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * vi = c10*xi + c11*yi + c12</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Coefficients are calculated by solving linear system:</span></span><br><span class="line"><span class="comment"> * / x0 y0 1 0 0 0 \ /c00\ /u0\</span></span><br><span class="line"><span class="comment"> * | x1 y1 1 0 0 0 | |c01| |u1|</span></span><br><span class="line"><span class="comment"> * | x2 y2 1 0 0 0 | |c02| |u2|</span></span><br><span class="line"><span class="comment"> * | 0 0 0 x0 y0 1 | |c10| |v0|</span></span><br><span class="line"><span class="comment"> * | 0 0 0 x1 y1 1 | |c11| |v1|</span></span><br><span class="line"><span class="comment"> * \ 0 0 0 x2 y2 1 / |c12| |v2|</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * where:</span></span><br><span class="line"><span class="comment"> * cij - matrix coefficients</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="function">cv::Mat <span class="title">cv::getAffineTransform</span><span class="params">( <span class="type">const</span> Point2f src[], <span class="type">const</span> Point2f dst[] )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="function">Mat <span class="title">M</span><span class="params">(<span class="number">2</span>, <span class="number">3</span>, CV_64F)</span>, <span class="title">X</span><span class="params">(<span class="number">6</span>, <span class="number">1</span>, CV_64F, M.data)</span></span>;</span><br><span class="line">  <span class="type">double</span> a[<span class="number">6</span>*<span class="number">6</span>], b[<span class="number">6</span>];</span><br><span class="line">  <span class="function">Mat <span class="title">A</span><span class="params">(<span class="number">6</span>, <span class="number">6</span>, CV_64F, a)</span>, <span class="title">B</span><span class="params">(<span class="number">6</span>, <span class="number">1</span>, CV_64F, b)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>( <span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++ )</span><br><span class="line">  &#123;</span><br><span class="line">  <span class="type">int</span> j = i*<span class="number">12</span>;</span><br><span class="line">  <span class="type">int</span> k = i*<span class="number">12</span>+<span class="number">6</span>;</span><br><span class="line">  a[j] = a[k+<span class="number">3</span>] = src[i].x;</span><br><span class="line">  a[j+<span class="number">1</span>] = a[k+<span class="number">4</span>] = src[i].y;</span><br><span class="line">  a[j+<span class="number">2</span>] = a[k+<span class="number">5</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">  a[j+<span class="number">3</span>] = a[j+<span class="number">4</span>] = a[j+<span class="number">5</span>] = <span class="number">0</span>;</span><br><span class="line">  a[k] = a[k+<span class="number">1</span>] = a[k+<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  b[i*<span class="number">2</span>] = dst[i].x;</span><br><span class="line">  b[i*<span class="number">2</span>+<span class="number">1</span>] = dst[i].y;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">solve</span>( A, B, X );</span><br><span class="line">  <span class="keyword">return</span> M;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我们要自己实现这个函数，其实关键就是在于如何求解AX=B的问题。当然，我们可以直接调用库函数，如<code>eigen</code>.</p>
+<h3
+id="问题这个函数如果要自己实现如何测试正确性">问题：这个函数如果要自己实现，如何测试正确性？</h3>
+<ul>
+<li><p>方案1：
+采用引入opencv作为第三方库，然后相同的输入结果与opencv中进行对比。这种方法简单，但是需要引入庞大的第三方库opencv</p></li>
+<li><p>方案2：
+采用两次变换，例如测试<code>warp_perspective</code>其中第一次将<code>src_img</code>经过<code>warp_perspective</code>变换为<code>dst_img</code>，其中转换矩阵为M;
+然后将<code>dst_img</code>经过<code>warp_perspective</code>变换为<code>dst_warp</code>，其中转换矩阵为<code>M‘</code>为<code>M</code>的逆矩阵;
+最后比较<code>dst_warp</code>和<code>src</code>中进行逐个像素对照，统计diff的像素个数count，
+return count &lt;= thresh_value.
+这种方法的缺点就是需要设置thresh_value，同时需要求M的逆矩阵</p></li>
+<li><p>方案3：
+如果不能将opencv作为第三方库引入，那么我们可以这样，将opencv的输入参数和结果作为hard
+code的方式，进行测试。这种方法尤其是 再嵌入式开发中很常见。</p></li>
+</ul>
+<h2 id="更多信息可以参考">更多信息可以参考</h2>
+<p>[1]
+https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/warp_affine/warp_affine.html</p>
+<p>[2] gTest的原理： http://cwlseu.github.io/st-CMAKE-and-gTest/搜索</p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201801/20180118-cv-transform/" title="笔记：OpenCV中的算法--透视和仿射变换">http://www.deepindeed.cn/201801/20180118-cv-transform/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ML/" rel="tag"># ML</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201711/20171128-std-lsb/" rel="prev" title="Linux开发标准：Linux Standard Base">
+                  <i class="fa fa-chevron-left"></i> Linux开发标准：Linux Standard Base
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201802/20180203-Eigen-Open-Libs/" rel="next" title="开发笔记：Eigen开源库的应用">
+                  开发笔记：Eigen开源库的应用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201801/20180118-cv-transform/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Label Noise Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Label Noise Learning">
+<meta property="og:url" content="http://www.deepindeed.cn/202203/20220304-label-noise-learning/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="Label Noise Learning">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-04T13:05:18.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.118Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="ML">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202203/20220304-label-noise-learning/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202203/20220304-label-noise-learning/","path":"202203/20220304-label-noise-learning/","title":"Label Noise Learning"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Label Noise Learning | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E5%99%AA%E5%A3%B0%E6%A0%87%E6%B3%A8%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">存在噪声标注数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A6%81%E8%8E%B7%E5%BE%97%E4%B8%80%E4%B8%AA%E9%B2%81%E6%A3%92%E6%80%A7%E7%9A%84%E6%A8%A1%E5%9E%8B%E6%96%B9%E6%B3%95%E5%8F%AF%E4%BB%A5%E5%A4%A7%E8%87%B4%E5%88%86%E4%B8%BA%E4%B8%89%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">3、要获得一个鲁棒性的模型，方法可以大致分为三类：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5"><span class="nav-number">2.2.</span> <span class="nav-text">4、常用概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#label-transition"><span class="nav-number">2.2.1.</span> <span class="nav-text">Label Transition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#memorization-effect"><span class="nav-number">2.2.2.</span> <span class="nav-text">Memorization Effect</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E7%8C%AE%E8%B0%83%E7%A0%94"><span class="nav-number">3.</span> <span class="nav-text">文献调研</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#naf"><span class="nav-number">3.1.</span> <span class="nav-text">1、NAF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#noise-tolerant-term-named-distrust-cross-entropydce"><span class="nav-number">3.1.2.</span> <span class="nav-text">noise
+tolerant term named Distrust-Cross-Entropy(DCE)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aum"><span class="nav-number">3.2.</span> <span class="nav-text">2、AUM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A9%E5%81%9C"><span class="nav-number">3.3.</span> <span class="nav-text">早停</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sop"><span class="nav-number">3.4.</span> <span class="nav-text">4、SOP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.5.</span> <span class="nav-text">5、小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Enoise-label%E6%9B%B4%E5%A4%9A%E6%96%87%E7%8C%AE"><span class="nav-number">4.</span> <span class="nav-text">关于noise label更多文献</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%AB%E6%AD%A3noise%E6%A0%B7%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">矫正noise样本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Enoisy-labels-learning%E7%9A%84%E7%BB%BC%E8%BF%B0"><span class="nav-number">4.2.</span> <span class="nav-text">关于Noisy labels
+learning的综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%B5%84%E6%96%99"><span class="nav-number">4.3.</span> <span class="nav-text">其他资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202203/20220304-label-noise-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Label Noise Learning | Deepindeed">
+      <meta itemprop="description" content="Label Noise Learning">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Label Noise Learning
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-04 21:05:18" itemprop="dateCreated datePublished" datetime="2022-03-04T21:05:18+08:00">2022-03-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202203/20220304-label-noise-learning/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202203/20220304-label-noise-learning/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Label Noise Learning</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="序言">序言</h2>
+<p>过参数化在深度学习时代常常被提到，它的神经网络参数个数甚至超过了
+training sample
+的个数，在实验中也体现出了非常好的效果。但是，一旦training
+samples中带有一些噪声，整个模型就趋向于过拟合，没有办法很好地泛化到测试集。一般而言，training
+samples带噪声的方式有两种，一是在 data points上加 Gaussian noise，二是
+label noise. 我们这里主要探究第二种。</p>
+<h2 id="存在噪声标注数据">存在噪声标注数据</h2>
+<p>诸如数据增强、权重衰减、dropout和批量归一化等流行的正则化技术已经被广泛应用，但是它们本身并不能完全克服在噪声数据上过拟合问题。
+### 1、噪声的类别</p>
+<ol type="1">
+<li><code>instance-independent label noise</code>:
+现有大部分算算法都是针对这种类型的带噪数据进行的研究建模的，因为instance-dependent
+建模比较复杂。</li>
+</ol>
+<ul>
+<li>symmetric noise: 一个标签标错为其他类别的标签概率一样</li>
+<li>asymmetric noise: 一个标签标错为其他类别的标签概率不一样</li>
+<li>pair noise: 一个标签只会错标为对应的另外一种标签,
+标错的是在这些标签对形式存在(a, b) <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646207730120.png"
+alt="Alt text" /></li>
+</ul>
+<ol start="2" type="1">
+<li><code>instance-dependent label noise</code> ### 2、困难
+（1）深度学习模型因为其高阶的表达方式，更容易受到label
+noise的影响。</li>
+</ol>
+<h3
+id="要获得一个鲁棒性的模型方法可以大致分为三类">3、要获得一个鲁棒性的模型，方法可以大致分为三类：</h3>
+<p>（1）设计使用好的损失函数 （2）训练方式: Training architectures
+methods （3）减少错误标注: Label correction methods.
+噪声数据比重占比在8.0% ~38.5%范围内。</p>
+<h3 id="常用概念">4、常用概念</h3>
+<h4 id="label-transition"><strong>Label Transition</strong></h4>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646132202285.png"
+alt="Alt text" />
+<figcaption aria-hidden="true">Alt text</figcaption>
+</figure>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646132138068.png"
+alt="Alt text" />
+<figcaption aria-hidden="true">Alt text</figcaption>
+</figure>
+<h4 id="memorization-effect"><strong>Memorization Effect</strong></h4>
+<p><img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646132315328.png"
+alt="Alt text" />
+结果表明，DNN的权值在训练开始时仍保持在初始权值附近，在对noise
+label过度拟合时开始偏离初始权值很远，这一现象也被称为DNN的记忆效应，即DNN倾向于首先学习简单和概括的模式，然后逐渐过度适应所有的噪声模式。因此，为了实现更好的泛化，通常采用提前停止和偏爱小损失训练实例来设计健壮的训练方法
+<strong>Risk Minimization</strong> <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646383784880.png"
+alt="Alt text" />
+一般采用经验风险最小化的迭代优化如下，而在非clean的dataset上直接使用该优化方法，将在泛化数据集上测试结果退化。
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646385418270.png"
+alt="Alt text" />
+一般情况下通过优化过程中降低或者屏蔽噪音sample影响以实现缓解退化的问题。
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646385503435.png"
+alt="Alt text" /> <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646385546244.png"
+alt="Alt text" /></p>
+<hr />
+<h2 id="文献调研">文献调研</h2>
+<h3 id="naf">1、NAF</h3>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646228063756.png"
+alt="Alt text" />
+<figcaption aria-hidden="true">Alt text</figcaption>
+</figure>
+<ul>
+<li>paper: Named Entity Recognition via Noise Aware Training Mechanism
+with Data Filter（ACL-IJCNLP 2021 Findings）</li>
+<li>论文链接：https://aclanthology.org/2021.findings-acl.423.pdf</li>
+</ul>
+<h4 id="问题定义">问题定义</h4>
+<p>区分难样本和噪声样本仍然是一个挑战，特别是在过拟合的情况下变得更具挑战性。
+存在歧义的hard sample与noise sample是比较难以分开的，因为hard
+sample在训练初期也是具有较大loss的。 <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646017261211.png"
+alt="Alt text|400x400" /> #### Logit-Maximum-Difference (LMD) mechanism
+（0）一般我们是NN之后的logist矩阵加softmax和损失，由于softmax是归一化的指数函数，这就使得logist矩阵中的值的变化不是通过线性变化反映出来，这给我们识别noise
+sample带来了不公平。</p>
+<p><img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1645781321621.png"
+alt="Alt text" /> （1）上图中需要注意的是，noise
+sample的情况下，相对差距比较其他两类：hard/easy sample 较小。</p>
+<p><span class="math display">\[LMD(x, y) =
+\frac{1}{T}\sum^T_{t=1}(min(Z_y^{(t)} -
+max_{i!=y}Z_i^{(t)}))\]</span></p>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646035706110.png"
+alt="Alt text|center|400x300" />
+<figcaption aria-hidden="true">Alt text|center|400x300</figcaption>
+</figure>
+<p>（2）训练过程中，刚开始几个epoch，模型总是倾向于学习正确的样品。这意味着即使有些样本即使贴上了错误的标签，模型仍然可以预测正确的结果。随着训练epoch过长，会出现overfitting的问题。如上图所示，在hard和noise
+sample 中训练发现损失趋于一致。这就是在noise
+sample中overfitting的一种现象。</p>
+<h4 id="noise-tolerant-term-named-distrust-cross-entropydce">noise
+tolerant term named Distrust-Cross-Entropy(DCE)</h4>
+<p>（0）主要想法 - 在CRF的损失函数中添加DCE
+项，用来平衡是否接受模型输出还是标注 - 超参数<span
+class="math inline">\(\delta\)</span>越大，则越相信预测结果</p>
+<p>（1）预测结果的分布 <span class="math display">\[
+\begin{align*}
+p &amp;= p(k\mid x)     \\
+\end{align*}
+\]</span> （2）标注结果分布是one-hot的分布，分布如下 <span
+class="math display">\[
+\begin{align*}
+q &amp;= q(k\mid x)      \\
+\end{align*}
+\]</span> （3）则应用KL散度可以衡量预测与实际输出的分布差异。 <span
+class="math display">\[
+\begin{align*}
+KL(q\mid\mid p)&amp;= H(q, p) - H(q) \\
+\end{align*}
+\]</span> （4）通过在基本损失函数基础上，引入DCE项，来 <span
+class="math display">\[
+\begin{align*}
+L_{DCE} &amp;= - plog(\delta p+(1- \delta)q) \\
+L_{In\_trust} &amp;= \alpha L_{CRF}+\beta L_{DCE}
+\end{align*}
+\]</span></p>
+<blockquote>
+<p>结论</p>
+</blockquote>
+<p>通过分析发现，<span
+class="math inline">\(\delta\)</span>越大，那么就通过输出结果<span
+class="math inline">\(p\)</span>学习，<span
+class="math inline">\(\delta\)</span>越小，就通过<span
+class="math inline">\(q\)</span>学些。 &gt; We observe that when is
+larger, the model tends to learn from the p of the model output, and
+when is smaller, the model tends to learn from the label q</p>
+<blockquote>
+<p>小结:
+该方法通过分析难例与噪声标注之间的差异，添加额外项优化损失函数，减少noise
+label对模型优化的影响。</p>
+</blockquote>
+<hr />
+<h3 id="aum">2、AUM</h3>
+<p><img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646209203901.png"
+alt="Alt text" /> - paper: Identifying mislabeled data using the area
+under the margin ranking</p>
+<p>首先通过经验角度分析提出的noise label与hard
+label之间的差异，得出经验判别条件。 <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1645780487021.png"
+alt="Alt text" /></p>
+<p>Margin的定义如下所示，其中t代表是第t个epoch，x代表是输入的数据，y代表annotation
+labe，z代表的是最终prediction的logits。由式子定义可知其可能会去到负数，当为负数的时候，代表模型预测的结果可能和真值结果存在不同，因此当前样本可能是噪声。
+<span class="math display">\[M^{t}(x,y) = z^{t}_{y}(x) - max_{i !=
+y}z^{t}_{i}(x)\]</span> 考虑到不同epoch
+margin值可能是不一样的，因此作者定义了如下所示的AUM值，它相当于对前T个epoch的Margin值计算了平均。
+<span class="math display">\[AUM(x, y) =
+\frac{1}{T}\sum_{t=1}^T{M^t(x,y)}\]</span></p>
+<p>AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranking是没有办法得到一个绝对的划分。因此需要一个绝对的划分。</p>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1645781193479.png"
+alt="Alt text|center|500x400" />
+<figcaption aria-hidden="true">Alt text|center|500x400</figcaption>
+</figure>
+<p>作者提出使用threshold
+samples，作者从训练集合中抽样一部分数据出来作为threshold
+samples，这部分数据会人为的指定噪声标签，并且加入训练。最终这部分数据的AUM前从高到底排序的90分位值即可以作为AUM的阈值，用于划分噪声数据和非噪声数据。</p>
+<blockquote>
+<p>该方法通过最大化margin的角度，减少噪声的影响。</p>
+</blockquote>
+<hr />
+<h3 id="早停">早停</h3>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646209122905.png"
+alt="Alt text" />
+<figcaption aria-hidden="true">Alt text</figcaption>
+</figure>
+<ul>
+<li>paper: Hwanjun Song, Minseok Kim, Dongmin Park, &amp; Jae-Gil Lee
+(2019). How does Early Stopping Help Generalization against Label Noise
+arXiv: Learning.</li>
+<li>链接地址:
+https://ui.adsabs.harvard.edu/link_gateway/2019arXiv191108059S/arxiv:1911.08059</li>
+</ul>
+<p><img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646098782428.png"
+alt="Alt text" />
+探究了<code>Best point to early stop</code>与<code>Criterion of a maximal safe set</code></p>
+<p>1、Best point to early stop</p>
+<ul>
+<li>Validation Heuristic: 准备一个干净的验证集<span
+class="math inline">\(\mathcal{V}\)</span> <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646099293021.png"
+alt="Alt text" /></li>
+<li>Noise-Rate Heuristic: 需要知道数据集的噪声率<span
+class="math inline">\(\tau\)</span>， 但是在真实业务场景不容易获得。
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646099402925.png"
+alt="Alt text" /></li>
+</ul>
+<p>2、Criterion of a maximal safe set</p>
+<blockquote>
+<p>该方法挖掘cleandata进行训练，规避noise label数据对模型的影响</p>
+</blockquote>
+<hr />
+<h3 id="sop">4、SOP</h3>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646206068555.png"
+alt="Alt text" />
+<figcaption aria-hidden="true">Alt text</figcaption>
+</figure>
+<ul>
+<li>github: https://github.com/shengliu66/SOP</li>
+<li>paper: Robust Training under Label Noise by
+Over-parameterization</li>
+</ul>
+<p>这篇文章的思路其实并不复杂，我们需要在原有模型的基础上，对于每一个数据点增加一个
+variable <span class="math inline">\(s_i\)</span>，它代表该数据点的
+label noise，最后的目标函数就是 <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646205879003.png"
+alt="Alt text|center" />
+其中，由于这个noise是具有sparse性质的，因此作者们沿用了先前若干文章中的技巧，采用了一种特殊的参数化方式：
+<span class="math inline">\(s_i = u_i \odot u_i - v_i \odot v_i\)</span>
+，当然其中还需要规定一下 <span class="math inline">\(u_i,
+v_i\)</span>的取值范围，最终的优化问题是： <img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646206339359.png"
+alt="Alt text" /></p>
+<hr />
+<h3 id="小结">5、小结</h3>
+<ul>
+<li>hard sample与noise label
+sample是我们这块更关注的，但是这对难兄难弟又杂糅在一起，本文中多篇文章中对二者差异进行了经验结果分析，这个对于我们在实际业务数据上实验的时候可以提供一些思路。例如难例挖掘是不是就可以考虑利用这个特点？</li>
+<li>如果业务数据中有噪声，可以考虑清理一个干净的validate
+dataset。训练过程中的一些测评结果，对于评估模型设计是否合理，数据是否干净还是比较有用的。但是可能因为交付时间等外部原因，我们往往忽略这些中间结果。</li>
+<li>这一块除了早停或者清洗验证集之外，还有就是训练时候能够将损失函数将noise
+label的数据权重降低，而标样本的权重高一些。</li>
+</ul>
+<hr />
+<h2 id="关于noise-label更多文献">关于noise label更多文献</h2>
+<h3 id="矫正noise样本">矫正noise样本</h3>
+<blockquote>
+<p>Hwanjun Song, Minseok Kim, &amp; Jae-Gil Lee (2019). SELFIE:
+Refurbishing Unclean Samples for Robust Deep Learning International
+Conference on Machine Learning.</p>
+</blockquote>
+<p>我们的核心思想是有选择地更新和利用可高精度校正的不干净样本，从而逐步增加可用训练样本的数量</p>
+<h3 id="关于noisy-labels-learning的综述">关于Noisy labels
+learning的综述</h3>
+<blockquote>
+<p>Hwanjun Song, Minseok Kim, Dongmin Park, &amp; Jae-Gil Lee (2020).
+Learning from Noisy Labels with Deep Neural Networks: A Survey arXiv:
+Learning.</p>
+</blockquote>
+<p>通过有监督的学习使得模型对于有噪声的标签具有更好的鲁棒性。鲁棒损失函数和损失调整是为了修改损失函数或其损失值；鲁棒结构是为了更改体系结构以对噪声数据集的噪声转换矩阵进行建模；鲁棒正则化是为了使DNN减少对错误标记样本的过度拟合；样本选择是为了从带有噪声的训练数据中识别出带有真实标签的样本。除了监督学习之外，研究人员最近还尝试通过采用元学习和半监督学习来进一步提高噪声鲁棒性。</p>
+<figure>
+<img
+src="https://cwlseu.github.io/images/nlp/Label-Noise-Learning/1646122219977.png"
+alt="Alt text" />
+<figcaption aria-hidden="true">Alt text</figcaption>
+</figure>
+<h3 id="其他资料">其他资料</h3>
+<ul>
+<li>https://github.com/songhwanjun/Awesome-Noisy-Labels</li>
+<li>https://github.com/subeeshvasu/Awesome-Learning-with-Label-Noise</li>
+<li>Open-set Label Noise Can Improve Robustness Against Inherent Label
+Noise</li>
+<li>Song, H., Kim, M., and Lee, J.-G. SELFIE: Refurbishing unclean
+samples for robust deep learning. In ICML, pp.5907–5915, 2019.</li>
+<li>Han, B. , Yao, Q. , Liu, T. , Niu, G. , Tsang, I. W. , &amp; Kwok,
+J. T. , et al. (2020). A survey of label-noise representation learning:
+past, present and future. https://arxiv.org/pdf/2011.04406v1.pdf</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202203/20220304-label-noise-learning/" title="Label Noise Learning">http://www.deepindeed.cn/202203/20220304-label-noise-learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ML/" rel="tag"># ML</a>
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202107/20210723-csc-survey/" rel="prev" title="中文文本纠错">
+                  <i class="fa fa-chevron-left"></i> 中文文本纠错
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/202203/20220310-nlp-text-data-augmentation/" rel="next" title="NLP 文本场景的数据优化">
+                  NLP 文本场景的数据优化 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/202203/20220304-label-noise-learning/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法的乐趣：完美的图算法">
+<meta property="og:url" content="http://www.deepindeed.cn/201703/20170331-based-algorithm-3/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-03-30T18:12:12.000Z">
+<meta property="article:modified_time" content="2022-08-30T00:44:07.355Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201703/20170331-based-algorithm-3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201703/20170331-based-algorithm-3/","path":"201703/20170331-based-algorithm-3/","title":"算法的乐趣：完美的图算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>算法的乐趣：完美的图算法 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">图的表示方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E5%AD%98%E5%82%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">图的邻接矩阵存储方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E9%82%BB%E6%8E%A5%E8%A1%A8%E7%9A%84%E5%AD%98%E5%82%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">图的邻接表的存储方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">遍历方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%9A%84%E6%9E%84%E9%80%A0"><span class="nav-number">5.</span> <span class="nav-text">最小生成树的构造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%87%8C%E5%A7%86%E7%AE%97%E6%B3%95prim%E7%AE%97%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">普里姆算法（Prim算法）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E8%A1%A8%E7%A4%BA%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.1.</span> <span class="nav-text">采用邻接矩阵表示的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E9%82%BB%E6%8E%A5%E8%A1%A8%E8%A1%A8%E7%A4%BA%E7%9A%84%E6%96%B9%E6%B3%95oelogv"><span class="nav-number">5.2.2.</span> <span class="nav-text">采用邻接表表示的方法O(ElogV)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">5.2.3.</span> <span class="nav-text">时间复杂度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kruskal%E7%AE%97%E6%B3%95"><span class="nav-number">5.3.</span> <span class="nav-text">Kruskal算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%8F%8F%E8%BF%B0"><span class="nav-number">5.3.1.</span> <span class="nav-text">算法描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.3.2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">5.3.3.</span> <span class="nav-text">算法时间复杂度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">最短路径问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#floyd-warshall"><span class="nav-number">6.1.</span> <span class="nav-text">Floyd-warshall</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#floyd-warshall%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E6%98%AF%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">6.1.1.</span> <span class="nav-text">Floyd-Warshall算法的原理是动态规划</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-number">6.1.2.</span> <span class="nav-text">伪代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95"><span class="nav-number">6.2.</span> <span class="nav-text">Dijkstra最短路径算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%AA%E4%BB%A3%E7%A0%81-1"><span class="nav-number">6.2.1.</span> <span class="nav-text">伪代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bellman-ford%E7%AE%97%E6%B3%95"><span class="nav-number">6.3.</span> <span class="nav-text">Bellman Ford算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%80%BB%E7%BB%93"><span class="nav-number">6.4.</span> <span class="nav-text">复杂度总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F"><span class="nav-number">6.5.</span> <span class="nav-text">有向图的拓扑排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201703/20170331-based-algorithm-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="算法的乐趣：完美的图算法 | Deepindeed">
+      <meta itemprop="description" content="算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法的乐趣：完美的图算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-03-31 02:12:12" itemprop="dateCreated datePublished" datetime="2017-03-31T02:12:12+08:00">2017-03-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-30 08:44:07" itemprop="dateModified" datetime="2022-08-30T08:44:07+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201703/20170331-based-algorithm-3/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201703/20170331-based-algorithm-3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="图的表示方法">图的表示方法</h2>
+<h2 id="图的邻接矩阵存储方法">图的邻接矩阵存储方法</h2>
+<p>二维数组中第i行第j列表示顶点i到顶点j是否有边。1表示有边，-1或者无穷表示无边，激励我们将自己到自己设为0.如果表示的为无向图，则矩阵为对称矩阵。
+graph_adjacent_1.txt中先输入有V个顶点有E条边
+然后接下来E行为边的两个顶点。</p>
+<p>5 5 1 2 1 3 1 5 2 4 3 5</p>
+<h2 id="图的邻接表的存储方法">图的邻接表的存储方法</h2>
+<p>邻接表是图的一种链式存储结构。对图的每个顶点建立一个单链表（n个顶点建立n个单链表），第i个单链表中的结点包含顶点Vi的所有邻接顶点。又称链接表。适用于<strong>稀疏图</strong>的存储。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> u[MAX_LEN];</span><br><span class="line"><span class="type">int</span> v[MAX_LEN];</span><br><span class="line"><span class="type">int</span> w[MAX_LEN];</span><br><span class="line"><span class="type">int</span> first[MAX_LEN]; <span class="comment">// 存储第i个顶点的第一条边的编号总长度为V</span></span><br><span class="line"><span class="type">int</span> next[MAX_LEN];  <span class="comment">// 存储编号为i的边的下一条的编号总长度为E</span></span><br><span class="line"><span class="comment">// 读入边的格式为u v w</span></span><br><span class="line"><span class="comment">// weight(u, v) = w</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">read_graph</span><span class="params">(FILE *f, <span class="type">int</span> E)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="built_in">memset</span>(first, <span class="number">-1</span>, <span class="built_in">sizeof</span>(first));</span><br><span class="line">   <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= E; i++)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="built_in">fscanf</span>(f, <span class="string">&quot;%d %d %d&quot;</span>, &amp;u[i], &amp;v[i], &amp;w[i]);</span><br><span class="line">      <span class="comment">//关键</span></span><br><span class="line">      next[i]     = first[u[i]];</span><br><span class="line">      first[u[i]] = i;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">access_graph</span><span class="params">(<span class="type">const</span> <span class="type">int</span> V)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= V; i++)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="type">int</span> k = first[i];</span><br><span class="line">      <span class="keyword">while</span> (k != <span class="number">-1</span>)</span><br><span class="line">      &#123;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;w(%d,%d) = %d\n&quot;</span>, u[k], v[k], w[k]);</span><br><span class="line">         k = next[k];</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中Dijstra算法使用堆进行选择最小距离，基于连接表的存储方式的时间复杂度为<span
+class="math inline">\(O((V+E)logV)\)</span> ,如果<a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/Algorithm/blob/master/aha/ch6/dijkstra.cpp">基于邻接矩阵的表示方法</a>,
+时间复杂度为<span class="math inline">\(O(V^2)\)</span>.
+当图比较稀疏的时候，E &lt;&lt; V^2, 这个时候<span
+class="math inline">\(O((V+E)logV)\)</span>比<span
+class="math inline">\(O(V^2)\)</span>小得多。</p>
+<h2 id="遍历方法">遍历方法</h2>
+<p><strong>深度优先遍历</strong>的主要思想就是首先以一个未被访问过的顶点作为起始出发点，沿着当前顶点的边走到未被访问过的顶点：当没有未被访问过的顶点的是偶，则回到上一个顶点，继续试探访问别的顶点，知道所有的顶点都被访问过。显然，深度优先遍历是沿着图的某一条分支遍历直到末端，然后回溯，再沿着另一条进行同样的遍历，直到所有的顶点都被访问过为止。</p>
+<p><strong>广度优先遍历</strong>更加适用于所有边的权值相同的情况。</p>
+<h2 id="最小生成树的构造">最小生成树的构造</h2>
+<h3 id="定义">定义</h3>
+<p>最小生成树是一副连通加权无向图中一棵权值最小的生成树。在一给定的无向图
+G = (V, E) 中，(u, v) 代表连接顶点 u 与顶点 v 的边（即 <span
+class="math inline">\((u,v)\in E\)</span>），而 <span
+class="math inline">\(w(u, v)\)</span> 代表此边的权重，若存在 T 为 E
+的子集（即 <span class="math inline">\(T\subseteq
+E\)</span>）且为无循环图，使得 <span class="math display">\[ w(T)=\sum
+_{(u,v)\in T} w(u,v)\]</span> 的 w(T) 最小，则此 T 为 G
+的最小生成树。最小生成树其实是最小权重生成树的简称。 <a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91">最小生成树</a></p>
+<h3 id="普里姆算法prim算法">普里姆算法（Prim算法）</h3>
+<p>从单一顶点开始，普里姆算法按照以下步骤逐步扩大树中所含顶点的数目，直到遍及连通图的所有顶点。</p>
+<ul>
+<li>输入：一个加权连通图，其中顶点集合为V，边集合为E；</li>
+<li>初始化：Vnew = {x}，其中x为集合V中的任一节点（起始点），Enew = {}；
+重复下列操作，直到Vnew = V： 1. 在集合E中选取<strong>权值最小的边（u,
+v）</strong>，其中
+<em>u为集合Vnew中的元素，而v则是V中没有加入Vnew的顶点</em>（如果存在有多条满足前述条件即具有相同权值的边，则可任意选取其中之一）；
+2. 将v加入集合Vnew中，将（u, v）加入集合Enew中；</li>
+<li>输出：使用集合Vnew和Enew来描述所得到的最小生成树。</li>
+<li>从任意一个顶点开发构造生成树，假设从1号顶点开始。首先将顶点1加入生成树中，用一个一维数组book来标记那些顶点已经加入了生成树</li>
+<li>用数组dist记录生成树到各个顶点的距离。最初生成树中只有1号顶点。有直连边的时候，dist存储的就是一号顶点到该点的权值，没有直连边的时候为Infinity</li>
+<li>从数组dist中选出离生成树最近的点（假设该点为j），加入到生成树中。再以j为中间点，更新生成树到每一个非树顶点的距离。即<code>dist[k] &gt; e[j][k]</code>
+更新 <code>dist[k] = e[j][k]</code></li>
+<li>重复第三步，直到所有的节点被加入为止。</li>
+</ul>
+<h4 id="采用邻接矩阵表示的实现">采用邻接矩阵表示的实现</h4>
+<p>时间复杂度为O(V^2)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化距离矩阵</span></span><br><span class="line">   <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= V; ++i) dist[i] =  graph[<span class="number">1</span>][i];</span><br><span class="line">   book[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">   <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">   <span class="type">int</span> count = <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">while</span>(count &lt; V)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="comment">// 查找距离当前树最小的点</span></span><br><span class="line">      <span class="comment">// 时间复杂度为O(V), 如果采用堆进行优化的话可以降到O(logV)</span></span><br><span class="line">      <span class="type">int</span> j = <span class="number">0</span>;</span><br><span class="line">      <span class="type">int</span> min = MAX_VAL;</span><br><span class="line">      <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= V; ++i)</span><br><span class="line">      &#123;</span><br><span class="line">         <span class="keyword">if</span>(!book[i] &amp;&amp; dist[i] &lt; min)</span><br><span class="line">         &#123;</span><br><span class="line">            min = dist[i]; j = i;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      book[j] = <span class="literal">true</span>;</span><br><span class="line">      count++;</span><br><span class="line">      sum += dist[j];</span><br><span class="line">      <span class="comment">// 更新各点到树的距离</span></span><br><span class="line">      <span class="keyword">for</span>(<span class="type">int</span> k = <span class="number">1</span>; k &lt;= V; ++k)</span><br><span class="line">      &#123;</span><br><span class="line">         <span class="keyword">if</span>(!book[k] &amp;&amp; dist[k] &gt; graph[j][k])</span><br><span class="line">            dist[k] = graph[j][k];</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/Algorithm/blob/master/aha/ch8/prim_arr_minimal_spanning_tree.cpp"
+class="uri">https://github.com/cwlseu/Algorithm/blob/master/aha/ch8/prim_arr_minimal_spanning_tree.cpp</a></p>
+<h4 id="采用邻接表表示的方法oelogv">采用邻接表表示的方法O(ElogV)</h4>
+<p>其中推荐最小距离点的时候采用堆实现推荐，其中获取顶点元素时间为O(1)，调整堆时间为O(logV)。
+调整代码实现如下:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从i节点向下调整堆</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">minheap_shiftdown</span><span class="params">(<span class="type">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="type">int</span> t, flag = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">while</span> (i * <span class="number">2</span> &lt;= size &amp;&amp; flag == <span class="number">0</span>)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="keyword">if</span> (dist[h[i]] &gt; dist[h[i &lt;&lt; <span class="number">1</span>]])</span><br><span class="line">         t = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">         t = i;</span><br><span class="line">      <span class="keyword">if</span> (i * <span class="number">2</span> + <span class="number">1</span> &lt;= size)</span><br><span class="line">      &#123;</span><br><span class="line">         <span class="keyword">if</span> (dist[h[t]] &gt; dist[h[i * <span class="number">2</span> + <span class="number">1</span>]])</span><br><span class="line">         &#123;</span><br><span class="line">            t = i * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (t != i)</span><br><span class="line">      &#123;</span><br><span class="line">         <span class="built_in">swap</span>(t, i);</span><br><span class="line">         i = t;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">         flag = <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Prim算法关键部分如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//弹出堆顶元素</span></span><br><span class="line">   <span class="built_in">minheap_pop</span>();</span><br><span class="line">   <span class="keyword">while</span> (count &lt; V)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="comment">// 查找距离当前树最小的点</span></span><br><span class="line">      <span class="type">int</span> j = <span class="built_in">minheap_pop</span>();</span><br><span class="line"></span><br><span class="line">      book[j] = <span class="literal">true</span>;</span><br><span class="line">      count++;</span><br><span class="line">      sum += dist[j];</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 更新各点到树的距离</span></span><br><span class="line">      k = first[j]; <span class="comment">// 获取顶点i的所有相连边的头</span></span><br><span class="line">      <span class="keyword">while</span>(k != <span class="number">-1</span>)</span><br><span class="line">      &#123;</span><br><span class="line">         <span class="keyword">if</span>(!book[v[k]] &amp;&amp; dist[v[k]] &gt; w[k])</span><br><span class="line">         &#123;</span><br><span class="line">            dist[v[k]] = w[k];</span><br><span class="line">            <span class="built_in">minheap_shiftup</span>(pos[v[k]]);</span><br><span class="line">         &#125;</span><br><span class="line">         k = next[k];</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/Algorithm/blob/master/aha/ch8/prim_heap_minimal_spanning_tree.cpp"
+class="uri">https://github.com/cwlseu/Algorithm/blob/master/aha/ch8/prim_heap_minimal_spanning_tree.cpp</a></p>
+<h4 id="时间复杂度">时间复杂度</h4>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">最小边、权的数据结构</th>
+<th style="text-align: center;">时间复杂度（总计</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">邻接矩阵、搜索</td>
+<td style="text-align: center;">O(V2)</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: center;">二叉堆（后文伪代码中使用的数据结构）、邻接表</td>
+<td style="text-align: center;">O((V + E) log(V)) = O(E log(V))</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">斐波那契堆、邻接表</td>
+<td style="text-align: center;">O(E + V log(V))</td>
+</tr>
+</tbody>
+</table>
+<p>通过邻接矩阵图表示的简易实现中，找到所有最小权边共需O（V2）的运行时间。使用简单的二叉堆与邻接表来表示的话，普里姆算法的运行时间则可缩减为O(E
+log
+V)，其中E为连通图的边数，V为顶点数。如果使用较为<strong>复杂的斐波那契堆</strong>，则可将运行时间进一步缩短为O(E
++ V log V)，这在<strong>连通图足够密集</strong>时（当E满足Ω（V log
+V）条件时），可较显著地提高运行速度。</p>
+<h3 id="kruskal算法">Kruskal算法</h3>
+<h4 id="算法描述">算法描述</h4>
+<ul>
+<li>新建图G，G中拥有原图中相同的节点，但没有边</li>
+<li>将原图中所有的边按权值从小到大排序</li>
+<li>从权值最小的边开始，如果这条边连接的两个节点于图G中不在同一个连通分量中，则添加这条边到图G中</li>
+<li>重复3，直至图G中所有的节点都在同一个连通分量中</li>
+</ul>
+<h4 id="实现">实现</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> std::vector;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">tEdge</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="type">int</span> u;</span><br><span class="line">   <span class="type">int</span> v;</span><br><span class="line">   <span class="type">int</span> val;</span><br><span class="line">   <span class="built_in">tEdge</span>()</span><br><span class="line">      : <span class="built_in">u</span>(<span class="number">-1</span>)</span><br><span class="line">      , <span class="built_in">v</span>(<span class="number">-1</span>)</span><br><span class="line">      , <span class="built_in">val</span>(<span class="number">0</span>)</span><br><span class="line">   &#123;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="built_in">tEdge</span>(<span class="type">int</span> _u, <span class="type">int</span> _v, <span class="type">int</span> _val)</span><br><span class="line">      : <span class="built_in">u</span>(_u)</span><br><span class="line">      , <span class="built_in">v</span>(_v)</span><br><span class="line">      , <span class="built_in">val</span>(_val)</span><br><span class="line">   &#123;</span><br><span class="line">   &#125;</span><br><span class="line">&#125; tEdge;</span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">int</span> MAX_LEN = <span class="number">101</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">comp_edge</span><span class="params">(tEdge e1, tEdge e2)</span> </span>&#123; <span class="keyword">return</span> e1.val &lt; e2.val; &#125;</span><br><span class="line"></span><br><span class="line">tEdge edges[MAX_LEN];</span><br><span class="line"><span class="type">int</span> find[MAX_LEN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span>* f, <span class="type">const</span> <span class="type">int</span> n)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) f[i] = i;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getfather</span><span class="params">(<span class="type">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="comment">// 采用递归方式实现</span></span><br><span class="line">   <span class="comment">// 每次在函数返回的时候，将</span></span><br><span class="line">   <span class="keyword">if</span>(find[v] == v)</span><br><span class="line">      <span class="keyword">return</span> v;</span><br><span class="line">   find[v] = <span class="built_in">getfather</span>(find[v]);</span><br><span class="line">   <span class="keyword">return</span> find[v];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> v, <span class="type">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">if</span>(v &gt; u) <span class="keyword">return</span> <span class="built_in">merge</span>(u, v);</span><br><span class="line">   <span class="type">int</span> t1, t2;</span><br><span class="line">   t1 = <span class="built_in">getfather</span>(v);</span><br><span class="line">   t2 = <span class="built_in">getfather</span>(u);</span><br><span class="line">   <span class="keyword">if</span>(t1 != t2)</span><br><span class="line">   &#123;</span><br><span class="line">      find[t2] = t1;<span class="comment">// 靠左原则，左边的变成右边的boss</span></span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> <span class="type">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">   FILE *f;</span><br><span class="line">   f = <span class="built_in">fopen</span>(<span class="string">&quot;minimal_spanning_tree.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span> (f == <span class="literal">NULL</span>) <span class="built_in">perror</span> (<span class="string">&quot;Error opening file&quot;</span>);</span><br><span class="line"></span><br><span class="line">   <span class="type">int</span> V, E;</span><br><span class="line">   <span class="type">int</span> u, v, val;</span><br><span class="line">   <span class="type">int</span> sum = <span class="number">0</span>; <span class="comment">// 最小生成树的花费</span></span><br><span class="line">   <span class="type">int</span> count_v = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">   <span class="built_in">fscanf</span>(f, <span class="string">&quot;%d %d&quot;</span>, &amp;V, &amp;E);</span><br><span class="line">   <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= E; ++i)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="built_in">fscanf</span>(f, <span class="string">&quot;%d %d %d&quot;</span>, &amp;u, &amp;v, &amp;val);</span><br><span class="line">      edges[i] = <span class="built_in">tEdge</span>(u, v, val);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function">std::vector&lt;tEdge&gt; <span class="title">edgev</span><span class="params">(edges+<span class="number">1</span>, edges+E+<span class="number">1</span>)</span></span>;</span><br><span class="line">   std::<span class="built_in">sort</span>(edgev.<span class="built_in">begin</span>(), edgev.<span class="built_in">end</span>(), comp_edge);</span><br><span class="line">   <span class="built_in">init</span>(find, V);</span><br><span class="line">   <span class="comment">// kruskal 算法</span></span><br><span class="line">   <span class="comment">// 从小到大枚举每一条边</span></span><br><span class="line">   <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; E; ++i)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="comment">// 判断两个顶点是否已经联通，是否在一个集合里</span></span><br><span class="line">      <span class="keyword">if</span>(<span class="built_in">merge</span>(edgev[i].u, edgev[i].v))</span><br><span class="line">      &#123;</span><br><span class="line">         count_v++;</span><br><span class="line">         sum += edgev[i].val;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 选择v - 1条边即可</span></span><br><span class="line">      <span class="keyword">if</span>(count_v == V - <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// for(int i = 1 ; i &lt;= V; ++i) printf(&quot;%d &quot;, find[i]);</span></span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;总共要花费银票是： %d\n&quot;</span>, sum);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="算法时间复杂度">算法时间复杂度</h4>
+<p>O(Elog(E)) E为图中的边数</p>
+<h2 id="最短路径问题">最短路径问题</h2>
+<h3 id="floyd-warshall">Floyd-warshall</h3>
+<p>Floyd-Warshall算法,中文亦称弗洛伊德算法,是解决<strong>任意两点</strong>间的最短路径的一种算法,可以正确处理有向图或负权（<strong>但不可存在负权回路</strong>)的最短路径问题,
+同时也被用于计算有向图的传递闭包。Floyd-Warshall算法的时间复杂度为<span
+class="math inline">\(O(N^3)\)</span>，空间复杂度为<span
+class="math inline">\(O(N^{2})\)</span>。</p>
+<h4
+id="floyd-warshall算法的原理是动态规划">Floyd-Warshall算法的原理是动态规划</h4>
+<p>设 <span class="math inline">\(D_{i,j,k}\)</span>为从<span
+class="math inline">\(i\)</span>到<span
+class="math inline">\(j\)</span>的只以<span
+class="math inline">\((1..k)\)</span>集合中的节点为中间节点的最短路径的长度。
+若最短路径经过点k,则 <span
+class="math inline">\(D_{i,j,k}=D_{i,k,k-1}+D_{k,j,k-1}\)</span>；
+若最短路径不经过点k,则 <span
+class="math inline">\(D_{i,j,k}=D_{i,j,k-1}\)</span>。 因此，<span
+class="math inline">\(D_{i,j,k}=min(D_{i,j,k-1},D_{i,k,k-1}+D_{k,j,k-1})\)</span>。
+在实际算法中,为了节约空间,可以直接在原来空间上进行迭代,这样空间可降至二维。</p>
+<h4 id="伪代码">伪代码</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">letdistbea |V|x|V| arrayofminimumdistanceinitializedtoinfinity</span></span><br><span class="line"><span class="string">其中dist[i][j]表示由点i到点j的代价,当其为 ∞ 表示两点之间没有任何连接</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="comment"># initthegraph</span></span><br><span class="line">forvinvertex:</span><br><span class="line">    dist[v][v] = <span class="number">0</span></span><br><span class="line">foredge(u, v) inedge:</span><br><span class="line">    dist[u][v] = w(u, v)</span><br><span class="line"></span><br><span class="line"><span class="comment"># startthemainalgorithm</span></span><br><span class="line">forkrange(<span class="number">1</span>,|V|):</span><br><span class="line">    forirange(<span class="number">1</span>, |V|):</span><br><span class="line">        forjrange(<span class="number">1</span>, |V|):</span><br><span class="line">            ifdist[i][j] &gt; dist[i][k] + dist[k][j]: </span><br><span class="line">                dist[i][j] = dist[i][k] + dist[k][j]</span><br><span class="line">            endif</span><br><span class="line">        endfor</span><br><span class="line">    endfor</span><br><span class="line">endfor</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>为什么不能解决带有"负权回路"的图,因为带有负权回路的图没有最短路径。因为1-&gt;2-&gt;3-&gt;1-&gt;2-&gt;3-&gt;1-&gt;2-&gt;3,每次绕一次就减少1,
+永远都找不到最短路径。</strong></p>
+</blockquote>
+<h3 id="dijkstra最短路径算法">Dijkstra最短路径算法</h3>
+<figure>
+<img
+src="https://cwlseu.github.io/images/algorithm/Dijkstra_Animation.gif"
+alt="@Dijkstra最短路径算法示意图, ref:wikipedia" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="Dijkstra最短路径算法示意图">@Dijkstra最短路径算法示意图</span>,
+ref:wikipedia</figcaption>
+</figure>
+<p>戴克斯特拉算法是由荷兰计算机科学家艾兹赫尔·戴克斯特拉提出。迪科斯彻算法使用了<strong>广度优先</strong>搜索解决赋权有向图的单源最短路径问题,算法最终得到一个最短路径树。该算法常用于路由算法或者作为其他图算法的一个子模块。
+举例来说,如果图中的顶点表示城市,而边上的权重表示城市间开车行经的距离,该算法可以用来找到两个城市之间的最短路径。该算法的输入包含了一个有权重的有向图G,以及G中的一个来源顶点S。我们以V表示G中所有顶点的集合。每一个图中的边,都是两个顶点所形成的有序元素对。(u,
+v)
+表示从顶点u到v有路径相连。我们以E表示G中所有边的集合,而边的权重则由权重函数w:
+E → [0, ∞] 定义。因此,w(u, v)
+就是从顶点u到顶点v的<strong>非负权重</strong>（weight）。边的权重可以想像成两个顶点之间的距离。任两点间路径的权重,就是该路径上所有边的权重总和。已知有V中有顶点s及t,Dijkstra算法可以找到s到t的最低权重路径(例如,最短路径)。这个算法也可以在一个图中,
+找到从<strong>一个顶点s到任何其他顶点</strong>的最短路径。</p>
+<h4 id="伪代码-1">伪代码</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">Dijkstra</span>(<span class="params">Graph, source</span>):</span><br><span class="line">     dist[source] ← <span class="number">0</span>                 <span class="comment"># Initialization</span></span><br><span class="line">     create vertex <span class="built_in">set</span> Q</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> each vertex v <span class="keyword">in</span> Graph:           </span><br><span class="line">         <span class="keyword">if</span> v ≠ source</span><br><span class="line">             dist[v] ← INFINITY       <span class="comment"># Unknown distance from source to v</span></span><br><span class="line">             prev[v] ← UNDEFINED      <span class="comment"># Predecessor of v</span></span><br><span class="line"></span><br><span class="line">         Q.add_with_priority(v, dist[v])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">     <span class="keyword">while</span> Q <span class="keyword">is</span> <span class="keyword">not</span> empty:            <span class="comment"># The main loop</span></span><br><span class="line">        u ← Q.extract_min()           <span class="comment"># Remove and return best vertex</span></span><br><span class="line">        <span class="keyword">for</span> each neighbor v of u:     <span class="comment"># only v that is still in Q</span></span><br><span class="line">            alt ← dist[u] + length(u, v) </span><br><span class="line">            <span class="keyword">if</span> alt &lt; dist[v]</span><br><span class="line">                 dist[v] ← alt</span><br><span class="line">                 prev[v] ← u</span><br><span class="line">                 Q.decrease_priority(v, alt)</span><br><span class="line">     <span class="keyword">return</span> dist[], prev[]</span><br></pre></td></tr></table></figure>
+<h3 id="bellman-ford算法">Bellman Ford算法</h3>
+<p>对所有的E条<strong>边</strong>进行V-1次松弛操作。因为最短路径上最多有V-1条边.
+第一次循环相当于经过一条边到达各个顶点的最短路径，经过k次循环相当于经过k条边到达各个顶点的最短路径。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt;= V - <span class="number">1</span>; k++)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= E; ++i)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="keyword">if</span>(dist[v[i]] &gt; dist[u[i]] + w[i])</span><br><span class="line">         dist[v[i]] = dist[u[i]] + w[i]; </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除此之外，Bellman
+ford算法还可以用来检查是否有<strong>负权回路</strong>.
+如果在进行V-1次松弛操作之后，仍然存在</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(dist[v[i]] &gt; dist[u[i]] + w[i])</span><br><span class="line">          dist[v[i]] = dist[u[i]] + w[i]; </span><br></pre></td></tr></table></figure>
+<p>的情况的话，也就是说V-1轮松弛之后，仍然可以松弛，那么必存在负权回路。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt;= V - <span class="number">1</span>; k++)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= E; ++i)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="keyword">if</span>(dist[v[i]] &gt; dist[u[i]] + w[i])</span><br><span class="line">         dist[v[i]] = dist[u[i]] + w[i]; </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 检查是否有负权回路</span></span><br><span class="line"><span class="type">bool</span> flag = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= E; ++i)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">if</span>(dist[v[i]] &gt; dist[u[i]] + w[i])</span><br><span class="line">     flag = <span class="literal">true</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (flag) <span class="built_in">printf</span>(<span class="string">&quot;这图有负权回路\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度总结">复杂度总结</h3>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 20%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Floyd</th>
+<th style="text-align: center;">Dijkstra</th>
+<th style="text-align: center;">Bellman Ford</th>
+<th style="text-align: center;">Bellman Ford Proiority</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">空间复杂度</td>
+<td style="text-align: center;">O(V^2)</td>
+<td style="text-align: center;">O(E)</td>
+<td style="text-align: center;">O(E)</td>
+<td style="text-align: center;">O(E)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">时间复杂度</td>
+<td style="text-align: center;">O(V^3)</td>
+<td style="text-align: center;">O((V+E)lgV)</td>
+<td style="text-align: center;">O(VE)</td>
+<td style="text-align: center;">最坏O(VE)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">适应情景</td>
+<td style="text-align: center;">稠密图和顶点关系密切</td>
+<td style="text-align: center;">稠密图和顶点关系密切</td>
+<td style="text-align: center;">稀疏图和边关系密切</td>
+<td style="text-align: center;">稀疏图和边关系密切</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">负权</td>
+<td style="text-align: center;">不可以</td>
+<td style="text-align: center;">不能解决</td>
+<td style="text-align: center;">可以解决</td>
+<td style="text-align: center;">可以解决负权</td>
+</tr>
+</tbody>
+</table>
+<h3 id="有向图的拓扑排序">有向图的拓扑排序</h3>
+<h2 id="参考">参考</h2>
+<p>1.<a target="_blank" rel="noopener" href="http://www.ahalei.com/">aha!算法</a></p>
+<p>2.<a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95">wikipedia-
+Dijstra算法</a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201703/20170331-based-algorithm-3/" title="算法的乐趣：完美的图算法">http://www.deepindeed.cn/201703/20170331-based-algorithm-3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201703/20170321-train-use-caffe/" rel="prev" title="深度学习：玩转Caffe">
+                  <i class="fa fa-chevron-left"></i> 深度学习：玩转Caffe
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201704/20170410-feature-descriptor-fhog/" rel="next" title="图像视觉：行人检测任务之FHOG算子">
+                  图像视觉：行人检测任务之FHOG算子 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201703/20170331-based-algorithm-3/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

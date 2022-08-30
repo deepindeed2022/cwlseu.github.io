@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于字符串赋值导致crash的问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android开发中奇怪crash问题">
+<meta property="og:url" content="http://www.deepindeed.cn/201812/20181204-dev-problem-android-string-crash/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="关于字符串赋值导致crash的问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/android/arch.png">
+<meta property="article:published_time" content="2018-12-04T04:04:10.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:29:07.030Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="sdk">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/android/arch.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201812/20181204-dev-problem-android-string-crash/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201812/20181204-dev-problem-android-string-crash/","path":"201812/20181204-dev-problem-android-string-crash/","title":"android开发中奇怪crash问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>android开发中奇怪crash问题 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%9D%A5%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">问题来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A2%E7%B4%A21"><span class="nav-number">3.</span> <span class="nav-text">探索1：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A2%E7%B4%A22"><span class="nav-number">4.</span> <span class="nav-text">探索2：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A2%E7%B4%A23"><span class="nav-number">5.</span> <span class="nav-text">探索3：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A2%E7%B4%A24"><span class="nav-number">6.</span> <span class="nav-text">探索4：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E7%BB%93%E8%AE%BA"><span class="nav-number">7.</span> <span class="nav-text">最终结论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8E%9F%E5%9B%A0"><span class="nav-number">7.1.</span> <span class="nav-text">问题原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fix%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.</span> <span class="nav-text">fix方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95-android-%E5%AF%B9c%E5%BA%93%E7%9A%84%E6%94%AF%E6%8C%81"><span class="nav-number">8.</span> <span class="nav-text">附录： Android 对C++库的支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">兼容性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-%E5%BC%82%E5%B8%B8"><span class="nav-number">8.2.</span> <span class="nav-text">C++ 异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rtti"><span class="nav-number">8.3.</span> <span class="nav-text">RTTI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-number">8.4.</span> <span class="nav-text">静态运行时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E8%BF%90%E8%A1%8C%E6%97%B6"><span class="nav-number">8.5.</span> <span class="nav-text">共享运行时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#android-c%E7%B3%BB%E7%BB%9F%E5%BA%93"><span class="nav-number">8.6.</span> <span class="nav-text">Android C++系统库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">8.7.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201812/20181204-dev-problem-android-string-crash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="android开发中奇怪crash问题 | Deepindeed">
+      <meta itemprop="description" content="关于字符串赋值导致crash的问题">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          android开发中奇怪crash问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-12-04 12:04:10" itemprop="dateCreated datePublished" datetime="2018-12-04T12:04:10+08:00">2018-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:29:07" itemprop="dateModified" datetime="2022-08-29T23:29:07+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/project/" itemprop="url" rel="index"><span itemprop="name">project</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201812/20181204-dev-problem-android-string-crash/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201812/20181204-dev-problem-android-string-crash/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">关于字符串赋值导致crash的问题</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>实际开发过程中，会遇到千奇百怪的问题。有的是因为库与系统不匹配，有时是因为标准库存在不兼容问题，当然也有内存申请释放访问的问题。
+大部分奇怪的问题并不是必现，有的跟机器相关，偶的甚至跟人品有关系。总之，我们经常要与千奇百怪的问题打交道。今天就说说产品落地中遇到的一个关于字符串赋值导致crash的问题。</p>
+<h2 id="问题来源">问题来源</h2>
+<p>在<strong>android</strong>系统中，测试一个C++动态库时，出现segment
+fault或者Invalid Address free
+等问题，最终定位crash的位置时在一个<strong>字符串赋值</strong>的位置。例如：
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">O</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">allfunction</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AO</span> : <span class="keyword">public</span> O &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">otherFunc</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">setName</span><span class="params">(<span class="type">const</span> std::string&amp; name)</span></span>&#123;</span><br><span class="line">		<span class="built_in">LOG</span>(<span class="string">&quot;Before setName&quot;</span>);</span><br><span class="line">		<span class="keyword">this</span>-&gt;_name = name;</span><br><span class="line">		<span class="built_in">LOG</span>(<span class="string">&quot;Finished setName&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	string _name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BAO</span>: <span class="keyword">public</span> AO &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">otherFunc</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	type _value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CBAO</span>: <span class="keyword">public</span> BAO &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">otherFunc</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">otherFunc2</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	type2 other_value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AO* cbao = <span class="keyword">new</span> CBAO;</span><br><span class="line">cbao-&gt;<span class="built_in">setName</span>(<span class="string">&quot;a name&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>其中输出的信息中含有"Before setName"的信息，但是没有"Finished
+setName"。
+然后如果将<code>this-&gt;_name = name</code>这行代码注释，那么这个问题就可以不出现。此外，采用如下的时候
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AO* bao = <span class="keyword">new</span> BAO;</span><br><span class="line">bao-&gt;<span class="built_in">setName</span>(<span class="string">&quot;a name&quot;</span>);</span><br></pre></td></tr></table></figure> 竟然没有问题。好苦恼呀~~</p>
+<h2 id="探索1">探索1：</h2>
+<blockquote>
+<p>是不是因为<code>std::string</code>采用引用的方式，导致内存释放的时候出现多次释放。</p>
+</blockquote>
+<p>这是不应该的，因为我们采用的是标准库，而且string会自己管理内存的，不应该导致这种问题的。而且我们通过对<code>setName</code>中<code>_name</code>赋值常量字符串，该问题仍然存在。</p>
+<h2 id="探索2">探索2：</h2>
+<blockquote>
+<p>如果不采用set函数方式进行赋值，而是将<code>_name</code>变为<code>public</code>类型，从而直接对对象成员进行赋值。</p>
+</blockquote>
+<p>这样操作并没有什么实质性的变化，仍然存在存在这种现象，也就是说与对象的存储方式是与成员的可见性是没有关系的。</p>
+<h2 id="探索3">探索3：</h2>
+<blockquote>
+<p>采用<code>char _name[256]</code>代替<code>std::string _name</code>
+，我们自己负责内存的管理，而不是由C++管理内存分配。</p>
+</blockquote>
+<p>虽然这个问题绕过去了，但是后面仍然出现了类似的问题，因为我们的对象中还有其他string类型的成员变量。如果全部改用C类型的数组进行替换，代价太大。</p>
+<h2 id="探索4">探索4：</h2>
+<blockquote>
+<p>采用静态库进行测试，问题没有问题</p>
+</blockquote>
+<p>为什么动态库就有问题，静态库没有问题呢？
+<del>因为静态库中是直接将所有需要的文件都包含到静态库中。而动态库中拥有的是所有<strong>需要库的链接</strong></del>我们的动态库中是将所有需要的符号，库等等都编译进行去了的。而我们的软件库依赖其他软件库。</p>
+<h2 id="最终结论">最终结论</h2>
+<h3 id="问题原因">问题原因</h3>
+<p>不同编译环境，以及编译配置导致依赖的静态库和target
+动态库依赖了不同的c++标准库，由于两个标准库中的string实现是不同的，导致string对象在释放的时候出现crash。</p>
+<h3 id="fix方案">fix方案</h3>
+<p>android项目中添加
+<code>-DANDROID_STL=gnustl_shared</code>或者编译链接中添加<code>TARGET_LINK_LIBRARIES(test_sdk_common gnustl_shared)</code>用来显示声明链接的库为gnustl_shared库，从而使得多个动态库链接同一个标准库即可。</p>
+<h2 id="附录-android-对c库的支持">附录： Android 对C++库的支持</h2>
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 37%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">名称</th>
+<th style="text-align: center;">说明</th>
+<th style="text-align: center;">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">libstdc++（默认）</td>
+<td style="text-align: center;">默认最小系统 C++ 运行时库。</td>
+<td style="text-align: center;">不适用</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">gabi++_static</td>
+<td style="text-align: center;">GAbi++ 运行时（静态）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">gabi++_shared</td>
+<td style="text-align: center;">GAbi++ 运行时（共享）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">stlport_static</td>
+<td style="text-align: center;">STLport 运行时（静态）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI；标准库</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">stlport_shared</td>
+<td style="text-align: center;">STLport 运行时（共享）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI；标准库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">gnustl_static</td>
+<td style="text-align: center;">GNU STL（静态）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI；标准库</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">gnustl_shared</td>
+<td style="text-align: center;">GNU STL（共享）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI；标准库</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">c++_static</td>
+<td style="text-align: center;">LLVM libc++ 运行时（静态）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI；标准库</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">c++_shared</td>
+<td style="text-align: center;">LLVM libc++ 运行时（共享）。</td>
+<td style="text-align: center;">C++ 异常和 RTTI；标准库</td>
+</tr>
+</tbody>
+</table>
+<p>https://developer.android.google.cn/ndk/guides/cpp-support</p>
+<h3 id="兼容性">兼容性</h3>
+<p>NDK 的 libc++
+不稳定。并非所有测试都能通过，而且测试套件并不全面。一些已知的问题包括：
+如果在 ARM 上使用<code>c++_shared</code>，引发异常时可能会崩溃。
+对<code>wchar_t</code>和语言区域 API 的支持受到限制。</p>
+<h3 id="c-异常">C++ 异常</h3>
+<p>在高于 NDKr5 的所有 NDK 版本中，NDK 工具链可让您使用支持异常处理的
+C++ 运行时。 但为确保与早期版本兼容，默认情况下它会编译所有支持
+-fno-exceptions 的 C++ 来源。 您可以为整个应用或个别模块启用 C++
+异常。</p>
+<p>要为整个应用启用异常处理支持，请将以下行添加到 Application.mk
+文件中。要为个别模块启用异常处理支持，请将以下行添加到其各自的
+Android.mk 文件中。</p>
+<p><code>APP_CPPFLAGS += -fexceptions</code></p>
+<h3 id="rtti">RTTI</h3>
+<p>在高于 NDKr5 的所有 NDK 版本中，NDK 工具链可让您使用支持 RTTI 的 C++
+运行时。 但为确保与早期版本兼容，默认情况下它会编译所有支持
+<code>-fno-rtti</code> 的 C++ 来源。</p>
+<p>要为整个应用启用 RTTI 支持，请将以下行添加到
+<code>Application.mk</code>文件中： <code>APP_CPPFLAGS += -frtti</code>
+要为个别模块启用 RTTI 支持，请将以下行添加到其各自的 Android.mk 文件中：
+<code>LOCAL_CPP_FEATURES += rtti</code> 或者，您也可以使用：
+<code>LOCAL_CPPFLAGS += -frtti</code></p>
+<h3 id="静态运行时">静态运行时</h3>
+<p>将 C++ 运行时的静态库变体添加到多个二进制文件可能导致意外行为。
+例如，您可能会遇到：</p>
+<p>内存在一个库中分配，在另一个库中释放，从而导致内存泄漏或堆损坏。
+libfoo.so 中引发的异常在 libbar.so 中未被捕获，从而导致您的应用崩溃。
+<code>std::cout</code> 的缓冲未正常运行 此外，如果您将两个共享库 –
+或者一个共享库和一个可执行文件 –
+链接到同一个静态运行时，每个共享库的最终二进制映像包含运行时代码的副本。
+运行时代码有多个实例是表明有问题，因为运行时内部使用或提供的某些全局变量会重复。</p>
+<p>此问题不适用于只包含一个共享库的项目。例如，您可以链接
+stlport_static，并预期您的应用正确运行。
+如果您的项目需要多个共享库模块，建议使用 C++ 运行时的共享库变体。</p>
+<h3 id="共享运行时">共享运行时</h3>
+<p>如果您的应用针对早于 Android 4.3（Android API 级别 18）的 Android
+版本，并且您使用指定 C++
+运行时的共享库变体，则必须先加载共享库，再加载依赖它的任何其他库。</p>
+<p>例如，应用可能具有以下模块: - libfoo.so - libfoo.so 使用的 libbar.so
+- libfoo 和 libbar 使用的 libstlport_shared.so
+必须以相反的依赖顺序加载库：</p>
+<pre><code>static &#123;
+  System.loadLibrary(&quot;stlport_shared&quot;);
+  System.loadLibrary(&quot;bar&quot;);
+  System.loadLibrary(&quot;foo&quot;);
+&#125;</code></pre>
+<p>注：调用<code>System.loadLibrary()</code>时不要使用 lib 前缀。</p>
+<h3 id="android-c系统库">Android C++系统库</h3>
+<p>从上到下依次分为六层： * 应用框架层 * 进程通信层 * 系统服务层 *
+Android运行时层 * 硬件抽象层 * Linux内核层</p>
+<p>Android包含一个C/C++库的集合，供Android系统的各个组件使用。这些功能通过Android的应用程序框架（application
+framework）暴露给开发者。系统库包括九个子系统，分别是图层管理、媒体库、SQLite、OpenGLEState、FreeType、WebKit、SGL、SSL和libc。Android运行时包括核心库和Dalvik虚拟机，前者既兼容了大多数Java语言所需要调用的功能函数，又包括了Android的核心库，比如android.os、android.net、android.media等等。后者是一种基于寄存器的java虚拟机，<code>Dalvik虚拟机</code>主要是完成对生命周期的管理、堆栈的管理、线程的管理、安全和异常的管理以及垃圾回收等重要功能。下面列出一些核心库：
+* 系统C库——标准C系统库（libc）的BSD衍生，调整为基于嵌入式Linux设备 *
+媒体库——基于PacketVideo的OpenCORE。这些库支持播放和录制许多流行的音频和视频格式，以及静态图像文件，包括MPEG4、
+H.264、 MP3、 AAC、 AMR、JPG、 PNG<br />
+* LibWebCore——新式的Web浏览器引擎,驱动Android 浏览器和内嵌的web视图 *
+FreeType ——位图和矢量字体渲染 * OpenGL——开放图形库（英语：Open Graphics
+Library，缩写为
+OpenGL）是个定义了一个跨编程语言、跨平台的应用程序接口（API）的规范，它用于生成二维、三维图像。
+* SQLite
+——所有应用程序都可以使用的强大而轻量级的关系数据库引擎，SQLite是遵守ACID的关系数据库管理系统，它包含在一个相对小的C程序库中;</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/android/arch.png"
+alt="官方Android架构图" />
+<figcaption aria-hidden="true">官方Android架构图</figcaption>
+</figure>
+<h3 id="参考链接">参考链接</h3>
+<p>[1]. <a
+target="_blank" rel="noopener" href="https://blog.csdn.net/matrix_laboratory/article/details/79217973">Android
+gnustl_static VS gnustl_share</a></p>
+<p>[2].<a
+target="_blank" rel="noopener" href="https://developer.android.com/ndk/guides/cpp-support">C++支持</a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201812/20181204-dev-problem-android-string-crash/" title="android开发中奇怪crash问题">http://www.deepindeed.cn/201812/20181204-dev-problem-android-string-crash/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/sdk/" rel="tag"># sdk</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201811/20181128-gnu-cpp-programming-tricks/" rel="prev" title="C++ Programming Tricks">
+                  <i class="fa fa-chevron-left"></i> C++ Programming Tricks
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201812/20181214-python-tips/" rel="next" title="Python中的一些奇淫技巧">
+                  Python中的一些奇淫技巧 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201812/20181204-dev-problem-android-string-crash/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

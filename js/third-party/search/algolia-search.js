@@ -1,33 +1,33 @@
-/* global instantsearch, algoliasearch, CONFIG */
+/* global instantsearch, algoliasearch, CONFIG, pjax */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const algoliaSettings = CONFIG.algolia;
-  const { indexName, appID, apiKey } = algoliaSettings;
+  const { indexName, appID, apiKey, hits } = CONFIG.algolia;
 
-  let search = instantsearch({
+  const search = instantsearch({
     indexName,
     searchClient  : algoliasearch(appID, apiKey),
     searchFunction: helper => {
-      let searchInput = document.querySelector('.search-input');
-      if (searchInput.value) {
+      if (document.querySelector('.search-input').value) {
         helper.search();
       }
     }
   });
 
-  window.pjax && search.on('render', () => {
-    window.pjax.refresh(document.getElementById('algolia-hits'));
-  });
+  if (typeof pjax === 'object') {
+    search.on('render', () => {
+      pjax.refresh(document.querySelector('.algolia-hits'));
+    });
+  }
 
   // Registering Widgets
   search.addWidgets([
     instantsearch.widgets.configure({
-      hitsPerPage: algoliaSettings.hits.per_page || 10
+      hitsPerPage: hits.per_page || 10
     }),
 
     instantsearch.widgets.searchBox({
       container           : '.search-input-container',
-      placeholder         : algoliaSettings.labels.input_placeholder,
+      placeholder         : CONFIG.i18n.placeholder,
       // Hide default icons of algolia search
       showReset           : false,
       showSubmit          : false,
@@ -38,41 +38,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }),
 
     instantsearch.widgets.stats({
-      container: '#algolia-stats',
+      container: '.algolia-stats',
       templates: {
         text: data => {
-          let stats = algoliaSettings.labels.hits_stats
-            .replace(/\$\{hits}/, data.nbHits)
-            .replace(/\$\{time}/, data.processingTimeMS);
-          return `${stats}
-            <span class="algolia-powered">
-              <img src="${CONFIG.root}images/algolia_logo.svg" alt="Algolia">
-            </span>
-            <hr>`;
+          const stats = CONFIG.i18n.hits_time
+            .replace('${hits}', data.nbHits)
+            .replace('${time}', data.processingTimeMS);
+          return `<span>${stats}</span>
+            <img src="${CONFIG.images}/logo-algolia-nebula-blue-full.svg" alt="Algolia">`;
         }
+      },
+      cssClasses: {
+        text: 'search-stats'
       }
     }),
 
     instantsearch.widgets.hits({
-      container: '#algolia-hits',
-      templates: {
+      container : '.algolia-hits',
+      escapeHTML: false,
+      templates : {
         item: data => {
-          let link = data.permalink ? data.permalink : CONFIG.root + data.path;
-          return `<a href="${link}" class="algolia-hit-item-link">${data._highlightResult.title.value}</a>`;
+          const { title, excerpt, excerptStrip, contentStripTruncate } = data._highlightResult;
+          let result = `<a href="${data.permalink}" class="search-result-title">${title.value}</a>`;
+          const content = excerpt || excerptStrip || contentStripTruncate;
+          if (content && content.value) {
+            const div = document.createElement('div');
+            div.innerHTML = content.value;
+            result += `<a href="${data.permalink}"><p class="search-result">${div.textContent.substring(0, 100)}...</p></a>`;
+          }
+          return result;
         },
         empty: data => {
-          return `<div id="algolia-hits-empty">
-              ${algoliaSettings.labels.hits_empty.replace(/\$\{query}/, data.query)}
+          return `<div class="algolia-hits-empty">
+              ${CONFIG.i18n.empty.replace('${query}', data.query)}
             </div>`;
         }
       },
       cssClasses: {
-        item: 'algolia-hit-item'
+        list: 'search-result-list'
       }
     }),
 
     instantsearch.widgets.pagination({
-      container: '#algolia-pagination',
+      container: '.algolia-pagination',
       scrollTo : false,
       showFirst: false,
       showLast : false,
@@ -83,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         next    : '<i class="fa fa-angle-right"></i>'
       },
       cssClasses: {
-        root        : 'pagination',
+        list        : ['pagination', 'algolia-pagination'],
         item        : 'pagination-item',
         link        : 'page-number',
         selectedItem: 'current',
@@ -97,16 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle and trigger popup window
   document.querySelectorAll('.popup-trigger').forEach(element => {
     element.addEventListener('click', () => {
-      document.body.style.overflow = 'hidden';
-      document.querySelector('.search-pop-overlay').classList.add('search-active');
-      document.querySelector('.search-input').focus();
+      document.body.classList.add('search-active');
+      setTimeout(() => document.querySelector('.search-input').focus(), 500);
     });
   });
 
   // Monitor main search box
   const onPopupClose = () => {
-    document.body.style.overflow = '';
-    document.querySelector('.search-pop-overlay').classList.remove('search-active');
+    document.body.classList.remove('search-active');
   };
 
   document.querySelector('.search-pop-overlay').addEventListener('click', event => {
@@ -115,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   document.querySelector('.popup-btn-close').addEventListener('click', onPopupClose);
-  window.addEventListener('pjax:success', onPopupClose);
+  document.addEventListener('pjax:success', onPopupClose);
   window.addEventListener('keyup', event => {
     if (event.key === 'Escape') {
       onPopupClose();

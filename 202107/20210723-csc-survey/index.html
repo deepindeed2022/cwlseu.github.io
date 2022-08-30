@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="中文文本纠错">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中文文本纠错">
+<meta property="og:url" content="http://www.deepindeed.cn/202107/20210723-csc-survey/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="中文文本纠错">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/nlp/csc/1625834835557.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/nlp/csc/1625573965653.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/nlp/csc/1625632229795.png">
+<meta property="article:published_time" content="2021-07-23T13:05:18.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.120Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/nlp/csc/1625834835557.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202107/20210723-csc-survey/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202107/20210723-csc-survey/","path":"202107/20210723-csc-survey/","title":"中文文本纠错"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>中文文本纠错 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">常见错误类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%9B%E4%BA%8B"><span class="nav-number">2.</span> <span class="nav-text">赛事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">3.0.1.</span> <span class="nav-text">构造方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB"><span class="nav-number">3.1.</span> <span class="nav-text">编辑距离</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2%E6%A6%82%E8%BF%B0"><span class="nav-number">4.</span> <span class="nav-text">发展历史概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E6%9D%A1%E4%BB%B6"><span class="nav-number">4.0.1.</span> <span class="nav-text">依赖条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">4.0.2.</span> <span class="nav-text">发展历程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E7%A0%94%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="nav-number">4.0.3.</span> <span class="nav-text">调研的必要性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94"><span class="nav-number">5.</span> <span class="nav-text">技术调研</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E8%AF%AD%E8%A8%80%E7%9F%A5%E8%AF%86-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%90%86%E8%A7%A3-%E7%9F%A5%E8%AF%86%E8%AE%A1%E7%AE%97"><span class="nav-number">5.1.</span> <span class="nav-text">核心技术（语言知识-&gt;上下文理解-&gt;知识计算）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E7%BF%BB%E8%AF%91%E6%8A%80%E6%9C%AF%E7%BA%A0%E9%94%99"><span class="nav-number">5.1.1.</span> <span class="nav-text">采用翻译技术纠错</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#soft-masked-bert"><span class="nav-number">5.2.</span> <span class="nav-text">Soft-Masked BERT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#confusionset-ptrnet---cscconfusionset-guided-pointer-networks-for-chinese-spelling-check"><span class="nav-number">5.3.</span> <span class="nav-text">ConfusionSet
++PtrNet -&gt; CSC[^Confusionset-guided Pointer Networks for Chinese
+Spelling Check]</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">6.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gec"><span class="nav-number">7.</span> <span class="nav-text">GEC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E4%BC%81%E4%B8%9Apapers"><span class="nav-number">8.</span> <span class="nav-text">互联网企业Papers</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%B8%AD%E4%B8%BB%E8%A6%81%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">8.1.</span> <span class="nav-text">业务中主要存在的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202107/20210723-csc-survey/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="中文文本纠错 | Deepindeed">
+      <meta itemprop="description" content="中文文本纠错">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中文文本纠错
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-23 21:05:18" itemprop="dateCreated datePublished" datetime="2021-07-23T21:05:18+08:00">2021-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202107/20210723-csc-survey/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202107/20210723-csc-survey/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">中文文本纠错</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="常见错误类型">常见错误类型</h2>
+<p>在中文中，常见的错误类型大概有如下几类：</p>
+<p>由于字音字形相似导致的错字形式：体脂称—&gt;体脂秤 多字错误：iphonee
+—&gt; iphone 少字错误：爱有天意 --&gt; 假如爱有天意 顺序错误: 表达难以
+--&gt; 难以表达 ## 纠错组成模块 纠错一般分两大模块：</p>
+<p>错误检测：识别错误发生的位置
+错误纠正：对疑似的错误词，根据字音字形等对错词进行候选词召回，并且根据语言模型等对纠错后的结果进行排序，选择最优结果。
+<img data-src="https://cwlseu.github.io/images/nlp/csc/1625834835557.png"
+alt="Alt text" /></p>
+<h2 id="赛事">赛事</h2>
+<p>几届中文纠错评测，例如CGED与NLPCC - Chinese Spelling Check Evaluation
+at SIGHAN Bake-off 2013 [Wu et al., 2013]<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> -
+CLP-2014 Chinese Spelling Check Evaluation (Yu et al., 2014) <img
+src="https://cwlseu.github.io/images/nlp/csc/1625588548317.png"
+alt="Alt text" /></p>
+<h2 id="数据集">数据集</h2>
+<p>1、Academia Sinica Balanced Corpus (ASBC for short hereafter, cf.
+Chen et al., 1996). 2、混淆词数据集[^A Hybrid Approach to Automatic
+Corpus Generation for Chinese Spelling Check]</p>
+<p>[^A Hybrid Approach to Automatic Corpus Generation for Chinese
+Spelling Check]: Wang, D. , Song, Y. , Li, J. , Han, J. , &amp; Zhang,
+H. . (2018). A Hybrid Approach to Automatic Corpus Generation for
+Chinese Spelling Check. Proceedings of the 2018 Conference on Empirical
+Methods in Natural Language Processing.
+https://aclanthology.org/D18-1273.pdf</p>
+<p>3、Chinese Grammatical Error Diagnosis NLPTEA 2016 Shared Task:
+http://ir.itc.ntnu.edu.tw/lre/nlptea16cged.htm NLPTEA 2015 Shared Task:
+http://ir.itc.ntnu.edu.tw/lre/nlptea15cged.htm NLPTEA 2014 Shared Task:
+http://ir.itc.ntnu.edu.tw/lre/nlptea14cfl.htm</p>
+<p>4、Chinese Spelling Check SIGHAN 2015 Bake-off:
+http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html CLP 2014 Bake-off:
+http://ir.itc.ntnu.edu.tw/lre/clp14csc.html SIGHAN 2013 Bake-off:
+http://ir.itc.ntnu.edu.tw/lre/sighan7csc.html</p>
+<p>http://nlp.ee.ncu.edu.tw/resource/csc.html</p>
+<h4 id="构造方法">构造方法</h4>
+<p>1、对字进行增删、交换位置、混淆词替换 2、常见混淆集整理 &gt;
+视觉上和语音上的相似字是造成汉语文本错误的主要因素。通过定义适当的相似性度量，考虑扩展仓颉代码，我们可以在几分之一秒内识别视觉上相似的字符。根据汉语词汇中单个汉字的发音信息，我们可以计算出一个与给定汉字在语音上相似的汉字列表。我们收集了网络上出现的621个错误的中文词汇，并分析了这些错误的原因。其中83%的错误与语音相似性有关，48%的错误与所涉及的字符之间的视觉相似性有关。生成语音和视觉上相似的字符列表，我们的程序能够包含报告错误中超过90%的错误字符。<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a></p>
+<p>3、基于说文解字、四角码计算[^Using Confusion Sets and N-gram
+Statistics]</p>
+<p>[^Using Confusion Sets and N-gram Statistics]: Lin C J, Chu W C. A
+Study on Chinese Spelling Check Using Confusion Sets and N-gram
+Statistics[J]. International Journal of Computational Linguistics &amp;
+Chinese Language Processing, Volume 20, Number 1, June 2015-Special
+Issue on Chinese as a Foreign Language, 2015, 20(1).</p>
+<h3 id="编辑距离">编辑距离</h3>
+<p>编辑距离的经典应用就是用于拼写检错，如果用户输入的词语不在词典中，自动从词典中找出编辑距离小于某个数<span
+class="math inline">\(n\)</span>的单词，让用户选择正确的那一个，<span
+class="math inline">\(n\)</span>通常取到2或者3。</p>
+<p>这个问题的难点在于，怎样才能快速在字典里找出最相近的单词？可以像
+使用贝叶斯做英文拼写检查里是那样，通过单词自动修改一个单词，检查是否在词典里，这样有暴力破解的嫌疑，是否有更优雅的方案呢？</p>
+<p>1973年，Burkhard和Keller提出的BK树有效地解决了这个问题。BK树<a
+href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a><a href="#fn4" class="footnote-ref"
+id="fnref4" role="doc-noteref"><sup>4</sup></a>的核心思想是： &gt;
+令<span
+class="math inline">\(d(x,y)\)</span>表示字符串x到y的Levenshtein距离，那么显然：
+&gt; <span class="math inline">\(d(x,y) = 0\)</span> 当且仅当 <span
+class="math inline">\(x=y\)</span> （Levenshtein距离为0 &lt;==&gt;
+字符串相等） &gt; <span class="math inline">\(d(x,y) = d(y,x)\)</span>
+（从x变到y的最少步数就是从y变到x的最少步数） &gt; <span
+class="math inline">\(d(x,y) + d(y,z) &gt;= d(x,z)\)</span>
+（从x变到z所需的步数不会超过x先变成y再变成z的步数）</p>
+<p>最后这一个性质叫做三角形不等式。就好像一个三角形一样，两边之和必然大于第三边。</p>
+<h2 id="发展历史概述">发展历史概述</h2>
+<h4 id="依赖条件">依赖条件</h4>
+<p>纠错技术相对于词法分析，句法分析等受到的关注一直较小，一方面是因为<strong>文本出错的比例比较小</strong>，在一些重要场合，也有专门人员进行校验；另一方面<strong>本身问题也相对较难</strong>，其要求计算机对语言规则以及文本语义有深刻的理解。</p>
+<p>我们把中文常见错误总结分为三类： -
+用词错误，由于输入法等原因导致的选词错误，其主要表现为音近，形近等； -
+文法/句法错误，该类错误主要是由于对语言不熟悉导致的如多字、少字、乱序等错误，其错误片段相对较大；
+-
+知识类错误，该类错误可能由于对某些知识不熟悉导致的错误，要解决该类问题，通常得引入外部知识、常识等。</p>
+<h4 id="发展历程">发展历程</h4>
+<ul>
+<li>2000年以前，业界主要依靠长期积累的纠错规则和纠错词典来进行纠错，比如微软的文档编辑产品WORD即采用这种方法</li>
+<li>随着机器学习技术的发展，纠错问题受到了学术界和工业界越来越多的关注，其中有两大主流方法：
+<ul>
+<li>一种解决思路是将语言错误归类，然后采用Maxent（最大熵模型）、SVM等分类方法对这些类别进行重点识别；</li>
+<li>另外一种思路是借鉴统计机器翻译（SMT）的思想，将语言纠错等价为机器翻译的过程，即错误文本翻译为正确文本，并随之出现了一系列的优化方法。</li>
+</ul></li>
+</ul>
+<h4 id="调研的必要性">调研的必要性</h4>
+<p>近年来，随着新媒体行业的快速发展，中国自媒体从业人数逐年增长，至2017年有近260万。但是相对于传统媒体，其缺少人工校稿环节，编辑好的文章即刻发表，导致文章的错误比例较高。比如一些新媒体平台的正文错误率在2%以上，标题错误率在1%左右。同时，语音智能硬件产品的兴起，也暴露出语音识别技术的错误率高企问题，在某些场景语音识别中，错误率可能达到8%-10%，影响了后续的query理解及对话效果。因此研发优质的中文纠错技术，便成为了必须。</p>
+<h2 id="技术调研">技术调研</h2>
+<p>整体上，将纠错流程，分解为错误检测、候选召回、纠错排序三个关键步骤。通过引入语言知识、上下文理解和知识计算的核心技术，提升不同类型错误的解决能力。最后，支持SMT
+based和NMT based两套Framework，形成完整的系统架构。 ###
+关键步骤（错误检测-&gt;候选召回-&gt;纠错排序） <img
+src="https://cwlseu.github.io/images/nlp/csc/1625573756452.png"
+alt="Alt text" /></p>
+<p><strong>错误检测</strong>的目标是识别输入句子可能存在的问题，采用序列表示（Transformer/LSTM）+CRF的序列预测模型，这个模型的创新点主要包括：
+- 词法/句法分析等语言先验知识的充分应用； -
+特征设计方面，除了DNN相关这种泛化能力比较强的特征，还结合了大量hard统计特征，既充分利用DNN模型的泛化能力，又对低频与OOV（Out
+of Vocabulary）有一定的区分； -
+最后，根据字粒度和词粒度各自的特点，在模型中对其进行融合，解决词对齐的问题。
+<img data-src="https://cwlseu.github.io/images/nlp/csc/1625573965653.png"
+alt="Alt text" /></p>
+<p><strong>候选召回</strong>指的是，识别出具体的错误点之后，需要进行错误纠正，为了达到更好的效果以及性能，需要结合历史错误行为，以及音形等特征召回纠错候选。主要可分为两部分工作：离线的候选挖掘，在线的候选预排序。离线候选挖掘利用大规模多来源的错误对齐语料，通过对齐模型，得到不同粒度的错误混淆矩阵。在线候选预排序主要是针对当前的错误点，对离线召回的大量纠错候选，结合语言模型以及错误混淆矩阵的特征，控制进入纠错排序阶段的候选集数量与质量。</p>
+<h3
+id="核心技术语言知识-上下文理解-知识计算">核心技术（语言知识-&gt;上下文理解-&gt;知识计算）</h3>
+<h4 id="采用翻译技术纠错">采用翻译技术纠错</h4>
+<blockquote>
+<p>优点</p>
+</blockquote>
+<p>将纠错当做翻译任务去做，可以对不同类型的错误形式：错词，少词，多词等进行纠错</p>
+<blockquote>
+<p>缺点</p>
+</blockquote>
+<p>模型没有对字音字形相似关系的学习，纠错后的结果不受约束，很容易出现过纠错和误纠问题</p>
+<h3 id="soft-masked-bert">Soft-Masked BERT</h3>
+<p>Soft-Masked BERT：文本纠错与BERT的最新结合 - 头条 - ACL 2020</p>
+<blockquote>
+<p>给定<span class="math inline">\(n\)</span>个字或词构成的序列<span
+class="math inline">\(X=(x_1, x_2,...,
+x_n)\)</span>，目标是把它转化为另一个相同长度的字序列<span
+class="math inline">\(Y=(y_1,y_2,...,y_n)\)</span>， <span
+class="math inline">\(X\)</span>中的错字用正确的字替换得到<span
+class="math inline">\(Y\)</span>
+。该任务可看作序列标注问题，模型是映射函数<span
+class="math inline">\(f:X\rightarrow Y\)</span>。</p>
+</blockquote>
+<p>这篇文章中的纠错模型是由基于Bi-GRU序列二进制标注检测模型和基于BERT的序列多类标注纠正模型组成，
+其中soft-masked embedding: <span class="math inline">\(e_i’ = p_i \cdot
+e_{mask} + (1-p_i) \cdot e_i\)</span>
+可以实现将错字概率传递给后续纠正网络，使得纠正网络专注在预测正确字上。
+<img data-src="https://cwlseu.github.io/images/nlp/csc/1625632229795.png"
+alt="Soft-Masked BERT纠错算法框架" /></p>
+<p>https://zhuanlan.zhihu.com/p/144995580 ### SpellGCN[^SpellGCN:
+Incorporating Phonological and Visual Similarities into Language Models
+for Chinese Spelling Check]</p>
+<p>3、https://zhuanlan.zhihu.com/p/145825024?from_voters_page=true
+[^SpellGCN: Incorporating Phonological and Visual Similarities into
+Language Models for Chinese Spelling Check]:
+https://aclanthology.org/2020.acl-main.81.pdf</p>
+<h3
+id="confusionset-ptrnet---cscconfusionset-guided-pointer-networks-for-chinese-spelling-check">ConfusionSet
++PtrNet -&gt; CSC[^Confusionset-guided Pointer Networks for Chinese
+Spelling Check]</h3>
+<p>[^Confusionset-guided Pointer Networks for Chinese Spelling Check]:
+https://www.aclweb.org/anthology/P19-1578.pdf</p>
+<p>4、基于统计语言模型的文本纠错方法研究
+https://www.cnblogs.com/baobaotql/p/13358035.html</p>
+<p>规则类：哪些更适合规则类？ 语言模型 混淆集</p>
+<h2 id="todo">TODO</h2>
+<p>ACL2021 Global Attention Decoder for Chinese Spelling Error
+Correction Correcting Chinese Spelling Errors with Phonetic Pre-training
+Dynamic Connected Networks for Chinese Spelling Check
+https://github.com/gitabtion/SoftMaskedBert-PyTorch</p>
+<p>https://github.com/gitabtion/BertBasedCorrectionModels</p>
+<h2 id="gec">GEC</h2>
+<p>Encoder-Decoder Models Can Benefit from Pre-trained Masked Language
+Models in Grammatical Error Correction
+https://aclanthology.org/2020.acl-main.391.pdf</p>
+<p>Do Grammatical Error Correction Models Realize Grammatical
+Generalization? https://arxiv.org/abs/2106.03031</p>
+<h2 id="互联网企业papers">互联网企业Papers</h2>
+<p>1、腾讯云:基于语言模型的拼写纠错：https://cloud.tencent.com/developer/article/1156792</p>
+<p>2、平安寿险AI https://zhuanlan.zhihu.com/p/159101860</p>
+<p>3、爱奇艺:
+https://blog.csdn.net/BGoodHabit/article/details/114589007#21_FASPell_20</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">模型</th>
+<th style="text-align: left;">发表位置</th>
+<th style="text-align: left;">创新点</th>
+<th style="text-align: center;">总结</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FASPell(爱奇艺)</td>
+<td style="text-align: left;">ACL2020</td>
+<td
+style="text-align: left;">融合字音字形相似度分数，拟合最佳分割曲线</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SpellGCN(阿里)</td>
+<td style="text-align: left;"></td>
+<td
+style="text-align: left;">用GCN学习字音字形关系结构向量，让错词更倾向于纠错为混淆集中的字</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Soft-Mask BERT(字节)</td>
+<td style="text-align: left;"></td>
+<td
+style="text-align: left;">增加纠错检测模块，用错误检测概率控制纠错模块，减少过纠问题</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCFL(ebay)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">seq2seq</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HeadFit(加利福尼亚)</td>
+<td style="text-align: left;"></td>
+<td
+style="text-align: left;">treeLSTM模型学习字形向量，取代固定的混淆集</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="业务中主要存在的问题">业务中主要存在的问题</h3>
+<p>1、多数方案通过将字音字形信息融入到模型学习中，解决纠错问题主要因为字音字形相似等带来的错误
+2、在输入连续出错等纠错问题上，还面临着很多的挑战</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1]Lee L H, Yu L C, Chang L P. Guest Editoral: Special Issue on
+Chinese as a Foreign Language[J]. International Journal of Computational
+Linguistics &amp; Chinese Language Processing, Volume 20, Number 1, June
+2015-Special Issue on Chinese as a Foreign Language, 2015, 20(1).</p>
+<p>[2]Yu J, Li Z. Chinese spelling error detection and correction based
+on language model, pronunciation, and shape[C]//Proceedings of The Third
+CIPS-SIGHAN Joint Conference on Chinese Language Processing. 2014:
+220-223.</p>
+<p>[3] Lv, Y.Y.; Deng, Y.I.; Liu, M.L.; Lu, Q.Y. Automatic error
+checking and correction of electronic medical records. Front. Artif.
+Intell. Appl. 2016, 281, 32–40. 无法下载，需要钱</p>
+<p>[4] Liu X, Cheng K, Luo Y, et al. A hybrid Chinese spelling
+correction using language model and statistical machine translation with
+reranking[C]//Proceedings of the Seventh SIGHAN Workshop on Chinese
+Language Processing. 2013: 54-58.</p>
+<p>[5]Chen K Y, Lee H S, Lee C H, et al. A study of language modeling
+for Chinese spelling check[C]//Proceedings of the Seventh SIGHAN
+Workshop on Chinese Language Processing. 2013: 79-83.</p>
+<p>[6]Xie W, Huang P, Zhang X, et al. Chinese spelling check system
+based on n-gram model[C]//Proceedings of the Eighth SIGHAN Workshop on
+Chinese Language Processing. 2015: 128-136.</p>
+<p>[7] Zhao J, Liu H, Bao Z, et al. N-gram Model for Chinese Grammatical
+Error Diagnosis[C]//Proceedings of the 4th Workshop on Natural Language
+Processing Techniques for Educational Applications (NLPTEA 2017). 2017:
+39-44.</p>
+<p>[8] Jui-Feng Yeh, Sheng-Feng Li, Mei-Rong Wu, Wen-Yi Chen, and
+Mao-Chuan Su. 2013. Chinese word spelling correction based on N-gram
+ranked inverted index list. In Proceedings of the 7th SIGHAN Workshop on
+Chinese Language Processing. 43–48.</p>
+<p>[9] Zheng B, Che W, Guo J, et al. Chinese Grammatical Error Diagnosis
+with Long Short-Term Memory Networks[C]//Proceedings of the 3rd Workshop
+on Natural Language Processing Techniques for Educational Applications
+(NLPTEA2016). 2016: 49-56.</p>
+<p>[10] Xie P. Alibaba at IJCNLP-2017 Task 1: Embedding Grammatical
+Features into LSTMs for Chinese Grammatical Error Diagnosis Task[J].
+Proceedings of the IJCNLP 2017, Shared Tasks, 2017: 41-46.</p>
+<p>[11] Wang, D. , Song, Y. , Li, J. , Han, J. , &amp; Zhang, H. .
+(2018). A Hybrid Approach to Automatic Corpus Generation for Chinese
+Spelling Check. Proceedings of the 2018 Conference on Empirical Methods
+in Natural Language Processing.</p>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Wu, S. , Liu, C. , &amp; Lee, L. .
+(2014). Chinese Spelling Check Evaluation at SIGHAN Bake-off 2013.
+Sighan Workshop on Chinese Language Processing.<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Liu, C. L. , Lai, M. H. , Tien, K. W.
+, Chuang, Y. H. , S.-H., W. U. , &amp; Lee, C. Y. . (2011). Visually and
+phonologically similar characters in incorrect chinese words: analyses,
+identification, and applications. Acm Transactions on Asian Language
+Information Processing, 10(2), 1-39.<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"
+role="doc-endnote"><p>https://www.cnblogs.com/xiaoqi/p/BK-Tree.html<a
+href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"
+role="doc-endnote"><p>ttps://en.wikipedia.org/wiki/BK-tree<a
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202107/20210723-csc-survey/" title="中文文本纠错">http://www.deepindeed.cn/202107/20210723-csc-survey/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202004/20200407-cpp-object-model/" rel="prev" title="C++ Object Model">
+                  <i class="fa fa-chevron-left"></i> C++ Object Model
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/202203/20220304-label-noise-learning/" rel="next" title="Label Noise Learning">
+                  Label Noise Learning <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/202107/20210723-csc-survey/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

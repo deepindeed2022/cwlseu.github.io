@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近几年，随着移动互联，物联网的发展，高通赚得盆满钵满。本文主要总结日常工作汇总接触到与高通相关的一些东西。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高通芯片笔记">
+<meta property="og:url" content="http://www.deepindeed.cn/201903/20190301-Hexagon-DSP/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="最近几年，随着移动互联，物联网的发展，高通赚得盆满钵满。本文主要总结日常工作汇总接触到与高通相关的一些东西。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/dsp/820.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/dsp/DSP-HVX.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/dsp/DSP-Benchmark.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/dsp/snpe.png">
+<meta property="article:published_time" content="2019-03-01T12:12:12.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.119Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="SNPE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/dsp/820.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201903/20190301-Hexagon-DSP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201903/20190301-Hexagon-DSP/","path":"201903/20190301-Hexagon-DSP/","title":"高通芯片笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>高通芯片笔记 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%8E%92%E8%A1%8C%E6%A6%9C"><span class="nav-number">2.</span> <span class="nav-text">性能排行榜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%81%E9%BE%99"><span class="nav-number">3.</span> <span class="nav-text">骁龙</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cpu"><span class="nav-number">3.1.</span> <span class="nav-text">CPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpu"><span class="nav-number">3.2.</span> <span class="nav-text">GPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dsp"><span class="nav-number">3.3.</span> <span class="nav-text">DSP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csdn%E4%B8%AD%E9%AB%98%E9%80%9A%E4%B8%93%E6%A0%8F"><span class="nav-number">4.</span> <span class="nav-text">CSDN中高通专栏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E7%A7%91%E5%88%9B%E8%BE%BE-%E7%8E%8B%E5%BA%86%E6%B0%91%E5%85%B3%E4%BA%8Ehexagon-dsp%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.</span> <span class="nav-text">【中科创达-王庆民】关于Hexagon
+DSP功能介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E6%B8%85%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E4%BD%8E%E5%8A%9F%E8%80%97qualcomm-hexagon-vector-extensions-hvx"><span class="nav-number">6.</span> <span class="nav-text">高清图像处理，低功耗——Qualcomm®
+Hexagon™ Vector eXtensions (HVX)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#snapdragon-neural-processing-engine-snpe"><span class="nav-number">7.</span> <span class="nav-text">Snapdragon Neural
+Processing Engine (SNPE)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#capabilities"><span class="nav-number">7.1.</span> <span class="nav-text">Capabilities</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#workflow"><span class="nav-number">7.2.</span> <span class="nav-text">Workflow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.3.</span> <span class="nav-text">测试模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201903/20190301-Hexagon-DSP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="高通芯片笔记 | Deepindeed">
+      <meta itemprop="description" content="最近几年，随着移动互联，物联网的发展，高通赚得盆满钵满。本文主要总结日常工作汇总接触到与高通相关的一些东西。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          高通芯片笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-01 20:12:12" itemprop="dateCreated datePublished" datetime="2019-03-01T20:12:12+08:00">2019-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/project/" itemprop="url" rel="index"><span itemprop="name">project</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201903/20190301-Hexagon-DSP/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201903/20190301-Hexagon-DSP/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">最近几年，随着移动互联，物联网的发展，高通赚得盆满钵满。本文主要总结日常工作汇总接触到与高通相关的一些东西。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>从2011年甚至更早开始，智能手机，智能终端，车载芯片等等智能终端中，高通芯片无处不在。相比较Intel，高通抓住了移动处理器中续航的问题，不断推出低功耗移动处理器，从而抓住移动处理器的市场。日常工作中接触到很多冠以高通之名的产品，记录以习之。</p>
+<h2 id="性能排行榜">性能排行榜</h2>
+<p>收集了一下<a
+target="_blank" rel="noopener" href="https://www.xianshua.net/top/5534.html">2018年高通骁龙CPU处理器排行榜</a>和<a
+target="_blank" rel="noopener" href="http://mobile.zol.com.cn/soc/">各种手机品牌的处理器性能对比</a>，从中可以看出，骁龙系列
+处理器也是分为高中低端处理器的，其中去年最常见的845系列，占据较大的市场份额。与之争锋麒麟
+980虽然在HUWEI Meta 20
+Pro的跑分汇总获得更高名次，性能前10中高通独占8席。</p>
+<h2 id="骁龙">骁龙</h2>
+<p>为什么要选择骁龙处理器？
+骁龙移动处理器是Qualcomm开发的完整片上系统解决方案系列产品，该系列适应用户需求而提供卓越的用户体验和更长的电池寿命。利用骁龙处理器先进的处理能力和并发性能，您可以同时运行多个高级应用，而对电池的消耗却可以降到最少。</p>
+<p>骁龙处理器经过发展，早已不再仅仅支持先进的手机，还可在各种智能产品和互连设备上看到它的身影，包括可穿戴设备、智能家电、智能电话亭和数字标识系统等。我们的一系列软硬件解决方案专门提供您所需要的，以帮助您最大限度地利用采用骁龙处理器的设备。我们的SDK、Profiler分析器和调试器能帮助您分析和提升应用性能、打造创新特性和创造新的互连体验。我们甚至能帮助您开始按照您自身的设计打造设备（从原型设计到生产的全过程）。如果您要打造下一代设备，采用骁龙处理器的开发设备，您便已经可以将未来握在手中了。</p>
+<p><a
+target="_blank" rel="noopener" href="https://developer.qualcomm.com/">高通公司官网开发文档</a></p>
+<h3 id="cpu">CPU</h3>
+<p>有了高品质的处理内核，骁龙处理器中经优化的CPU是专为让您的应用运行得更快、更流畅而设计。我们所有CPU的目标是将世界级的移动体验带进生活，同时智能地控制电池寿命。但是如果没有能完全发挥其特性的软件，即使是最高性能的CPU也不能开发出自身的全部潜力。采用骁龙LLVM编译器编译的代码在骁龙处理器上会执行的更好，因为它具有独特的优化处理和漏洞修复。</p>
+<h3 id="gpu">GPU</h3>
+<p>图形性能对于现代移动体验是一个重要部分，这就是为什么我们的Qualcomm骁龙处理器要内置开拓性的Adreno™图形处理器的原因。Adreno是目前最先进的移动图形处理背后的发电站，它能加速游戏、用户界面和网络浏览器中复杂几何体的渲染。快来下载Adreno
+SDK，优化您针对Adreno
+GPU的应用，该SDK含打造沉浸式手机游戏体验所需的工具、库、示例、文档和辅导资料。您还可利用Adreno
+Profiler分析器来分析和优化您应用的图形性能。该分析器具有的特性包括：基于硬件的性能监视器、渲染调用指标、Shader原型设计等。</p>
+<h3 id="dsp">DSP</h3>
+<p>在最适合的处理引擎上运行适当的任务能为开发者带来性能优势。这就是为什么开发Hexagon
+DSP的原因，该产品专为优化调制解调器和多媒体应用而设计，具有的特性包括<strong>硬件辅助多线程</strong>。Hexagon
+SDK使您能最大化发挥DSP的性能，提供一个用于生成动态Hexagon
+DSP代码模块的环境，并且使您能访问Hexagon
+DSP上的内置计算资源。该SDK是专为帮助确保处理效率而设计，这意味着它具备更高的流动性、更低的延迟和卓越的应用性能。</p>
+<h2 id="csdn中高通专栏"><a
+target="_blank" rel="noopener" href="https://qualcomm.csdn.net/">CSDN中高通专栏</a></h2>
+<h2 id="中科创达-王庆民关于hexagon-dsp功能介绍"><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/awangqm/article/details/49333385">【中科创达-王庆民】关于Hexagon
+DSP功能介绍</a></h2>
+<p>Qualcomm的晓龙芯片从创立之几乎一直内置Hexagon
+DSP芯片，它是移动异构计算必需的处理引擎。Hexagon架构设计的核心在于如何在低功耗的情况下能够高性能的处理各种各样的应用，它具有的特性包括多线程，特权级，VLIW，SIMD以及专门适应于信号处理的指令。该CPU可以在单个时间周期中依序快速的将四个指令（已打包好）处理为执行单元。硬件多线程则由
+TMT（TemporalMultiThreading，时间多线程）来实现，在这种模式下，频率600MHz的物理核心可以被抽象成三个频率200MHz的核心。许多体验如声音和图像增强功能以及高级摄像头和传感器功能都包括信号处理任务，而DSP尤其擅长在低功耗下处理这些任务。起初，Hexagon
+DSP作为处理引擎，主要用于语音和简单的音频播放。现在，Hexagon
+DSP的作用已经扩展至多种用途，如图像增强、计算机视觉、扩增实境、视频处理和传感器处理。随着智能手机使用需求的不断加大，现在包括摄像头和传感器功能都包括信号处理任务都需要借助DSP来完成，相比强大的CPU，DSP尤其擅长在低功耗下处理这些任务。</p>
+<figure>
+<img data-src="https://cwlseu.github.io/images/dsp/820.png"
+alt="@Qualcomm最新发布的Hexagon 680 DSP版本新特性" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="Qualcomm最新发布的Hexagon">@Qualcomm最新发布的Hexagon</span>
+680 DSP版本新特性</figcaption>
+</figure>
+<h2 id="高清图像处理低功耗qualcomm-hexagon-vector-extensions-hvx"><a
+target="_blank" rel="noopener" href="https://www.csdn.net/article/a/2015-09-15/15828177">高清图像处理，低功耗——Qualcomm®
+Hexagon™ Vector eXtensions (HVX)</a></h2>
+<p>摘要：过去几年，开发人员一直在利用 Hexagon SDK，量身定制
+DSP，处理音频、图像与计算 。在 HotChips
+半导体会议上，我们揭开了即将上市的 Snapdragon 820 处理器中全新 Hexagon
+DSP 的部分面纱。这款 Hexagon 680 DSP ，集成宽幅向量处理 Hexagon
+向量扩展（HVX）核心，充分利用新的DSP 应用实例。 英文原版<a
+target="_blank" rel="noopener" href="https://developer.qualcomm.com/blog/high-res-image-processing-low-power-consumption-qualcomm-hexagon-vector-extensions-vx">High-Res
+Image Processing, Low Power Consumption – Qualcomm® Hexagon™ Vector
+eXtensions (VX)</a> 关于HVX技术，可以参考如下介绍
+https://www.hotchips.org/wp-content/uploads/hc_archives/hc27/HC27.24-Monday-Epub/HC27.24.20-Multimedia-Epub/HC27.24.211-Hexagon680-Codrescu-Qualcomm.pdf</p>
+<p>高通向量拓展技术的概括 与NEON编程模型相类似，在计算机视觉应用领域
+<img data-src="https://cwlseu.github.io/images/dsp/DSP-HVX.png"
+alt="Alt text" /></p>
+<p>指令和CPU的NEON指令相比，指令简单，更低功耗 <img
+src="https://cwlseu.github.io/images/dsp/DSP-Difference.png"
+alt="Alt text" /></p>
+<p>性能方面,CPU使用NEON优化虽然能够提升1<sub>3的速度，但是单pixel功耗方面大约是DSP的4</sub>18倍。
+<img data-src="https://cwlseu.github.io/images/dsp/DSP-Benchmark.png"
+alt="@Benchmark" /></p>
+<h2 id="snapdragon-neural-processing-engine-snpe">Snapdragon Neural
+Processing Engine (SNPE)</h2>
+<h3 id="capabilities">Capabilities</h3>
+<p>The Snapdragon Neural Processing Engine (SNPE) is a Qualcomm
+Snapdragon software accelerated runtime for the execution of deep neural
+networks. With SNPE, users can:</p>
+<ul>
+<li>Execute an arbitrarily deep neural network</li>
+<li>Execute the network on the SnapdragonTM CPU, the AdrenoTM GPU or the
+HexagonTM DSP.</li>
+<li>Debug the network execution on x86 Ubuntu Linux</li>
+<li>Convert Caffe, Caffe2, ONNXTM and TensorFlowTM models to a SNPE Deep
+Learning Container (DLC) file</li>
+<li>Quantize DLC files to 8 bit fixed point for running on the Hexagon
+DSP</li>
+<li>Debug and analyze the performance of the network with SNPE
+tools</li>
+<li>Integrate a network into applications and other code via C++ or
+Java</li>
+</ul>
+<h3 id="workflow">Workflow</h3>
+<p>Model training is performed on a popular deep learning framework
+(Caffe, Caffe2, ONNX and TensorFlow models are supported by SNPE.) After
+training is complete the trained model is converted into a DLC file that
+can be loaded into the SNPE runtime. This DLC file can then be used to
+perform forward inference passes using one of the Snapdragon accelerated
+compute cores. The basic SNPE workflow consists of only a few steps:</p>
+<p><img data-src="https://cwlseu.github.io/images/dsp/snpe.png"
+alt="@SNPE运行模型的工作流" /> * Convert the network model to a DLC file
+that can be loaded by SNPE. * Optionally quantize the DLC file for
+running on the Hexagon DSP. * Prepare input data for the model. * Load
+and execute the model using SNPE runtime.</p>
+<h3 id="测试模型">测试模型</h3>
+<ol type="1">
+<li>添加环境变量 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(__linux__) || defined(__ANDROID__)</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">SetAdspLibraryPath</span><span class="params">(std::string nativeLibPath)</span> </span>&#123;</span><br><span class="line">    std::stringstream path;</span><br><span class="line">    path &lt;&lt; nativeLibPath &lt;&lt; <span class="string">&quot;;/system/lib/rfsa/adsp;/system/vendor/lib/rfsa/adsp;/dsp&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">setenv</span>(<span class="string">&quot;ADSP_LIBRARY_PATH&quot;</span>, path.<span class="built_in">str</span>().<span class="built_in">c_str</span>(), <span class="number">1</span> <span class="comment">/*override*/</span>) == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">error</span> <span class="string">&quot;the platform not support dsp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><code>./snpe-net-run --container ./modelname.dlc --input_list list.one --use_dsp</code></p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://developer.qualcomm.com/software/qualcomm-neural-processing-sdk">SNPE
+sdk download</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://developer.qualcomm.com/docs/snpe/overview.html">SNPE
+document</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://developer.qualcomm.com/docs/snpe/network_layers.html">SNPE支持的网络层</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/guvcolie/article/details/77937786">SNPE用户自定义层JNI实现</a></li>
+</ul>
+<h2 id="参考链接">参考链接</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="http://mobile.zol.com.cn/soc/">手机处理器性能排行榜</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.mydrivers.com/zhuanti/tianti/01/">手机CPU性能天梯图</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.xianshua.net/top/5534.html">2018年高通骁龙CPU处理器排行榜</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.ti.com.cn/general/cn/docs/gencontent.tsp?contentId=61574">【德州仪器DSP技术应用工程师
+冯华亮】影响高性能DSP功耗的因素及其优化方法</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/yuanlulu/article/details/80857211">移动端深度学习框架小结</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201903/20190301-Hexagon-DSP/" title="高通芯片笔记">http://www.deepindeed.cn/201903/20190301-Hexagon-DSP/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/HPC/" rel="tag"># HPC</a>
+              <a href="/tags/SNPE/" rel="tag"># SNPE</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201902/20190225-Data-Argumentation/" rel="prev" title="深度学习: 一起来看数据增强">
+                  <i class="fa fa-chevron-left"></i> 深度学习: 一起来看数据增强
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201903/20190311-object-detection-metrics/" rel="next" title="Object Detection Metrics">
+                  Object Detection Metrics <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201903/20190301-Hexagon-DSP/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

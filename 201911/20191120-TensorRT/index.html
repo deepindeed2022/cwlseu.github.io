@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在大规模服务上的推理引擎tensorrt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Inference Framework based TensorRT">
+<meta property="og:url" content="http://www.deepindeed.cn/201911/20191120-TensorRT/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="在大规模服务上的推理引擎tensorrt">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190907135522420.png">
+<meta property="og:image" content="https://miro.medium.com/max/965/1*PyNcjHKZ8rQ48QCPsdQ9wA.png">
+<meta property="og:image" content="https://miro.medium.com/max/951/1*bJts223Qo55toZ9AY60Ruw.png">
+<meta property="og:image" content="https://miro.medium.com/max/2000/0*UKwCx_lq-oHcLYkI.png">
+<meta property="article:published_time" content="2019-11-20T15:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:26.122Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="inference">
+<meta property="article:tag" content="优化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190907135522420.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201911/20191120-TensorRT/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201911/20191120-TensorRT/","path":"201911/20191120-TensorRT/","title":"Inference Framework based TensorRT"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Inference Framework based TensorRT | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E9%80%89%E5%9E%8B%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">版本选型与基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fp16-int8"><span class="nav-number">2.1.</span> <span class="nav-text">FP16 INT8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ptx"><span class="nav-number">2.2.</span> <span class="nav-text">PTX</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensorrt%E7%89%B9%E6%80%A7%E5%8A%A9%E5%8A%9B%E9%AB%98%E6%80%A7%E8%83%BD%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">TensorRT特性助力高性能算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">优化原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A3%81%E5%89%AA%E4%B8%8E%E9%87%8D%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">网络模型的裁剪与重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8E%E7%B2%BE%E5%BA%A6%E8%AE%A1%E7%AE%97%E7%9A%84%E6%94%AF%E6%8C%81"><span class="nav-number">3.3.</span> <span class="nav-text">低精度计算的支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E6%96%B9%E9%9D%A2tensor-core%E7%9A%84%E6%94%AF%E6%8C%81%E4%BC%98%E5%8C%96%E5%8D%B7%E7%A7%AF%E8%BF%90%E7%AE%97"><span class="nav-number">3.4.</span> <span class="nav-text">硬件方面Tensor
+Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#framework-todo-schedule"><span class="nav-number">4.</span> <span class="nav-text">Framework TODO SCHEDULE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#document-for-reference"><span class="nav-number">5.</span> <span class="nav-text">Document for Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init.caffemodel"><span class="nav-number">6.1.</span> <span class="nav-text">Init.CaffeModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init.giemodel"><span class="nav-number">6.2.</span> <span class="nav-text">Init.GIEModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iplugin%E6%8E%A5%E5%8F%A3%E4%B8%AD%E9%9C%80%E8%A6%81%E8%A2%AB%E9%87%8D%E8%BD%BD%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">6.3.</span> <span class="nav-text">IPlugin接口中需要被重载的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorrt-%E4%B8%AD%E5%B7%B2%E7%BB%8F%E5%AE%9E%E7%8E%B0%E7%9A%84plugin"><span class="nav-number">6.4.</span> <span class="nav-text">TensorRT 中已经实现的Plugin</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201911/20191120-TensorRT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Inference Framework based TensorRT | Deepindeed">
+      <meta itemprop="description" content="在大规模服务上的推理引擎tensorrt">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Inference Framework based TensorRT
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-20 23:00:00" itemprop="dateCreated datePublished" datetime="2019-11-20T23:00:00+08:00">2019-11-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/project/" itemprop="url" rel="index"><span itemprop="name">project</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201911/20191120-TensorRT/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201911/20191120-TensorRT/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>31 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">在大规模服务上的推理引擎tensorrt</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>视觉算法经过几年高速发展，大量的算法被提出。为了能真正将算法在实际应用场景中更好地应用，高性能的
+inference框架层出不穷。从手机端上的ncnn到tf-lite，NVIDIA在cudnn之后，推出专用于神经网络推理的TensorRT.
+经过几轮迭代，支持的操作逐渐丰富，补充的插件已经基本满足落地的需求。笔者觉得，尤其是tensorrt
+5.0之后，无论是接口还是使用samples都变得非常方便集成。</p>
+<h2 id="版本选型与基本概念">版本选型与基本概念</h2>
+<h3 id="fp16-int8">FP16 INT8</h3>
+<p>The easiest way to benefit from mixed precision in your application
+is to take advantage of the support for FP16 and INT8 computation in
+NVIDIA GPU libraries. Key libraries from the NVIDIA SDK now support a
+variety of precisions for both computation and storage.</p>
+<p>Table shows the current support for FP16 and INT8 in key CUDA
+libraries as well as in PTX assembly and CUDA C/C++ intrinsics.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Feature</th>
+<th style="text-align: center;">FP16x2</th>
+<th style="text-align: center;">INT8/16 DP4A/DP2A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">PTX instructions</td>
+<td style="text-align: center;">CUDA 7.5</td>
+<td style="text-align: center;">CUDA 8</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CUDA C/C++ intrinsics</td>
+<td style="text-align: center;">CUDA 7.5</td>
+<td style="text-align: center;">CUDA 8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">cuBLAS GEMM</td>
+<td style="text-align: center;">CUDA 7.5</td>
+<td style="text-align: center;">CUDA 8</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">cuFFT</td>
+<td style="text-align: center;">CUDA 7.5</td>
+<td style="text-align: center;">I/O via cuFFT callbacks</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">cuDNN</td>
+<td style="text-align: center;">5.1</td>
+<td style="text-align: center;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">TensorRT</td>
+<td style="text-align: center;">v1</td>
+<td style="text-align: center;">v2 Tech Preview</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ptx">PTX</h3>
+<p>PTX(parallel-thread-execution，并行线程执行)
+预编译后GPU代码的一种形式，开发者可以通过编译选项
+“-keep”选择输出PTX代码，当然开发人员也可以直接编写PTX级代码。另外，PTX是独立于GPU架构的，因此可以重用相同的代码适用于不同的GPU架构。
+具体可参考CUDA-PDF之<a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/parallel-thread-execution/">《PTX ISA
+reference document》</a></p>
+<p>建议我们的CUDA 版本为CUDA 8.0以上,
+显卡至少为<code>GeForce 1060</code>,
+如果想支持Int8/DP4A等feature，还是需要<code>RTX 1080</code>或者<code>P40</code>。</p>
+<h2 id="tensorrt特性助力高性能算法">TensorRT特性助力高性能算法</h2>
+<h3 id="优化原理">优化原理</h3>
+<figure>
+<img data-src="https://img-blog.csdnimg.cn/20190907135522420.png"
+alt="@优化原理" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="优化原理">@优化原理</span></figcaption>
+</figure>
+<h3 id="网络模型的裁剪与重构">网络模型的裁剪与重构</h3>
+<figure>
+<img data-src="https://miro.medium.com/max/965/1*PyNcjHKZ8rQ48QCPsdQ9wA.png"
+alt="@原始网络" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="原始网络">@原始网络</span></figcaption>
+</figure>
+<p><img data-src="https://miro.medium.com/max/951/1*bJts223Qo55toZ9AY60Ruw.png" alt="@vertical fusion｜" style="zoom:67%;" /></p>
+<p>The above figures explain the vertical fusion optimization that TRT
+does. The Convolution (C), Bias(B) and Activation(R, ReLU in this case)
+are all collapsed into one single node (implementation wise this would
+mean a single CUDA kernel launch for C, B and R).</p>
+<p><img data-src="https://miro.medium.com/max/2000/0*UKwCx_lq-oHcLYkI.png" alt="@horizontal fusion｜" style="zoom:67%;" /></p>
+<p>There is also a horizontal fusion where if multiple nodes with same
+operation are feeding to multiple nodes then it is converted to one
+single node feeding multiple nodes. The three 1x1 CBRs are fused to one
+and their output is directed to appropriate nodes. Other optimizations
+Apart from the graph optimizations, TRT, through experiments and based
+on parameters like batch size, convolution kernel(filter) sizes, chooses
+efficient algorithms and kernels(CUDA kernels) for operations in
+network.</p>
+<h3 id="低精度计算的支持">低精度计算的支持</h3>
+<ul>
+<li>FP16 &amp; Int8指令的支持</li>
+<li>DP4A(Dot Product of 4 8-bits Accumulated to a 32-bit)</li>
+</ul>
+<p>TensorRT 进行优化的方式是 DP4A (Dot Product of 4 8-bits Accumulated
+to a 32-bit)，如下图：</p>
+<p><img
+src="https://arleyzhang.github.io/images/TensorRT-5-int8-calibration.assets/DP4A.png"
+alt="@DP4A原理过程" /> 这是PASCAL
+系列GPU的硬件指令，INT8卷积就是使用这种方式进行的卷积计算。更多关于DP4A的信息可以参考<a
+target="_blank" rel="noopener" href="https://devblogs.nvidia.com/mixed-precision-programming-cuda-8/">Mixed-Precision
+Programming with CUDA 8</a></p>
+<p>INT8 vector dot products (DP4A) improve the efficiency of radio
+astronomy cross-correlation by a large factor compared to FP32
+computation.</p>
+<figure>
+<img
+src="https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/10/cross-correlation-efficiency-p40-624x453.png"
+alt="@INT8 vector dot products (DP4A) improve the efficiency of radio astronomy cross-correlation by a large factor compared to FP32 computation" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="INT8">@INT8</span> vector dot products (DP4A) improve the
+efficiency of radio astronomy cross-correlation by a large factor
+compared to FP32 computation</figcaption>
+</figure>
+<h3 id="硬件方面tensor-core的支持优化卷积运算">硬件方面Tensor
+Core的支持，优化卷积运算</h3>
+<p>这个需要硬件的支持，如果没有类似Volta架构的GPU就不要强求。</p>
+<h2 id="framework-todo-schedule">Framework TODO SCHEDULE</h2>
+<ul>
+<li><strong>model load sample</strong>
+模型初始化当前包括通过parser初始化和通过模型流初始化的方式。通过parser初始化过程相比较来说比较慢，因为包含parser过程
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+caffe model</li>
+<li><input type="checkbox" disabled="" checked="" />
+gie model</li>
+</ul></li>
+<li>plugin &amp; extend layers
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+设计plugin的管理机制,更新初始化流程</li>
+<li><input type="checkbox" disabled="" />
+<a target="_blank" rel="noopener" href="https://github.com/hszhao/PSPNet">interp</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a
+target="_blank" rel="noopener" href="https://github.com/rbgirshick/caffe-fast-rcnn/tree/0dcd397b29507b8314e252e850518c5695efbb83">ROIPooling</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="">RPNProposal</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="">PriorBox</a></li>
+<li><input type="checkbox" disabled="" />
+<a href="">ChannelShuffle</a></li>
+<li><input type="checkbox" disabled="" />
+<a href="">CTC</a></li>
+<li><input type="checkbox" disabled="" />
+<a href="">SLLSTM</a></li>
+</ul></li>
+<li>int8 quantity inference
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+矫正算法的设计</li>
+<li><input type="checkbox" disabled="" />
+量化数据集合的管理，这个可以和NNIE的量化数据统一起来管理</li>
+<li><input type="checkbox" disabled="" />
+与研究侧共同确定各个层量化的范围</li>
+<li><input type="checkbox" disabled="" />
+最后更新inference模式</li>
+</ul></li>
+</ul>
+<h2 id="document-for-reference">Document for Reference</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://nvdla.org/">NVDLA官网</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://devblogs.nvidia.com/production-deep-learning-nvidia-gpu-inference-engine/">NVIDIA
+blog: Production Deep Learning with NVIDIA GPU Inference Engine</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://developer.download.nvidia.cn/compute/machine-learning/tensorrt/docs/5.1/rc/TensorRT-Support-Matrix-Guide.pdf">TensorRT
+5.1的技术参数文档</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://nvdla.org/sw/runtime_environment.html">nvdla-sw-Runtime
+environment</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf">Szymon
+Migacz, NVIDIA: 8-bit Inference with TensorRT</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://arleyzhang.github.io/articles/923e2c40/">INT8量化校准原理</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://devblogs.nvidia.com/mixed-precision-programming-cuda-8/">Mixed-Precision
+Programming with CUDA 8</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://medium.com/tensorflow/high-performance-inference-with-tensorrt-integration-c4d78795fbfe">Tensorflow使用TensorRT高速推理</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://on-demand.gputechconf.com/gtc/2019/video/_/S9431/">Tensorflow使用TensorRT高速推理视频</a></li>
+</ul>
+<h2 id="附录">附录</h2>
+<h3 id="init.caffemodel">Init.CaffeModel</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">[I] Output &quot;prob&quot;: 1000x1x1</span><br><span class="line">[I] [TRT] Applying generic optimizations to the graph for inference.</span><br><span class="line">[I] [TRT] Original: 141 layers</span><br><span class="line">[I] [TRT] After dead-layer removal: 141 layers</span><br><span class="line">[I] [TRT] After scale fusion: 141 layers</span><br><span class="line">[I] [TRT] Fusing conv1/7x7_s2 with conv1/relu_7x7</span><br><span class="line">[I] [TRT] Fusing conv2/3x3_reduce with conv2/relu_3x3_reduce</span><br><span class="line">。。。</span><br><span class="line">[I] [TRT] Fusing inception_5b/pool_proj with inception_5b/relu_pool_proj</span><br><span class="line">[I] [TRT] After vertical fusions: 84 layers</span><br><span class="line">[I] [TRT] After swap: 84 layers</span><br><span class="line">[I] [TRT] After final dead-layer removal: 84 layers</span><br><span class="line">[I] [TRT] Merging layers: inception_3a/1x1 + inception_3a/relu_1x1 || inception_3a/3x3_reduce + inception_3a/relu_3x3_reduce || inception_3a/5x5_reduce + inception_3a/relu_5x5_reduce</span><br><span class="line">[I] [TRT] Merging layers: inception_3b/1x1 + inception_3b/relu_1x1 || inception_3b/3x3_reduce + inception_3b/relu_3x3_reduce || inception_3b/5x5_reduce + inception_3b/relu_5x5_reduce</span><br><span class="line">。。。</span><br><span class="line">[I] [TRT] Merging layers: inception_5b/1x1 + inception_5b/relu_1x1 || inception_5b/3x3_reduce + inception_5b/relu_3x3_reduce || inception_5b/5x5_reduce + inception_5b/relu_5x5_reduce</span><br><span class="line">[I] [TRT] After tensor merging: 66 layers</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_3a/output</span><br><span class="line">[I] [TRT] Generating copy for inception_3a/1x1 + inception_3a/relu_1x1 || inception_3a/3x3_reduce + inception_3a/relu_3x3_reduce || inception_3a/5x5_reduce + inception_3a/relu_5x5_reduce to inception_3a/output</span><br><span class="line">[I] [TRT] Retargeting inception_3a/3x3 to inception_3a/output</span><br><span class="line">[I] [TRT] Retargeting inception_3a/5x5 to inception_3a/output</span><br><span class="line">[I] [TRT] Retargeting inception_3a/pool_proj to inception_3a/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_3b/output</span><br><span class="line">[I] [TRT] Generating copy for inception_3b/1x1 + inception_3b/relu_1x1 || inception_3b/3x3_reduce + inception_3b/relu_3x3_reduce || inception_3b/5x5_reduce + inception_3b/relu_5x5_reduce to inception_3b/output</span><br><span class="line">[I] [TRT] Retargeting inception_3b/3x3 to inception_3b/output</span><br><span class="line">[I] [TRT] Retargeting inception_3b/5x5 to inception_3b/output</span><br><span class="line">[I] [TRT] Retargeting inception_3b/pool_proj to inception_3b/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_4a/output</span><br><span class="line">[I] [TRT] Generating copy for inception_4a/1x1 + inception_4a/relu_1x1 || inception_4a/3x3_reduce + inception_4a/relu_3x3_reduce || inception_4a/5x5_reduce + inception_4a/relu_5x5_reduce to inception_4a/output</span><br><span class="line">[I] [TRT] Retargeting inception_4a/3x3 to inception_4a/output</span><br><span class="line">[I] [TRT] Retargeting inception_4a/5x5 to inception_4a/output</span><br><span class="line">[I] [TRT] Retargeting inception_4a/pool_proj to inception_4a/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_4b/output</span><br><span class="line">[I] [TRT] Generating copy for inception_4b/1x1 + inception_4b/relu_1x1 || inception_4b/3x3_reduce + inception_4b/relu_3x3_reduce || inception_4b/5x5_reduce + inception_4b/relu_5x5_reduce to inception_4b/output</span><br><span class="line">[I] [TRT] Retargeting inception_4b/3x3 to inception_4b/output</span><br><span class="line">[I] [TRT] Retargeting inception_4b/5x5 to inception_4b/output</span><br><span class="line">[I] [TRT] Retargeting inception_4b/pool_proj to inception_4b/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_4c/output</span><br><span class="line">[I] [TRT] Generating copy for inception_4c/1x1 + inception_4c/relu_1x1 || inception_4c/3x3_reduce + inception_4c/relu_3x3_reduce || inception_4c/5x5_reduce + inception_4c/relu_5x5_reduce to inception_4c/output</span><br><span class="line">[I] [TRT] Retargeting inception_4c/3x3 to inception_4c/output</span><br><span class="line">[I] [TRT] Retargeting inception_4c/5x5 to inception_4c/output</span><br><span class="line">[I] [TRT] Retargeting inception_4c/pool_proj to inception_4c/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_4d/output</span><br><span class="line">[I] [TRT] Generating copy for inception_4d/1x1 + inception_4d/relu_1x1 || inception_4d/3x3_reduce + inception_4d/relu_3x3_reduce || inception_4d/5x5_reduce + inception_4d/relu_5x5_reduce to inception_4d/output</span><br><span class="line">[I] [TRT] Retargeting inception_4d/3x3 to inception_4d/output</span><br><span class="line">[I] [TRT] Retargeting inception_4d/5x5 to inception_4d/output</span><br><span class="line">[I] [TRT] Retargeting inception_4d/pool_proj to inception_4d/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_4e/output</span><br><span class="line">[I] [TRT] Generating copy for inception_4e/1x1 + inception_4e/relu_1x1 || inception_4e/3x3_reduce + inception_4e/relu_3x3_reduce || inception_4e/5x5_reduce + inception_4e/relu_5x5_reduce to inception_4e/output</span><br><span class="line">[I] [TRT] Retargeting inception_4e/3x3 to inception_4e/output</span><br><span class="line">[I] [TRT] Retargeting inception_4e/5x5 to inception_4e/output</span><br><span class="line">[I] [TRT] Retargeting inception_4e/pool_proj to inception_4e/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_5a/output</span><br><span class="line">[I] [TRT] Generating copy for inception_5a/1x1 + inception_5a/relu_1x1 || inception_5a/3x3_reduce + inception_5a/relu_3x3_reduce || inception_5a/5x5_reduce + inception_5a/relu_5x5_reduce to inception_5a/output</span><br><span class="line">[I] [TRT] Retargeting inception_5a/3x3 to inception_5a/output</span><br><span class="line">[I] [TRT] Retargeting inception_5a/5x5 to inception_5a/output</span><br><span class="line">[I] [TRT] Retargeting inception_5a/pool_proj to inception_5a/output</span><br><span class="line">[I] [TRT] Eliminating contatenation inception_5b/output</span><br><span class="line">[I] [TRT] Generating copy for inception_5b/1x1 + inception_5b/relu_1x1 || inception_5b/3x3_reduce + inception_5b/relu_3x3_reduce || inception_5b/5x5_reduce + inception_5b/relu_5x5_reduce to inception_5b/output</span><br><span class="line">[I] [TRT] Retargeting inception_5b/3x3 to inception_5b/output</span><br><span class="line">[I] [TRT] Retargeting inception_5b/5x5 to inception_5b/output</span><br><span class="line">[I] [TRT] Retargeting inception_5b/pool_proj to inception_5b/output</span><br><span class="line">[I] [TRT] After concat removal: 66 layers</span><br><span class="line">[I] [TRT] Graph construction and optimization completed in 0.00874238 seconds.</span><br><span class="line">[I] [TRT] </span><br><span class="line">[I] [TRT] --------------- Timing conv1/7x7_s2 + conv1/relu_7x7(3)</span><br><span class="line">[I] [TRT] Tactic 0 time 0.370688</span><br><span class="line">[I] [TRT] </span><br><span class="line">[I] [TRT] --------------- Timing conv1/7x7_s2 + conv1/relu_7x7(14)</span><br><span class="line">[I] [TRT] Tactic 3146172331490511787 time 0.694752</span><br><span class="line">[I] [TRT] Tactic 3528302785056538033 time 0.429056</span><br><span class="line">[I] [TRT] Tactic -6618588952828687390 time 0.419296</span><br><span class="line">[I] [TRT] Tactic -6362554771847758902 time 0.371168</span><br><span class="line">[I] [TRT] Tactic -2701242286872672544 time 0.685056</span><br><span class="line">[I] [TRT] Tactic -675401754313066228 time 0.365568</span><br><span class="line">[I] [TRT] </span><br><span class="line">。。。</span><br><span class="line">[I] [TRT] Tactic 5 time 0.032192</span><br><span class="line">[I] [TRT] </span><br><span class="line">[I] [TRT] --------------- Timing loss3/classifier(15)</span><br><span class="line">[I] [TRT] Tactic 2624962759642542471 time 0.07424</span><br><span class="line">[I] [TRT] Tactic 6241535668063793554 time 0.094688</span><br><span class="line">[I] [TRT] Tactic 8292480392881939394 time 0.074752</span><br><span class="line">[I] [TRT] Tactic 8436800165353340181 time 0.059936</span><br><span class="line">[I] [TRT] Tactic -7597689592892725774 time 0.09216</span><br><span class="line">[I] [TRT] --------------- Chose 6 (5)</span><br><span class="line">[I] [TRT] </span><br><span class="line">[I] [TRT] --------------- Timing prob(11)</span><br><span class="line">[I] [TRT] Tactic 0 is the only option, timing skipped</span><br><span class="line">[I] [TRT] Formats and tactics selection completed in 10.0197 seconds.</span><br><span class="line">[I] [TRT] After reformat layers: 66 layers</span><br><span class="line">[I] [TRT] Block size 1073741824</span><br><span class="line">[I] [TRT] Block size 12845056</span><br><span class="line">[I] [TRT] Block size 9633792</span><br><span class="line">[I] [TRT] Block size 3211264</span><br><span class="line">[I] [TRT] Block size 3211264</span><br><span class="line">[I] [TRT] Total Activation Memory: 1102643200</span><br><span class="line">[I] [TRT] Detected 1 input and 1 output network tensors.</span><br><span class="line">[I] [TRT] Data initialization and engine generation completed in 0.0458818 seconds.</span><br><span class="line">loadmodel time: 10322 ms</span><br><span class="line">infer time: 8.20 ms</span><br></pre></td></tr></table></figure>
+<h3 id="init.giemodel">Init.GIEModel</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[I] [TRT] Glob Size is 40869280 bytes.</span><br><span class="line">[I] [TRT] Added linear block of size 3211264</span><br><span class="line">[I] [TRT] Added linear block of size 2408448</span><br><span class="line">[I] [TRT] Added linear block of size 802816</span><br><span class="line">[I] [TRT] Added linear block of size 802816</span><br><span class="line">[I] [TRT] Deserialize required 13227 microseconds.</span><br><span class="line">[I] googlenet_gie.bin has been successfully loaded.</span><br><span class="line">loadmodel time: 36 ms</span><br><span class="line">infer time: 2.80 ms</span><br></pre></td></tr></table></figure>
+<h3
+id="iplugin接口中需要被重载的函数">IPlugin接口中需要被重载的函数</h3>
+<ol type="1">
+<li><p>确定输出：一个是通过<code>int getNbOutput()</code>得到output输出的数目，即用户所定义的一层有几个输出。另一个是通过<code>Dims getOutputDimensions (int index, const Dims* inputs, int nbInputDims)</code>
+得到整个输出的维度信息，大家可能不一定遇到有多个输出，一般来讲只有一个输出，但是大家在做检测网络的时候可能会遇到多个输出，一个输出是实际的检测目标是什么，另一个输出是目标的数目，可能的过个输出需要设定Dimension的大小。</p></li>
+<li><p>层配置：通过<code>void configure()</code>
+实现构建推断（Inference）
+engine时模型中相应的参数大小等配置，configure()只是在构建的时候调用，这个阶段确定的东西是在运行时作为插件参数来存储、序列化/反序列化的。</p></li>
+<li><p>资源管理：通过<code>void Initialize()</code>来进行资源的初始化，<code>void terminate()</code>来销毁资源，甚至中间可能会有一些临时变量，也可以使用这两个函数进行初始化或销毁。需要注意的是，void
+Initialize()和void
+terminate()是在整个运行时都被调用的，并不是做完一次推断（Inference）就去调用terminate。相当于在线的一个服务，服务起的时候会调用void
+Initialize()，而服务止的时候调用void
+terminate()，但是服务会进进出出很多sample去做推断（Inference）。</p></li>
+<li><p>执行(Execution)：<code>void enqueue()</code>来定义用户层的操作</p></li>
+<li><p>序列化和反序列化：这个过程是将层的参数写入到二进制文件中，需要定义一些序列化的方法。通过<code>size_t getSerializationSize()</code>获得序列大小，通过void
+serialize()将层的参数序列化到缓存中，通过PluginSample()从缓存中将层参数反序列化。需要注意的是，TensorRT没有单独的反序列化的API，因为不需要，在实习构造函数的时候就完成了反序列化的过程</p></li>
+<li><p>从Caffe
+Parser添加Plugin：首先通过<code>Parsernvinfer1::IPlugin* createPlugin()</code>实现nvcaffeparser1::IPlugin
+接口，然后传递工厂实例到<code>ICaffeParser::parse()</code>，Caffe的Parser才能识别</p></li>
+<li><p>运行时创建插件：通过<code>IPlugin* createPlugin()</code>实现nvinfer1::IPlugin接口，传递工厂实例到<code>IInferRuntime::deserializeCudaEngine()</code></p></li>
+</ol>
+<h3 id="tensorrt-中已经实现的plugin">TensorRT 中已经实现的Plugin</h3>
+<p>打开verbose logger之后可以看到如下输出，相关的调用接口如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[V] [TRT] Plugin Creator registration succeeded - GridAnchor_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - NMS_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - Reorg_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - Region_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - Clip_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - LReLU_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - PriorBox_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - Normalize_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - RPROI_TRT</span><br><span class="line">[V] [TRT] Plugin Creator registration succeeded - BatchedNMS_TRT</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief Create a plugin layer that fuses the RPN and ROI pooling using user-defined parameters.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;RPROI_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//! \param featureStride Feature stride.</span></span><br><span class="line"><span class="comment">//! \param preNmsTop Number of proposals to keep before applying NMS.</span></span><br><span class="line"><span class="comment">//! \param nmsMaxOut Number of remaining proposals after applying NMS.</span></span><br><span class="line"><span class="comment">//! \param iouThreshold IoU threshold.</span></span><br><span class="line"><span class="comment">//! \param minBoxSize Minimum allowed bounding box size before scaling.</span></span><br><span class="line"><span class="comment">//! \param spatialScale Spatial scale between the input image and the last feature map.</span></span><br><span class="line"><span class="comment">//! \param pooling Spatial dimensions of pooled ROIs.</span></span><br><span class="line"><span class="comment">//! \param anchorRatios Aspect ratios for generating anchor windows.</span></span><br><span class="line"><span class="comment">//! \param anchorScales Scales for generating anchor windows.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \return Returns a FasterRCNN fused RPN+ROI pooling plugin. Returns nullptr on invalid inputs.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createRPNROIPlugin</span><span class="params">(<span class="type">int</span> featureStride, <span class="type">int</span> preNmsTop,</span></span></span><br><span class="line"><span class="params"><span class="function">                                                                <span class="type">int</span> nmsMaxOut, <span class="type">float</span> iouThreshold, <span class="type">float</span> minBoxSize,</span></span></span><br><span class="line"><span class="params"><span class="function">                                                                <span class="type">float</span> spatialScale, nvinfer1::DimsHW pooling,</span></span></span><br><span class="line"><span class="params"><span class="function">                                                                nvinfer1::Weights anchorRatios, nvinfer1::Weights anchorScales)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The Normalize plugin layer normalizes the input to have L2 norm of 1 with scale learnable.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;Normalize_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//! \param scales Scale weights that are applied to the output tensor.</span></span><br><span class="line"><span class="comment">//! \param acrossSpatial Whether to compute the norm over adjacent channels (acrossSpatial is true) or nearby spatial locations (within channel in which case acrossSpatial is false).</span></span><br><span class="line"><span class="comment">//! \param channelShared Whether the scale weight(s) is shared across channels.</span></span><br><span class="line"><span class="comment">//! \param eps Epsilon for not diviiding by zero.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createNormalizePlugin</span><span class="params">(<span class="type">const</span> nvinfer1::Weights* scales, <span class="type">bool</span> acrossSpatial, <span class="type">bool</span> channelShared, <span class="type">float</span> eps)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The PriorBox plugin layer generates the prior boxes of designated sizes and aspect ratios across all dimensions (H x W).</span></span><br><span class="line"><span class="comment">//! PriorBoxParameters defines a set of parameters for creating the PriorBox plugin layer.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;PriorBox_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createPriorBoxPlugin</span><span class="params">(nvinfer1::plugin::PriorBoxParameters param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The Grid Anchor Generator plugin layer generates the prior boxes of</span></span><br><span class="line"><span class="comment">//! designated sizes and aspect ratios across all dimensions (H x W) for all feature maps.</span></span><br><span class="line"><span class="comment">//! GridAnchorParameters defines a set of parameters for creating the GridAnchorGenerator plugin layer.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;GridAnchor_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createAnchorGeneratorPlugin</span><span class="params">(nvinfer1::plugin::GridAnchorParameters* param, <span class="type">int</span> numLayers)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The DetectionOutput plugin layer generates the detection output based on location and confidence predictions by doing non maximum suppression.</span></span><br><span class="line"><span class="comment">//! DetectionOutputParameters defines a set of parameters for creating the DetectionOutput plugin layer.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;NMS_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createNMSPlugin</span><span class="params">(nvinfer1::plugin::DetectionOutputParameters param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The LReLu plugin layer performs leaky ReLU for 4D tensors. Give an input value x, the PReLU layer computes the output as x if x &gt; 0 and negative_slope //! x if x &lt;= 0.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;LReLU_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//! \param negSlope Negative_slope value.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createLReLUPlugin</span><span class="params">(<span class="type">float</span> negSlope)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The Reorg plugin reshapes input of shape CxHxW into a (C*stride*stride)x(H/stride)x(W/stride) shape, used in YOLOv2.</span></span><br><span class="line"><span class="comment">//! It does that by taking 1 x stride x stride slices from tensor and flattening them into (stridexstride) x 1 x 1 shape.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;Reorg_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//! \param stride Strides in H and W, it should divide both H and W. Also stride * stride should be less than or equal to C.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createReorgPlugin</span><span class="params">(<span class="type">int</span> stride)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The Region plugin layer performs region proposal calculation: generate 5 bounding boxes per cell (for yolo9000, generate 3 bounding boxes per cell).</span></span><br><span class="line"><span class="comment">//! For each box, calculating its probablities of objects detections from 80 pre-defined classifications (yolo9000 has 9416 pre-defined classifications,</span></span><br><span class="line"><span class="comment">//! and these 9416 items are organized as work-tree structure).</span></span><br><span class="line"><span class="comment">//! RegionParameters defines a set of parameters for creating the Region plugin layer.</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;Region_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createRegionPlugin</span><span class="params">(nvinfer1::plugin::RegionParameters params)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The Clip Plugin performs a clip operation on the input tensor. It</span></span><br><span class="line"><span class="comment">//! clips the tensor values to a specified min and max. Any value less than clipMin are set to clipMin.</span></span><br><span class="line"><span class="comment">//! Any values greater than clipMax are set to clipMax. For example, this plugin can be used</span></span><br><span class="line"><span class="comment">//! to perform a Relu6 operation by specifying clipMin=0.0 and clipMax=6.0</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;Clip_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//! \param layerName The name of the TensorRT layer.</span></span><br><span class="line"><span class="comment">//! \param clipMin The minimum value to clip to.</span></span><br><span class="line"><span class="comment">//! \param clipMax The maximum value to clip to.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createClipPlugin</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* layerName, <span class="type">float</span> clipMin, <span class="type">float</span> clipMax)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief The BatchedNMS Plugin performs non_max_suppression on the input boxes, per batch, across all classes.</span></span><br><span class="line"><span class="comment">//! It greedily selects a subset of bounding boxes in descending order of</span></span><br><span class="line"><span class="comment">//! score. Prunes away boxes that have a high intersection-over-union (IOU)</span></span><br><span class="line"><span class="comment">//! overlap with previously selected boxes. Bounding boxes are supplied as [y1, x1, y2, x2],</span></span><br><span class="line"><span class="comment">//! where (y1, x1) and (y2, x2) are the coordinates of any</span></span><br><span class="line"><span class="comment">//! diagonal pair of box corners and the coordinates can be provided as normalized</span></span><br><span class="line"><span class="comment">//! (i.e., lying in the interval [0, 1]) or absolute.</span></span><br><span class="line"><span class="comment">//! The plugin expects two inputs.</span></span><br><span class="line"><span class="comment">//! Input0 is expected to be 4-D float boxes tensor of shape [batch_size, num_boxes,</span></span><br><span class="line"><span class="comment">//! q, 4], where q can be either 1 (if shareLocation is true) or num_classes.</span></span><br><span class="line"><span class="comment">//! Input1 is expected to be a 3-D float scores tensor of shape [batch_size, num_boxes, num_classes]</span></span><br><span class="line"><span class="comment">//! representing a single score corresponding to each box.</span></span><br><span class="line"><span class="comment">//! The plugin returns four outputs.</span></span><br><span class="line"><span class="comment">//! num_detections : A [batch_size] int32 tensor indicating the number of valid</span></span><br><span class="line"><span class="comment">//! detections per batch item. Can be less than keepTopK. Only the top num_detections[i] entries in</span></span><br><span class="line"><span class="comment">//! nmsed_boxes[i], nmsed_scores[i] and nmsed_classes[i] are valid.</span></span><br><span class="line"><span class="comment">//! nmsed_boxes : A [batch_size, max_detections, 4] float32 tensor containing</span></span><br><span class="line"><span class="comment">//! the co-ordinates of non-max suppressed boxes.</span></span><br><span class="line"><span class="comment">//! nmsed_scores : A [batch_size, max_detections] float32 tensor containing the</span></span><br><span class="line"><span class="comment">//! scores for the boxes.</span></span><br><span class="line"><span class="comment">//! nmsed_classes :  A [batch_size, max_detections] float32 tensor containing the</span></span><br><span class="line"><span class="comment">//! classes for the boxes.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! Registered plugin type &quot;BatchedNMS_TRT&quot;. Registered plugin version &quot;1&quot;.</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI nvinfer1::IPluginV2* <span class="title">createBatchedNMSPlugin</span><span class="params">(nvinfer1::plugin::NMSParameters param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="comment">//! \brief Initialize and register all the existing TensorRT plugins to the Plugin Registry with an optional namespace.</span></span><br><span class="line"><span class="comment">//! The plugin library author should ensure that this function name is unique to the library.</span></span><br><span class="line"><span class="comment">//! This function should be called once before accessing the Plugin Registry.</span></span><br><span class="line"><span class="comment">//! \param logger Logger object to print plugin registration information</span></span><br><span class="line"><span class="comment">//! \param libNamespace Namespace used to register all the plugins in this library</span></span><br><span class="line"><span class="comment">//!</span></span><br><span class="line"><span class="function">TENSORRTAPI <span class="type">bool</span> <span class="title">initLibNvInferPlugins</span><span class="params">(<span class="type">void</span>* logger, <span class="type">const</span> <span class="type">char</span>* libNamespace)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>https://medium.com/<span class="citation"
+data-cites="r7vme/converting-neural-network-to-tensorrt-part-1-using-existing-plugins-edd9c2b9e42a">@r7vme/converting-neural-network-to-tensorrt-part-1-using-existing-plugins-edd9c2b9e42a</span></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201911/20191120-TensorRT/" title="Inference Framework based TensorRT">http://www.deepindeed.cn/201911/20191120-TensorRT/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/inference/" rel="tag"># inference</a>
+              <a href="/tags/%E4%BC%98%E5%8C%96/" rel="tag"># 优化</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201908/20190809-scene-text-detection-component/" rel="prev" title="自然场景文本检测与识别">
+                  <i class="fa fa-chevron-left"></i> 自然场景文本检测与识别
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/202004/20200401-cplusplus-history/" rel="next" title="The history of C++">
+                  The history of C++ <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201911/20191120-TensorRT/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
