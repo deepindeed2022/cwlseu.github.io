@@ -1,0 +1,7 @@
+# language
+zh-CN:
+  # items
+  post:
+    views: 阅读数
+    comments:
+      waline: 评论数
