@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法的乐趣：递归和指针">
+<meta property="og:url" content="http://www.deepindeed.cn/202208/20170710-based-algorithm-4/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/algorithm/bstconvertlist.jpg">
+<meta property="article:published_time" content="2022-08-29T15:04:24.202Z">
+<meta property="article:modified_time" content="2022-08-29T15:04:24.202Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/algorithm/bstconvertlist.jpg">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202208/20170710-based-algorithm-4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202208/20170710-based-algorithm-4/","path":"202208/20170710-based-algorithm-4/","title":"算法的乐趣：递归和指针"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>算法的乐趣：递归和指针 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#node%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">Node的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%AF%94%E8%BE%83trick%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">一些比较trick的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4list%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">删除List中的一个节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E4%BA%8C%E5%8F%89%E6%A0%91%E8%BD%AC%E5%8C%96%E4%B8%BA%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">将二叉树转化为双向链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E9%93%BE%E8%A1%A8%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%80%92%E6%95%B0kth%E4%B8%AA"><span class="nav-number">4.</span> <span class="nav-text">从链表中查找倒数Kth个</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">5.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E9%80%94"><span class="nav-number">5.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91-vs-avl%E6%A0%91"><span class="nav-number">5.2.</span> <span class="nav-text">红黑树 VS AVL树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202208/20170710-based-algorithm-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="算法的乐趣：递归和指针 | Deepindeed">
+      <meta itemprop="description" content="算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法的乐趣：递归和指针
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-29 23:04:24" itemprop="dateCreated datePublished" datetime="2022-08-29T23:04:24+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202208/20170710-based-algorithm-4/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202208/20170710-based-algorithm-4/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">算法是编程的基础框架，就像是建房子的砖头，生产的原料，爸妈做饭的柴米油盐。没有良好的算法基础，哪里做得出好菜，生产出优质的产品，建造出结实的房子。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="node的定义">Node的定义</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">TreeNode</span> &#123;</span><br><span class="line">	<span class="type">int</span> val;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">TreeNode</span> *left;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">TreeNode</span> *right;</span><br><span class="line">	<span class="built_in">TreeNode</span>(<span class="type">int</span> x) :</span><br><span class="line">			<span class="built_in">val</span>(x), <span class="built_in">left</span>(<span class="literal">NULL</span>), <span class="built_in">right</span>(<span class="literal">NULL</span>) &#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ListNode</span> &#123;</span><br><span class="line">	<span class="type">int</span> val;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">ListNode</span> *next;</span><br><span class="line">	<span class="built_in">ListNode</span>(<span class="type">int</span> x) :</span><br><span class="line">			<span class="built_in">val</span>(x), <span class="built_in">next</span>(<span class="literal">NULL</span>) &#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="一些比较trick的问题">一些比较trick的问题</h2>
+<h3 id="删除list中的一个节点">删除List中的一个节点</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">delete_node</span><span class="params">(ListNode* curr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(curr-&gt;next)</span><br><span class="line">	&#123;</span><br><span class="line">		curr-&gt;val = curr-&gt;next-&gt;val;</span><br><span class="line">		curr-&gt;next = curr-&gt;next-&gt;next;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="将二叉树转化为双向链表">将二叉树转化为双向链表</h2>
+<figure>
+<img data-src="https://cwlseu.github.io/images/algorithm/bstconvertlist.jpg"
+alt="@算法示意图" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="算法示意图">@算法示意图</span></figcaption>
+</figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/***************************************************************************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 将一颗二叉树转化为双向链表的操作</span></span><br><span class="line"><span class="comment"> * 思路：</span></span><br><span class="line"><span class="comment"> * 采用中序遍历的想法的，对二叉树进行中序遍历，遍历过程就是最终的结果过程，然后将</span></span><br><span class="line"><span class="comment"> * 前后进行指针的重新设置即可。</span></span><br><span class="line"><span class="comment"> * 本题目主要考察递归和指针的操作</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> **************************************************************************/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">Convert</span><span class="params">(TreeNode* pRootOfTree)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(pRootOfTree == <span class="literal">NULL</span>) <span class="keyword">return</span> pRootOfTree;</span><br><span class="line">        pRootOfTree = <span class="built_in">ConvertNode</span>(pRootOfTree);</span><br><span class="line">        <span class="comment">// 获取头节点的地址，最小的值对应的指针地址</span></span><br><span class="line">        <span class="keyword">while</span>(pRootOfTree-&gt;left) pRootOfTree = pRootOfTree-&gt;left;</span><br><span class="line">        <span class="keyword">return</span> pRootOfTree;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 进行中序遍历</span></span><br><span class="line">    <span class="function">TreeNode* <span class="title">ConvertNode</span><span class="params">(TreeNode* root)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span> root;</span><br><span class="line">		<span class="comment">// 中序遍历左子树</span></span><br><span class="line">        <span class="keyword">if</span>(root-&gt;left)</span><br><span class="line">        &#123;</span><br><span class="line">            TreeNode *left = <span class="built_in">ConvertNode</span>(root-&gt;left);</span><br><span class="line">            <span class="keyword">while</span>(left-&gt;right) left = left-&gt;right;</span><br><span class="line">            left-&gt;right = root;</span><br><span class="line">            root-&gt;left = left;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 中序遍历右子树</span></span><br><span class="line">        <span class="keyword">if</span>(root-&gt;right)</span><br><span class="line">        &#123;</span><br><span class="line">            TreeNode *right = <span class="built_in">ConvertNode</span>(root-&gt;right);</span><br><span class="line">            <span class="keyword">while</span>(right-&gt;left) right = right-&gt;left;</span><br><span class="line">            right-&gt;left = root;</span><br><span class="line">            root-&gt;right = right;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="从链表中查找倒数kth个">从链表中查找倒数Kth个</h2>
+<p>本题的思路就是通过两个指针，一个快一个慢，中间相差k个，当其中快指针指向结尾的时候，慢指针指向的位置就是所求。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">FindKthToTail</span><span class="params">(ListNode* pListHead, <span class="type">unsigned</span> <span class="type">int</span> k)</span> </span>&#123;  </span><br><span class="line">    	ListNode* fast = pListHead;</span><br><span class="line">    	<span class="type">int</span> i = k;</span><br><span class="line">    	<span class="keyword">while</span>(fast &amp;&amp; i &gt; <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">    		fast = fast-&gt;next;</span><br><span class="line">    		i--;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">if</span>(i != <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    	ListNode* slow = pListHead;</span><br><span class="line">    	<span class="keyword">while</span>(fast &amp;&amp; slow)</span><br><span class="line">    	&#123;</span><br><span class="line">    		fast  = fast-&gt;next;</span><br><span class="line">    		slow = slow-&gt;next;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">return</span> slow;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="红黑树">红黑树</h2>
+<p>https://blog.csdn.net/weewqrer/article/details/51866488</p>
+<h3 id="用途">用途</h3>
+<p>红黑树和AVL树一样都对插入时间、删除时间和查找时间提供了最好可能的最坏情况担保。对于查找、插入、删除、最大、最小等动态操作的时间复杂度为O(lgn).常见的用途有以下几种：</p>
+<p>STL（标准模板库）中在set map是基于红黑树实现的。
+Java中在TreeMap使用的也是红黑树。
+epoll在内核中的实现，用红黑树管理事件块。 linux进程调度Completely Fair
+Scheduler,用红黑树管理进程控制块</p>
+<h3 id="红黑树-vs-avl树">红黑树 VS AVL树</h3>
+<p>常见的平衡树有红黑树和AVL平衡树，为什么STL和linux都使用红黑树作为平衡树的实现？大概有以下几个原因：</p>
+<p>从实现细节上来讲，如果插入一个结点引起了树的不平衡，AVL树和红黑树都最多需要2次旋转操作，即两者都是O(1)；但是在删除node引起树的不平衡时，最坏情况下，AVL需要维护从被删node到root这条路径上所有node的平衡性，因此需要旋转的量级O(logN)，而RB-Tree最多只需3次旋转，只需要O(1)的复杂度</p>
+<p>从两种平衡树对平衡的要求来讲，AVL的结构相较RB-Tree来说更为平衡，在插入和删除node更容易引起Tree的unbalance，因此在大量数据需要插入或者删除时，AVL需要rebalance的频率会更高。因此，RB-Tree在需要大量插入和删除node的场景下，效率更高。自然，由于AVL高度平衡，因此AVL的search效率更高。</p>
+<p>总体来说，RB-tree的统计性能是高于AVL的</p>
+<h2 id="参考链接">参考链接</h2>
+<p>[1].<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/weewqrer/article/details/51866488">关于红黑树的介绍</a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202208/20170710-based-algorithm-4/" title="算法的乐趣：递归和指针">http://www.deepindeed.cn/202208/20170710-based-algorithm-4/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202203/20220310-nlp-text-data-augmentation/" rel="prev" title="NLP 文本场景的数据优化">
+                  <i class="fa fa-chevron-left"></i> NLP 文本场景的数据优化
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/202208/20180203-Eigen-Open-Libs/" rel="next" title="开发笔记：Eigen开源库的应用">
+                  开发笔记：Eigen开源库的应用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/202208/20170710-based-algorithm-4/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="STL源码剖析，在源码阅读中学习C++中的一些tricks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL源码剖析与C++面向对象">
+<meta property="og:url" content="http://www.deepindeed.cn/201612/20161230-basic-cpp-stl-traits/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="STL源码剖析，在源码阅读中学习C++中的一些tricks">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-12-30T04:03:12.000Z">
+<meta property="article:modified_time" content="2022-08-30T00:36:00.522Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201612/20161230-basic-cpp-stl-traits/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201612/20161230-basic-cpp-stl-traits/","path":"201612/20161230-basic-cpp-stl-traits/","title":"STL源码剖析与C++面向对象"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>STL源码剖析与C++面向对象 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#type_traits%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">Type_traits技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#trait%E6%8A%80%E6%9C%AF%E5%92%8Ctemplate-%E5%85%83%E7%BC%96%E7%A8%8B%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number">3.</span> <span class="nav-text">trait技术和template
+元编程的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">函数的调用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E5%87%BD%E6%95%B0%E7%9A%84%E5%A3%B0%E6%98%8E%E4%B8%8E%E5%AE%9A%E4%B9%89%E4%B8%80%E8%88%AC%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">模板函数的声明与定义一般有两种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BFinvoke%E6%A8%A1%E6%9D%BF%E5%87%BD%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">模板invoke模板函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%AF%E8%99%9A%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">纯虚类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%891"><span class="nav-number">6.0.1.</span> <span class="nav-text">定义1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%892"><span class="nav-number">6.0.2.</span> <span class="nav-text">定义2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E7%BB%A7%E6%89%BF%E6%8E%A5%E5%8F%A3%E7%B1%BB"><span class="nav-number">7.</span> <span class="nav-text">模板继承接口类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">7.1.</span> <span class="nav-text">安全类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cvmat-%E4%B8%8Ecvmat_t%E5%B0%B1%E6%98%AF%E5%85%B8%E5%9E%8B%E7%9A%84%E6%A1%88%E4%BE%8B"><span class="nav-number">7.2.</span> <span class="nav-text">cv::Mat
+与cv::Mat_&lt;T&gt;就是典型的案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">8.</span> <span class="nav-text">附录：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201612/20161230-basic-cpp-stl-traits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="STL源码剖析与C++面向对象 | Deepindeed">
+      <meta itemprop="description" content="STL源码剖析，在源码阅读中学习C++中的一些tricks">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STL源码剖析与C++面向对象
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-12-30 12:03:12" itemprop="dateCreated datePublished" datetime="2016-12-30T12:03:12+08:00">2016-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-30 08:36:00" itemprop="dateModified" datetime="2022-08-30T08:36:00+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201612/20161230-basic-cpp-stl-traits/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201612/20161230-basic-cpp-stl-traits/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">STL源码剖析，在源码阅读中学习C++中的一些tricks</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>一个方法实现过程中，业务逻辑很多都是相似的，但是与具体的特化类型的不同有一定的差异。
+这个时候可以采用特化模板的方式实现，不同的类型使用不同的特化实现。但是这种情况造成一定的业务逻辑的冗余。而trait技术可以将特化类型通过封装，以一个统一的调用方式实现相同的业务逻辑。</p>
+<h2 id="type_traits技术">Type_traits技术</h2>
+<p>type_traits可以翻译为类型提取器或者类型萃取器，很直白的说就是通过这个机制可以获取被操作数据类型的一些特征。这个机制在编写模板代码的时候特别有用，可以在编译期间就根据数据类型的特征分派给不同的代码进行处理。</p>
+<p>STL中关于copy的代码 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This header file provides a framework for allowing compile time dispatch</span></span><br><span class="line"><span class="comment">// based on type attributes. This is useful when writing template code.</span></span><br><span class="line"><span class="comment">// For example, when making a copy of an array of an unknown type, it helps</span></span><br><span class="line"><span class="comment">// to know if the type has a trivial copy constructor or not, to help decide</span></span><br><span class="line"><span class="comment">// if a memcpy can be used.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">true_type</span> &#123;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">false_type</span> &#123;</span></span><br><span class="line">&#125;;</span><br><span class="line">template &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">type_traits</span> &#123;</span> </span><br><span class="line">   <span class="keyword">typedef</span> __true_type     this_dummy_member_must_be_first;</span><br><span class="line">                   <span class="comment">/* Do not remove this member. It informs a compiler which</span></span><br><span class="line"><span class="comment">                      automatically specializes __type_traits that this</span></span><br><span class="line"><span class="comment">                      __type_traits template is special. It just makes sure that</span></span><br><span class="line"><span class="comment">                      things work if an implementation is using a template</span></span><br><span class="line"><span class="comment">                      called __type_traits for something unrelated. */</span></span><br><span class="line">   <span class="comment">/* The following restrictions should be observed for the sake of</span></span><br><span class="line"><span class="comment">      compilers which automatically produce type specific specializations </span></span><br><span class="line"><span class="comment">      of this class:</span></span><br><span class="line"><span class="comment">          - You may reorder the members below if you wish</span></span><br><span class="line"><span class="comment">          - You may remove any of the members below if you wish</span></span><br><span class="line"><span class="comment">          - You must not rename members without making the corresponding</span></span><br><span class="line"><span class="comment">            name change in the compiler</span></span><br><span class="line"><span class="comment">          - Members you add will be treated like regular members unless</span></span><br><span class="line"><span class="comment">            you add the appropriate support in the compiler. */</span></span><br><span class="line"> </span><br><span class="line">   <span class="keyword">typedef</span> __false_type    has_trivial_default_constructor;</span><br><span class="line">   <span class="keyword">typedef</span> __false_type    has_trivial_copy_constructor;</span><br><span class="line">   <span class="keyword">typedef</span> __false_type    has_trivial_assignment_operator;</span><br><span class="line">   <span class="keyword">typedef</span> __false_type    has_trivial_destructor;</span><br><span class="line">   <span class="keyword">typedef</span> __false_type    is_POD_type;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// The class template __type_traits provides a series of typedefs each of</span></span><br><span class="line"><span class="comment">// which is either __true_type or __false_type. The argument to</span></span><br><span class="line"><span class="comment">// __type_traits can be any type. The typedefs within this template will</span></span><br><span class="line"><span class="comment">// attain their correct values by one of these means:</span></span><br><span class="line"><span class="comment">//     1. The general instantiation contain conservative values which work</span></span><br><span class="line"><span class="comment">//        for all types.</span></span><br><span class="line"><span class="comment">//     2. Specializations may be declared to make distinctions between types.</span></span><br><span class="line"><span class="comment">//     3. Some compilers (such as the Silicon Graphics N32 and N64 compilers)</span></span><br><span class="line"><span class="comment">//        will automatically provide the appropriate specializations for all</span></span><br><span class="line"><span class="comment">//        types.</span></span><br><span class="line"><span class="comment">// EXAMPLE:</span></span><br><span class="line"><span class="comment">//Copy an array of elements which have non-trivial copy constructors</span></span><br><span class="line">template &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span> <span class="type">void</span> <span class="title function_">copy</span><span class="params">(T* source, T* destination, <span class="type">int</span> n, __false_type)</span>;</span><br><span class="line"><span class="comment">//Copy an array of elements which have trivial copy constructors. Use memcpy.</span></span><br><span class="line">template &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span> <span class="type">void</span> <span class="title function_">copy</span><span class="params">(T* source, T* destination, <span class="type">int</span> n, __true_type)</span>;</span><br><span class="line"><span class="comment">//Copy an array of any type by using the most efficient copy mechanism</span></span><br><span class="line">template &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">copy</span><span class="params">(T* source,T* destination,<span class="type">int</span> n)</span> &#123;</span><br><span class="line">   copy(source, destination, n,</span><br><span class="line">        typename __type_traits&lt;T&gt;::has_trivial_copy_constructor());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>POD意思是Plain Old Data,也就是标量性别或者传统的C
+struct型别。POD性别必然拥有trivial ctor/doct/copy/assignment
+函数,因此我们就可以对POD型别采用最为有效的复制方法，而对non-POD型别采用最保险安全的方法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// uninitialized_copy</span></span><br><span class="line"><span class="comment">// Valid if copy construction is equivalent to assignment, and if the</span></span><br><span class="line"><span class="comment">//  destructor is trivial.</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_InputIter</span>, <span class="keyword">class</span> <span class="title class_">_ForwardIter</span>&gt;</span><br><span class="line"><span class="keyword">inline</span> _ForwardIter </span><br><span class="line">__uninitialized_copy_aux(_InputIter __first, _InputIter __last,</span><br><span class="line">                         _ForwardIter __result,</span><br><span class="line">                         __true_type)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">copy</span>(__first, __last, __result);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_InputIter</span>, <span class="keyword">class</span> <span class="title class_">_ForwardIter</span>&gt;</span><br><span class="line">_ForwardIter </span><br><span class="line">__uninitialized_copy_aux(_InputIter __first, _InputIter __last,</span><br><span class="line">                         _ForwardIter __result,</span><br><span class="line">                         __false_type)</span><br><span class="line">&#123;</span><br><span class="line">  _ForwardIter __cur = __result;</span><br><span class="line">  __STL_TRY &#123;</span><br><span class="line">    <span class="keyword">for</span> ( ; __first != __last; ++__first, ++__cur)</span><br><span class="line">      _Construct(&amp;*__cur, *__first);</span><br><span class="line">    <span class="keyword">return</span> __cur;</span><br><span class="line">  &#125;</span><br><span class="line">  __STL_UNWIND(_Destroy(__result, __cur));</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_InputIter</span>, <span class="keyword">class</span> <span class="title class_">_ForwardIter</span>, <span class="keyword">class</span> <span class="title class_">_Tp</span>&gt;</span><br><span class="line"><span class="keyword">inline</span> _ForwardIter</span><br><span class="line">__uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result, _Tp*)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">typedef</span> <span class="keyword">typename</span> __type_traits&lt;_Tp&gt;::is_POD_type _Is_POD;</span><br><span class="line">  <span class="keyword">return</span> __uninitialized_copy_aux(__first, __last, __result, _Is_POD());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="trait技术和template-元编程的例子">trait技术和template
+元编程的例子</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">template</span>&lt;<span class="type">int</span>&gt; <span class="keyword">class</span> <span class="title class_">LOGICAL</span>, <span class="keyword">class</span> <span class="title class_">SEQUENCE</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sequence_any</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">template</span>&lt;<span class="type">int</span>&gt; <span class="keyword">class</span> <span class="title class_">LOGICAL</span>, <span class="type">int</span> NUM, <span class="type">int</span>...NUMS&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sequence_any</span>&lt;LOGICAL, sequence&lt;NUM, NUMS...&gt; &gt;</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">const</span> <span class="type">bool</span> value = LOGICAL&lt;NUM&gt;::value || sequence_any&lt;LOGICAL, sequence&lt;NUMS...&gt;&gt;::value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">template</span>&lt;<span class="type">int</span>&gt; <span class="keyword">class</span> <span class="title class_">LOGICAL</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sequence_any</span>&lt;LOGICAL, sequence&lt;&gt; &gt;</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">const</span> <span class="type">bool</span> value = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="type">int</span> A&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">static_is_zero</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">const</span> <span class="type">bool</span> value = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">static_is_zero</span>&lt;<span class="number">0</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">const</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"> <span class="type">const</span> <span class="type">bool</span> SINGLEROWOPT = </span><br><span class="line">sequence_any&lt;static_is_zero, sequence&lt;SPECIALIZATIONS...&gt;&gt;::value;</span><br></pre></td></tr></table></figure>
+<h2 id="函数的调用过程">函数的调用过程</h2>
+<p>如果一个程序中很多多个同名的函数，那编译器是如何找应该调用哪一个函数呢？
+编译器会通过如下顺序进行查找。 1. 函数直接匹配 2. 模板函数 3.
+通过一定的隐形转换数据类型可以调用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span> a)</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;float func:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">int</span> a)</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;int func:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(T a)</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;template func:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> <span class="type">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> ia = <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">func</span>(ia);</span><br><span class="line">  <span class="built_in">func</span>&lt;<span class="type">int</span>&gt;(ia);</span><br><span class="line">  <span class="type">float</span> fb = <span class="number">2</span>;</span><br><span class="line">  <span class="built_in">func</span>(fb);</span><br><span class="line">  <span class="built_in">func</span>&lt;<span class="type">float</span>&gt;(fb);</span><br><span class="line">  <span class="type">double</span> db = <span class="number">3</span>;</span><br><span class="line">  <span class="built_in">func</span>(db);</span><br><span class="line">  <span class="built_in">func</span>&lt;<span class="type">double</span>&gt;(db);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>结果输出</p>
+</blockquote>
+<p>int func:1 template func:1 float func:2 template func:2 template
+func:3 template func:3</p>
+<h2
+id="模板函数的声明与定义一般有两种方式">模板函数的声明与定义一般有两种方式</h2>
+<ol type="1">
+<li>声明定义在header文件中。这种情况往往是模板针对不同的类型处理方式是一样的，这样可以直接放到头文件中。当实际调用过程中实现template的调用</li>
+<li>声明+特化在头文件中，实际定义在cpp文件中。这种情况往往特化几种就是几种。</li>
+</ol>
+<h3 id="模板invoke模板函数">模板invoke模板函数</h3>
+<p>两个模板函数,
+如果<strong>被调用的模板函数的只有声明在头文件中,定义与特化</strong>.
+而模板的实际定义在cpp文件中，就会出现undefined的问题.</p>
+<p>这是由于在头文件中进行调用模板函数过程中，找不到特化的被调用函数.
+在头文件中显示特化声明被调用的函数,
+这种情况比较适合针对不同的类型的特化有不同的处理方案.
+或者直接将模板函数定义放到头文件中,这种比较适合所有的函数都适用一种情况.</p>
+<h2 id="纯虚类">纯虚类</h2>
+<h4 id="定义1">定义1</h4>
+<blockquote>
+<p>含有一个纯虚函数的类，叫做纯虚类。纯虚类不可以定义对象。</p>
+</blockquote>
+<p>我个人觉得这个说法应该就是把纯虚类的主要特点说明了：</p>
+<blockquote>
+<p>只要有一个纯虚函数。就称为纯虚类。所以如果子类没有实现纯虚函数，相当子类也有纯虚函数，所以子类也是纯虚类。</p>
+</blockquote>
+<p>其他类的定义与使用方式都与一般的类差不多。大致有如下地方： *
+纯虚类可以有成员变量 （可以) * 纯虚类可以有普通的成员函数（可以） *
+纯虚类可不可以有其他虚函数（可以） *
+纯虚类可不可以又带有参数的构造函数？ (可以) *
+可不可以在纯虚类的派生类的构造函数中显式调用纯虚类的带参数构造函数(可以)</p>
+<blockquote>
+<p>使用方式上：<strong>不可以定义一个对象。</strong></p>
+</blockquote>
+<h4 id="定义2">定义2</h4>
+<blockquote>
+<p>纯虚类也称为抽象类
+<strong>带有纯虚函数的类称为抽象类。</strong>抽象类是一种特殊的类，它是为了抽象和设计的目的而建立的，它处于继承层次结构的较上层（而不是绝对的上层，也有可能是中层，甚至底层？）。抽象类是不能定义对象的，在实际中为了强调一个类是抽象类，可将该类的构造函数（设置为protected)说明为保护的访问控制权限。</p>
+</blockquote>
+<p>抽象类的主要作用是将有关的组织在一个继承层次结构中，由它来为它们提供一个公共的根(其实不一定是根)，相关的子类是从这个根派生出来的。</p>
+<p>抽象类刻画了一组子类的操作接口的通用语义，这些语义也传给子类。一般而言，抽象类只描述这组子类共同的操作接口，而完整的实现留给子类。</p>
+<p><strong>抽象类只能作为基类来使用(大多数情况是其他类的基类，但是抽象类本身也有可能是子类），其纯虚函数的实现由派生类给出。</strong>如果派生类没有重新定义纯虚函数，而派生类只是继承基类的纯虚函数，则这个派生类仍然还是一个抽象类。如果派生类中给出了基类纯虚函数的实现，则该派生类就不再是抽象类了，它是一个可以建立对象的具体类了。</p>
+<h2 id="模板继承接口类">模板继承接口类</h2>
+<h3 id="安全类型转换">安全类型转换</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> TFrom&gt;</span><br><span class="line"><span class="function">T <span class="title">safe_cast</span><span class="params">(TFrom &amp;input)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">FW_ASSERT</span>(input.<span class="built_in">type</span>() == blob_elem_trait&lt;<span class="keyword">typename</span> T::value_type&gt;::type_enum);</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;T&gt;(input);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="cvmat-与cvmat_t就是典型的案例"><code>cv::Mat</code>
+与<code>cv::Mat_&lt;T&gt;</code>就是典型的案例</h3>
+<ol type="1">
+<li>采用enum类型或者整数类型进行区分类型</li>
+<li>采用<code>trait</code>技术将自定义类型与系统类型映射</li>
+<li>采用模板继承接口，实现接口的统一调用</li>
+</ol>
+<h2 id="附录">附录：</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="http://cwlseu.github.io/images/codes/iterator.cpp">Trait技术实现迭代器</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201612/20161230-basic-cpp-stl-traits/" title="STL源码剖析与C++面向对象">http://www.deepindeed.cn/201612/20161230-basic-cpp-stl-traits/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/201701/20170122-dev-install-caffe/" rel="next" title="深度学习：玩转caffe之安装">
+                  深度学习：玩转caffe之安装 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201612/20161230-basic-cpp-stl-traits/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="android 开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android手机上GDB调试">
+<meta property="og:url" content="http://www.deepindeed.cn/201901/20190115-dev-android-gdb/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="android 开发">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-15T13:55:12.000Z">
+<meta property="article:modified_time" content="2022-08-29T15:29:53.889Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="android">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201901/20190115-dev-android-gdb/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201901/20190115-dev-android-gdb/","path":"201901/20190115-dev-android-gdb/","title":"Android手机上GDB调试"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Android手机上GDB调试 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh%E8%BF%9E%E6%8E%A5%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">SSH连接进行调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%9C%9F%E6%9C%BAgdb"><span class="nav-number">3.</span> <span class="nav-text">连接真机gdb</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%8B%E6%9C%BAusb"><span class="nav-number">3.1.</span> <span class="nav-text">查看手机usb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0udev%E8%A7%84%E5%88%99"><span class="nav-number">3.2.</span> <span class="nav-text">添加udev规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%A7%84%E5%88%99%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E5%B9%B6%E9%87%8D%E5%90%AFudev"><span class="nav-number">3.3.</span> <span class="nav-text">设置规则文件权限并重启udev</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%AF%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">其他可能问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201901/20190115-dev-android-gdb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Android手机上GDB调试 | Deepindeed">
+      <meta itemprop="description" content="android 开发">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android手机上GDB调试
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-15 21:55:12" itemprop="dateCreated datePublished" datetime="2019-01-15T21:55:12+08:00">2019-01-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-29 23:29:53" itemprop="dateModified" datetime="2022-08-29T23:29:53+08:00">2022-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201901/20190115-dev-android-gdb/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201901/20190115-dev-android-gdb/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">android 开发</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言">前言</h2>
+<p>在android开发C++过程，除了使用logcat进行追踪程序之外，更加便捷的方式便是像在linux上开发使用gdb程序进行调试一样调试android程序，只不过程序不是运行在linux机器上，而是在某个android手机上。
+常见的android手机上程序调试有： 1.
+通过打印log，这种方式对于比较庞大的项目有利于迅速定位问题的模块，但是，如果引用第三方库，某些程序调试起来会很无力。而且打印log的程序往往比较大，不利于部署发布，因此release版本往往都没有log
+2. 通过ssh连接，使用gdb进行调试，这种便于团队开发。 3.
+直接将手机usb连接在电脑上进行调试，这种情况适合个人开发</p>
+<h2 id="ssh连接进行调试">SSH连接进行调试</h2>
+<ol type="1">
+<li><p>将相关运行程序和依赖库拷贝到手机某个目录下，例如我将sdk_xxx拷贝到<code>root@10.1.42.15:/data/data/berserker.android.apps.sshdroid/home/cwl/sdk_xxx</code></p></li>
+<li><p>从本地机器中交叉编译链中查找gdb
+例如我的机器上是在<code>$NDK_DIR/prebuilt/android-arm64/gdbserver</code>
+到手机某个位置下，例如我放在跟项目相同目录下</p></li>
+<li><p>andorid手机上运行 <code>gdbserver [port] [exe file]</code>
+运行该程序之前，先确认该[exe
+file]是否需要动态链接其他库，如果需要添加动态库路径到<code>LD_LIBRARY_PATH</code>
+执行<code>export LD_LIBRARY_PATH=./target/android-aarch64/test</code>
+然后再执行如下程序
+<code>./gdbserver :5039 target/android-aarch64/test_sdk_xxx</code>
+将test_sdk_xxx与端口5039绑定</p></li>
+<li><p>在本地查找对应的gdb程序进行调试例如
+<code>$NDK_DIR/android-aarch64/bin/aarch64-linux-android-gdb ./target/android-aarch64/test/test_sdk_xxx</code>
+如果ndk14b找不该程序，可以使用ndk10里面的gdb进行调试
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(gdb) help target</span><br><span class="line">target core -- Use a core file as a target</span><br><span class="line">target exec -- Use an executable file as a target</span><br><span class="line">target extended-remote -- Use a remote computer via a serial line</span><br><span class="line">target record -- Log program while executing and replay execution from log</span><br><span class="line">target record-btrace -- Collect control-flow trace and provide the execution history</span><br><span class="line">target record-core -- Log program while executing and replay execution from log</span><br><span class="line">target record-full -- Log program while executing and replay execution from log</span><br><span class="line">target remote -- Use a remote computer via a serial line</span><br><span class="line">target tfile -- Use a trace file as a target</span><br><span class="line"></span><br><span class="line">Type &quot;help target&quot; followed by target subcommand name for full documentation.</span><br><span class="line">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;.</span><br><span class="line">Command name abbreviations are allowed if unambiguous.</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) target remote 10.1.42.15:5039</span><br><span class="line">(gdb) continue</span><br><span class="line">(gdb) bt</span><br></pre></td></tr></table></figure>
+<h2 id="连接真机gdb">连接真机gdb</h2>
+<h3 id="查看手机usb">查看手机usb</h3>
+<pre><code>cwl@ubuntu:~$ lsusb 
+Bus 002 Device 004: ID 18c3:6255  
+Bus 002 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 005: ID 22b8:41db Motorola PCS Motorola Droid (USB Debug)
+Bus 001 Device 004: ID 04d9:a06b Holtek Semiconductor, Inc. </code></pre>
+<h3 id="添加udev规则">添加udev规则</h3>
+<p>udev就是一个动态硬件管理服务</p>
+<pre><code>cwl@ubuntu:/etc/udev/rules.d$ cd /etc/udev/rules.d/
+cwl@ubuntu:/etc/udev/rules.d$ sudo vi 50-android-usb.rules
+ </code></pre>
+<p>编辑规则文件并保存
+<code>SUBSYSTEM=="usb", SYSFS("Motorola PCS Motorola Droid (USB Debug)")=="22b8",MODE="0666"</code>
+其中，<code>sysfs</code>括号内是自己android手机的实际描述信息，==后面的是id号，<code>mode</code>是读取模式，<code>0666</code>是所有人可以访问，以上的信息都是<code>lsusb</code>查处来的。</p>
+<h3
+id="设置规则文件权限并重启udev">设置规则文件权限并重启<code>udev</code></h3>
+<pre><code>cwl@ubuntu:/etc/udev/rules.d$ sudo chmod a+rx /etc/udev/rules.d/50-android-usb.rules 
+cwl@ubuntu:/etc/udev/rules.d$ sudo /etc/init.d/udev restart </code></pre>
+<p>会看到udev相关的提示信息
+<code>adb push target/android-aarch64/test/test_sdk_xxx /data/local/tmp/sdk_xxx</code></p>
+<h2 id="其他可能问题">其他可能问题</h2>
+<p>在手机里面执行文件的时候提示<code>can't execute: Permission denied</code>
+一开始以为是没有root权限，自己傻逼了，错误意思是，不能执行，权限定义，</p>
+<h3 id="解决办法">解决办法</h3>
+<p><code>chmod +x filename</code>给文件可执行就可以。 一般把文件放到
+<code>/data/local/tmp/</code>目录下 然后 <code>chmod +x file</code></p>
+<h2 id="小结">小结</h2>
+<p>交叉编译和开源项目，使得交叉编译、跨平台开发等问题越来容易，才能够有这种在android
+调试程序和在linux上调试程序毫无间隙地切换。</p>
+<h2 id="参考链接">参考链接</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/hangxin1940/archive/2011/07/10/2101552.html">https://www.cnblogs.com/hangxin1940/archive/2011/07/10/2101552.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201901/20190115-dev-android-gdb/" title="Android手机上GDB调试">http://www.deepindeed.cn/201901/20190115-dev-android-gdb/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201901/20190110-CMake-Makefile/" rel="prev" title="Make & CMake 进阶">
+                  <i class="fa fa-chevron-left"></i> Make & CMake 进阶
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201902/20190225-Data-Argumentation/" rel="next" title="深度学习: 一起来看数据增强">
+                  深度学习: 一起来看数据增强 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201901/20190115-dev-android-gdb/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

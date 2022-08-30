@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Caffe install in Ubuntu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习：玩转caffe之安装">
+<meta property="og:url" content="http://www.deepindeed.cn/201701/20170122-dev-install-caffe/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="Caffe install in Ubuntu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cwlseu.github.io/images/linux/opencv-cuda.png">
+<meta property="og:image" content="https://cwlseu.github.io/images/linux/caffe-make.png">
+<meta property="article:published_time" content="2017-01-22T12:20:20.000Z">
+<meta property="article:modified_time" content="2022-08-30T00:35:03.808Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="tools">
+<meta property="article:tag" content="framework">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cwlseu.github.io/images/linux/opencv-cuda.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201701/20170122-dev-install-caffe/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201701/20170122-dev-install-caffe/","path":"201701/20170122-dev-install-caffe/","title":"深度学习：玩转caffe之安装"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>深度学习：玩转caffe之安装 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#caffe%E5%AE%89%E8%A3%85%E5%88%9D%E6%8E%A2"><span class="nav-number">1.</span> <span class="nav-text">Caffe安装初探</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85blas"><span class="nav-number">1.2.</span> <span class="nav-text">安装BLAS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85boost"><span class="nav-number">1.3.</span> <span class="nav-text">安装BOOST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E7.5%E4%B9%8B%E5%90%8E%E5%AE%89%E8%A3%85%E7%9A%84%E6%96%B9%E6%B3%95%E7%AE%80%E5%8D%95%E5%BE%97%E5%A4%9A"><span class="nav-number">1.4.</span> <span class="nav-text">从7.5之后安装的方法简单得多</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%BA%E5%99%A8%E5%8F%82%E6%95%B0%E6%98%AF%E5%90%A6%E6%BB%A1%E8%B6%B3cuda%E8%AE%A1%E7%AE%97%E7%9A%84%E6%9C%80%E4%BD%8E%E8%A6%81%E6%B1%82"><span class="nav-number">1.4.1.</span> <span class="nav-text">查看机器参数是否满足CUDA计算的最低要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89nvida%E6%98%BE%E5%8D%A1%E9%83%BD%E6%94%AF%E6%8C%81cudnn%E7%9A%84"><span class="nav-number">1.4.2.</span> <span class="nav-text">不是所有Nvida显卡都支持cuDNN的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#install-cudnn"><span class="nav-number">1.4.3.</span> <span class="nav-text">install cuDNN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9Egpu%E7%9A%84%E8%87%AA%E5%8A%A8%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC"><span class="nav-number">1.5.</span> <span class="nav-text">非GPU的自动安装脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycaffe%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="nav-number">1.6.</span> <span class="nav-text">pyCaffe编译安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E5%90%88%E4%B8%80%E4%B8%AA%E5%AE%89%E8%A3%85cuda%E7%9A%84%E6%95%99%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">综合一个安装cuda的教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80-1"><span class="nav-number">2.1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.2.</span> <span class="nav-text">设备介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%80%E9%9C%80%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">所需软件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ubuntu"><span class="nav-number">2.3.1.</span> <span class="nav-text">Ubuntu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8"><span class="nav-number">2.3.2.</span> <span class="nav-text">驱动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda"><span class="nav-number">2.3.3.</span> <span class="nav-text">cuda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cudnn"><span class="nav-number">2.3.4.</span> <span class="nav-text">cuDNN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.4.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85"><span class="nav-number">2.4.1.</span> <span class="nav-text">系统安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85nvidia-driver"><span class="nav-number">2.4.2.</span> <span class="nav-text">安装NVIDIA Driver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cuda"><span class="nav-number">2.4.3.</span> <span class="nav-text">安装cuda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cudnn"><span class="nav-number">2.4.4.</span> <span class="nav-text">安装cuDNN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caffe-install-prepare-dependencies"><span class="nav-number">2.5.</span> <span class="nav-text">Caffe install Prepare
+Dependencies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#install-opencv-from-source"><span class="nav-number">2.6.</span> <span class="nav-text">Install OpenCV from Source</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#install-python-dependencies"><span class="nav-number">2.7.</span> <span class="nav-text">Install Python dependencies</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#faq%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">FAQ总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hdf5.h%E6%B2%A1%E6%9C%89%E6%89%BE%E5%88%B0"><span class="nav-number">3.1.</span> <span class="nav-text">hdf5.h没有找到</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80"><span class="nav-number">3.1.1.</span> <span class="nav-text">方案一：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C"><span class="nav-number">3.1.2.</span> <span class="nav-text">方案二</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91opencv-syntax-error-identifier-nppigraphcutstate"><span class="nav-number">3.2.</span> <span class="nav-text">编译OpenCV
+syntax error: identifier &#39;NppiGraphcutState&#39;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ld%E9%93%BE%E6%8E%A5%E5%A4%B1%E8%B4%A5%E6%88%96%E8%80%85.o%E6%B2%A1%E6%9C%89%E7%94%9F%E6%88%90"><span class="nav-number">3.3.</span> <span class="nav-text">ld链接失败，或者.o没有生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#opencv%E5%BA%93%E6%89%BE%E4%B8%8D%E5%88%B0%E9%97%AE%E9%A2%98"><span class="nav-number">3.4.</span> <span class="nav-text">Opencv库找不到问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E7%99%BB%E9%99%86%E7%95%8C%E9%9D%A2"><span class="nav-number">3.5.</span> <span class="nav-text">循环登陆界面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80-1"><span class="nav-number">3.5.1.</span> <span class="nav-text">方案一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C-1"><span class="nav-number">3.5.2.</span> <span class="nav-text">方案二</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E7%94%B5%E6%BA%90%E4%BE%9B%E7%94%B5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91"><span class="nav-number">3.6.</span> <span class="nav-text">双电源供电的一些坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89sudu%E6%9D%83%E9%99%90%E5%AE%89%E8%A3%85caffe"><span class="nav-number">3.7.</span> <span class="nav-text">没有sudu权限，安装caffe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quarto-fx580"><span class="nav-number">3.8.</span> <span class="nav-text">Quarto Fx580</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#error-kemptystring-is-not-a-member-of-googleprotobufinternal"><span class="nav-number">3.9.</span> <span class="nav-text">error:
+‘kEmptyString’ is not a member of ‘google::protobuf::internal’</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">3.10.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E5%AE%89%E8%A3%85caffe"><span class="nav-number">4.</span> <span class="nav-text">Docker安装caffe</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8docker%E9%95%9C%E5%83%8F%E4%B8%AD%E8%BF%90%E8%A1%8Ccaffe"><span class="nav-number">4.1.</span> <span class="nav-text">在docker镜像中运行caffe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%A1%88%E4%BE%8B"><span class="nav-number">4.2.</span> <span class="nav-text">其他案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD%E6%9C%AC%E5%9C%B0%E7%9B%AE%E5%BD%95%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%AD"><span class="nav-number">4.3.</span> <span class="nav-text">挂载本地目录到容器中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%9C%89%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="nav-number">4.4.</span> <span class="nav-text">一些有用的命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls-handshake-timeout-%E9%97%AE%E9%A2%98"><span class="nav-number">4.5.</span> <span class="nav-text">TLS handshake timeout 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9B%B8%E5%85%B3%E7%9A%84%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">4.6.</span> <span class="nav-text">Docker相关的参考文献</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201701/20170122-dev-install-caffe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="深度学习：玩转caffe之安装 | Deepindeed">
+      <meta itemprop="description" content="Caffe install in Ubuntu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深度学习：玩转caffe之安装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-01-22 20:20:20" itemprop="dateCreated datePublished" datetime="2017-01-22T20:20:20+08:00">2017-01-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-30 08:35:03" itemprop="dateModified" datetime="2022-08-30T08:35:03+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201701/20170122-dev-install-caffe/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201701/20170122-dev-install-caffe/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>30 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Caffe install in Ubuntu</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="caffe安装初探">Caffe安装初探</h1>
+<h2 id="引言">引言</h2>
+<p>做深度学习，没用玩过深度学习框架caffe就有点说不过去了。虽然自己的小机器显卡计算能力很弱，但是希望在cuda上跑caffe的心却没有停止过。从ubuntu12.04一直折腾到16.04，cuda从6.5也release到了8.0，中间走过的弯路很多。
+- cuda与系统的适配能力问题 - ubuntu系统的问题 - caffe的框架的问题
+经过这几年的发展，现在caffe的安装已经变得异常简单便捷。在此记录一下曾经的坑。
+建议:
+直接在机器上安装linux进行下面操作，要是在虚拟机里整，几乎没有什么戏，而且会把你给整疯的。</p>
+<h2 id="安装blas">安装BLAS</h2>
+<p>BLAS 可以通过mkl atlas openblas等实现，<a
+target="_blank" rel="noopener" href="http://stackoverflow.com/questions/7596612/benchmarking-python-vs-c-using-blas-and-numpy">性能比较</a>
+发现这个mkl是不错的，但是要<a
+target="_blank" rel="noopener" href="https://software.intel.com/en-us/intel-mkl/">收费</a>
+最后选择默认的<a
+target="_blank" rel="noopener" href="http://sourceforge.net/settings/mirror_choices?projectname=math-atlas&amp;filename=Stable/3.10.2/atlas3.10.2.tar.bz2">Atlas</a></p>
+<p>********** Important Install Information: CPU THROTTLING ***********
+Architecture configured as Corei2 (27) /tmp/ccp8Kkgo.o: In function
+<code>ATL_tmpnam':     /home/charles/Repo/ATLAS//CONFIG/include/atlas_sys.h:224: warning: the use of</code>tmpnam'
+is dangerous, better use `mkstemp'</p>
+<pre><code>Clock rate configured as 800Mhz
+
+Maximum number of threads configured as  4
+probe_pmake.o: In function `ATL_tmpnam&#39;:
+/home/charles/Repo/ATLAS//CONFIG/include/atlas_sys.h:224: warning: the use of `tmpnam` is dangerous, better use `mkstemp`
+Parallel make command configured as &#39;$(MAKE) -j 4&#39;
+CPU Throttling apparently enabled!
+It appears you have cpu throttling enabled, which makes timings
+unreliable and an ATLAS install nonsensical.  Aborting.
+See ATLAS/INSTALL.txt for further information
+xconfig exited with 1</code></pre>
+<p>******************************* Solution ***************************
+use ubuntu main software source switch to root admin</p>
+<p>apt-get install gnome-applets cpufreq-selector -g performance -c
+0</p>
+<p><code>sudo apt-get install libatlas-base-dev</code></p>
+<h2 id="安装boost">安装BOOST</h2>
+<ul>
+<li>preinstall boost should install following software</li>
+<li>compile the source code 下载源代码，当前最新版本为version 1.60</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.gz</span><br><span class="line">unpacking boost 1.60.tar.gz</span><br><span class="line">source boot</span><br><span class="line">./b2</span><br><span class="line">./b2 install --prefix=/usr/local</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;boost/lexical_cast.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">using</span> boost::lexical_cast;</span><br><span class="line">    <span class="type">int</span> a = <span class="built_in">lexical_cast</span>&lt;<span class="type">int</span>&gt;(<span class="string">&quot;123&quot;</span>);</span><br><span class="line">    <span class="type">double</span> b = <span class="built_in">lexical_cast</span>&lt;<span class="type">double</span>&gt;(<span class="string">&quot;123.12&quot;</span>);</span><br><span class="line">    std::cout&lt;&lt;a&lt;&lt;std::endl;</span><br><span class="line">    std::cout&lt;&lt;b&lt;&lt;std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者直接<code>apt-get install libboost-all-dev</code></p>
+<h2 id="从7.5之后安装的方法简单得多">从7.5之后安装的方法简单得多</h2>
+<p><code>sudo apt-get --purge remove nvidia-*</code>
+到https://developer.nvidia.com/cuda-downloads下载对应的deb文件
+到deb的下载目录下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i cuda-repo-ubuntu1404_7.5-18_amd64.deb </span><br><span class="line">sudo apt-get update </span><br><span class="line">sudo apt-get install cuda</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<p>完成，cuda和显卡驱动就都装好了；其他的什么都不用动
+而网上大部分中文和英文的参考教程都是过时的，折腾几个小时不说还容易装不成。</p>
+<h3
+id="查看机器参数是否满足cuda计算的最低要求">查看机器参数是否满足CUDA计算的最低要求</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lspci | grep -i nvidia</span><br><span class="line">01:00.0 3D controller: NVIDIA Corporation GF117M [GeForce 610M/710M/820M / GT 620M/625M/630M/720M] (rev a1)</span><br></pre></td></tr></table></figure>
+<p>参照nvidia <a
+target="_blank" rel="noopener" href="http://developer.nvidia.com/cuda-gpus">往年发布的gpus</a>
+我的机器为Compute Capability 2.1，是可以使用CUDA加速的。: )</p>
+<h3
+id="不是所有nvida显卡都支持cudnn的">不是所有Nvida显卡都支持cuDNN的</h3>
+<p>折腾了很久的cuDNN安装，后来才发现是自己的显卡太low了，不支持cuDNN，因为Compute
+Capability 才2.1，要支持cuDNN， Capability &gt;= 3.0，<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-gpus">查看自己显卡的计算能力</a></p>
+<h3 id="install-cudnn">install cuDNN</h3>
+<p>PREREQUISITES CUDA 7.0 and a GPU of compute capability 3.0 or higher
+are required. Extract the cuDNN archive to a directory of your choice,
+referred to below as <installpath>.Then follow the platform-specific
+instructions as follows.</p>
+<blockquote>
+<p>LINUX</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &lt;installpath&gt;</span><br><span class="line">export LD_LIBRARY_PATH=`pwd`:$LD_LIBRARY_PATH</span><br></pre></td></tr></table></figure>
+<p>Add <installpath> to your build and link process by adding
+-I<installpath> to your compile line and -L<installpath> -lcuDNN to your
+link line.</p>
+<blockquote>
+<p>WINDOWS</p>
+</blockquote>
+<p>Add <installpath> to the PATH environment variable.</p>
+<p>In your Visual Studio project properties, add <installpath> to the
+Include Directories and Library Directories lists and add cuDNN.lib to
+Linker-&gt;Input-&gt;Additional Dependencies.</p>
+<h2 id="非gpu的自动安装脚本">非GPU的自动安装脚本</h2>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/script-ubuntu-debian/blob/master/install-caffe.sh">Install
+Caffe Script</a></p>
+<h2 id="pycaffe编译安装">pyCaffe编译安装</h2>
+<ol type="1">
+<li>首先要编译caffe成功，make pycaffe也成功</li>
+<li>使得pycaffe可以被访问到, set
+<code>PYTHONPATH=$PYTHONPATH:/path/to/caffe/python</code></li>
+<li>install dependencies python
+package.在python文件夹下面有requirements.txt文件，列出了所有有关的python
+package. <code>pip install -r requirements.txt</code>
+<strong>Note</strong>
+这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，</li>
+</ol>
+<h1 id="综合一个安装cuda的教程">综合一个安装cuda的教程</h1>
+<p>可以参考<a target="_blank" rel="noopener" href="https://gwyve.github.io/"
+class="uri">https://gwyve.github.io/</a>博客，为了方便把gwyve的cuda
+安装部分blog放到这里。</p>
+<h2 id="引言-1">引言</h2>
+<p>使用NVIDIA
+GPU进行dnn目前已经成为了主流，年前就打算自行安装一遍，拖了这么长时间，到今天才弄得差不多了。本来觉得这个不打算写个东西的，后来怕忘了，还是写下来吧</p>
+<h2 id="设备介绍">设备介绍</h2>
+<p>主机: ThinkStation-P300<br />
+CPU: Intel(R) Core(TM) i7-4790 CPU @ 3.60GHz<br />
+GPU: Tesla K20c</p>
+<h2 id="所需软件">所需软件</h2>
+<p>以下软件，在国内只有tensorflow需要翻墙，NVIDIA的都可以直接下载，速度还可以的</p>
+<h3 id="ubuntu">Ubuntu</h3>
+<p><a
+target="_blank" rel="noopener" href="https://www.ubuntu.com/download/alternative-downloads">Ubuntu
+16.04.2 LTS</a><br />
+<a
+target="_blank" rel="noopener" href="http://releases.ubuntu.com/16.04/ubuntu-16.04.2-desktop-amd64.iso.torrent?_ga=1.169319585.1810803403.1486517128">file_torrent</a></p>
+<h3 id="驱动">驱动</h3>
+<p><a
+target="_blank" rel="noopener" href="http://www.nvidia.cn/download/driverResults.aspx/115286/cn">Nvidia-375.39</a><br />
+<a
+target="_blank" rel="noopener" href="http://cn.download.nvidia.com/XFree86/Linux-x86_64/375.39/NVIDIA-Linux-x86_64-375.39.run">file</a></p>
+<h3 id="cuda">cuda</h3>
+<p><a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads">cuda-8.0</a><br />
+<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run">file</a></p>
+<h3 id="cudnn">cuDNN</h3>
+<p><a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cuDNN-download">cuDNN_5.1</a><br />
+<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/compute/machine-learning/cuDNN/secure/v5.1/prod_20161129/8.0/cuDNN-8.0-linux-x64-v5.1-tgz">file</a></p>
+<h2 id="安装步骤">安装步骤</h2>
+<h3 id="系统安装">系统安装</h3>
+<p>安装Ubuntu的过程自行搜索吧，教程很多，在此不说了。 ###
+选择正确的源</p>
+<p>此处采用<a href="mirror.aliyun.com">mirror.aliyun.com</a></p>
+<h3 id="安装nvidia-driver">安装NVIDIA Driver</h3>
+<p>起初，我是选择使用直接安装cuda的，cuda中有driver，但是，cuda安装完了之后，重复出现登录界面，无法进入系统，所以，我选择单独安装driver，然后，再安装cuda。解决重复登录界面参考<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/u012759136/article/details/53355781">参考1</a></p>
+<p>1.<a
+target="_blank" rel="noopener" href="http://www.nvidia.cn/Download/index.aspx?lang=cn">选择</a>机子所需要的驱动，并下载。<br />
+2.卸载原有驱动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get remove –purge nvidia*</span><br><span class="line">```     </span><br><span class="line"></span><br><span class="line">3.关闭nouveau                                   </span><br><span class="line">创建 /etc/modprobe.d/blacklist-nouveau.conf并包含</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset=0</span><br></pre></td></tr></table></figure>
+<p>在terminal输入</p>
+<p><code>sudo update-initramfs -u</code></p>
+<p>4.进入命令行模式<br />
+Ctrl+Alt+F1<br />
+5.关闭lightdm服务</p>
+<p><code>sudo service lightdm stop</code></p>
+<p>6.运行驱动文件 改变权限</p>
+<p><code>sudo chmod a+x NVIDIA-Linux-x86_64-375.39.run</code></p>
+<p>运行 <strong>注意参数</strong></p>
+<p><code>sudo ./NVIDIA-Linux-x86_64-375.39.run –no-x-check –no-nouveau-check –no-opengl-files</code></p>
+<pre><code>- no-x-check 安装驱动时关闭X服务
+- no-nouveau-check 安装驱动时禁用nouveau
+- no-opengl-files 只安装驱动文件，不安装OpenGL文件</code></pre>
+<p>7.重启，不出现循环登录问题,如果出现循环登陆, 请看后面的问题。</p>
+<h3 id="安装cuda">安装cuda</h3>
+<p>本来是按照deb安装的，后来各种问题，就改成选择runfile的方式了。</p>
+<p>这里主要参考<a
+target="_blank" rel="noopener" href="http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu">参考2</a>，全是英文的，要是不想看英文的话，我觉得，那还是放弃做dnn吧，目前这个前沿领域中文文献比较少～</p>
+<p>1.在运行.run文件之后，在选择是否安装驱动的位置选择no，剩下的都是yes。<br />
+2.添加环境变量<br />
+打开 ～/.bashrc在最后添加</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/cuda/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/local/cuda/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure>
+<p>在terminal输入<br />
+<code>source ~/.bashrc</code> 3.测试cuda安装是否成功
+<code>nvcc -V</code> 输入cuda的版本信息<br />
+4.测试samples<br />
+这部分参考<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/u012235003/article/details/54575758">参考3</a></p>
+<p>进入 <code>NVIDIA_CUDA-8.0-Samples/</code> <code>make</code>
+运行NVIDIA_CUDA-8.0-Samples/bin/x86_64/linux/release/deviceQuery</p>
+<p>显示最后出现“Resalt=PASS”，代表成功</p>
+<h3 id="安装cudnn">安装cuDNN</h3>
+<p>安装之前一定要确认你的GPU是支持cuDNN的。
+这个都不应该叫做安装，就是一个创建链接的过程。这个主要参考<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/jk123vip/article/details/50361951">参考4</a></p>
+<p>1.下载tar文件，解压<br />
+解压出一个叫做cuda的文件夹，以下操作都是在该文件夹下进行<br />
+2.复制文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">cp</span> include/cuDNN.h /usr/local/include</span><br><span class="line">sudo <span class="built_in">cp</span> lib64/libcuDNN.so* /usr/local/lib</span><br></pre></td></tr></table></figure>
+<p>3.创建cuDNN的软链接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo <span class="built_in">ln</span> -sf /usr/local/lib/libcuDNN.so.5.1.10 /usr/local/lib/libcuDNN.so.5</span><br><span class="line">$ sudo <span class="built_in">ln</span> -sf /usr/local/lib/libcuDNN.so.5 /usr/local/lib/libcuDNN.so</span><br><span class="line">$ sudo ldconfig -v</span><br></pre></td></tr></table></figure>
+<h2 id="caffe-install-prepare-dependencies">Caffe install Prepare
+Dependencies</h2>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/recipes/blob/master/script/install-caffe.sh">安装caffe之前，自动化安装的各种依赖脚本</a></p>
+<h2 id="install-opencv-from-source">Install OpenCV from Source</h2>
+<p>自行进行官网查询或者采用如下脚本进行安装。 <a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh">Install
+OpenCV scripts</a>
+当然cmake可以采用最基本的：<code>cmake ..</code>进行就完全ok</p>
+<pre><code>安装结束之后，请务必添加OpenCV lib所在的路径添加到`LD_LIBRARY_PATH`，因为OpenCV 默认安装路径`/usr/local/lib`并不在`LD_LIBRARY_PATH`中。</code></pre>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/cuda/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/local/lib:/usr/local/cuda/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure>
+<h2 id="install-python-dependencies">Install Python dependencies</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y python-pip</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$CAFFE_ROOT</span>/python</span><br><span class="line"><span class="keyword">for</span> pack <span class="keyword">in</span> $(<span class="built_in">cat</span> requirements.txt); <span class="keyword">do</span> sudo pip install <span class="variable">$pack</span>; <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>等待python依赖的库安装完毕。 ok，
+现在应该就可以运行example/下的某些例子了。</p>
+<h1 id="faq总结">FAQ总结</h1>
+<h2 id="hdf5.h没有找到">hdf5.h没有找到</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">CXX src/caffe/layer_factory.cpp</span><br><span class="line">CXX src/caffe/util/insert_splits.cpp</span><br><span class="line">CXX src/caffe/util/db.cpp</span><br><span class="line">CXX src/caffe/util/upgrade_proto.cpp</span><br><span class="line">In file included from src/caffe/util/upgrade_proto.cpp:<span class="number">10</span>:<span class="number">0</span>:</span><br><span class="line">./include/caffe/util/io.hpp:<span class="number">8</span>:<span class="number">18</span>: fatal error: hdf5.h: no such file <span class="keyword">or</span> directory</span><br><span class="line"> <span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hdf5.h&quot;</span></span></span><br><span class="line">                  ^</span><br><span class="line">compilation terminated.</span><br><span class="line">Makefile:<span class="number">512</span>: recipe <span class="keyword">for</span> target <span class="string">&#x27;.build_release/src/caffe/util/upgrade_proto.o&#x27;</span> failed</span><br><span class="line">make: *** [.build_release/src/caffe/util/upgrade_proto.o] Error <span class="number">1</span></span><br><span class="line">make: *** 正在等待未完成的任务....</span><br><span class="line">In file included from ./include/caffe/common_layers.hpp:<span class="number">10</span>:<span class="number">0</span>,</span><br><span class="line">                 from ./include/caffe/vision_layers.hpp:<span class="number">10</span>,</span><br><span class="line">                 from src/caffe/layer_factory.cpp:<span class="number">6</span>:</span><br><span class="line">./include/caffe/data_layers.hpp:<span class="number">9</span>:<span class="number">18</span>: fatal error: hdf5.h: no such file <span class="keyword">or</span> directory</span><br><span class="line"> <span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hdf5.h&quot;</span></span></span><br><span class="line">                  ^</span><br><span class="line">compilation terminated.</span><br><span class="line">Makefile:<span class="number">512</span>: recipe <span class="keyword">for</span> target <span class="string">&#x27;.build_release/src/caffe/layer_factory.o&#x27;</span> failed</span><br><span class="line">make: *** [.build_release/src/caffe/layer_factory.o] Error <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>参看<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/DIGITS/issues/156">caffe
+issues</a></p>
+<h3 id="方案一">方案一：</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/lib/x86_64-linux-gnu</span><br><span class="line">sudo <span class="built_in">ln</span> -s libhdf5_serial.so.8.0.2 libhdf5.so</span><br><span class="line">sudo <span class="built_in">ln</span> -s libhdf5_serial_hl.so.8.0.2 libhdf5_hl.so</span><br></pre></td></tr></table></figure>
+<h3 id="方案二">方案二</h3>
+<p>just modify the Makefile.config INCLUDE_DIRS := $(PYTHON_INCLUDE)
+/usr/local/include /usr/include/hdf5/serial/ LIBRARY_DIRS :=
+$(PYTHON_LIB) /usr/local/lib /usr/lib
+/usr/lib/x86_64-linux-gnu/hdf5/serial/ <a
+target="_blank" rel="noopener" href="https://github.com/BVLC/caffe/issues/2690">issues 2690</a></p>
+<h2 id="编译opencv-syntax-error-identifier-nppigraphcutstate">编译OpenCV
+syntax error: identifier 'NppiGraphcutState'</h2>
+<figure>
+<img data-src="https://cwlseu.github.io/images/linux/opencv-cuda.png"
+alt="@build opencv using cuda" />
+<figcaption aria-hidden="true"><span class="citation"
+data-cites="build">@build</span> opencv using cuda</figcaption>
+</figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1&gt;------ Build started: Project: opencv_cudalegacy, Configuration: Debug x64 ------</span><br><span class="line">1&gt;  graphcuts.cpp</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(120): error C2061: syntax error: identifier <span class="string">&#x27;NppiGraphcutState&#x27;</span></span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(135): error C2833: <span class="string">&#x27;operator NppiGraphcutState&#x27;</span> is not a recognized operator or <span class="built_in">type</span></span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(135): error C2059: syntax error: <span class="string">&#x27;newline&#x27;</span></span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(136): error C2334: unexpected token(s) preceding <span class="string">&#x27;&#123;&#x27;</span>; skipping apparent <span class="keyword">function</span> body</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C2143: syntax error: missing <span class="string">&#x27;;&#x27;</span> before <span class="string">&#x27;*&#x27;</span></span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C4430: missing <span class="built_in">type</span> specifier - int assumed. Note: C++ does not support default-int</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(141): error C2238: unexpected token(s) preceding <span class="string">&#x27;;&#x27;</span></span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(127): error C2065: <span class="string">&#x27;pState&#x27;</span>: undeclared identifier</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(132): error C2065: <span class="string">&#x27;pState&#x27;</span>: undeclared identifier</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(132): error C3861: <span class="string">&#x27;nppiGraphcutFree&#x27;</span>: identifier not found</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(174): error C3861: <span class="string">&#x27;nppiGraphcutGetSize&#x27;</span>: identifier not found</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(182): error C2065: <span class="string">&#x27;nppiGraphcutInitAlloc&#x27;</span>: undeclared identifier</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(190): error C3861: <span class="string">&#x27;nppiGraphcut_32s8u&#x27;</span>: identifier not found</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(195): error C3861: <span class="string">&#x27;nppiGraphcut_32f8u&#x27;</span>: identifier not found</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(246): error C3861: <span class="string">&#x27;nppiGraphcut8GetSize&#x27;</span>: identifier not found</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(254): error C2065: <span class="string">&#x27;nppiGraphcut8InitAlloc&#x27;</span>: undeclared identifier</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(264): error C3861: <span class="string">&#x27;nppiGraphcut8_32s8u&#x27;</span>: identifier not found</span><br><span class="line">1&gt;V:\Opencv31\opencv\sources\modules\cudalegacy\src\graphcuts.cpp(271): error C3861: <span class="string">&#x27;nppiGraphcut8_32f8u&#x27;</span>: identifier not found</span><br><span class="line">2&gt;------ Build started: Project: opencv_cudaoptflow, Configuration: Debug x64 ------</span><br><span class="line">2&gt;LINK : warning LNK4044: unrecognized option <span class="string">&#x27;/LV:/NVIDIA GPU Computing Toolkit/Cuda8/lib/x64&#x27;</span>; ignored</span><br><span class="line">2&gt;LINK : fatal error LNK1104: cannot open file <span class="string">&#x27;..\..\lib\Debug\opencv_cudalegacy310d.lib&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><a
+target="_blank" rel="noopener" href="http://answers.opencv.org/question/95148/cudalegacy-not-compile-nppigraphcut-missing/">cudalegacy-not-compile-nppigraphcut-missing</a>
+这个问题在opencv中已经fix掉了。</p>
+<p>将opencv.cpp中的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;precomp.hpp&quot;</span><br><span class="line">#if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)</span><br></pre></td></tr></table></figure>
+<p>修改为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;precomp.hpp&quot;</span><br><span class="line"></span><br><span class="line">#if !defined (HAVE_CUDA) || defined (CUDA_DISABLER)  || (CUDART_VERSION &gt;= 8000)</span><br></pre></td></tr></table></figure>
+<h2 id="ld链接失败或者.o没有生成">ld链接失败，或者.o没有生成</h2>
+<p><img data-src="https://cwlseu.github.io/images/linux/caffe-make.png"
+alt="caffe make-j8 recipe failed" />
+如果你使用的是<code>make -j8</code>进行编译的，并且你需要的lib已经都加到<code>LD_LIBRARY_PATH</code>中了，那么你可以再试一遍<code>make -j8</code>或者使用<code>make -j4</code>
+or
+<code>make -j</code>，最保险的情况就是使用<code>make</code>进行编译，虽然慢点但是不会出现各种依赖找不到的情况。</p>
+<pre><code>因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。</code></pre>
+<h2 id="opencv库找不到问题">Opencv库找不到问题</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CXX/LD -o .build_release/tools/extract_features.bin</span><br><span class="line">.build_release/lib/libcaffe.so: undefined reference to `cv::imread(cv::String const&amp;, int)&#x27;</span><br><span class="line">.build_release/lib/libcaffe.so: undefined reference to `cv::imencode(cv::String const&amp;, cv::_InputArray const&amp;, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt;&amp;, std::vector&lt;int, std::allocator&lt;int&gt; &gt; const&amp;)&#x27;</span><br><span class="line">.build_release/lib/libcaffe.so: undefined reference to `cv::imdecode(cv::_InputArray const&amp;, int)&#x27;</span><br><span class="line">collect2: error: ld returned 1 exit status</span><br><span class="line">Makefile:562: recipe for target &#x27;.build_release/tools/extract_features.bin&#x27; failed</span><br><span class="line">make: *** [.build_release/tools/extract_features.bin] Error 1</span><br></pre></td></tr></table></figure>
+<p>在Makefile中LIBRARES中添加 opencv_imgcodecs项</p>
+<h2 id="循环登陆界面">循环登陆界面</h2>
+<h3 id="方案一-1">方案一</h3>
+<ol type="1">
+<li>卸掉nvidia-driver
+<code>sudo apt-get remove --purge nvidia*</code></li>
+<li>看看能不能登陆guest，可以的话 删除home/user/目录下的
+<code>.Xauthority  .xsession-errors</code></li>
+<li>reboot</li>
+</ol>
+<h3 id="方案二-1">方案二</h3>
+<ol type="1">
+<li><p>卸掉nvidia-driver
+<code>sudo apt-get remove --purge nvidia*</code></p></li>
+<li><p>进入grub启动界面，可是使用advance
+启动方式，进行修复界面。通过选择<code>recovery mode</code>进行恢复之后，然后重启。</p>
+<p>后来经过调研和重新格式化系统进行安装之后发现，原来是CUDA7.5
+的<code>.deb</code>对Ubuntu 14.04
+的支持性不好，导致显示驱动程序有问题，从而无法正常进入系统。而且有人建议采用<code>.run</code>的toolkit进行安装,
+所以后面使用<code>.run</code>进行安装</p></li>
+</ol>
+<h2 id="双电源供电的一些坑"><a
+target="_blank" rel="noopener" href="http://gwyve.com/blog/2017/05/02/double-power.html">双电源供电的一些坑</a></h2>
+<h2 id="没有sudu权限安装caffe">没有sudu权限，安装caffe</h2>
+<ol type="1">
+<li>下载<a
+href="链接：http://pan.baidu.com/s/1kUZoq7H%20密码：aumh">caffe
+依赖包</a>，解压到某个路径下。如果失活了, emailto:<a
+href="mailto:caowenlong92@gmail.com"
+class="email">caowenlong92@gmail.com</a></li>
+<li>添加caffelib/lib的绝对路径到~/.bashrc 中
+<code>export LD_LIBRARY_PATH=/home/.../caffelib/lib$LD_LIBRARY_PATH</code></li>
+<li>在Makefile.config中<code>INCLUDE_DIRS</code>中添加caffelib/include的绝对路径；<code>LIBRARY_DIRS</code>中添加添加caffelib/lib的绝对路径</li>
+<li>cuda啥的一般管理员就帮你搞定了，实在不行咱自己安装到某个路径下，在Makefile.config中配置一下路径就ok了</li>
+<li>python 依赖可以通过<code>virtualenv</code>解决掉的，<a
+target="_blank" rel="noopener" href="https://virtualenv.pypa.io/en/stable/userguide/">如何使用<code>virtualenv</code></a>可以看官网</li>
+</ol>
+<h2 id="quarto-fx580">Quarto Fx580</h2>
+<p>查看显卡型号<code>lspci | grep "VGA"</code></p>
+<pre><code>01:00.0 VGA compatible controller: NVIDIA Corporation G96GL [Quadro FX 580] (rev a1)</code></pre>
+<p><a
+target="_blank" rel="noopener" href="http://www.nvidia.com/content/DriverDownload-March2009/confirmation.php?url=/XFree86/Linux-x86_64/340.102/NVIDIA-Linux-x86_64-340.102.run&amp;lang=us&amp;type=geforcem">驱动下载</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-gpus">查看GPU卡是否支持cuda</a>
+哦哦，并不支持，好吧，换卡吧。</p>
+<h2
+id="error-kemptystring-is-not-a-member-of-googleprotobufinternal">error:
+‘kEmptyString’ is not a member of ‘google::protobuf::internal’</h2>
+<p>这个比较玄，有的人使用protobuf
+2.5就OK，有的人使用这个版本就爆出这个错误。我是使用libprotoc
+2.5.0版本，当
+使用<code>make</code>进行编译的时候就会出现该问题。当时如果采用make -j
+https://blog.csdn.net/ahbbshenfeng/article/details/52065676</p>
+<h2 id="参考文献">参考文献</h2>
+<p>1.<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/u012759136/article/details/53355781">【解决】Ubuntu安装NVIDIA驱动后桌面循环登录问题</a><br />
+2.<a
+target="_blank" rel="noopener" href="http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#runfile-nouveau-ubuntu">NVIDIA
+CUDA Installation Guide for Linux</a></p>
+<p>3.<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/u012235003/article/details/54575758">CUDA安装和测试</a></p>
+<p>4.<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/jk123vip/article/details/50361951">import
+TensorFlow提示Unable to load cuDNN DSO</a><br />
+5.<a target="_blank" rel="noopener" href="https://www.tensorflow.org/install/install_linux">Installing
+TensorFlow on Ubuntu</a></p>
+<p>6.<a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/recipes/blob/master/script/install-opencv.sh">Install
+OpenCV Scripts</a></p>
+<p>7.<a
+target="_blank" rel="noopener" href="https://virtualenv.pypa.io/en/stable/userguide/">virtualenv user
+guide</a></p>
+<p>8.<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-gpus">查看GPU卡是否支持cuda</a></p>
+<p>9.<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">cuda各个版本库</a></p>
+<p>10.<a
+target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/cn/linux/l-cn-gpb/">IBM的google
+protocol buffer的介绍链接</a></p>
+<p>11.<a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37983310/protobuf-on-ubuntu-not-compiling">protobuf-on-ubuntu-not-compiling</a></p>
+<p>12.<a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/36360188/c-protobuf-error-googleprotobufinternalkemptystring-error">googleprotobufinternalkemptystring</a></p>
+<h1 id="docker安装caffe">Docker安装caffe</h1>
+<p>The <code>standalone</code> subfolder contains docker files for
+generating both CPU and GPU executable images for Caffe. The images can
+be built using make, or by running:
+<code>docker build -t caffe:cpu standalone/cpu</code> for example. (Here
+<code>gpu</code> can be substituted for <code>cpu</code>, but to keep
+the readme simple, only the <code>cpu</code> case will be discussed in
+detail).</p>
+<p>Note that the GPU standalone requires a CUDA 8.0 capable driver to be
+installed on the system and [nvidia-docker] for running the Docker
+containers. Here it is generally sufficient to use
+<code>nvidia-docker</code> instead of <code>docker</code> in any of the
+commands mentioned.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基础镜像</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">14.04</span></span><br><span class="line"><span class="comment"># 进行维护者信息</span></span><br><span class="line"><span class="keyword">MAINTAINER</span> caffe-maint@googlegroups.com</span><br><span class="line"><span class="comment"># 在基础镜像上执行一些命令，安装caffe依赖的libs</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; apt-get install -y --no-install-recommends \</span></span><br><span class="line"><span class="language-bash">        build-essential \</span></span><br><span class="line"><span class="language-bash">        cmake \</span></span><br><span class="line"><span class="language-bash">        git \</span></span><br><span class="line"><span class="language-bash">        wget \</span></span><br><span class="line"><span class="language-bash">        libatlas-base-dev \</span></span><br><span class="line"><span class="language-bash">        libboost-all-dev \</span></span><br><span class="line"><span class="language-bash">        libgflags-dev \</span></span><br><span class="line"><span class="language-bash">        libgoogle-glog-dev \</span></span><br><span class="line"><span class="language-bash">        libhdf5-serial-dev \</span></span><br><span class="line"><span class="language-bash">        libleveldb-dev \</span></span><br><span class="line"><span class="language-bash">        liblmdb-dev \</span></span><br><span class="line"><span class="language-bash">        libopencv-dev \</span></span><br><span class="line"><span class="language-bash">        libprotobuf-dev \</span></span><br><span class="line"><span class="language-bash">        libsnappy-dev \</span></span><br><span class="line"><span class="language-bash">        protobuf-compiler \</span></span><br><span class="line"><span class="language-bash">        python-dev \</span></span><br><span class="line"><span class="language-bash">        python-numpy \</span></span><br><span class="line"><span class="language-bash">        python-pip \</span></span><br><span class="line"><span class="language-bash">        python-scipy &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 声明变量并初始化</span></span><br><span class="line"><span class="keyword">ENV</span> CAFFE_ROOT=/opt/caffe</span><br><span class="line"><span class="comment"># 切换当前工作路径为</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> <span class="variable">$CAFFE_ROOT</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># <span class="doctag">FIXME:</span> clone a specific git tag and use ARG instead of ENV once DockerHub supports this.</span></span><br><span class="line"><span class="keyword">ENV</span> CLONE_TAG=master</span><br><span class="line"><span class="comment"># clone caffe源代码，安装python依赖库，编译caffe</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> git <span class="built_in">clone</span> -b <span class="variable">$&#123;CLONE_TAG&#125;</span> --depth 1 https://github.com/BVLC/caffe.git . &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="keyword">for</span> req <span class="keyword">in</span> $(<span class="built_in">cat</span> python/requirements.txt) pydot; <span class="keyword">do</span> pip install <span class="variable">$req</span>; <span class="keyword">done</span> &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    cmake -DCPU_ONLY=1 .. &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    make -j<span class="string">&quot;<span class="subst">$(nproc)</span>&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置环境变量</span></span><br><span class="line"><span class="keyword">ENV</span> PYCAFFE_ROOT $CAFFE_ROOT/python</span><br><span class="line"><span class="keyword">ENV</span> PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH</span><br><span class="line"><span class="keyword">ENV</span> PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH</span><br><span class="line"><span class="comment"># 像链接文件中写入当前caffe库</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$CAFFE_ROOT</span>/build/lib&quot;</span> &gt;&gt; /etc/ld.so.conf.d/caffe.conf &amp;&amp; ldconfig</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换工作路径</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /workspace</span></span><br></pre></td></tr></table></figure>
+<h2 id="在docker镜像中运行caffe">在docker镜像中运行caffe</h2>
+<p>In order to test the Caffe image, run:
+<code>docker run -ti caffe:cpu caffe --version</code></p>
+<p>which should show a message like:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">libdc1394 error: Failed to initialize libdc1394</span><br><span class="line">caffe version 1.0.0-rc3</span><br></pre></td></tr></table></figure>
+<p>One can also build and run the Caffe tests in the image using:</p>
+<p><code>docker run -ti caffe:cpu bash -c "cd /opt/caffe/build; make runtest"</code></p>
+<p>In order to get the most out of the caffe image, some more advanced
+<code>docker run</code> options could be used. For example, running:</p>
+<p><code>docker run -ti --volume=$(pwd):/workspace caffe:cpu caffe train --solver=example_solver.prototxt</code></p>
+<p>will train a network defined in the
+<code>example_solver.prototxt</code> file in the current directory
+(<code>$(pwd)</code> is maped to the container volume
+<code>/workspace</code> using the <code>--volume=</code> Docker
+flag).</p>
+<p>Note that docker runs all commands as root by default, and thus any
+output files (e.g. snapshots) generated will be owned by the root user.
+In order to ensure that the current user is used instead, the following
+command can be used:</p>
+<p><code>docker run -ti --volume=$(pwd):/workspace -u $(id -u):$(id -g) caffe:cpu caffe train --solver=example_solver.prototxt</code></p>
+<p>where the <code>-u</code> Docker command line option runs the
+commands in the container as the specified user, and the shell command
+<code>id</code> is used to determine the user and group ID of the
+current user. Note that the Caffe docker images have
+<code>/workspace</code> defined as the default working directory. This
+can be overridden using the <code>--workdir=</code> Docker command line
+option.</p>
+<h2 id="其他案例">其他案例</h2>
+<p>Although running the <code>caffe</code> command in the docker
+containers as described above serves many purposes, the container can
+also be used for more interactive use cases. For example, specifying
+<code>bash</code> as the command instead of <code>caffe</code> yields a
+shell that can be used for interactive tasks. (Since the caffe build
+requirements are included in the container, this can also be used to
+build and run local versions of caffe).</p>
+<p>Another use case is to run python scripts that depend on
+<code>caffe</code>'s Python modules. Using the <code>python</code>
+command instead of <code>bash</code> or <code>caffe</code> will allow
+this, and an interactive interpreter can be started by running:</p>
+<p><code>docker run -ti caffe:cpu python</code></p>
+<p>(<code>ipython</code> is also available in the container).</p>
+<p>Since the <code>caffe/python</code> folder is also added to the path,
+the utility executable scripts defined there can also be used as
+executables. This includes <code>draw_net.py</code>,
+<code>classify.py</code>, and <code>detect.py</code></p>
+<h2 id="挂载本地目录到容器中">挂载本地目录到容器中</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> cafferoot</span><br><span class="line"></span><br><span class="line">docker -run -ti --volume=$(<span class="built_in">pwd</span>):/workspace caffe:cpu /bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>解析：<code>--volume=$(pwd):/workspace</code>是挂载本机目录到容器中，<code>--volume or -v</code>是docker的挂载命令，<code>=$(pwd):/workspace</code>是挂载信息，是将<code>$(pwd)</code>即本机当前目录，:是挂载到哪，<code>/workspace</code>是容器中的目录，就是把容器中的<code>workspace</code>目录换成本机的当前目录，这样就可以在本机与容器之间进行交互了，本机当前目录可以编辑，容器中同时能看到。容器中的workspace目录的修改也直接反应到了本机上。<code>$()</code>是Linux中的命令替换，即将<span
+class="math inline">\(()中的命令内容替换为参数，pwd是Linux查看当前目录，我的本机当前目录为cafferoot，`--volume=\)</span>(pwd):/workspace<code>就等于</code>--volume=/Users/<strong><em>/cafferoot:/workspace<code>，</code>/Users/</em></strong>/cafferoot<code>为</code>pwd`的执行结果，$()是将pwd的执行结果作为参数执行。</p>
+<h2 id="一些有用的命令">一些有用的命令</h2>
+<ol type="1">
+<li><p>基于image
+<code>nvidia/cuda</code>运行某条命令<code>nvidia-smi</code>
+<code>nvidia-docker run  nvidia/cuda nvidia-smi</code></p></li>
+<li><p>查看当前有哪些镜像
+<code>sudo nvidia-docker images</code></p></li>
+<li><p>查看当前有哪些运行中的实例
+<code>sudo nvidia-docker ps -l</code></p></li>
+<li><p>运行某个镜像的实例
+<code>sudo nvidia-docker run -it nvidia/cuda</code></p></li>
+<li><p>链接运行中的镜像
+<code>sudo nvidia-docker attach d641ab33bec2</code></p></li>
+<li><p>跳出运行中的image镜像，但是不退出 <code>ctrl+p</code>,
+<code>ctrl+q</code></p></li>
+<li><p>使用linux命令对镜像实例进行操作
+<code>sudo nvidia-docker cp zeyu/VOCtrainval_11-May-2012.tar  e6a0961ab4cf:/workspace/data</code>
+<code>sudo nvidia-docker run -it -t nvidia/cuda nvidia-smi</code></p></li>
+<li><p>在host机器上启动新的bash
+<code>sudo nvidia-docker exec -it d641ab33bec2 bash</code></p></li>
+</ol>
+<h2 id="tls-handshake-timeout-问题">TLS handshake timeout 问题</h2>
+<p>iscas@ZXC-Lenovo:~/Repo$ sudo docker build -t caffe:cpu docker/caffe
+Sending build context to Docker daemon 3.072 kB Step 1/12 : FROM
+ubuntu:14.04 Get https://registry-1.docker.io/v2/: net/http: TLS
+handshake timeout</p>
+<p>很明显可以看出是连接不到 docker
+hub，那就需要查看网络原因了。当然较简单的解决办法就是用国内的仓库，
+下面的方法就是使用国内的 daocloud 的仓库：</p>
+<blockquote>
+<p>添加国内库的依赖</p>
+</blockquote>
+<p><code>$ echo "DOCKER_OPTS="$DOCKER_OPTS --registry-mirror=http://f2d6cb40.m.daocloud.io"" | sudo tee -a /etc/default/docker</code></p>
+<blockquote>
+<p>重启服务</p>
+</blockquote>
+<p><code>$ sudo service docker restart</code></p>
+<p>更多问题可以查看[3]</p>
+<h2 id="docker相关的参考文献">Docker相关的参考文献</h2>
+<ol type="1">
+<li><p>[Docker理论与实践]<a
+target="_blank" rel="noopener" href="http://noahsnail.com/2016/12/01/2016-12-1-Docker%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E8%B7%B5%EF%BC%88%E5%9B%9B%EF%BC%89/"
+class="uri">http://noahsnail.com/2016/12/01/2016-12-1-Docker%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E8%B7%B5%EF%BC%88%E5%9B%9B%EF%BC%89/</a></p></li>
+<li><p>[docker install caffe]<a
+target="_blank" rel="noopener" href="https://github.com/cwlseu/caffe/edit/master/docker/README.md"
+class="uri">https://github.com/cwlseu/caffe/edit/master/docker/README.md</a></p></li>
+<li><p>[Pull Docker image的时候遇到docker pull TLS handshake timeout]<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/han_cui/article/details/55190319"
+class="uri">https://blog.csdn.net/han_cui/article/details/55190319</a></p></li>
+<li><p>[caffe cpu docker]<a
+target="_blank" rel="noopener" href="https://hub.docker.com/r/elezar/caffe/"
+class="uri">https://hub.docker.com/r/elezar/caffe/</a></p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201701/20170122-dev-install-caffe/" title="深度学习：玩转caffe之安装">http://www.deepindeed.cn/201701/20170122-dev-install-caffe/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/tools/" rel="tag"># tools</a>
+              <a href="/tags/framework/" rel="tag"># framework</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/201612/20161230-basic-cpp-stl-traits/" rel="prev" title="STL源码剖析与C++面向对象">
+                  <i class="fa fa-chevron-left"></i> STL源码剖析与C++面向对象
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/201702/20170228-the-fun-of-algorithm/" rel="next" title="算法的乐趣：算法设计的基础">
+                  算法的乐趣：算法设计的基础 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">425k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201701/20170122-dev-install-caffe/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
