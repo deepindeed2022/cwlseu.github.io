@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="物体检测算法概览">
 <meta property="og:type" content="article">
@@ -28,32 +28,39 @@
 <meta property="og:site_name" content="Deepindeed">
 <meta property="og:description" content="物体检测算法概览">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/Detection-All.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/RCNN.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/SPPNet-arch.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/FasterRCNN.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/FasterCNN-RPN.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/RCNN-types.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/pyramidImage.jpg">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/FPN.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/FPN-multiScale.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/MSRCNN.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/Anchor.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/ROIPooling.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/ROIAlign-1.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/ROIAlign-2.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/SPPNet.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/FasterRCNN_NMS.jpeg">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/SSD-2.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/detection/SSD-3.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190116235428577.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326458.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326078.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326762.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326247.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326585.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326400.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326734.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326675.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326181.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327384.png">
+<meta property="og:image" content="http://www.deepindeed.cn/images/detection/RCNN-types.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327905.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327418.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327379.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327335.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327309.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327869.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327154.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327566.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327946.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328115.jpeg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328393.jpeg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328935.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328355.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328896.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328516.jpeg">
 <meta property="article:published_time" content="2019-07-14T12:12:12.000Z">
-<meta property="article:modified_time" content="2022-08-29T15:17:32.675Z">
+<meta property="article:modified_time" content="2022-09-02T20:05:26.055Z">
 <meta property="article:author" content="CharlesCao">
-<meta property="article:tag" content="detection">
 <meta property="article:tag" content="CV">
+<meta property="article:tag" content="detection">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cwlseu.github.io/images/detection/Detection-All.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326458.png">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/201907/20190714-detection/">
@@ -72,7 +79,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -99,7 +106,7 @@
       <p class="site-title">Deepindeed</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
   </div>
 
   <div class="site-nav-right">
@@ -181,7 +188,7 @@ detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cl
     <img class="site-author-image" itemprop="image" alt="CharlesCao"
       src="/images/bird.png">
   <p class="site-author-name" itemprop="name">CharlesCao</p>
-  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
 </div>
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
@@ -274,7 +281,7 @@ detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cl
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Deepindeed">
-      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -301,7 +308,7 @@ detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cl
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-29 23:17:32" itemprop="dateModified" datetime="2022-08-29T23:17:32+08:00">2022-08-29</time>
+      <time title="修改时间：2022-09-03 04:05:26" itemprop="dateModified" datetime="2022-09-03T04:05:26+08:00">2022-09-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -321,20 +328,6 @@ detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cl
       <span class="post-meta-item-text">阅读数：</span>
       <span id="busuanzi_value_page_pv"></span>
     </span>
-  
-  <span class="post-meta-item">
-    
-    <span class="post-meta-item-icon">
-      <i class="far fa-comment"></i>
-    </span>
-    <span class="post-meta-item-text">评论数：</span>
-  
-    <a title="waline" href="/201907/20190714-detection/#waline" itemprop="discussionUrl">
-      <span class="post-comments-count waline-comment-count" data-path="/201907/20190714-detection/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="本文字数">
       <span class="post-meta-item-icon">
@@ -364,7 +357,7 @@ detection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a cl
 <p>深度学习让物体检测从实验室走到生活。基于深度学习的物体检测算法分类两大类。一类是像RCNN类似的两stage方法，将ROI的选择和对ROI的分类score过程。
 另外一类是类似YOLO将ROI的选择和最终打分实现端到端一步完成。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。</p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/Detection-All.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326458.png"
 alt="@物体检测算法概览图" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="物体检测算法概览图">@物体检测算法概览图</span></figcaption>
@@ -382,8 +375,7 @@ target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32564990">深�
 <h1 id="基于region-proposals的方法two-stage方法">基于region
 proposals的方法（Two-Stage方法）</h1>
 <ul>
-<li>RCNN =&gt; Fast RCNN =&gt; Faster RCNN =&gt; FPN <img
-src="https://cwlseu.github.io/images/detection/RCNN-types2.png"
+<li>RCNN =&gt; Fast RCNN =&gt; Faster RCNN =&gt; FPN <img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326078.png"
 alt="@R-CNN、Fast R-CNN、Faster R-CNN三者关系" /></li>
 </ul>
 <h2 id="rcnn">RCNN</h2>
@@ -396,15 +388,19 @@ VOC的目标检测任务上呢？基于这个问题，论文提出了R-CNN。 R-
 (Region-based CNN features) 性能：RCNN在VOC2007上的mAP是58%左右。</li>
 </ul>
 <h3 id="主要工作流程">主要工作流程</h3>
-<p><img data-src="https://cwlseu.github.io/images/detection/RCNN.png"
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326762.png"
 alt="@R-CNN要完成目标定位，其流程主要分为四步" />
-R-CNN要完成目标定位，其流程主要分为四步： * 输入图像 *
-利用选择性搜索(Selective Search)这样的区域生成算法提取Region Proposal
-提案区域(2000个左右) * 将每个Region
+R-CNN要完成目标定位，其流程主要分为四步：</p>
+<ul>
+<li>输入图像</li>
+<li>利用选择性搜索(Selective Search)这样的区域生成算法提取Region
+Proposal 提案区域(2000个左右)</li>
+<li>将每个Region
 Proposal分别resize(因为训练好的CNN输入是固定的)后(也即下图中的warped
-region，文章中是归一化为227×227)作为CNN网络的输入。 *
-CNN网络提取到经过resize的region
-proposal的特征送入每一类的SVM分类器，判断是否属于该类</p>
+region，文章中是归一化为227×227)作为CNN网络的输入。</li>
+<li>CNN网络提取到经过resize的region
+proposal的特征送入每一类的SVM分类器，判断是否属于该类</li>
+</ul>
 <h3 id="rcnn的缺点">RCNN的缺点</h3>
 <ul>
 <li>对于提取的每个Region
@@ -428,7 +424,7 @@ Proposal仍然是在原始输入图像中选取的，不过是通过CNN映射到
 map中的一片区域。</li>
 </ul>
 <h3 id="spp-net的主要思想">SPP-NET的主要思想</h3>
-<p><img data-src="https://cwlseu.github.io/images/detection/SPPNet-arch.png"
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326247.png"
 alt="@SPPNet架构图" /> * 对卷积层的feature map上的Region
 Proposal映射区域分别划分成1×1，2×2，4×4的窗口(window)， *
 在每个窗口内做max pooling，这样对于一个卷积核产生的feature
@@ -453,9 +449,8 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/1504.08083"><code>Fas
 <li>作者：Ross Girshick 性能：在VOC2007上的mAP也提高到了68%</li>
 </ul>
 <h3 id="算法框架图">算法框架图</h3>
-<p><img
-src="https://cwlseu.github.io/images/detection/FastRCNN-1.png" /> <img
-src="https://cwlseu.github.io/images/detection/FastRCNN.png" /></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326585.png" />
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326400.png" /></p>
 <h3 id="优点贡献">优点&amp;贡献</h3>
 <ul>
 <li>Fast R-CNN引入了RoI 池化层(相当于是一层SPP)，对于图像中的Region
@@ -481,7 +476,7 @@ map上的映射区域</p>
 <li>作者：Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun</li>
 </ul>
 <h3 id="faster-rcnn算法框架">Faster RCNN算法框架</h3>
-<p><img data-src="https://cwlseu.github.io/images/detection/FasterRCNN.png"
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326734.png"
 alt="@faster RCNN的算法框架" />
 我们先整体的介绍下上图中各层主要的功能</p>
 <ul>
@@ -505,7 +500,7 @@ class="math inline">\(60*40\)</span>,数量512，这样做的目的应该是进�
 逐像素得到其9个Anchor box四个坐标信息</p>
 <p>特征图大小为60<em>40，所以会一共生成60</em>40*9=21600个Anchor box</p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/FasterCNN-RPN.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326675.png"
 alt="@FasterRCNN-RPN" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="FasterRCNN-RPN">@FasterRCNN-RPN</span></figcaption>
@@ -522,10 +517,8 @@ map,进入到后面可利用全连接操作来进行目标识别和定位</p>
 <p>会将ROI Pooling层形成固定大小的feature
 map进行全连接操作，利用Softmax进行具体类别的分类，同时，利用SmoothL1Loss完成bounding
 box regression回归操作获得物体的精确位置。</p>
-<p><img
-src="https://cwlseu.github.io/images/detection/FasterRCNN-Arch.png"
-alt="@FasterRCNN算法详细过程图" /> <img
-src="https://cwlseu.github.io/images/detection/FasterRCNNNetwork.png"
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030326181.png"
+alt="@FasterRCNN算法详细过程图" /> <img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327384.png"
 alt="@FasterRCNN proposal&amp;RPN Netscope" /></p>
 <h3 id="参考链接">参考链接</h3>
 <ul>
@@ -536,7 +529,7 @@ alt="@FasterRCNN proposal&amp;RPN Netscope" /></p>
 <li>[5]. https://blog.csdn.net/xiaoye5606/article/details/71191429</li>
 </ul>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/RCNN-types.png"
+<img data-src="../../images/detection/RCNN-types.png"
 alt="@RCNN系列对比总结表" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="RCNN系列对比总结表">@RCNN系列对比总结表</span></figcaption>
@@ -565,7 +558,7 @@ Hariharan, Serge Belongie</li>
 这样我们可以从中获得更多的有用信息。整个过程类似于人眼看一个目标由远及近的
 过程（近大远小原理）。</p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/pyramidImage.jpg"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327905.jpg"
 alt="@图像金字塔" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="图像金字塔">@图像金字塔</span></figcaption>
@@ -575,7 +568,7 @@ data-cites="图像金字塔">@图像金字塔</span></figcaption>
 networks）。原来多数的object
 detection算法都是只采用顶层特征做预测，但我们知道低层的特征语义信息比较少，但是目标位置准确；高层的特征语义信息比较丰富，但是目标位置比较粗略。另外虽然也有些算法采用多尺度特征融合的方式，但是一般是采用融合后的特征做预测，而本文不一样的地方在于预测是在不同特征层独立进行的。</p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/FPN.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327418.png"
 alt="@FPN架构图" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="FPN架构图">@FPN架构图</span></figcaption>
@@ -586,7 +579,7 @@ data-cites="FPN架构图">@FPN架构图</span></figcaption>
 但是我们的特征金字塔可以在速度和准确率之间进行权衡，可以通过它获得更加鲁棒
 的语义信息，这是其中的一个原因。</p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/FPN-multiScale.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327379.png"
 alt="@FPN不同层识别的目标不同" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="FPN不同层识别的目标不同">@FPN不同层识别的目标不同</span></figcaption>
@@ -613,7 +606,7 @@ Network）算法同时利用低层特征高分辨率和高层特征的高语义�
 <li>github: https://github.com/zjhuang22/maskscoring_rcnn</li>
 </ul>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/MSRCNN.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327335.png"
 alt="@Mask Scoring RCNN的架构图" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="Mask">@Mask</span> Scoring RCNN的架构图</figcaption>
@@ -639,7 +632,7 @@ Search的方法Windows方法进行选取ROI的。</p>
 <p>首先我们需要知道anchor的本质是什么，本质是SPP(spatial pyramid
 pooling)思想的逆向。而SPP本身是做什么的呢，就是将不同尺寸的输入resize成为相同尺寸的输出。所以SPP的逆向就是，将相同尺寸的输出，倒推得到不同尺寸的输入。</p>
 <p>接下来是anchor的窗口尺寸，这个不难理解，三个面积尺寸（128<sup>2，256</sup>2，512^2），然后在每个面积尺寸下，取三种不同的长宽比例（1:1,1:2,2:1）.这样一来，我们得到了一共9种面积尺寸各异的anchor。示意图如下：
-<img data-src="https://cwlseu.github.io/images/detection/Anchor.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327309.png"
 alt="@9个Anchor示意图" />
 至于这个anchor到底是怎么用的，这个是理解整个问题的关键。</p>
 <ul>
@@ -674,7 +667,7 @@ Search完成后得到的“候选框”在特征图上的映射，如下图中�
 RCNN中，候选框是经过RPN产生的，然后再把各个“候选框”映射到特征图上，得到RoIs。</p>
 </blockquote>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/ROIPooling.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327869.png"
 alt="@" />
 <figcaption aria-hidden="true">@</figcaption>
 </figure>
@@ -702,7 +695,7 @@ target="_blank" rel="noopener" href="https://github.com/ShaoqingRen/caffe/blob/0
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Dtype&gt;</span><br><span class="line"><span class="type">void</span> ROIPoolingLayer&lt;Dtype&gt;::<span class="built_in">Forward_cpu</span>(<span class="type">const</span> vector&lt;Blob&lt;Dtype&gt;*&gt;&amp; bottom,</span><br><span class="line">      <span class="type">const</span> vector&lt;Blob&lt;Dtype&gt;*&gt;&amp; top) &#123;</span><br><span class="line">  <span class="comment">//输入有两部分组成，data和rois</span></span><br><span class="line">  <span class="type">const</span> Dtype* bottom_data = bottom[<span class="number">0</span>]-&gt;<span class="built_in">cpu_data</span>();</span><br><span class="line">  <span class="type">const</span> Dtype* bottom_rois = bottom[<span class="number">1</span>]-&gt;<span class="built_in">cpu_data</span>();</span><br><span class="line">  <span class="comment">// ROIs的个数</span></span><br><span class="line">  <span class="type">int</span> num_rois = bottom[<span class="number">1</span>]-&gt;<span class="built_in">num</span>();</span><br><span class="line">  <span class="type">int</span> batch_size = bottom[<span class="number">0</span>]-&gt;<span class="built_in">num</span>();</span><br><span class="line">  <span class="type">int</span> top_count = top[<span class="number">0</span>]-&gt;<span class="built_in">count</span>();</span><br><span class="line">  Dtype* top_data = top[<span class="number">0</span>]-&gt;<span class="built_in">mutable_cpu_data</span>();</span><br><span class="line">  <span class="built_in">caffe_set</span>(top_count, <span class="built_in">Dtype</span>(-FLT_MAX), top_data);</span><br><span class="line">  <span class="type">int</span>* argmax_data = max_idx_.<span class="built_in">mutable_cpu_data</span>();</span><br><span class="line">  <span class="built_in">caffe_set</span>(top_count, <span class="number">-1</span>, argmax_data);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// For each ROI R = [batch_index x1 y1 x2 y2]: max pool over R</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> n = <span class="number">0</span>; n &lt; num_rois; ++n) &#123;</span><br><span class="line">    <span class="type">int</span> roi_batch_ind = bottom_rois[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">// 把原图的坐标映射到feature map上面</span></span><br><span class="line">    <span class="type">int</span> roi_start_w = <span class="built_in">round</span>(bottom_rois[<span class="number">1</span>] * spatial_scale_);</span><br><span class="line">    <span class="type">int</span> roi_start_h = <span class="built_in">round</span>(bottom_rois[<span class="number">2</span>] * spatial_scale_);</span><br><span class="line">    <span class="type">int</span> roi_end_w = <span class="built_in">round</span>(bottom_rois[<span class="number">3</span>] * spatial_scale_);</span><br><span class="line">    <span class="type">int</span> roi_end_h = <span class="built_in">round</span>(bottom_rois[<span class="number">4</span>] * spatial_scale_);</span><br><span class="line">    <span class="comment">// 计算每个roi在feature map上面的大小</span></span><br><span class="line">    <span class="type">int</span> roi_height = <span class="built_in">max</span>(roi_end_h - roi_start_h + <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="type">int</span> roi_width = <span class="built_in">max</span>(roi_end_w - roi_start_w + <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//pooling之后的feature map的一个值对应于pooling之前的feature map上的大小</span></span><br><span class="line">    <span class="comment">//注：由于roi的大小不一致，所以每次都需要计算一次</span></span><br><span class="line">    <span class="type">const</span> Dtype bin_size_h = <span class="built_in">static_cast</span>&lt;Dtype&gt;(roi_height)</span><br><span class="line">                             / <span class="built_in">static_cast</span>&lt;Dtype&gt;(pooled_height_);</span><br><span class="line">    <span class="type">const</span> Dtype bin_size_w = <span class="built_in">static_cast</span>&lt;Dtype&gt;(roi_width)</span><br><span class="line">                             / <span class="built_in">static_cast</span>&lt;Dtype&gt;(pooled_width_);</span><br><span class="line">    <span class="comment">//找到对应的roi的feature map，如果input data的batch size为1</span></span><br><span class="line">    <span class="comment">//那么roi_batch_ind=0</span></span><br><span class="line">    <span class="type">const</span> Dtype* batch_data = bottom_data + bottom[<span class="number">0</span>]-&gt;<span class="built_in">offset</span>(roi_batch_ind);</span><br><span class="line">    <span class="comment">//pooling的过程是针对每一个channel的，所以需要循环遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> c = <span class="number">0</span>; c &lt; channels_; ++c) &#123;</span><br><span class="line">      <span class="comment">//计算output的每一个值，所以需要遍历一遍output，然后求出所有值</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> ph = <span class="number">0</span>; ph &lt; pooled_height_; ++ph) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> pw = <span class="number">0</span>; pw &lt; pooled_width_; ++pw) &#123;</span><br><span class="line">          <span class="comment">// Compute pooling region for this output unit:</span></span><br><span class="line">          <span class="comment">//  start (included) = floor(ph * roi_height / pooled_height_)</span></span><br><span class="line">          <span class="comment">//  end (excluded) = ceil((ph + 1) * roi_height / pooled_height_)</span></span><br><span class="line">          <span class="comment">// 计算output上的一点对应于input上面区域的大小[hstart, wstart, hend, wend]</span></span><br><span class="line">          <span class="type">int</span> hstart = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">floor</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(ph)</span><br><span class="line">                                              * bin_size_h));</span><br><span class="line">          <span class="type">int</span> hend = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">ceil</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(ph + <span class="number">1</span>)</span><br><span class="line">                                           * bin_size_h));</span><br><span class="line">          <span class="type">int</span> wstart = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">floor</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(pw)</span><br><span class="line">                                              * bin_size_w));</span><br><span class="line">          <span class="type">int</span> wend = <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(<span class="built_in">ceil</span>(<span class="built_in">static_cast</span>&lt;Dtype&gt;(pw + <span class="number">1</span>)</span><br><span class="line">                                           * bin_size_w));</span><br><span class="line">          <span class="comment">//将映射后的区域平动到对应的位置[hstart, wstart, hend, wend]</span></span><br><span class="line">          hstart = <span class="built_in">min</span>(<span class="built_in">max</span>(hstart + roi_start_h, <span class="number">0</span>), height_);</span><br><span class="line">          hend = <span class="built_in">min</span>(<span class="built_in">max</span>(hend + roi_start_h, <span class="number">0</span>), height_);</span><br><span class="line">          wstart = <span class="built_in">min</span>(<span class="built_in">max</span>(wstart + roi_start_w, <span class="number">0</span>), width_);</span><br><span class="line">          wend = <span class="built_in">min</span>(<span class="built_in">max</span>(wend + roi_start_w, <span class="number">0</span>), width_);</span><br><span class="line">          <span class="comment">//如果映射后的矩形框不符合</span></span><br><span class="line">          <span class="type">bool</span> is_empty = (hend &lt;= hstart) || (wend &lt;= wstart);</span><br><span class="line">          <span class="comment">//pool_index指的是此时计算的output的值对应于output的位置</span></span><br><span class="line">          <span class="type">const</span> <span class="type">int</span> pool_index = ph * pooled_width_ + pw;</span><br><span class="line">          <span class="comment">//如果矩形不符合，此处output的值设为0，此处的对应于输入区域的最大值为-1</span></span><br><span class="line">          <span class="keyword">if</span> (is_empty) &#123;</span><br><span class="line">            top_data[pool_index] = <span class="number">0</span>;</span><br><span class="line">            argmax_data[pool_index] = <span class="number">-1</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">//遍历output的值对应于input的区域块</span></span><br><span class="line">          <span class="keyword">for</span> (<span class="type">int</span> h = hstart; h &lt; hend; ++h) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> w = wstart; w &lt; wend; ++w) &#123;</span><br><span class="line">             <span class="comment">// 对应于input上的位置</span></span><br><span class="line">              <span class="type">const</span> <span class="type">int</span> index = h * width_ + w;</span><br><span class="line">              <span class="comment">//计算区域块的最大值，保存在output对应的位置上</span></span><br><span class="line">              <span class="comment">//同时记录最大值的索引</span></span><br><span class="line">              <span class="keyword">if</span> (batch_data[index] &gt; top_data[pool_index]) &#123;</span><br><span class="line">                top_data[pool_index] = batch_data[index];</span><br><span class="line">                argmax_data[pool_index] = index;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// Increment all data pointers by one channel</span></span><br><span class="line">      batch_data += bottom[<span class="number">0</span>]-&gt;<span class="built_in">offset</span>(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">      top_data += top[<span class="number">0</span>]-&gt;<span class="built_in">offset</span>(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">      argmax_data += max_idx_.<span class="built_in">offset</span>(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Increment ROI data pointer</span></span><br><span class="line">    bottom_rois += bottom[<span class="number">1</span>]-&gt;<span class="built_in">offset</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="roi-align">ROI Align</h2>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/ROIAlign-1.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327154.png"
 alt="@ROIAlign模块使用示意图" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="ROIAlign模块使用示意图">@ROIAlign模块使用示意图</span></figcaption>
@@ -710,12 +703,14 @@ data-cites="ROIAlign模块使用示意图">@ROIAlign模块使用示意图</span>
 <p>为了解决ROI Pooling的上述缺点，作者提出了ROI Align这一改进的方法。ROI
 Align的思路很简单：取消量化操作，使用双线性内插的方法获得坐标为浮点数的像素点上的图像数值,从而将整个特征聚集过程转化为一个连续的操作。值得注意的是，在具体的算法操作上，ROI
 Align并不是简单地补充出候选区域边界上的坐标点，然后将这些坐标点进行池化，而是重新设计了一套比较优雅的流程，如下图所示：
-<img data-src="https://cwlseu.github.io/images/detection/ROIAlign-2.png"
-alt="@浮点坐标计算过程" /> *
-遍历每一个候选区域，保持浮点数边界不做量化。 * 将候选区域分割成<span
-class="math inline">\(k\times
-k\)</span>个单元，每个单元的边界也不做量化。 *
-在每个单元中计算固定四个坐标位置，用双线性内插的方法计算出这四个位置的值，然后进行最大池化操作。</p>
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327566.png"
+alt="@浮点坐标计算过程" /></p>
+<ul>
+<li>遍历每一个候选区域，保持浮点数边界不做量化。</li>
+<li>将候选区域分割成<span class="math inline">\(k\times
+k\)</span>个单元，每个单元的边界也不做量化。</li>
+<li>在每个单元中计算固定四个坐标位置，用双线性内插的方法计算出这四个位置的值，然后进行最大池化操作。</li>
+</ul>
 <p>这里对上述步骤的第三点作一些说明：这个固定位置是指在每一个矩形单元（bin）中按照固定规则确定的位置。比如，如果采样点数是1，那么就是这个单元的中心点。如果采样点数是4，那么就是把这个单元平均分割成四个小方块以后它们分别的中心点。显然这些采样点的坐标通常是浮点数，所以需要使用插值的方法得到它的像素值。在相关实验中，作者发现将采样点设为4会获得最佳性能，甚至直接设为1在性能上也相差无几。
 事实上，ROIAlign在遍历取样点的数量上没有ROIPooling那么多，但却可以获得更好的性能，这主要归功于解决了<strong>misalignment</strong>的问题。值得一提的是，我在实验时发现，ROIAlign在<code>VOC2007</code>数据集上的提升效果并不如在<code>COCO</code>上明显。经过分析，造成这种区别的原因是<code>COCO</code>上小目标的数量更多，而小目标受<strong>misalignment</strong>问题的影响更大（比如，同样是0.5个像素点的偏差，对于较大的目标而言显得微不足道，但是对于小目标，误差的影响就要高很多）。ROIAlign层要将feature
 map固定为2*2大小，那些蓝色的点即为采样点，然后每个bin中有4个采样点，则这四个采样点经过MAX得到ROI
@@ -739,7 +734,7 @@ proposal的feature map,这些特征用固定长度的特征集合feature vector�
 vector，然后把这些特征向量直接放到SVM现行分类器去判断，当前region所对应的实物是background还是所对应的物体类别，每个region都会给出所对应的score，因为有些时候并不是说这些region中所包含的实物就一点都不存在，有些包含的多有些包含的少，包含的多少还需要合适的bounding
 box，所以我们才会对于每一region给出包含实物类别多少的分数，选出前几个对大数值，然后再用非极大值抑制canny来进行边缘检测，最后就会得到所对应的bounding
 box.</p>
-<p><img data-src="https://cwlseu.github.io/images/detection/SPPNet.png"
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030327946.png"
 alt="Alt text" /> 同样，SPPNet作者观察得，对selective
 search(ss)提供的2000多个候选区域都逐一进行卷积处理，势必会耗费大量的时间，
 所以SPPNet中先对一整张图进行卷积得到特征图，然后再将ss算法提供的2000多个候选区域的位置记录下来，通过比例映射到整张图的feature
@@ -750,13 +745,12 @@ map上提取出候选区域的特征图B,然后将B送入到金字塔池化层�
 boxes，矩形窗口左上和右下点的坐标构成)
 的坐标信息，从中筛选出置信度较高的bounding boxes。</p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/FasterRCNN_NMS.jpeg"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328115.jpeg"
 alt="@FasterRCNN中的NMS的作用" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="FasterRCNN中的NMS的作用">@FasterRCNN中的NMS的作用</span></figcaption>
 </figure>
-<p><img
-src="https://cwlseu.github.io/images/detection/FasterRCNN_anchor.jpeg"
+<p><img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328393.jpeg"
 alt="@FasterRCNN中anchor推荐框的个数" /> Faster
 RCNN中输入s=600时，采用了三个尺度的anchor进行推荐，分别时128,256和512，其中推荐的框的个数为<span
 class="math inline">\(1106786\)</span>，需要将这<span
@@ -766,17 +760,16 @@ class="math inline">\(RPN\)</span>神经网络模型。</p>
 <h3 id="ssd">SSD</h3>
 <p>https://blog.csdn.net/wfei101/article/details/78176322
 SSD算法中是分为default box(下图中(b)中为default box示意图)和prior
-box(实际推荐的框) <img
-src="https://cwlseu.github.io/images/detection/SSD-1.png"
+box(实际推荐的框) <img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328935.png"
 alt="@SSD算法中的anchor box和default box示意图" /></p>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/SSD-2.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328355.png"
 alt="@SSD算法架构图" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="SSD算法架构图">@SSD算法架构图</span></figcaption>
 </figure>
 <figure>
-<img data-src="https://cwlseu.github.io/images/detection/SSD-3.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328896.png"
 alt="SSD算法推荐框的个数" />
 <figcaption aria-hidden="true">SSD算法推荐框的个数</figcaption>
 </figure>
@@ -879,7 +872,7 @@ R-CNN的fc层。这样，两个网络共享相同的卷积层，构成一个统�
 <h2
 id="faster-rcnn和yolo的anchor有什么区别">Faster-RCNN和YOLO的anchor有什么区别</h2>
 <figure>
-<img data-src="https://img-blog.csdnimg.cn/20190116235428577.jpg"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030328516.jpeg"
 alt="@FasterRCNN generator anchor" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="FasterRCNN">@FasterRCNN</span> generator anchor</figcaption>
@@ -933,8 +926,8 @@ iou稳定。用于训练的话就需要统计多组anchor，针对固定的测�
 </div>
 
           <div class="post-tags">
-              <a href="/tags/detection/" rel="tag"># detection</a>
               <a href="/tags/CV/" rel="tag"># CV</a>
+              <a href="/tags/detection/" rel="tag"># detection</a>
           </div>
 
         
@@ -960,7 +953,7 @@ iou稳定。用于训练的话就需要统计多组anchor，针对固定的测�
 
 
 
-    <div class="comments" id="waline"></div>
+    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -987,7 +980,7 @@ iou稳定。用于训练的话就需要统计多组anchor，针对固定的测�
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:48</span>
+    <span title="站点阅读时长">11:49</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -1041,17 +1034,10 @@ iou稳定。用于训练的话就需要统计多组anchor，针对固定的测�
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
-<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201907/20190714-detection/"}</script>
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
-<script>
-document.addEventListener('page:loaded', () => {
-  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
-    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
-  ).then(() => 
-    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
-  );
-});
-</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"e538d1690c14e6f07527fcf3bb5a8eac"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

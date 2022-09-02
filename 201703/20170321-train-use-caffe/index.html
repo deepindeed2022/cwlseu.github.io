@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="使用caffe框架进行实验过程中的一些心得">
 <meta property="og:type" content="article">
@@ -28,16 +28,16 @@
 <meta property="og:site_name" content="Deepindeed">
 <meta property="og:description" content="使用caffe框架进行实验过程中的一些心得">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cwlseu.github.io/images/linux/lr.png">
-<meta property="og:image" content="https://cwlseu.github.io/images/linux/inference_time.JPG">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/lr.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/inference_time.JPG">
 <meta property="article:published_time" content="2017-03-21T12:00:00.000Z">
-<meta property="article:modified_time" content="2022-08-29T15:17:17.546Z">
+<meta property="article:modified_time" content="2022-09-02T20:05:26.049Z">
 <meta property="article:author" content="CharlesCao">
-<meta property="article:tag" content="framework">
 <meta property="article:tag" content="caffe">
+<meta property="article:tag" content="framework">
 <meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cwlseu.github.io/images/linux/lr.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/lr.png">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/201703/20170321-train-use-caffe/">
@@ -56,7 +56,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -83,7 +83,7 @@
       <p class="site-title">Deepindeed</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
   </div>
 
   <div class="site-nav-right">
@@ -154,8 +154,8 @@
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
             <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#imagenet%E7%9A%84%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">ImageNet的数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81image-list"><span class="nav-number">2.1.</span> <span class="nav-text">1. 常见image list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90backend%E4%B8%BAleveldb%E6%88%96%E8%80%85lmdb"><span class="nav-number">2.2.</span> <span class="nav-text">2.
-生成backend为leveldb或者lmdb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proto%E4%B8%AD%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3. proto中配置使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">训练模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E7%8E%87"><span class="nav-number">3.1.</span> <span class="nav-text">1、学习率</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%B1%E5%B0%8F%E5%8F%98%E5%A4%A7%E6%98%93%E5%87%BAnan"><span class="nav-number">3.1.1.</span> <span class="nav-text">由小变大易出nan</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8resnet-block%E6%88%96%E8%80%85inception%E6%8A%80%E6%9C%AF%E6%9C%80%E5%90%8E%E7%9A%84%E7%BB%93%E6%9E%9C%E9%80%9A%E8%BF%87bitwise-operation%E8%BF%9B%E8%A1%8C%E7%BB%84%E5%90%88%E8%80%8C%E4%B8%8D%E6%98%AF%E9%87%87%E7%94%A8%E6%8C%89channel-concatenate%E8%BF%9B%E8%A1%8C%E7%9A%84"><span class="nav-number">3.1.2.</span> <span class="nav-text">使用ResNet-Block或者Inception技术，最后的结果通过Bitwise
-Operation进行组合，而不是采用按channel Concatenate进行的。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E7%88%86%E7%82%B8"><span class="nav-number">3.2.</span> <span class="nav-text">3、梯度爆炸</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%BD%93%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.1.</span> <span class="nav-text">不当的损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%BD%93%E7%9A%84%E8%BE%93%E5%85%A5"><span class="nav-number">3.2.2.</span> <span class="nav-text">不当的输入</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#caffe-debug-info34"><span class="nav-number">3.3.</span> <span class="nav-text">4、Caffe Debug info23</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#caffe-blob-data-structure"><span class="nav-number">3.3.1.</span> <span class="nav-text">Caffe Blob data structure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#forward-pass"><span class="nav-number">3.3.2.</span> <span class="nav-text">Forward pass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loss-and-gradient"><span class="nav-number">3.3.3.</span> <span class="nav-text">Loss and gradient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#backward-pass"><span class="nav-number">3.3.4.</span> <span class="nav-text">Backward pass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#finally"><span class="nav-number">3.3.5.</span> <span class="nav-text">Finally</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#what-should-i-look-for"><span class="nav-number">3.3.6.</span> <span class="nav-text">What should I look for?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tools%E4%BA%8B%E5%8D%8A%E5%8A%9F%E5%80%8D"><span class="nav-number">4.</span> <span class="nav-text">Tools事半功倍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#caffe-tools"><span class="nav-number">4.1.</span> <span class="nav-text">1、caffe tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90train-log"><span class="nav-number">4.2.</span> <span class="nav-text">2、分析train log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%9C"><span class="nav-number">4.3.</span> <span class="nav-text">3、显示模型结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%A4%9A%E4%B8%AAsnapshot%E6%A8%A1%E5%9E%8B%E8%BF%9B%E8%A1%8C%E6%89%93%E5%88%86"><span class="nav-number">4.4.</span> <span class="nav-text">4、对多个snapshot模型进行打分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inference-time5"><span class="nav-number">4.5.</span> <span class="nav-text">5、Inference Time4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8google-protocol-buffer%E5%BA%8F%E5%88%97%E5%8C%96%E5%8D%8F%E8%AE%AE6"><span class="nav-number">5.</span> <span class="nav-text">为什么要用Google
+生成backend为leveldb或者lmdb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proto%E4%B8%AD%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3. proto中配置使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">训练模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E7%8E%87"><span class="nav-number">3.1.</span> <span class="nav-text">1、学习率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#caffe%E8%AE%AD%E7%BB%83%E6%97%B6loss%E5%8F%98%E4%B8%BAnan%E7%9A%84%E5%8E%9F%E5%9B%A02"><span class="nav-number">3.2.</span> <span class="nav-text">2、caffe训练时Loss变为nan的原因1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%B1%E5%B0%8F%E5%8F%98%E5%A4%A7%E6%98%93%E5%87%BAnan"><span class="nav-number">3.2.1.</span> <span class="nav-text">由小变大易出nan</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8resnet-block%E6%88%96%E8%80%85inception%E6%8A%80%E6%9C%AF%E6%9C%80%E5%90%8E%E7%9A%84%E7%BB%93%E6%9E%9C%E9%80%9A%E8%BF%87bitwise-operation%E8%BF%9B%E8%A1%8C%E7%BB%84%E5%90%88%E8%80%8C%E4%B8%8D%E6%98%AF%E9%87%87%E7%94%A8%E6%8C%89channel-concatenate%E8%BF%9B%E8%A1%8C%E7%9A%84"><span class="nav-number">3.2.2.</span> <span class="nav-text">使用ResNet-Block或者Inception技术，最后的结果通过Bitwise
+Operation进行组合，而不是采用按channel Concatenate进行的。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E7%88%86%E7%82%B8"><span class="nav-number">3.3.</span> <span class="nav-text">3、梯度爆炸</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%BD%93%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.1.</span> <span class="nav-text">不当的损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%BD%93%E7%9A%84%E8%BE%93%E5%85%A5"><span class="nav-number">3.3.2.</span> <span class="nav-text">不当的输入</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#caffe-debug-info34"><span class="nav-number">3.4.</span> <span class="nav-text">4、Caffe Debug info23</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#caffe-blob-data-structure"><span class="nav-number">3.4.1.</span> <span class="nav-text">Caffe Blob data structure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#forward-pass"><span class="nav-number">3.4.2.</span> <span class="nav-text">Forward pass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loss-and-gradient"><span class="nav-number">3.4.3.</span> <span class="nav-text">Loss and gradient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#backward-pass"><span class="nav-number">3.4.4.</span> <span class="nav-text">Backward pass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#finally"><span class="nav-number">3.4.5.</span> <span class="nav-text">Finally</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#what-should-i-look-for"><span class="nav-number">3.4.6.</span> <span class="nav-text">What should I look for?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tools%E4%BA%8B%E5%8D%8A%E5%8A%9F%E5%80%8D"><span class="nav-number">4.</span> <span class="nav-text">Tools事半功倍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#caffe-tools"><span class="nav-number">4.1.</span> <span class="nav-text">1、caffe tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90train-log"><span class="nav-number">4.2.</span> <span class="nav-text">2、分析train log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%9C"><span class="nav-number">4.3.</span> <span class="nav-text">3、显示模型结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%A4%9A%E4%B8%AAsnapshot%E6%A8%A1%E5%9E%8B%E8%BF%9B%E8%A1%8C%E6%89%93%E5%88%86"><span class="nav-number">4.4.</span> <span class="nav-text">4、对多个snapshot模型进行打分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inference-time5"><span class="nav-number">4.5.</span> <span class="nav-text">5、Inference Time4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8google-protocol-buffer%E5%BA%8F%E5%88%97%E5%8C%96%E5%8D%8F%E8%AE%AE6"><span class="nav-number">5.</span> <span class="nav-text">为什么要用Google
 Protocol Buffer序列化协议？5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">开发过程中一些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E4%B8%80%E7%9B%B4%E5%9C%A8%E5%A6%82%E4%B8%8B%E4%BD%8D%E7%BD%AE%E5%A4%AF%E4%BD%8F%E4%B8%8D%E7%BB%A7%E7%BB%AD%E8%BF%90%E8%A1%8C%E4%BA%86%E7%9A%84%E8%AF%9D"><span class="nav-number">6.1.</span> <span class="nav-text">1.
 如果一直在如下位置夯住，不继续运行了的话：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8C%E6%A8%A1%E5%9E%8Bfunetune%E7%9A%84%E6%97%B6%E5%80%99prototxt%E5%92%8C.caffemodel%E4%B8%80%E5%AE%9A%E8%A6%81%E5%AF%B9%E5%BA%94%E5%90%A6%E5%88%99%E7%9C%9F%E7%9A%84%E4%BC%9A%E5%87%BA%E7%8E%B0%E5%90%84%E7%A7%8Dshape-size%E4%B8%8D%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">6.2.</span> <span class="nav-text">2.
 进行模型funetune的时候，prototxt和.caffemodel一定要对应，否则真的会出现各种shape
@@ -169,7 +169,7 @@ size不匹配的问题</span></a></li><li class="nav-item nav-level-3"><a class=
     <img class="site-author-image" itemprop="image" alt="CharlesCao"
       src="/images/bird.png">
   <p class="site-author-name" itemprop="name">CharlesCao</p>
-  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
 </div>
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
@@ -262,7 +262,7 @@ size不匹配的问题</span></a></li><li class="nav-item nav-level-3"><a class=
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Deepindeed">
-      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -289,7 +289,7 @@ size不匹配的问题</span></a></li><li class="nav-item nav-level-3"><a class=
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-29 23:17:17" itemprop="dateModified" datetime="2022-08-29T23:17:17+08:00">2022-08-29</time>
+      <time title="修改时间：2022-09-03 04:05:26" itemprop="dateModified" datetime="2022-09-03T04:05:26+08:00">2022-09-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -309,20 +309,6 @@ size不匹配的问题</span></a></li><li class="nav-item nav-level-3"><a class=
       <span class="post-meta-item-text">阅读数：</span>
       <span id="busuanzi_value_page_pv"></span>
     </span>
-  
-  <span class="post-meta-item">
-    
-    <span class="post-meta-item-icon">
-      <i class="far fa-comment"></i>
-    </span>
-    <span class="post-meta-item-text">评论数：</span>
-  
-    <a title="waline" href="/201703/20170321-train-use-caffe/#waline" itemprop="discussionUrl">
-      <span class="post-comments-count waline-comment-count" data-path="/201703/20170321-train-use-caffe/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="本文字数">
       <span class="post-meta-item-icon">
@@ -362,10 +348,11 @@ size不匹配的问题</span></a></li><li class="nav-item nav-level-3"><a class=
 <h2 id="训练模型">训练模型</h2>
 <h3 id="学习率">1、学习率</h3>
 <p>步长的选择：你走的距离长短，越短当然不会错过，但是耗时间。步长的选择比较麻烦。步长越小，越容易得到局部最优化（到了比较大的山谷，就出不去了），而大了会全局最优。一般来说，如ResNet前32k步，很大，0.1；到了后面，迭代次数增高，下降0.01，再多，然后再小一些。
-<img data-src="https://cwlseu.github.io/images/linux/lr.png"
-alt="@lr 随着epoch的增加变化曲线" /> ###
-2、caffe训练时Loss变为nan的原因<a href="#fn1" class="footnote-ref"
-id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/lr.png"
+alt="@lr 随着epoch的增加变化曲线" /></p>
+<h3 id="caffe训练时loss变为nan的原因2">2、caffe训练时Loss变为nan的原因<a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></h3>
 <h4 id="由小变大易出nan">由小变大易出nan</h4>
 <p><strong>原因</strong>：有小变大过程中，某个梯度值变得特别大，使得学习过程难以为继</p>
 <p>例如：<code>10x10x256</code>的输入，输出如果是<code>20x20x256</code>或者<code>10x10x512</code>，如果是使用Inception-ResNet-v2或者直接进行卷积操作，很容易出现nan的情况。</p>
@@ -562,7 +549,7 @@ first.) time LeNet training on CPU for 10 iterations
 <li>time a model architecture with the given weights on no GPU for 10
 iterations
 <code>./build/tools/caffe time --model=models/ResNet/VOC0712/OOXX_321x321/deploy.prototxt --weights models/ResNet/VOC0712/OOXX_321x321/ResNet_VOC0712_OOXX_321x321_iter_115000.caffemodel --iterations 10</code>
-<img data-src="https://cwlseu.github.io/images/linux/inference_time.JPG"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/inference_time.JPG"
 alt="@inference time result" /></li>
 </ol>
 <h2 id="为什么要用google-protocol-buffer序列化协议6">为什么要用Google
@@ -730,8 +717,8 @@ href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </div>
 
           <div class="post-tags">
-              <a href="/tags/framework/" rel="tag"># framework</a>
               <a href="/tags/caffe/" rel="tag"># caffe</a>
+              <a href="/tags/framework/" rel="tag"># framework</a>
               <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
           </div>
 
@@ -758,7 +745,7 @@ href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 
 
 
-    <div class="comments" id="waline"></div>
+    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -785,7 +772,7 @@ href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:48</span>
+    <span title="站点阅读时长">11:49</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -839,17 +826,10 @@ href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
-<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201703/20170321-train-use-caffe/"}</script>
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
-<script>
-document.addEventListener('page:loaded', () => {
-  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
-    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
-  ).then(() => 
-    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
-  );
-});
-</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"daea1757d79847983744f755914eab4e"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

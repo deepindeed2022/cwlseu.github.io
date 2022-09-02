@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="TF社区中相继出现相关的应用，为了更快的在Pytorch中加入对Volta GPU的支持，并实现针对混合精度训练的优化，NVIDIA发布了Apex开源工具库。cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference.">
 <meta property="og:type" content="article">
@@ -28,16 +28,17 @@
 <meta property="og:site_name" content="Deepindeed">
 <meta property="og:description" content="TF社区中相继出现相关的应用，为了更快的在Pytorch中加入对Volta GPU的支持，并实现针对混合精度训练的优化，NVIDIA发布了Apex开源工具库。cuda9中已经开始支持混合精度训练，tensorRT作为NVIDIA的inference引擎，同样支持混合精度的inference.">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png">
-<meta property="og:image" content="http://cwlseu.github.io/images/mixed-precision/tensorcore.png">
-<meta property="og:image" content="http://cwlseu.github.io/images/mixed-precision/scaling.png">
+<meta property="og:image" content="https://devblogs.nvidia.com/wp-content/uploads/2015/07/fp16_format-624x146.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325913.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325950.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325565.png">
 <meta property="article:published_time" content="2019-04-07T14:12:22.000Z">
-<meta property="article:modified_time" content="2022-08-29T15:04:26.121Z">
+<meta property="article:modified_time" content="2022-09-02T20:05:26.054Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="HPC">
 <meta property="article:tag" content="CUDA">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png">
+<meta name="twitter:image" content="https://devblogs.nvidia.com/wp-content/uploads/2015/07/fp16_format-624x146.png">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/201904/20190407-cuda9-mixed-precision/">
@@ -56,7 +57,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -83,7 +84,7 @@
       <p class="site-title">Deepindeed</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">In me the tiger sniffs the rose.</p>
+      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
   </div>
 
   <div class="site-nav-right">
@@ -164,7 +165,7 @@ mixed-precision）</span></a><ol class="nav-child"><li class="nav-item nav-level
     <img class="site-author-image" itemprop="image" alt="CharlesCao"
       src="/images/bird.png">
   <p class="site-author-name" itemprop="name">CharlesCao</p>
-  <div class="site-description" itemprop="description">心有猛虎，细嗅蔷薇。</div>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
 </div>
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
@@ -257,7 +258,7 @@ mixed-precision）</span></a><ol class="nav-child"><li class="nav-item nav-level
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Deepindeed">
-      <meta itemprop="description" content="心有猛虎，细嗅蔷薇。">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -284,7 +285,7 @@ mixed-precision）</span></a><ol class="nav-child"><li class="nav-item nav-level
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-29 23:04:26" itemprop="dateModified" datetime="2022-08-29T23:04:26+08:00">2022-08-29</time>
+      <time title="修改时间：2022-09-03 04:05:26" itemprop="dateModified" datetime="2022-09-03T04:05:26+08:00">2022-09-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -304,20 +305,6 @@ mixed-precision）</span></a><ol class="nav-child"><li class="nav-item nav-level
       <span class="post-meta-item-text">阅读数：</span>
       <span id="busuanzi_value_page_pv"></span>
     </span>
-  
-  <span class="post-meta-item">
-    
-    <span class="post-meta-item-icon">
-      <i class="far fa-comment"></i>
-    </span>
-    <span class="post-meta-item-text">评论数：</span>
-  
-    <a title="waline" href="/201904/20190407-cuda9-mixed-precision/#waline" itemprop="discussionUrl">
-      <span class="post-comments-count waline-comment-count" data-path="/201904/20190407-cuda9-mixed-precision/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="本文字数">
       <span class="post-meta-item-icon">
@@ -358,8 +345,7 @@ structures store two half values in the space of a single 32-bit word,
 as the bottom of Figure 1 shows.</li>
 </ul>
 <figure>
-<img
-src="https://devblogs.nvidia.com/wp-content/uploads/2015/07/fp16_format-624x146.png"
+<img data-src="https://devblogs.nvidia.com/wp-content/uploads/2015/07/fp16_format-624x146.png"
 alt="@Figure 1:16-bit half-precision data formats. Top: single half value. Bottom: half2 vector representation." />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="Figure">@Figure</span> 1:16-bit half-precision data formats.
@@ -388,7 +374,7 @@ class="footnote-ref" id="fnref5"
 role="doc-noteref"><sup>5</sup></a>分别发表关于混合精度训练的文章.PAI-TAO是alibaba内部一个关于混合精度训练的一个研究项目。
 在整个AI模型的生命周期中的位置如下：</p>
 <figure>
-<img data-src="http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325913.png"
 alt="@PAI-TAO" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="PAI-TAO">@PAI-TAO</span></figcaption>
@@ -396,7 +382,7 @@ data-cites="PAI-TAO">@PAI-TAO</span></figcaption>
 <p>从中可以看出，自动混合精度主要是在训练过程中，为了加快计算节点之间的数据交换和层之间的数据交换与计算，采用FP16来替换FP32，这样在计算结果精度几乎不损失的情况下，带了数据交换和计算速度方面的性能提升，从而加快模型训练速度。</p>
 <p>而这项任务的成功，与CUDA9中支持TensorCore的特性是息息相关的。下面对TensorCode进行简单介绍。</p>
 <figure>
-<img data-src="http://cwlseu.github.io/images/mixed-precision/tensorcore.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325950.png"
 alt="@tensor core" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="tensor">@tensor</span> core</figcaption>
@@ -445,7 +431,7 @@ mixed-precision）</h3>
 </ul></li>
 </ul>
 <figure>
-<img data-src="http://cwlseu.github.io/images/mixed-precision/scaling.png"
+<img data-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325565.png"
 alt="@scale在训练过程中的作用" />
 <figcaption aria-hidden="true"><span class="citation"
 data-cites="scale在训练过程中的作用">@scale在训练过程中的作用</span></figcaption>
@@ -567,7 +553,7 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 
 
 
-    <div class="comments" id="waline"></div>
+    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -594,7 +580,7 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:48</span>
+    <span title="站点阅读时长">11:49</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -648,17 +634,10 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
-<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail"],"el":"#waline","comment":true,"path":"/201904/20190407-cuda9-mixed-precision/"}</script>
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
-<script>
-document.addEventListener('page:loaded', () => {
-  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
-    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
-  ).then(() => 
-    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
-  );
-});
-</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"853a704ba7f3b035a7000474b0c3ca9a"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>
