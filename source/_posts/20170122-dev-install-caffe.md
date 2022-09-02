@@ -30,7 +30,7 @@ BLAS 可以通过mkl atlas openblas等实现，[性能比较](http://stackoverfl
     /home/charles/Repo/ATLAS//CONFIG/include/atlas_sys.h:224: warning: the use of `tmpnam' is dangerous, better use `mkstemp'
 
     Clock rate configured as 800Mhz
-
+    
     Maximum number of threads configured as  4
     probe_pmake.o: In function `ATL_tmpnam':
     /home/charles/Repo/ATLAS//CONFIG/include/atlas_sys.h:224: warning: the use of `tmpnam` is dangerous, better use `mkstemp`
@@ -139,8 +139,8 @@ and Library Directories lists and add cuDNN.lib to Linker->Input->Additional Dep
 2. 使得pycaffe可以被访问到, set `PYTHONPATH=$PYTHONPATH:/path/to/caffe/python`
 3. install dependencies python package.在python文件夹下面有requirements.txt文件，列出了所有有关的python package.
    `pip install -r requirements.txt`
-**Note**
-这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，
+   **Note**
+   这里一定要弄明白，默认情况下是使用python2.x的，如果你使用python3.x的话，请安装python3-pip,使用pip3进行安装，
 
 # 综合一个安装cuda的教程
 
@@ -199,7 +199,7 @@ GPU: Tesla K20c
 
 ```bash
 $ sudo apt-get remove –purge nvidia*
-```     
+```
 
 3.关闭nouveau                                   
 创建 /etc/modprobe.d/blacklist-nouveau.conf并包含
@@ -355,7 +355,7 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 [issues 2690](https://github.com/BVLC/caffe/issues/2690)
 
 ## 编译OpenCV  syntax error: identifier 'NppiGraphcutState'
-![@build opencv using cuda](https://cwlseu.github.io/images/linux/opencv-cuda.png)
+![@build opencv using cuda](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030356322.png)
 
 ```sh
 1>------ Build started: Project: opencv_cudalegacy, Configuration: Debug x64 ------
@@ -402,9 +402,10 @@ LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/
 
 ## ld链接失败，或者.o没有生成
 
-![caffe make-j8 recipe failed](https://cwlseu.github.io/images/linux/caffe-make.png)
+![caffe make-j8 recipe failed](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030309814.png)
 如果你使用的是`make -j8`进行编译的，并且你需要的lib已经都加到`LD_LIBRARY_PATH`中了，那么你可以再试一遍`make -j8`或者使用`make -j4` or `make -j`，最保险的情况就是使用`make`进行编译，虽然慢点但是不会出现各种依赖找不到的情况。
     
+
     因为使用多线程编译的时候，不同线程编译不同的cpp文件，尤其是caffe编译过程中首先是要调用 `protoc` 进行生成 `caffe.pb.h` 的，如果多线程编译过程中，一个线程编译的cpp依赖caffe.pb.h，但是此时还没有生成完毕caffe.pb.h,就会出现类似错误。
 
 ## Opencv库找不到问题

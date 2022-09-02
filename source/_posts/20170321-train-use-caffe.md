@@ -148,7 +148,8 @@ layer {
 ### 1、学习率
 
 步长的选择：你走的距离长短，越短当然不会错过，但是耗时间。步长的选择比较麻烦。步长越小，越容易得到局部最优化（到了比较大的山谷，就出不去了），而大了会全局最优。一般来说，如ResNet前32k步，很大，0.1；到了后面，迭代次数增高，下降0.01，再多，然后再小一些。 
-![@lr 随着epoch的增加变化曲线](https://cwlseu.github.io/images/linux/lr.png)
+![@lr 随着epoch的增加变化曲线](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/lr.png)
+
 ### 2、caffe训练时Loss变为nan的原因[^2]
 
 #### 由小变大易出nan
@@ -370,7 +371,7 @@ time LeNet training on CPU for 10 iterations
 `./build/tools/caffe time -model examples/mnist/lenet_train_test.prototxt -gpu 0`
 3. time a model architecture with the given weights on no GPU for 10 iterations
 `./build/tools/caffe time --model=models/ResNet/VOC0712/OOXX_321x321/deploy.prototxt --weights models/ResNet/VOC0712/OOXX_321x321/ResNet_VOC0712_OOXX_321x321_iter_115000.caffemodel --iterations 10`
-![@inference time result](https://cwlseu.github.io/images/linux/inference_time.JPG)
+![@inference time result](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/inference_time.JPG)
 
 ## 为什么要用Google Protocol Buffer序列化协议？[^6]
 

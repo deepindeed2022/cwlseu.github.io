@@ -19,8 +19,10 @@ $$IOU = \frac{\text{area of overlap}}{\text{area of union}} = \frac{area(B_p \ca
 
 The image below illustrates the IOU between a ground truth bounding box (in green) and a detected bounding box (in red).
 
-<p align="center">
-<img src="https://cwlseu.github.io/images/detection/iou.png" align="center"/></p>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030323414.png" alt="iou" style="zoom:150%;" align="center" />
+
+
+
 
 ### True Positive, False Positive, False Negative and True Negative[^4]
 
@@ -42,7 +44,7 @@ $$Precision = \frac{TP}{TP + FP} = \frac{TP}{all-detections}$$
 
 Recall is the ability of a model to find all the relevant cases (all ground truth bounding boxes). It is the percentage of true positive detected among all relevant ground truths and is given by:
 $$Recall = \frac{TP}{TP + FN} = \frac{TP}{all-groundtruths}$$
-![@混淆矩阵](http://cwlseu.github.io/images/detection/confusion-metrics.png)
+![@混淆矩阵](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030324390.png)
 
 ## 评估方法Metrics[^2][^3][^5]
 
@@ -96,7 +98,7 @@ $$ L_\delta(y, f(x)) =
     \delta{|y - f(x)|} - \frac{1}{2}\delta^2  & \quad \text{otherwise }\\
   \end{cases} $$
 
-![@HuberLoss with delta change](https://cwlseu.github.io/images/detection/HuberLoss.png)
+![@HuberLoss with delta change](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325495.png)
 
 对于Huber损失来说，$\delta$的选择十分重要，它决定了模型处理异常值的行为。当残差大于$\delta$时使用L1损失，很小时则使用更为合适的L2损失来进行优化。
 

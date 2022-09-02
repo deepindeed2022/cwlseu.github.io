@@ -249,4 +249,4 @@ T safe_cast(TFrom &input) {
 3. 采用模板继承接口，实现接口的统一调用
 
 ## 附录：
-- [Trait技术实现迭代器](http://cwlseu.github.io/images/codes/iterator.cpp)
+- [Trait技术实现迭代器](http://github.com/cwlseu/cwlseu.github.io/images/codes/iterator.cpp)

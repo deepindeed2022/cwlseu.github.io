@@ -21,9 +21,9 @@ notebook: 视觉算法
 
 # 开源数据集合
 
-![@数据集合用途统计](https://cwlseu.github.io/images/ocr/ocr-opendataset.png)
+![@数据集合用途统计](../../images/ocr/ocr-opendataset.png)
 
-![@数据集合标注属性统计](https://cwlseu.github.io/images/ocr/ocr-opendataset2.png)
+![@数据集合标注属性统计](../../images/ocr/ocr-opendataset2.png)
 
 # SWT算子[^1]
 
@@ -45,13 +45,13 @@ notebook: 视觉算法
 ### Step 2：笔画宽度变换（Stroke Width Transform）
 
 这一步输出图像和输入图像大小一样，只是输出图像像素为笔画的宽度，具体如下。
-![](http://cwlseu.github.io/images/ocr/SWT_01.png)
+![](../../images/ocr/SWT_01.png)
 
 如上图所示，通过边缘检测得到上图a，假设现在从边缘上的点p开始，根据p点梯度的反方向找到边缘另一边的点q，如果p点的梯度与q点梯度的反方向夹角在$\pm\pi/6$之间，那么这两点间的距离为一个笔画宽度，那么p点和q点以及它们之间的像素在SWT输出图像中对应位置的值为p和q点的距离大小。
 
 按照上述的计算方法会有两种情况需要考虑。如下图所示，
 
-![](http://cwlseu.github.io/images/ocr/SWT_02.png)
+![](../../images/ocr/SWT_02.png)
 
 下图a表示一个笔画中的像素可能得到两个笔画宽度，这种情况下将红点出的笔画宽度设置为最小的那个值，下图b表示当一个笔画出现更为复杂情况，b图中的红点计算出的两个笔画宽度用两个红线表示，这两红线都无法真正表示笔画的宽度，这时候笔画宽度取这里面所有像素计算得到的笔画宽度的中值作为红点出的笔画宽度。
 
@@ -276,15 +276,15 @@ $$
 
 整体架构如下，其中需要用到Reverse这种Layer
 
-![](http://cwlseu.github.io/images/ocr/rlstm.png)
+![](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030331430.png)
 
 # ChannelShuffle
 
-![](http://cwlseu.github.io/images/ocr/shuffle_2.png)
+![](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030331220.png)
 
 一般的分组卷积(如ResNeXt的)仅对$3\times3$的层进行了分组操作，然而$1\times1$的pointwise卷积占据了绝大多数的乘加操作，在小模型中为了减少运算量只能减少通道数，然而减少通道数会大幅损害模型精度。作者提出了对$1\times1$也进行分组操作，但是如图１(a)所示，输出只由部分输入通道决定。为了解决这个问题，作者提出了图(c)中的通道混淆(channel shuffle)操作来分享组间的信息，假设一个卷基层有g groups，每个group有n个channel，因此shuffle后会有$g\times n$个通道，首先将输出的通道维度变形为(g, n)，然后转置(transpose)、展平(flatten)，shuffle操作也是可导的。
 
-![](http://cwlseu.github.io/images/ocr/shuffle_3.png)
+![](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030331913.png)
 
 
 图2 (a)是一个将卷积替换为depthwise卷积[^3]的residual block，(b)中将两个$1\times1$卷积都换为pointwise group convolution，然后添加了channel shuffle，为了简便，没有在第二个pointwise group convolution后面加channel shuffle。根据Xception的论文，depthwise卷积后面没有使用ReLU。(c)为stride > 1的情况，此时在shotcut path上使用$3\times3$的平均池化，并将加法换做通道concatenation来增加输出通道数(一般的设计中，stride=2的同时输出通道数乘2)。
@@ -296,7 +296,7 @@ $$
 
 
 # CTPN[^4]
-![@The-Arch-of-CTPN](http://cwlseu.github.io/images/ocr/CTPN.png)
+![@The-Arch-of-CTPN](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030331690.png)
 ```python
 
 class BasicConv(nn.Module):
@@ -372,7 +372,7 @@ class CTPN_Model(nn.Module):
 ```
 
 解释一下conv5 feature map如何从$N\times C \times H \times W$变为$N \times 9C \times H \times W$
-![](http://cwlseu.github.io/images/ocr/covertCNN5.jpg)
+![](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030331728.jpg)
 
 在原版caffe代码中是用im2col提取每个点附近的9点临近点，然后每行都如此处理：
 
@@ -396,7 +396,7 @@ $(NH)\times W \times 256 \xrightarrow{reshape} N \times 256 \times H \times W$
 最后经过类似Faster R-CNN的RPN网络，获得text proposals.
 
 ## 文本线构造算法
-![](https://pic1.zhimg.com/80/v2-822f0709d3e30df470a8e17f09a25de0_hd.jpg)
+![](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030331183.jpeg)
 
 为了说明问题，假设某张图有图9所示的2个text proposal，即蓝色和红色2组Anchor，CTPN采用如下算法构造文本线：
 
@@ -444,7 +444,8 @@ $(NH)\times W \times 256 \xrightarrow{reshape} N \times 256 \times H \times W$
 [^2]: https://www.cnblogs.com/shangd/p/6164916.html "MSER 博客"
 [^3]: https://arxiv.org/pdf/1610.02357.pdf "Xception"
 [^4]: https://zhuanlan.zhihu.com/p/34757009 "场景文字检测—CTPN原理与实现"
-    - tf code: https://github.com/eragonruan/text-detection-ctpn
+​          tf code: https://github.com/eragonruan/text-detection-ctpn
+
 [^5]: http://www.levenshtein.net/index.html "编辑距离"
 [^6]: https://zybuluo.com/hanbingtao/note/541458 "循环神经网络"
 [^7]: http://colah.github.io/posts/2015-08-Understanding-LSTMs/ "理解LSTM"

@@ -300,8 +300,8 @@ Virtual tables are now optimized. Local aliases are used to reduce dynamic linki
 [Using static and shared libraries across platforms][^3]
 
 
-![@](https://cwlseu.github.io/images/gcc/compilerflag_1.png)
-![@](https://cwlseu.github.io/images/gcc/compilerflag_2.png)
+![@](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030359040.png)
+![@](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030358337.png)
 
 ## 更多C++内容
 - http://deepindeed.cn/2018/11/28/gnu-cpp-Relearn/

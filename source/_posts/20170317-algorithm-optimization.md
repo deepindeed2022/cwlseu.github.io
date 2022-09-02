@@ -14,7 +14,7 @@ description: 向量化和编译器优化
 使用atlas或者openblas, 当然有资金支持的话可以使用更快地MKL, 而一个穷小白就只能从开源免费的计算库中选了，就选了OpenBlas。 后来因为缘分，认识了OpenBlas的创始人，从他们公司的工作中了解到还有机器学习算法优化加速的这么个工作。其中涉及到如OpenMP, SIMD, 当然编译器优化也是不容忽视的。在此，总结一下工作中用到的一些函数，免得下次见到不认识了。
 
 ## Intrinsic function[^1]
-![@intrinsics snapshot from intel](https://cwlseu.github.io/images/optimization/intrinsics.png)
+![@intrinsics snapshot from intel](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/intrinsics.png)
 我对这个的理解就是在汇编的基础上进行向量化的封装的一些宏或者函数, 同时可以操作很多个数据，如使用SSE可以操作128位的数据，可以使4个int类型，也可以使用8个short类型也可以是16个char类型的数据。
 
 从intrinsic guide[^2]中就可以看出Intel关于SIMD方面的发展历程。MMX(主要是16位指令)到后面的SSE2 SSE4.2(32位指令)等等。 查阅文档的时候后可以按照计算的类别：

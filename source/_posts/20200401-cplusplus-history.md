@@ -13,7 +13,7 @@ date: 2020-04-01 21:05:18
 
 ## C++ 历史大事件
 
-![@](https://isocpp.org/files/img/wg21-timeline-2019-07.png)
+![wg21-timeline-2019-07](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335629.png)
 
 ## 关键事件总结
 
@@ -42,7 +42,7 @@ date: 2020-04-01 21:05:18
 cfront x.x就是Bjarne Stroustrup的第一个C++编译器，将C++转换成C语言。在1993年，cfront 4.0因为尝试支持异常机制失败而被取消。我们开发者最长打交道的工具就是编译器了。我们只要通过编写程序语言，编译器会翻译成具体的更底层命令来控制计算机去实现我们的需要的功能。但C++语言标准是一个庞大的特性集合，而不同编译器厂商在根据这个统一标准做编译器的过程中，由于各种原因，不可能支持全部的标准中列举出来的特性。
 例如，C++11已经流行多年，很多特性是随着编译器版本release才逐渐支持的，如下图：
 
-![@](https://cwlseu.github.io/images/gcc/compiler_support.jpg)
+![@](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335369.jpg)
 
 
 * [关于不同编译器对C++不同时期的语言特性的支持程度](https://en.cppreference.com/w/cpp/compiler_support)

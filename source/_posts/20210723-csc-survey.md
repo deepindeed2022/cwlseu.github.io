@@ -19,7 +19,7 @@ date: 2021-07-23 21:05:18
 
 错误检测：识别错误发生的位置
 错误纠正：对疑似的错误词，根据字音字形等对错词进行候选词召回，并且根据语言模型等对纠错后的结果进行排序，选择最优结果。
-![Alt text](https://cwlseu.github.io/images/nlp/csc/1625834835557.png)
+![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335669.png)
 
 
 ## 赛事
@@ -27,7 +27,7 @@ date: 2021-07-23 21:05:18
 几届中文纠错评测，例如CGED与NLPCC
 - Chinese Spelling Check Evaluation at SIGHAN Bake-off 2013 [Wu et al., 2013][^1]
 - CLP-2014 Chinese Spelling Check Evaluation (Yu et al., 2014)
-![Alt text](https://cwlseu.github.io/images/nlp/csc/1625588548317.png)
+![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336162.png)
 
 ## 数据集
 
@@ -107,13 +107,13 @@ http://nlp.ee.ncu.edu.tw/resource/csc.html
 ## 技术调研
 整体上，将纠错流程，分解为错误检测、候选召回、纠错排序三个关键步骤。通过引入语言知识、上下文理解和知识计算的核心技术，提升不同类型错误的解决能力。最后，支持SMT based和NMT based两套Framework，形成完整的系统架构。
 ### 关键步骤（错误检测->候选召回->纠错排序）
-![Alt text](https://cwlseu.github.io/images/nlp/csc/1625573756452.png)
+![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336143.png)
 
 **错误检测**的目标是识别输入句子可能存在的问题，采用序列表示（Transformer/LSTM）+CRF的序列预测模型，这个模型的创新点主要包括：
 - 词法/句法分析等语言先验知识的充分应用；
 - 特征设计方面，除了DNN相关这种泛化能力比较强的特征，还结合了大量hard统计特征，既充分利用DNN模型的泛化能力，又对低频与OOV（Out of Vocabulary）有一定的区分；
 - 最后，根据字粒度和词粒度各自的特点，在模型中对其进行融合，解决词对齐的问题。
-![Alt text](https://cwlseu.github.io/images/nlp/csc/1625573965653.png)
+![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336539.png)
 
 **候选召回**指的是，识别出具体的错误点之后，需要进行错误纠正，为了达到更好的效果以及性能，需要结合历史错误行为，以及音形等特征召回纠错候选。主要可分为两部分工作：离线的候选挖掘，在线的候选预排序。离线候选挖掘利用大规模多来源的错误对齐语料，通过对齐模型，得到不同粒度的错误混淆矩阵。在线候选预排序主要是针对当前的错误点，对离线召回的大量纠错候选，结合语言模型以及错误混淆矩阵的特征，控制进入纠错排序阶段的候选集数量与质量。
 
@@ -140,7 +140,7 @@ Soft-Masked BERT：文本纠错与BERT的最新结合
 这篇文章中的纠错模型是由基于Bi-GRU序列二进制标注检测模型和基于BERT的序列多类标注纠正模型组成，
 其中soft-masked embedding: $e_i’ = p_i \cdot e_{mask} + (1-p_i)  \cdot e_i$
 可以实现将错字概率传递给后续纠正网络，使得纠正网络专注在预测正确字上。
-![Soft-Masked BERT纠错算法框架](https://cwlseu.github.io/images/nlp/csc/1625632229795.png)
+![Soft-Masked BERT纠错算法框架](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336784.png)
 
 https://zhuanlan.zhihu.com/p/144995580
 ### SpellGCN[^SpellGCN: Incorporating Phonological and Visual Similarities into Language Models for Chinese Spelling Check]

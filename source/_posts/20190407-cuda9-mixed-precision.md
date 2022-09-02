@@ -32,13 +32,13 @@ CUDA-9中已经开始支持混合精度训练[^6]，TensorRT作为NVIDIA的infer
 随着NVIDIA release的APEX[^1]，利用Volta架构和混合精度在Pytorch上进行拓展，实现了训练的精度混合。腾讯[^2]和百度[^3]分别发表关于混合精度训练的文章.PAI-TAO是alibaba内部一个关于混合精度训练的一个研究项目。
 在整个AI模型的生命周期中的位置如下：
 
-![@PAI-TAO](http://cwlseu.github.io/images/mixed-precision/PAI-TAO.png)
+![@PAI-TAO](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325913.png)
 
 从中可以看出，自动混合精度主要是在训练过程中，为了加快计算节点之间的数据交换和层之间的数据交换与计算，采用FP16来替换FP32，这样在计算结果精度几乎不损失的情况下，带了数据交换和计算速度方面的性能提升，从而加快模型训练速度。
 
 而这项任务的成功，与CUDA9中支持TensorCore的特性是息息相关的。下面对TensorCode进行简单介绍。 
 
-![@tensor core](http://cwlseu.github.io/images/mixed-precision/tensorcore.png)
+![@tensor core](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325950.png)
 
 TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩阵的计算模块。
 以前NVIDIA的GPU中只有FP32和FP64计算单元，在TensorCore中，特别针对FP16做了相应的补充，
@@ -74,7 +74,7 @@ TensorCore是NVIDIA在Volta architecture下引入的，专门针对计算4x4矩�
     * 尾数位减少: precision gap in sum (Solution: 模型以FP32进行保存)
     * 指数位减少: gradient underflow
 
-![@scale在训练过程中的作用](http://cwlseu.github.io/images/mixed-precision/scaling.png)
+![@scale在训练过程中的作用](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030325565.png)
 
 * 速度及易用性问题
   - 通过图优化pass自动完成混合精度所需的图转换工作

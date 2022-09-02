@@ -5,9 +5,7 @@ categories: [blog]
 tags: [C++, 开发]
 date: 2018-11-11 20:59:59
 description: 软件质量是被大多数程序员挂在嘴上而不是放在心上的东西！有多少软件开发人员对正确性、健壮性、可靠性、效率、易用性、可读性（可理解性）、可扩展性、可复用性、兼容性、可移植性等质量属性了如指掌？并且能在实践中运用自如？。
---- 
-
-
+---
 
 ## 引言
 
@@ -285,7 +283,7 @@ ClassName operator(int)
    ++*this;
    return tmp;
 }
-``` 
+```
 ## unsigned类型的默认转化造成的苦恼
 
 u32Width是unsigned int类型的，在进行计算过程中如果`u32Width=2`，执行到`for (; j <= u32Width - 4; j += 4)`的时候，会出现问题：
@@ -403,12 +401,12 @@ int main()
 要使用STL内建的仿函数，必须包含<functional>头文件。而头文件中包含的仿函数分类包括
 
 1. 算术类仿函数
-  加：plus<T>
-  减：minus<T>
-  乘：multiplies<T>
-  除：divides<T>
-  模取：modulus<T>
-  否定：negate<T>
+    加：plus<T>
+    减：minus<T>
+    乘：multiplies<T>
+    除：divides<T>
+    模取：modulus<T>
+    否定：negate<T>
 
 ```cpp
 #include <iostream>  
@@ -2895,7 +2893,7 @@ state.  Here's an example:
              test_part_result.line_number(),
              test_part_result.summary());
     }
-
+    
     // Called after a test ends.
     virtual void OnTestEnd(const ::testing::TestInfo& test_info) {
       printf("*** Test %s.%s ending.\n",

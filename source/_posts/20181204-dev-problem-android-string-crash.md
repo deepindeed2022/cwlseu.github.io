@@ -64,13 +64,13 @@ bao->setName("a name");
 竟然没有问题。好苦恼呀~~
 
 ## 探索1：
-	
+
 >是不是因为`std::string`采用引用的方式，导致内存释放的时候出现多次释放。
-	
+
 这是不应该的，因为我们采用的是标准库，而且string会自己管理内存的，不应该导致这种问题的。而且我们通过对`setName`中`_name`赋值常量字符串，该问题仍然存在。
 
 ## 探索2：
-	
+
 > 如果不采用set函数方式进行赋值，而是将`_name`变为`public`类型，从而直接对对象成员进行赋值。
 
 这样操作并没有什么实质性的变化，仍然存在存在这种现象，也就是说与对象的存储方式是与成员的可见性是没有关系的。
@@ -151,7 +151,7 @@ libfoo.so 中引发的异常在 libbar.so 中未被捕获，从而导致您的�
 - libfoo.so
 - libfoo.so 使用的 libbar.so
 - libfoo 和 libbar 使用的 libstlport_shared.so
-必须以相反的依赖顺序加载库：
+  必须以相反的依赖顺序加载库：
 	
 	static {
       System.loadLibrary("stlport_shared");
@@ -178,7 +178,7 @@ Android包含一个C/C++库的集合，供Android系统的各个组件使用。�
 * OpenGL——开放图形库（英语：Open Graphics Library，缩写为 OpenGL）是个定义了一个跨编程语言、跨平台的应用程序接口（API）的规范，它用于生成二维、三维图像。
 * SQLite ——所有应用程序都可以使用的强大而轻量级的关系数据库引擎，SQLite是遵守ACID的关系数据库管理系统，它包含在一个相对小的C程序库中;
 
-![官方Android架构图](https://cwlseu.github.io/images/android/arch.png)
+![官方Android架构图](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030322925.png)
 
 ### 参考链接
 

@@ -46,7 +46,7 @@ header-img: "images/bg1.jpg"
 ## [【中科创达-王庆民】关于Hexagon DSP功能介绍](https://blog.csdn.net/awangqm/article/details/49333385)
 Qualcomm的晓龙芯片从创立之几乎一直内置Hexagon DSP芯片，它是移动异构计算必需的处理引擎。Hexagon架构设计的核心在于如何在低功耗的情况下能够高性能的处理各种各样的应用，它具有的特性包括多线程，特权级，VLIW，SIMD以及专门适应于信号处理的指令。该CPU可以在单个时间周期中依序快速的将四个指令（已打包好）处理为执行单元。硬件多线程则由 TMT（TemporalMultiThreading，时间多线程）来实现，在这种模式下，频率600MHz的物理核心可以被抽象成三个频率200MHz的核心。许多体验如声音和图像增强功能以及高级摄像头和传感器功能都包括信号处理任务，而DSP尤其擅长在低功耗下处理这些任务。起初，Hexagon DSP作为处理引擎，主要用于语音和简单的音频播放。现在，Hexagon DSP的作用已经扩展至多种用途，如图像增强、计算机视觉、扩增实境、视频处理和传感器处理。随着智能手机使用需求的不断加大，现在包括摄像头和传感器功能都包括信号处理任务都需要借助DSP来完成，相比强大的CPU，DSP尤其擅长在低功耗下处理这些任务。
 
-![@Qualcomm最新发布的Hexagon 680 DSP版本新特性](https://cwlseu.github.io/images/dsp/820.png)
+![@Qualcomm最新发布的Hexagon 680 DSP版本新特性](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030322238.png)
 
 
 ## [高清图像处理，低功耗——Qualcomm® Hexagon™ Vector eXtensions (HVX)](https://www.csdn.net/article/a/2015-09-15/15828177)
@@ -58,14 +58,13 @@ https://www.hotchips.org/wp-content/uploads/hc_archives/hc27/HC27.24-Monday-Epub
 
 高通向量拓展技术的概括
 与NEON编程模型相类似，在计算机视觉应用领域
-![Alt text](https://cwlseu.github.io/images/dsp/DSP-HVX.png)
-
+![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030322748.png)
 
 指令和CPU的NEON指令相比，指令简单，更低功耗
-![Alt text](https://cwlseu.github.io/images/dsp/DSP-Difference.png)
+![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030322662.png)
 
 性能方面,CPU使用NEON优化虽然能够提升1~3的速度，但是单pixel功耗方面大约是DSP的4~18倍。
-![@Benchmark](https://cwlseu.github.io/images/dsp/DSP-Benchmark.png)
+![@Benchmark](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030323827.png)
 
 ## Snapdragon Neural Processing Engine (SNPE)
 ### Capabilities
@@ -83,7 +82,7 @@ The Snapdragon Neural Processing Engine (SNPE) is a Qualcomm Snapdragon software
 Model training is performed on a popular deep learning framework (Caffe, Caffe2, ONNX and TensorFlow models are supported by SNPE.) After training is complete the trained model is converted into a DLC file that can be loaded into the SNPE runtime. This DLC file can then be used to perform forward inference passes using one of the Snapdragon accelerated compute cores.
 The basic SNPE workflow consists of only a few steps:
 
-![@SNPE运行模型的工作流](https://cwlseu.github.io/images/dsp/snpe.png)
+![@SNPE运行模型的工作流](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030323080.png)
 * Convert the network model to a DLC file that can be loaded by SNPE.
 * Optionally quantize the DLC file for running on the Hexagon DSP.
 * Prepare input data for the model.
