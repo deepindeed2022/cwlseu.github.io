@@ -8,3 +8,8 @@
 * 个人随笔
 
 特别声明：本博客内容不作为商业出版所用，如有参考，请注明。
+
+### env
+- nodejs == 14.20.0
+- theme next
+git clone --branch v8.11.1 https://github.com/next-theme/hexo-theme-next themes/next
