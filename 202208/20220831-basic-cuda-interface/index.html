@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CTimes+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="CUDA并行编程指南">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CUDA并行编程学习笔记">
+<meta property="og:url" content="http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="CUDA并行编程指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-31T11:39:39.000Z">
+<meta property="article:modified_time" content="2022-09-04T05:42:39.917Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="GPU编程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/","path":"202208/20220831-basic-cuda-interface/","title":"CUDA并行编程学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CUDA并行编程学习笔记 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">心有猛虎，细嗅蔷薇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8D%E8%AF%8D"><span class="nav-number">1.</span> <span class="nav-text">名词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">计算机架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">冯诺依曼计算机架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9C%BA"><span class="nav-number">2.2.</span> <span class="nav-text">连接机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cell%E5%A4%84%E7%90%86%E5%99%A8%E4%BC%97%E6%A0%B8"><span class="nav-number">2.3.</span> <span class="nav-text">Cell处理器(众核)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%82%B9%E8%AE%A1%E7%AE%97"><span class="nav-number">2.4.</span> <span class="nav-text">多点计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpu%E6%9E%B6%E6%9E%84"><span class="nav-number">2.5.</span> <span class="nav-text">GPU架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cuda%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">CUDA编程基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E8%83%BD%E5%8A%9B%E9%AB%98%E6%80%A7%E8%83%BD%E7%A1%AC%E4%BB%B6%E4%B8%8E%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">计算能力—高性能硬件与技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpudirect-p2p"><span class="nav-number">4.1.</span> <span class="nav-text">GPUDirect P2P</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nvlink-%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-number">4.2.</span> <span class="nav-text">NVLink 拓扑结构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdma%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.3.</span> <span class="nav-text">RDMA原理介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cuda%E7%9A%84%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8"><span class="nav-number">5.</span> <span class="nav-text">CUDA的基础入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.1.</span> <span class="nav-text">函数的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">变量类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda%E5%87%A0%E4%B8%AA%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">5.3.</span> <span class="nav-text">CUDA几个头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-routine"><span class="nav-number">5.4.</span> <span class="nav-text">CUDA routine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">常见问题</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/cwlseu" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CUDA并行编程学习笔记 | Deepindeed">
+      <meta itemprop="description" content="CUDA并行编程指南">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CUDA并行编程学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-31 19:39:39" itemprop="dateCreated datePublished" datetime="2022-08-31T19:39:39+08:00">2022-08-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-04 13:42:39" itemprop="dateModified" datetime="2022-09-04T13:42:39+08:00">2022-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202208/20220831-basic-cuda-interface/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202208/20220831-basic-cuda-interface/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">CUDA并行编程指南</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="名词">名词</h2>
+<ul>
+<li>SIMD： 单指令多数据，是基于一个处理器核的，128位</li>
+<li>MMX：多媒体拓展</li>
+<li>AVX 高级适量拓展， 256位</li>
+</ul>
+<h2 id="计算机架构">计算机架构</h2>
+<h3 id="冯诺依曼计算机架构">冯诺依曼计算机架构</h3>
+<ul>
+<li>内存受限型</li>
+<li>QPI (quick path interconnect) 快速通道互联</li>
+</ul>
+<h3 id="连接机">连接机</h3>
+<p>采用4096个16核的CPU组装到一台机器上，也就是说64K个处理器来完成一个任务。连接机采用SIMD型并行处理，但是处理器之间的同步和通讯是很大的问题</p>
+<h3 id="cell处理器众核">Cell处理器(众核)</h3>
+<p>用一个常规处理器作为监管处理器(PowerPC)，该处理器与大量高速流处理(SPE)相连。
+* 每个流处理单元SPE调用执行一个程序 *
+通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯 * <img
+src="https://cwlseu.github.io/images/cuda/cell_arch.png"
+alt="国产申威 26010 处理器架构图" /></p>
+<h3 id="多点计算">多点计算</h3>
+<p>集群，当前最流行的莫过于Hadoop和spark了，一个是分布式文件系统，一个是分布式计算框架，这两个工具使得多点计算的方法充分发挥。</p>
+<h3 id="gpu架构">GPU架构</h3>
+<p><img
+src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png" /></p>
+<p><img
+src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png" /></p>
+<h2 id="cuda编程基础知识">CUDA编程基础知识</h2>
+<p>学习CUDA
+C，可以在异构计算平台中实现高性能的应用。CUD的编译原则--基于虚拟指令集的运行时编译。</p>
+<h2 id="计算能力高性能硬件与技术">计算能力—高性能硬件与技术</h2>
+<p>GPU在高性能计算和深度学习加速中扮演着非常重要的角色，
+GPU的强大的并行计算能力，大大提升了运算性能。随着运算数据量的不断攀升，GPU间需要大量的交换数据，GPU通信性能成为了非常重要的指标。NVIDIA推出的GPUDirect就是一组提升GPU通信性能的技术。但GPUDirect受限于PCI
+Expresss总线协议以及拓扑结构的一些限制，无法做到更高的带宽，为了解决这个问题，NVIDIA提出了NVLink总线协议。</p>
+<h3 id="gpudirect-p2p">GPUDirect P2P</h3>
+<p>GPUDirect Peer-to-Peer(P2P)
+技术主要用于单机GPU间的高速通信，它使得GPU可以通过PCI
+Express直接访问目标GPU的显存，避免了通过拷贝到CPU host
+memory作为中转，大大降低了数据交换的延迟。
+以深度学习应用为例，主流的开源深度学习框架如TensorFlow、MXNet都提供了对GPUDirect
+P2P的支持，NVIDIA开发的NCCL(NVIDIA Collective Communications
+Library)也提供了针对GPUDirect P2P的特别优化。 通过使用GPUDirect
+P2P技术可以大大提升深度学习应用单机多卡的扩展性，使得深度学习框架可以获得接近线性的训练性能加速比</p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="http://server.it168.com/a2018/0604/3206/000003206891.shtml">浅析GPU通信技术（上）--GPUDirect
+P2P</a></li>
+</ul>
+<h3 id="nvlink-拓扑结构图">NVLink 拓扑结构图</h3>
+<p>首先我们简单看下NVIDIA对NVLink的介绍：NVLink能在多GPU之间和GPU与CPU之间实现非凡的连接带宽。带宽有多大?2016发布的P100是搭载NVLink的第一款产品，单个GPU具有160GB/s的带宽，相当于PCIe
+Gen3 * 16带宽的5倍。去年GTC 2017上发布的V100搭载的NVLink
+2.0更是将GPU带宽提升到了300G/s，差不多是PCIe的10倍了。</p>
+<figure>
+<img
+src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/NVLINK.png"
+alt="NVLINK网络拓扑结构" />
+<figcaption aria-hidden="true">NVLINK网络拓扑结构</figcaption>
+</figure>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.nvidia.com/zh-cn/data-center/nvlink/">NVIDIA
+NVLINK</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://server.it168.com/a2018/0604/3206/000003206894.shtml">浅析GPU通信技术（中）-NVLink总线协议</a></li>
+</ul>
+<h3 id="rdma原理介绍">RDMA原理介绍</h3>
+<p>前面介绍的GPUDirect
+P2P和NVLink技术可以大大提升GPU服务器单机的GPU通信性能，当前深度学习模型越来越复杂，计算数据量暴增，对于大规模深度学习训练任务，单机已经无法满足计算要求，多机多卡的分布式训练成为了必要的需求，这个时候多机间的通信成为了分布式训练性能的重要指标。</p>
+<p><img
+src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png"
+alt="多机通讯RMDA架构图" />
+如上图所示，传统的TCP/IP协议，应用程序需要要经过多层复杂的协议栈解析，才能获取到网卡中的数据包，而使用RDMA协议，应用程序可以直接旁路内核获取到网卡中的数据包。RDMA可以简单理解为利用相关的硬件和网络技术，服务器1的网卡可以直接读写服务器2的内存，最终达到高带宽、低延迟和低资源利用率的效果。
+<img
+src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png"
+alt="应用RMDA技术的应用拓扑图" /> 所谓GPUDirect
+RDMA，就是计算机1的GPU可以直接访问计算机2的GPU内存。而在没有这项技术之前，GPU需要先将数据从GPU内存搬移到系统内存，然后再利用RDMA传输到计算机2，计算机2的GPU还要做一次数据从系统内存到GPU内存的搬移动作。GPUDirect
+RDMA技术使得进一步减少了GPU通信的数据复制次数，通信延迟进一步降低。</p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/603617">浅析GPU通信技术（下）-GPUDirect
+RDMA</a></li>
+</ul>
+<h2 id="cuda的基础入门">CUDA的基础入门</h2>
+<h3 id="函数的类型">函数的类型</h3>
+<p><code>__host__ float HostFunc()</code>
+默认情况下，被host函数调用在CPU上执行</p>
+<p><code>__devide__ float DeviceFunc()</code> 被GPU设备执行调用</p>
+<p><code>__global__ void Kernelfunc()</code>
+被host函数调用，在设备上执行</p>
+<pre><code>Note：
+* __global__函数返回值必须为void
+* 在设备上执行的函数不能是递归，函数参数是固定的，不能再函数内部使用static变量</code></pre>
+<h3 id="变量类型">变量类型</h3>
+<p><code>__shared__ A[4]</code>；//在share memory，块内线程共享。
+设备上的函数，声明的变量都是存在register上的，存不下的放到local memory；
+<code>cudaMalloc()</code>的空间是在设备的global memory上的。</p>
+<h3 id="cuda几个头文件">CUDA几个头文件</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;cuda_runtime.h&gt;</span>  <span class="comment">// cuda程序运行必须的头文件</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="cuda-routine">CUDA routine</h3>
+<ol type="1">
+<li><p><code>cudaError_t err = cudaSuccess;</code>
+<code>cudaError_t</code>类型，表示错误类型。<code>cudaSuccess</code>表示成功。一般cuda
+routine的返回值都是<code>cudaError_t</code>类型，表示函数是否执行成功。</p></li>
+<li><p><code>printf("%s\n", cudaGetErrorString(cudaGetLastError()));</code>
+输出错误时，使用以上函数转化为string。</p></li>
+<li><p><code>err = cudaMalloc((void **)&amp;d_A, size);</code>
+动态内存申请函数，在设备的global memory上申请size个字节空间。</p></li>
+<li><p><code>err = cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);</code>or
+<code>err = cudaMemcpy(h_A, d_A, size, cudaMemcpyDeviceToHost);</code>
+//内存拷贝函数：从cpu上的内存h_A上拷贝size个字节数据到gpu上的内存d_A。反之，一样。</p></li>
+<li><p><code>int threadsPerBlock = 256;</code>
+<code>int blocksPerGrid =(nElements + threadsPerBlock - 1) / threadsPerBlock;     vectorAdd&lt;&lt;&lt;blocksPerGrid, threadsPerBlock&gt;&gt;&gt;(d_A, d_B, d_C, nElements);</code>
+//前2句，表示Grid，block都是1维时，设置网格内的块数，每块内的线程数。
+//最后一句，启动kernel（运行在gpu端的函数）函数。
+//注意前2句可以改成。dim3 threadsPerBlock(256);这种形式。</p></li>
+<li><p><code>err = cudaGetLastError();</code>
+//启动kernel函数时，并没有返回值，通过这个调用这个函数，查看kernel函数是否启动成功。</p></li>
+<li><p><code>err = cudaFree(d_A);</code>
+//释放使用cudaMalloc申请的空间。</p></li>
+<li><p><code>err = cudaMemset(d_a, 0, size)</code>
+//类似于memset函数。将d_A的size个字节置0.</p></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * CUDA device properties</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">__device_builtin__</span> cudaDeviceProp</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span>   name[<span class="number">256</span>];                  <span class="comment">/**&lt; ASCII string identifying device */</span></span><br><span class="line">    <span class="type">size_t</span> totalGlobalMem;             <span class="comment">/**&lt; Global memory available on device in bytes */</span></span><br><span class="line">    <span class="type">size_t</span> sharedMemPerBlock;          <span class="comment">/**&lt; Shared memory available per block in bytes */</span></span><br><span class="line">    <span class="type">int</span>    regsPerBlock;               <span class="comment">/**&lt; 32-bit registers available per block */</span></span><br><span class="line">    <span class="type">int</span>    warpSize;                   <span class="comment">/**&lt; Warp size in threads */</span></span><br><span class="line">    <span class="type">size_t</span> memPitch;                   <span class="comment">/**&lt; Maximum pitch in bytes allowed by memory copies */</span></span><br><span class="line">    <span class="type">int</span>    maxThreadsPerBlock;         <span class="comment">/**&lt; Maximum number of threads per block */</span></span><br><span class="line">    <span class="type">int</span>    maxThreadsDim[<span class="number">3</span>];           <span class="comment">/**&lt; Maximum size of each dimension of a block */</span></span><br><span class="line">    <span class="type">int</span>    maxGridSize[<span class="number">3</span>];             <span class="comment">/**&lt; Maximum size of each dimension of a grid */</span></span><br><span class="line">    <span class="type">int</span>    clockRate;                  <span class="comment">/**&lt; Clock frequency in kilohertz */</span></span><br><span class="line">    <span class="type">size_t</span> totalConstMem;              <span class="comment">/**&lt; Constant memory available on device in bytes */</span></span><br><span class="line">    <span class="type">int</span>    major;                      <span class="comment">/**&lt; Major compute capability */</span></span><br><span class="line">    <span class="type">int</span>    minor;                      <span class="comment">/**&lt; Minor compute capability */</span></span><br><span class="line">    <span class="type">size_t</span> textureAlignment;           <span class="comment">/**&lt; Alignment requirement for textures */</span></span><br><span class="line">    <span class="type">size_t</span> texturePitchAlignment;      <span class="comment">/**&lt; Pitch alignment requirement for texture references bound to pitched memory */</span></span><br><span class="line">    <span class="type">int</span>    deviceOverlap;              <span class="comment">/**&lt; Device can concurrently copy memory and execute a kernel. Deprecated. Use instead asyncEngineCount. */</span></span><br><span class="line">    <span class="type">int</span>    multiProcessorCount;        <span class="comment">/**&lt; Number of multiprocessors on device */</span></span><br><span class="line">    <span class="type">int</span>    kernelExecTimeoutEnabled;   <span class="comment">/**&lt; Specified whether there is a run time limit on kernels */</span></span><br><span class="line">    <span class="type">int</span>    integrated;                 <span class="comment">/**&lt; Device is integrated as opposed to discrete */</span></span><br><span class="line">    <span class="type">int</span>    canMapHostMemory;           <span class="comment">/**&lt; Device can map host memory with cudaHostAlloc/cudaHostGetDevicePointer */</span></span><br><span class="line">    <span class="type">int</span>    computeMode;                <span class="comment">/**&lt; Compute mode (See ::cudaComputeMode) */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture1D;               <span class="comment">/**&lt; Maximum 1D texture size */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture1DMipmap;         <span class="comment">/**&lt; Maximum 1D mipmapped texture size */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture1DLinear;         <span class="comment">/**&lt; Maximum size for 1D textures bound to linear memory */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture2D[<span class="number">2</span>];            <span class="comment">/**&lt; Maximum 2D texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture2DMipmap[<span class="number">2</span>];      <span class="comment">/**&lt; Maximum 2D mipmapped texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture2DLinear[<span class="number">3</span>];      <span class="comment">/**&lt; Maximum dimensions (width, height, pitch) for 2D textures bound to pitched memory */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture2DGather[<span class="number">2</span>];      <span class="comment">/**&lt; Maximum 2D texture dimensions if texture gather operations have to be performed */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture3D[<span class="number">3</span>];            <span class="comment">/**&lt; Maximum 3D texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture3DAlt[<span class="number">3</span>];         <span class="comment">/**&lt; Maximum alternate 3D texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTextureCubemap;          <span class="comment">/**&lt; Maximum Cubemap texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture1DLayered[<span class="number">2</span>];     <span class="comment">/**&lt; Maximum 1D layered texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTexture2DLayered[<span class="number">3</span>];     <span class="comment">/**&lt; Maximum 2D layered texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxTextureCubemapLayered[<span class="number">2</span>];<span class="comment">/**&lt; Maximum Cubemap layered texture dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxSurface1D;               <span class="comment">/**&lt; Maximum 1D surface size */</span></span><br><span class="line">    <span class="type">int</span>    maxSurface2D[<span class="number">2</span>];            <span class="comment">/**&lt; Maximum 2D surface dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxSurface3D[<span class="number">3</span>];            <span class="comment">/**&lt; Maximum 3D surface dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxSurface1DLayered[<span class="number">2</span>];     <span class="comment">/**&lt; Maximum 1D layered surface dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxSurface2DLayered[<span class="number">3</span>];     <span class="comment">/**&lt; Maximum 2D layered surface dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxSurfaceCubemap;          <span class="comment">/**&lt; Maximum Cubemap surface dimensions */</span></span><br><span class="line">    <span class="type">int</span>    maxSurfaceCubemapLayered[<span class="number">2</span>];<span class="comment">/**&lt; Maximum Cubemap layered surface dimensions */</span></span><br><span class="line">    <span class="type">size_t</span> surfaceAlignment;           <span class="comment">/**&lt; Alignment requirements for surfaces */</span></span><br><span class="line">    <span class="type">int</span>    concurrentKernels;          <span class="comment">/**&lt; Device can possibly execute multiple kernels concurrently */</span></span><br><span class="line">    <span class="type">int</span>    ECCEnabled;                 <span class="comment">/**&lt; Device has ECC support enabled */</span></span><br><span class="line">    <span class="type">int</span>    pciBusID;                   <span class="comment">/**&lt; PCI bus ID of the device */</span></span><br><span class="line">    <span class="type">int</span>    pciDeviceID;                <span class="comment">/**&lt; PCI device ID of the device */</span></span><br><span class="line">    <span class="type">int</span>    pciDomainID;                <span class="comment">/**&lt; PCI domain ID of the device */</span></span><br><span class="line">    <span class="type">int</span>    tccDriver;                  <span class="comment">/**&lt; 1 if device is a Tesla device using TCC driver, 0 otherwise */</span></span><br><span class="line">    <span class="type">int</span>    asyncEngineCount;           <span class="comment">/**&lt; Number of asynchronous engines */</span></span><br><span class="line">    <span class="type">int</span>    unifiedAddressing;          <span class="comment">/**&lt; Device shares a unified address space with the host */</span></span><br><span class="line">    <span class="type">int</span>    memoryClockRate;            <span class="comment">/**&lt; Peak memory clock frequency in kilohertz */</span></span><br><span class="line">    <span class="type">int</span>    memoryBusWidth;             <span class="comment">/**&lt; Global memory bus width in bits */</span></span><br><span class="line">    <span class="type">int</span>    l2CacheSize;                <span class="comment">/**&lt; Size of L2 cache in bytes */</span></span><br><span class="line">    <span class="type">int</span>    maxThreadsPerMultiProcessor;<span class="comment">/**&lt; Maximum resident threads per multiprocessor */</span></span><br><span class="line">    <span class="type">int</span>    streamPrioritiesSupported;  <span class="comment">/**&lt; Device supports stream priorities */</span></span><br><span class="line">    <span class="type">int</span>    globalL1CacheSupported;     <span class="comment">/**&lt; Device supports caching globals in L1 */</span></span><br><span class="line">    <span class="type">int</span>    localL1CacheSupported;      <span class="comment">/**&lt; Device supports caching locals in L1 */</span></span><br><span class="line">    <span class="type">size_t</span> sharedMemPerMultiprocessor; <span class="comment">/**&lt; Shared memory available per multiprocessor in bytes */</span></span><br><span class="line">    <span class="type">int</span>    regsPerMultiprocessor;      <span class="comment">/**&lt; 32-bit registers available per multiprocessor */</span></span><br><span class="line">    <span class="type">int</span>    managedMemory;              <span class="comment">/**&lt; Device supports allocating managed memory on this system */</span></span><br><span class="line">    <span class="type">int</span>    isMultiGpuBoard;            <span class="comment">/**&lt; Device is on a multi-GPU board */</span></span><br><span class="line">    <span class="type">int</span>    multiGpuBoardGroupID;       <span class="comment">/**&lt; Unique identifier for a group of devices on the same multi-GPU board */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="常见问题">常见问题</h2>
+<p>NVCC没有配置，导致undefined reference HEADER
+DIR没有配置，导致找不到头文件</p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/" title="CUDA并行编程学习笔记">http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/GPU%E7%BC%96%E7%A8%8B/" rel="tag"># GPU编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202203/20220310-nlp-text-data-augmentation/" rel="prev" title="NLP 文本场景的数据优化">
+                  <i class="fa fa-chevron-left"></i> NLP 文本场景的数据优化
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">12:30</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","locale":{"placeholder":"欢迎交流指正"},"emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail","nick","mail"],"login":"enable","el":"#waline","comment":true,"path":"/202208/20220831-basic-cuda-interface/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

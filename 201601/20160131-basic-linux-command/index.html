@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CTimes+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="In me the tiger sniffs the rose.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="开发: Linux常用命令">
+<meta property="og:url" content="http://www.deepindeed.cn/201601/20160131-basic-linux-command/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="In me the tiger sniffs the rose.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-01-31T12:20:20.000Z">
+<meta property="article:modified_time" content="2022-09-04T05:32:18.832Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="linux开发">
+<meta property="article:tag" content="tools">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/201601/20160131-basic-linux-command/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201601/20160131-basic-linux-command/","path":"201601/20160131-basic-linux-command/","title":"开发: Linux常用命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>开发: Linux常用命令 | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">心有猛虎，细嗅蔷薇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84linux%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">常用的Linux命令。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">系统信息</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/cwlseu" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201601/20160131-basic-linux-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="开发: Linux常用命令 | Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          开发: Linux常用命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-01-31 20:20:20" itemprop="dateCreated datePublished" datetime="2016-01-31T20:20:20+08:00">2016-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-04 13:32:18" itemprop="dateModified" datetime="2022-09-04T13:32:18+08:00">2022-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201601/20160131-basic-linux-command/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201601/20160131-basic-linux-command/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">In me the tiger sniffs the rose.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引言">引言</h2>
+<p>Linux中的命令的确是非常多，但是我们只需要掌握我们最常用的命令就可以了。当然你也可以在使用时去找一下man，他会帮你解决不少的问题。然而每个人玩Linux的目的都不同，所以他们常用的命令也就差异非常大。因为不想在使用是总是东查西找，所以在此总结一下，方便一下以后的查看。不多说，</p>
+<h2 id="常用的linux命令">常用的Linux命令。</h2>
+<ol type="1">
+<li>cd命令</li>
+</ol>
+<p>这是一个非常基本，也是大家经常需要使用的命令，它用于切换当前目录，它的参数是要切换到的目录的路径，可以是绝对路径，也可以是相对路径。如：</p>
+<pre><code>cd /root/Docements # 切换到目录/root/Docements  
+cd ./path          # 切换到当前目录下的path目录中，“.”表示当前目录    
+cd ../path         # 切换到上层目录中的path目录中，“..”表示上一层目录 </code></pre>
+<ol start="2" type="1">
+<li>ls命令</li>
+</ol>
+<p>这是一个非常有用的查看文件与目录的命令，list之意，它的参数非常多，下面就列出一些我常用的参数吧，如下：</p>
+<pre><code>-l ：列出长数据串，包含文件的属性与权限数据等  
+-a ：列出全部的文件，连同隐藏文件（开头为.的文件）一起列出来（常用）  
+-d ：仅列出目录本身，而不是列出目录的文件数据  
+-h ：将文件容量以较易读的方式（GB，kB等）列出来  
+-R ：连同子目录的内容一起列出（递归列出），等于该目录下的所有文件都会显示出来  </code></pre>
+<p>注：这些参数也可以组合使用，下面举两个例子：</p>
+<pre><code>ls -l #以长数据串的形式列出当前目录下的数据文件和目录  
+ls -lR #以长数据串的形式列出当前目录下的所有文件  </code></pre>
+<ol start="3" type="1">
+<li>grep命令
+该命令常用于分析一行的信息，若当中有我们所需要的信息，就将该行显示出来，该命令通常与管道命令一起使用，用于对一些命令的输出进行筛选加工等等，它的简单语法为
+<code>grep [-acinv] [--color=auto] '查找字符串' filename</code></li>
+</ol>
+<p>它的常用参数如下：</p>
+<pre><code>-a ：将binary文件以text文件的方式查找数据  
+-c ：计算找到‘查找字符串’的次数  
+-i ：忽略大小写的区别，即把大小写视为相同  
+-v ：反向选择，即显示出没有‘查找字符串’内容的那一行  </code></pre>
+<p>例如：<br />
+取出文件/etc/man.config中包含MANPATH的行，并把找到的关键字加上颜色<br />
+<code>grep --color=auto 'MANPATH' /etc/man.config</code><br />
+把ls -l的输出中包含字母file（不区分大小写）的内容输出<br />
+<code>ls -l | grep -i file</code> 4. find命令
+find是一个基于查找的功能非常强大的命令，相对而言，它的使用也相对较为复杂，参数也比较多，所以在这里将给把它们分类列出，它的基本语法如下：
+<code>find [PATH] [option] [action]</code></p>
+<p><em>与时间有关的参数</em></p>
+<pre><code>-mtime n : n为数字，意思为在n天之前的“一天内”被更改过的文件；  
+-mtime +n : 列出在n天之前（不含n天本身）被更改过的文件名；  
+-mtime -n : 列出在n天之内（含n天本身）被更改过的文件名；  
+-newer file : 列出比file还要新的文件名  </code></pre>
+<p>例如：<br />
+<code>find /root -mtime 0 # 在当前目录下查找今天之内有改动的文件</code></p>
+<p><em>与用户或用户组名有关的参数</em></p>
+<pre><code>-user name : 列出文件所有者为name的文件  
+-group name : 列出文件所属用户组为name的文件  
+-uid n : 列出文件所有者为用户ID为n的文件  
+-gid n : 列出文件所属用户组为用户组ID为n的文件  </code></pre>
+<p>例如：<br />
+<code>find /home/charles -user charles #</code>在目录/home/ljianhui中找出所有者为ljianhui的文件</p>
+<p><em>与文件权限及名称有关的参数</em>：</p>
+<pre><code>-name filename ：找出文件名为filename的文件  
+-size [+-]SIZE ：找出比SIZE还要大（+）或小（-）的文件  
+-tpye TYPE ：查找文件的类型为TYPE的文件，TYPE的值主要有：一般文件（f)、设备文件（b、c）、  
+             目录（d）、连接文件（l）、socket（s）、FIFO管道文件（p）；  
+-perm mode ：查找文件权限刚好等于mode的文件，mode用数字表示，如0755；  
+-perm -mode ：查找文件权限必须要全部包括mode权限的文件，mode用数字表示  
+-perm +mode ：查找文件权限包含任一mode的权限的文件，mode用数字表示  </code></pre>
+<p>例如：</p>
+<pre><code>find / -name passwd # 查找文件名为passwd的文件  
+find . -perm 0755 # 查找当前目录中文件权限的0755的文件  
+find . -size +12k # 查找当前目录中大于12KB的文件，注意c表示byte  </code></pre>
+<ol start="5" type="1">
+<li>cp命令</li>
+</ol>
+<p>该命令用于复制文件，copy之意，它还可以把多个文件一次性地复制到一个目录下，它的
+常用参数如下：</p>
+<pre><code>-a ：将文件的特性一起复制  
+-p ：连同文件的属性一起复制，而非使用默认方式，与-a相似，常用于备份  
+-i ：若目标文件已经存在时，在覆盖时会先询问操作的进行  
+-r ：递归持续复制，用于目录的复制行为  
+-u ：目标文件与源文件有差异时才会复制  </code></pre>
+<p>例如 ：</p>
+<pre><code>cp -a file1 file2 #连同文件的所有特性把文件file1复制成文件file2  
+cp file1 file2 file3 dir #把文件file1、file2、file3复制到目录dir中</code></pre>
+<ol start="6" type="1">
+<li>mv命令</li>
+</ol>
+<p>该命令用于移动文件、目录或更名，move之意，它的常用参数如下：</p>
+<pre><code>-f ：force强制的意思，如果目标文件已经存在，不会询问而直接覆盖  
+-i ：若目标文件已经存在，就会询问是否覆盖  
+-u ：若目标文件已经存在，且比目标文件新，才会更新  </code></pre>
+<p>注：该命令可以把一个文件或多个文件一次移动一个文件夹中，但是最后一个目标文件一定要是“目录”。</p>
+<p>例如：</p>
+<pre><code>mv file1 file2 file3 dir # 把文件file1、file2、file3移动到目录dir中  
+mv file1 file2 # 把文件file1重命名为file2  </code></pre>
+<ol start="7" type="1">
+<li>rm命令</li>
+</ol>
+<p>该命令用于删除文件或目录，remove之间，它的常用参数如下：</p>
+<pre><code>-f ：就是force的意思，忽略不存在的文件，不会出现警告消息  
+-i ：互动模式，在删除前会询问用户是否操作  
+-r ：递归删除，最常用于目录删除，它是一个非常危险的参数  </code></pre>
+<p>例如：</p>
+<pre><code>rm -i file # 删除文件file，在删除之前会询问是否进行该操作  
+rm -fr dir # 强制删除目录dir中的所有文件</code></pre>
+<ol start="8" type="1">
+<li>ps命令</li>
+</ol>
+<p>该命令用于将某个时间点的进程运行情况选取下来并输出，process之意，它的常用参数如下：</p>
+<pre><code>-A ：所有的进程均显示出来  
+-a ：不与terminal有关的所有进程  
+-u ：有效用户的相关进程  
+-x ：一般与a参数一起使用，可列出较完整的信息  
+-l ：较长，较详细地将PID的信息列出  </code></pre>
+<p>其实我们只要记住ps一般使用的命令参数搭配即可，它们并不多，如下：</p>
+<pre><code>ps aux # 查看系统所有的进程数据  
+ps ax # 查看不与terminal有关的所有进程  
+ps -lA # 查看系统所有的进程数据  
+ps axjf # 查看连同一部分进程树状态  </code></pre>
+<ol start="9" type="1">
+<li>kill命令
+该命令用于向某个工作（%jobnumber）或者是某个PID（数字）传送一个信号，它通常与ps和jobs命令一起使用，它的基本语法如下：</li>
+</ol>
+<p>kill -signal PID<br />
+signal的常用参数如下：
+注：最前面的数字为信号的代号，使用时可以用代号代替相应的信号。</p>
+<pre><code>1：SIGHUP，启动被终止的进程  
+2：SIGINT，相当于输入ctrl+c，中断一个程序的进行  
+9：SIGKILL，强制中断一个进程的进行  
+15：SIGTERM，以正常的结束进程方式来终止进程  
+17：SIGSTOP，相当于输入ctrl+z，暂停一个进程的进行  </code></pre>
+<p>例如：</p>
+<p>以正常的结束进程方式来终于第一个后台工作，可用jobs命令查看后台中的第一个工作进程<br />
+kill -SIGTERM %1<br />
+重新改动进程ID为PID的进程，PID可用ps命令通过管道命令加上grep命令进行筛选获得<br />
+kill -SIGHUP PID</p>
+<ol start="10" type="1">
+<li>killall命令
+该命令用于向一个命令启动的进程发送一个信号，它的一般语法如下：</li>
+</ol>
+<p><code>killall [-iIe] [command name]</code><br />
+它的参数如下：</p>
+<pre><code>-i ：交互式的意思，若需要删除时，会询问用户  
+-e ：表示后面接的command name要一致，但command name不能超过15个字符  
+-I ：命令名称忽略大小写  </code></pre>
+<p>例如：<br />
+<code>killall -SIGHUP syslogd</code> # 重新启动syslogd</p>
+<ol start="11" type="1">
+<li>file命令
+该命令用于判断接在file命令后的文件的基本数据，因为在Linux下文件的类型并不是以后缀为分的，所以这个命令对我们来说就很有用了，它的用法非常简单，基本语法如下：</li>
+</ol>
+<p>file filename<br />
+例如：<br />
+file ./test</p>
+<ol start="12" type="1">
+<li>tar命令</li>
+</ol>
+<p>该命令用于对文件进行打包，默认情况并不会压缩，如果指定了相应的参数，它还会调用相应的压缩程序（如gzip和bzip等）进行压缩和解压。它的常用参数如下：</p>
+<pre><code>-c ：新建打包文件  
+-t ：查看打包文件的内容含有哪些文件名  
+-x ：解打包或解压缩的功能，可以搭配-C（大写）指定解压的目录，注意-c,-t,-x不能同时出现在同一条命令中  
+-j ：通过bzip2的支持进行压缩/解压缩  
+-z ：通过gzip的支持进行压缩/解压缩  
+-v ：在压缩/解压缩过程中，将正在处理的文件名显示出来  
+-f filename ：filename为要处理的文件  
+-C dir ：指定压缩/解压缩的目录dir  </code></pre>
+<p>上面的解说可以已经让你晕过去了，但是通常我们只需要记住下面三条命令即可：</p>
+<pre><code>压缩：tar -jcv -f filename.tar.bz2 要被处理的文件或目录名称  
+查询：tar -jtv -f filename.tar.bz2  
+解压：tar -jxv -f filename.tar.bz2 -C 欲解压缩的目录  </code></pre>
+<p>注：文件名并不定要以后缀tar.bz2结尾，这里主要是为了说明使用的压缩程序为bzip2</p>
+<ol start="13" type="1">
+<li><p>cat命令
+该命令用于查看文本文件的内容，后接要查看的文件名，通常可用管道与more和less一起使用，从而可以一页页地查看数据。例如：</p>
+<p>cat text | less # 查看text文件中的内容<br />
+注：这条命令也可以使用less text来代替<br />
+</p></li>
+<li><p>chgrp命令
+该命令用于改变文件所属用户组，它的使用非常简单，它的基本用法如下：</p></li>
+</ol>
+<p><code>chgrp [-R] dirname/filename</code><br />
+-R ：进行递归的持续对所有文件和子目录更改<br />
+例如：<br />
+<code>chgrp users -R ./dir #</code>递归地把dir目录下中的所有文件和子目录下所有文件的用户组修改为users<br />
+15. chown命令
+该命令用于改变文件的所有者，与chgrp命令的使用方法相同，只是修改的文件属性不同，不再详述。</p>
+<ol start="16" type="1">
+<li>chmod命令 该命令用于改变文件的权限，一般的用法如下：
+<code>chmod [-R] xyz 文件或目录</code>
+<code>-R：进行递归的持续更改，即连同子目录下的所有文件都会更改</code><br />
+同时，chmod还可以使用u（user）、g（group）、o（other）、a（all）和+（加入）、-（删除）、=（设置）跟rwx搭配来对文件的权限进行更改。</li>
+</ol>
+<p>例如：</p>
+<pre><code>chmod 0755 file # 把file的文件权限改变为-rxwr-xr-x  
+chmod g+w file # 向file的文件权限中加入用户组可写权限 </code></pre>
+<ol start="18" type="1">
+<li><p>vim命令
+该命令主要用于文本编辑，它接一个或多个文件名作为参数，如果文件存在就打开，如果文件不存在就以该文件名创建一个文件。vim是一个非常好用的文本编辑器，它里面有很多非常好用的命令，在这里不再多说。你可以从这里下载vim常用操作的详细说明。</p></li>
+<li><p>gcc命令
+对于一个用Linux开发C程序的人来说，这个命令就非常重要了，它用于把C语言的源程序文件，编译成可执行程序，由于g++的很多参数跟它非常相似，所以这里只介绍gcc的参数，它的常用参数如下：</p>
+<p>-o ：output之意，用于指定生成一个可执行文件的文件名<br />
+-c ：用于把源文件生成目标文件（.o)，并阻止编译器创建一个完整的程序<br />
+-I ：增加编译时搜索头文件的路径<br />
+-L ：增加编译时搜索静态连接库的路径<br />
+-S ：把源文件生成汇编代码文件<br />
+-lm：表示标准库的目录中名为libm.a的函数库<br />
+-lpthread ：连接NPTL实现的线程库<br />
+-std= ：用于指定把使用的C语言的版本</p></li>
+</ol>
+<p>例如：<br />
+把源文件test.c按照c99标准编译成可执行程序test<br />
+gcc -o test test.c -lm -std=c99<br />
+把源文件test.c转换为相应的汇编程序源文件test.s<br />
+gcc -S test.c</p>
+<p>20。time命令
+该命令用于测算一个命令（即程序）的执行时间。它的使用非常简单，就像平时输入命令一样，不过在命令的前面加入一个time即可，例如：</p>
+<pre><code>time ./process  
+time ps aux  </code></pre>
+<p>在程序或命令运行结束后，在最后输出了三个时间，它们分别是：
+user：用户CPU时间，命令执行完成花费的用户CPU时间，即命令在用户态中执行时间总和；
+system：系统CPU时间，命令执行完成花费的系统CPU时间，即命令在核心态中执行时间总和；
+real：实际时间，从command命令行开始执行到运行终止的消逝时间；</p>
+<p>注：用户CPU时间和系统CPU时间之和为CPU时间，即命令占用CPU执行的时间总和。实际时间要大于CPU时间，因为Linux是多任务操作系统，往往在执行一条命令时，系统还要处理其它任务。另一个需要注意的问题是即使每次执行相同命令，但所花费的时间也是不一样，其花费时间是与系统运行相关的。</p>
+<h2 id="系统信息">系统信息</h2>
+<ol type="1">
+<li><p>uname</p>
+<p>Usage: uname [OPTION]... Print certain system information. With no
+OPTION, same as -s.</p>
+<p>-a, --all print all information, in the following order, except omit
+-p and -i if unknown: -s, --kernel-name print the kernel name -n,
+--nodename print the network node hostname -r, --kernel-release print
+the kernel release -v, --kernel-version print the kernel version -m,
+--machine print the machine hardware name -p, --processor print the
+processor type (non-portable) -i, --hardware-platform print the hardware
+platform (non-portable) -o, --operating-system print the operating
+system --help display this help and exit --version output version
+information and exit 如<code>uname -p</code>
+将得到处理器类型为<code>x86_64</code></p></li>
+<li><p>nvidia-smi -l 1 循环显示当前显卡状态 <img
+src="https://cwlseu.github.io/images/linux/nvidia-smi.JPG"
+alt="@nvidia显示示例图" /></p></li>
+<li><p>查看机器cpu信息</p></li>
+</ol>
+<ul>
+<li><p>查看物理CPU的个数
+<code>cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l</code></p></li>
+<li><p>查看逻辑CPU的个数
+<code>cat /proc/cpuinfo | grep "processor" | wc -l</code></p></li>
+<li><p>查看CPU是几核
+<code>cat /proc/cpuinfo | grep "cores" | uniq</code></p></li>
+<li><p>查看CPU的主频
+<code>cat /proc/cpuinfo | grep MHz | uniq</code></p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/201601/20160131-basic-linux-command/" title="开发: Linux常用命令">http://www.deepindeed.cn/201601/20160131-basic-linux-command/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/linux%E5%BC%80%E5%8F%91/" rel="tag"># linux开发</a>
+              <a href="/tags/tools/" rel="tag"># tools</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/201609/20160901-basic-shell-in-linux/" rel="next" title="开发：Shell 学习之路">
+                  开发：Shell 学习之路 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">12:30</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","locale":{"placeholder":"欢迎交流指正"},"emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail","nick","mail"],"login":"enable","el":"#waline","comment":true,"path":"/201601/20160131-basic-linux-command/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

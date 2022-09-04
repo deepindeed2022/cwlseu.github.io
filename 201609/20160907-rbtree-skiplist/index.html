@@ -14,35 +14,35 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CTimes+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="近似近邻查询，作为大数据搜索方面的算法层出不穷，其中有基于树和基于hash的最为多见。">
+    <meta name="description" content="日常开发中躲不开的高级数据结构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="近邻查询近似算法库FLANN">
-<meta property="og:url" content="http://www.deepindeed.cn/201609/20160907-Flann/index.html">
+<meta property="og:title" content="实际项目中的红黑树与跳表">
+<meta property="og:url" content="http://www.deepindeed.cn/201609/20160907-rbtree-skiplist/index.html">
 <meta property="og:site_name" content="Deepindeed">
-<meta property="og:description" content="近似近邻查询，作为大数据搜索方面的算法层出不穷，其中有基于树和基于hash的最为多见。">
+<meta property="og:description" content="日常开发中躲不开的高级数据结构">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2016-09-07T01:25:24.000Z">
-<meta property="article:modified_time" content="2022-08-30T01:08:43.453Z">
+<meta property="article:modified_time" content="2022-09-03T17:13:50.314Z">
 <meta property="article:author" content="CharlesCao">
-<meta property="article:tag" content="tools">
+<meta property="article:tag" content="cpp">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://www.deepindeed.cn/201609/20160907-Flann/">
+<link rel="canonical" href="http://www.deepindeed.cn/201609/20160907-rbtree-skiplist/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201609/20160907-Flann/","path":"201609/20160907-Flann/","title":"近邻查询近似算法库FLANN"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/201609/20160907-rbtree-skiplist/","path":"201609/20160907-rbtree-skiplist/","title":"实际项目中的红黑树与跳表"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>近邻查询近似算法库FLANN | Deepindeed</title>
+<title>实际项目中的红黑树与跳表 | Deepindeed</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
@@ -51,7 +51,7 @@
 
 
 
-<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -78,7 +78,7 @@
       <p class="site-title">Deepindeed</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">追风的菜鸡，没准也能上国宴</p>
+      <p class="site-subtitle" itemprop="description">心有猛虎，细嗅蔷薇</p>
   </div>
 
   <div class="site-nav-right">
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E9%80%94"><span class="nav-number">2.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91-vs-avl%E6%A0%91"><span class="nav-number">2.2.</span> <span class="nav-text">红黑树 VS AVL树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flann%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">FLANN概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%90%8D%E8%AF%8D%E5%AE%9A%E4%B9%89"><span class="nav-number">4.</span> <span class="nav-text">相关名词定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E9%80%94"><span class="nav-number">2.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91-vs-avl%E6%A0%91"><span class="nav-number">2.2.</span> <span class="nav-text">红黑树 VS AVL树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">相关应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#flann%E6%A6%82%E8%BF%B0"><span class="nav-number">2.3.1.</span> <span class="nav-text">FLANN概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%90%8D%E8%AF%8D%E5%AE%9A%E4%B9%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">相关名词定义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">2.4.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#skiplist"><span class="nav-number">3.</span> <span class="nav-text">SkipList</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,7 +163,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -174,7 +174,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -197,9 +197,6 @@
       Links
     </div>
     <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="https://deepindeed.cn/" title="https:&#x2F;&#x2F;deepindeed.cn" rel="noopener" target="_blank">Title</a>
-        </li>
         <li class="links-of-blogroll-item">
           <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
         </li>
@@ -225,6 +222,8 @@
   <div class="reading-progress-bar"></div>
   <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
+  <a href="https://github.com/cwlseu" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
@@ -241,7 +240,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201609/20160907-Flann/">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/201609/20160907-rbtree-skiplist/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/bird.png">
@@ -254,12 +253,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="近邻查询近似算法库FLANN | Deepindeed">
-      <meta itemprop="description" content="近似近邻查询，作为大数据搜索方面的算法层出不穷，其中有基于树和基于hash的最为多见。">
+      <meta itemprop="name" content="实际项目中的红黑树与跳表 | Deepindeed">
+      <meta itemprop="description" content="日常开发中躲不开的高级数据结构">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          近邻查询近似算法库FLANN
+          实际项目中的红黑树与跳表
         </h1>
 
         <div class="post-meta-container">
@@ -277,7 +276,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-30 09:08:43" itemprop="dateModified" datetime="2022-08-30T09:08:43+08:00">2022-08-30</time>
+      <time title="修改时间：2022-09-04 01:13:50" itemprop="dateModified" datetime="2022-09-04T01:13:50+08:00">2022-09-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -297,24 +296,38 @@
       <span class="post-meta-item-text">阅读数：</span>
       <span id="busuanzi_value_page_pv"></span>
     </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/201609/20160907-rbtree-skiplist/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/201609/20160907-rbtree-skiplist/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="本文字数">
       <span class="post-meta-item-icon">
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
+      <span>2.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
-            <div class="post-description">近似近邻查询，作为大数据搜索方面的算法层出不穷，其中有基于树和基于hash的最为多见。</div>
+            <div class="post-description">日常开发中躲不开的高级数据结构</div>
         </div>
       </header>
 
@@ -323,34 +336,50 @@
     
     <div class="post-body" itemprop="articleBody">
         <h2 id="引言">引言</h2>
+<p>日常开发过程中，像大量文本中查找相似文本，缓存数据这些功能，我们并不是直接利用语言原生支持的数据结构来实现。这些专门的应用领域，工程师们会有专门优化的解决方案。例如flann进行相似文本查询，redis进行kv字段缓存。那么这些专门的解决方案，他们的基本的数据结构是什么呢？</p>
+<h2 id="红黑树">红黑树</h2>
+<p>https://blog.csdn.net/weewqrer/article/details/51866488</p>
+<h3 id="用途">用途</h3>
+<p>C++中的set,map,multimap,multiset底层结构均是红黑树</p>
+<p>红黑树严格来说是一种更高效的<strong>二叉查找树</strong>，它比BST（二叉查找树）和AVL（平衡二叉查找树）更加高效，能够将插入和删除操作的时间复杂度控制在O(log
+n),
+因为高效，被应用在库容器的底层，如STL::map，正是由于高效，因此也多了很多的规则。红黑树的规则一共有五条：</p>
+<ul>
+<li>节点必须是红色或者是黑色；</li>
+<li>根节点是黑色；</li>
+<li>所有叶子节点都是黑色（叶子节点为NULL）；</li>
+<li>任何一个节点和它的父节点不能同时为红色；</li>
+<li>从根节点到任何一个叶子节点所经过的黑色的节点的数目必须是相同的。</li>
+</ul>
+<h3 id="红黑树-vs-avl树">红黑树 VS AVL树</h3>
+<p>红黑树和AVL树一样都对插入时间、删除时间和查找时间提供了最好可能的最坏情况担保。对于查找、插入、删除、最大、最小等动态操作的时间复杂度为<span
+class="math inline">\(O(logn)\)</span>.常见的用途有以下几种：</p>
+<ul>
+<li>STL（标准模板库）中在set map是基于红黑树实现的。</li>
+<li>Java中在TreeMap使用的也是红黑树。</li>
+<li>epoll在内核中的实现，用红黑树管理事件块。</li>
+<li>linux进程调度Completely Fair Scheduler,用红黑树管理进程控制块</li>
+</ul>
+<p>常见的平衡树有红黑树和AVL平衡树，为什么STL和linux都使用红黑树作为平衡树的实现？大概有以下几个原因：</p>
+<p>从实现细节上来讲，如果插入一个结点引起了树的不平衡，AVL树和红黑树都最多需要2次旋转操作，即两者都是O(1)；但是在删除node引起树的不平衡时，最坏情况下，AVL需要维护从被删node到root这条路径上所有node的平衡性，因此需要旋转的量级O(logN)，而RB-Tree最多只需3次旋转，只需要O(1)的复杂度</p>
+<p>从两种平衡树对平衡的要求来讲，AVL的结构相较RB-Tree来说更为平衡，在插入和删除node更容易引起Tree的unbalance，因此在大量数据需要插入或者删除时，<strong>AVL需要rebalance的频率会更高</strong>。因此，RB-Tree在需要大量插入和删除node的场景下，效率更高。自然，由于AVL高度平衡，因此AVL的search效率更高。</p>
+<p>总体来说，<strong>RB-tree的统计性能是高于AVL的</strong></p>
+<h3 id="相关应用">相关应用</h3>
 <p>近似近邻算法在大型应用中是解决搜索的关键技术。而近似近邻算法的研究中，一部分是基于树结构实现的，一部分是基于hash算法。今FLANN是一个开源库，opencv中已经集成了该module.</p>
 <ul>
 <li>github: <a target="_blank" rel="noopener" href="https://github.com/mariusmuja/flann.git">FLANN -
 Fast Library for Approximate Nearest Neighbors</a></li>
 </ul>
-<h2 id="红黑树">红黑树</h2>
-<p>https://blog.csdn.net/weewqrer/article/details/51866488</p>
-<h3 id="用途">用途</h3>
-<p>红黑树和AVL树一样都对插入时间、删除时间和查找时间提供了最好可能的最坏情况担保。对于查找、插入、删除、最大、最小等动态操作的时间复杂度为O(lgn).常见的用途有以下几种：
-- STL（标准模板库）中在set map是基于红黑树实现的。 -
-Java中在TreeMap使用的也是红黑树。 -
-epoll在内核中的实现，用红黑树管理事件块。 - linux进程调度Completely Fair
-Scheduler,用红黑树管理进程控制块</p>
-<h3 id="红黑树-vs-avl树">红黑树 VS AVL树</h3>
-<p>常见的平衡树有红黑树和AVL平衡树，为什么STL和linux都使用红黑树作为平衡树的实现？大概有以下几个原因：</p>
-<p>从实现细节上来讲，如果插入一个结点引起了树的不平衡，AVL树和红黑树都最多需要2次旋转操作，即两者都是O(1)；但是在删除node引起树的不平衡时，最坏情况下，AVL需要维护从被删node到root这条路径上所有node的平衡性，因此需要旋转的量级O(logN)，而RB-Tree最多只需3次旋转，只需要O(1)的复杂度</p>
-<p>从两种平衡树对平衡的要求来讲，AVL的结构相较RB-Tree来说更为平衡，在插入和删除node更容易引起Tree的unbalance，因此在大量数据需要插入或者删除时，AVL需要rebalance的频率会更高。因此，RB-Tree在需要大量插入和删除node的场景下，效率更高。自然，由于AVL高度平衡，因此AVL的search效率更高。</p>
-<p>总体来说，RB-tree的统计性能是高于AVL的</p>
-<h2 id="flann概述">FLANN概述</h2>
+<h4 id="flann概述">FLANN概述</h4>
 <p>首先阐述了近似结果查询的重要性，通过实验结果分析了最有效的近似nn算法中，随机KD森林是最有效的，另外提出了一个新的方法：优先查找k-means树，尤其是针对视觉任务中常用的二进制特征，提出了多层聚类树。为了应用于大数据环境下，还有分布式环境下nn查找框架。</p>
-<h2 id="相关名词定义">相关名词定义</h2>
+<h4 id="相关名词定义">相关名词定义</h4>
 <ol type="1">
 <li>KNN(K-nearest neighbor
 search)：说白了，就是从数据集合了找K个最接近的</li>
 <li>RNN(radius nearest neighbor
 search)：就是返回一定半径范围内的所有数据。当然这个半径有很多不同的定义。</li>
 </ol>
-<h2 id="参考文献">参考文献</h2>
+<h3 id="参考文献">参考文献</h3>
 <ol type="1">
 <li><a
 target="_blank" rel="noopener" href="http://www.cnblogs.com/eyeszjwang/articles/2429382.html">K-D
@@ -365,7 +394,31 @@ target="_blank" rel="noopener" href="http://blog.csdn.net/v_JULY_v/article/detai
 target="_blank" rel="noopener" href="http://www.ahathinking.com/archives/136.html">线段树</a></li>
 <li><a
 target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/details/6285620">红黑树</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42214953/article/details/105218063?utm_medium=distribute.pc_relevant.none-task-blog-2defaultbaidujs_title~default-1-105218063-blog-88691077.pc_relevant_aa&amp;spm=1001.2101.3001.4242.2&amp;utm_relevant_index=4">RBTree的实现</a></li>
 </ol>
+<h2 id="skiplist">SkipList</h2>
+<p>skiplist本质上也是一种查找结构，用于解决算法中的查找问题（Searching），即根据给定的key，快速查到它所在的位置（或者对应的value）。</p>
+<figure>
+<img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209040030773.png"
+alt="image-20220904003021649" />
+<figcaption aria-hidden="true">image-20220904003021649</figcaption>
+</figure>
+<p><strong>skiplist与平衡树、哈希表的比较</strong></p>
+<p>skiplist和各种平衡树（如AVL、红黑树等）的元素是有序排列的，而哈希表不是有序的。因此，在<strong>哈希表上只能做单个key的查找，不适宜做范围查找</strong>。所谓范围查找，指的是查找那些大小在指定的两个值之间的所有节点。</p>
+<p><strong>范围查找的时候，平衡树比skiplist操作要复杂。</strong>在平衡树上，我们找到指定范围的小值之后，还需要以中序遍历的顺序继续寻找其它不超过大值的节点。如果不对平衡树进行一定的改造，这里的中序遍历并不容易实现。而在skiplist上进行范围查找就非常简单，只需要在找到小值之后，对第1层链表进行若干步的遍历就可以实现。</p>
+<p><strong>平衡树的插入和删除操作可能引发子树的调整</strong>，逻辑复杂，而skiplist的插入和删除只需要修改相邻节点的指针，操作简单又快速。</p>
+<p>从内存占用上来说，skiplist比平衡树更灵活一些。一般来说，平衡树每个节点包含2个指针（分别指向左右子树），而skiplist每个节点包含的指针数目平均为1/(1-p)，具体取决于参数p的大小。如果像Redis里的实现一样，取p=1/4，那么平均每个节点包含1.33个指针，比平衡树更有优势。</p>
+<p>查找单个key，skiplist和平衡树的时间复杂度都为O(log
+n)，大体相当；而哈希表在保持较低的哈希值冲突概率的前提下，查找时间复杂度接近O(1)，性能更高一些。所以我们平常使用的各种Map或dictionary结构，大都是基于哈希表实现的。</p>
+<p>从算法实现难度上来比较，skiplist比平衡树要简单得多。</p>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/helloworld_ptt/article/details/105801262">Redis
+为什么用跳表而不用平衡树</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/Day_DreamX/article/details/109038616?utm_medium=distribute.pc_relevant.none-task-blog-2defaultbaidujs_baidulandingword~default-1-109038616-blog-106573897.pc_relevant_default&amp;spm=1001.2101.3001.4242.2&amp;utm_relevant_index=4">SkipList
+C++实现</a></p>
 
     </div>
 
@@ -400,7 +453,7 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://www.deepindeed.cn/201609/20160907-Flann/" title="近邻查询近似算法库FLANN">http://www.deepindeed.cn/201609/20160907-Flann/</a>
+      <a href="http://www.deepindeed.cn/201609/20160907-rbtree-skiplist/" title="实际项目中的红黑树与跳表">http://www.deepindeed.cn/201609/20160907-rbtree-skiplist/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -409,17 +462,20 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
 </div>
 
           <div class="post-tags">
-              <a href="/tags/tools/" rel="tag"># tools</a>
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/201609/20160901-basic-shell-in-linux/" rel="prev" title="开发：Shell 学习之路">
+                  <i class="fa fa-chevron-left"></i> 开发：Shell 学习之路
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/201612/20161230-basic-cpp-stl-traits/" rel="next" title="STL源码剖析与C++面向对象">
-                  STL源码剖析与C++面向对象 <i class="fa fa-chevron-right"></i>
+                <a href="/201612/20161230-cpp-stl-note/" rel="next" title="STL容器底层实现">
+                  STL容器底层实现 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -432,7 +488,7 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
 
 
 
-    <div class="comments gitalk-container"></div>
+    <div class="comments" id="waline"></div>
 </div>
   </main>
 
@@ -453,13 +509,13 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">425k</span>
+    <span title="站点总字数">450k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:49</span>
+    <span title="站点阅读时长">12:30</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -479,15 +535,13 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
         <span id="busuanzi_value_site_pv"></span>
       </span>
     </span>
-</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
-
+</div>
 
     </div>
   </footer>
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
 
@@ -513,10 +567,17 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
-
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"07921f1164880db55ced3d9343440c9e"}</script>
-<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","locale":{"placeholder":"欢迎交流指正"},"emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail","nick","mail"],"login":"enable","el":"#waline","comment":true,"path":"/201609/20160907-rbtree-skiplist/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
 
 </body>
 </html>
