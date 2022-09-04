@@ -24,7 +24,7 @@ custom_file_path:
   #sidebar: source/_data/sidebar.njk
   #postMeta: source/_data/post-meta.njk
   #postBodyEnd: source/_data/post-body-end.njk
-  footer: source/_data/footer.njk
+  #footer: source/_data/footer.njk
   #bodyEnd: source/_data/body-end.njk
   #variable: source/_data/variables.styl
   #mixin: source/_data/mixins.styl
@@ -623,7 +623,7 @@ livere_uid: # <your_uid>
 # Gitalk
 # For more information: https://gitalk.github.io
 gitalk:
-  enable: true
+  enable: false
   github_id: cwlseu # GitHub repo owner
   repo: blog-comment # Repository name to store issues
   client_id: a3c364d3dade81cbba30 # GitHub Application Client ID
@@ -926,8 +926,8 @@ waline:
   cssUrl: https://unpkg.com/@waline/client@v2/dist/waline.css
 
   # Custom locales
-  # locale:
-  #   placeholder: Welcome to comment # Comment box placeholder
+  locale:
+    placeholder: 欢迎交流指正 # Comment box placeholder
 
   # If false, comment count will only be displayed in post page, not in home page
   commentCount: true
@@ -952,7 +952,9 @@ waline:
 
   # Set required meta field, e.g.: [nick] | [nick, mail]
   requiredMeta:
-    # - mail
+    - mail
+    - nick
+    - mail
 
   # Language, available values: en-US, zh-CN, zh-TW, pt-BR, ru-RU, jp-JP
   lang: zh-CN
@@ -961,7 +963,7 @@ waline:
   # wordLimit: 0
 
   # Whether enable login, can choose from 'enable', 'disable' and 'force'
-  # login: enable
+  login: enable
 
   # comment per page
   # pageSize: 10
