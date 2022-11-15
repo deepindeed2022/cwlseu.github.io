@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CTimes+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="OnnxRuntime">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OnnxRuntime">
+<meta property="og:url" content="http://www.deepindeed.cn/202211/20221113-onnxruntime/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="OnnxRuntime">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.deepindeed.cn/202211/images/backends/onnxruntime_1.png">
+<meta property="article:published_time" content="2022-11-13T11:39:39.000Z">
+<meta property="article:modified_time" content="2022-11-15T12:11:59.376Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="Backends">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.deepindeed.cn/202211/images/backends/onnxruntime_1.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202211/20221113-onnxruntime/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202211/20221113-onnxruntime/","path":"202211/20221113-onnxruntime/","title":"OnnxRuntime"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OnnxRuntime | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">心有猛虎，细嗅蔷薇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80onnx%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、ONNX简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8Connxruntime"><span class="nav-number">2.</span> <span class="nav-text">二、OnnxRuntime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84execution-providers"><span class="nav-number">2.1.</span> <span class="nav-text">已支持的Execution Providers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">五、参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84-runtime%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">附: Runtime源码剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onnx%E4%B8%AD%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9Ac%E4%B8%8Epython%E6%8E%A5%E5%8F%A3%E7%9A%84"><span class="nav-number">4.1.</span> <span class="nav-text">onnx中如何绑定C与python接口的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#modelload%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">Model::Load加载模型的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AAexecution-provider"><span class="nav-number">4.3.</span> <span class="nav-text">如何注册一个Execution
+Provider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faq"><span class="nav-number">5.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument"><span class="nav-number">5.0.1.</span> <span class="nav-text">01、clang: error: argument unused during compilation: &#39;-mfpu&#x3D;neon&#39; [-Werror,-Wunused-command-line-argument]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#load-model-is-dataparallel-format-your-should-notice"><span class="nav-number">5.0.2.</span> <span class="nav-text">02、load
+model is DataParallel format, your should notice:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#some-operator-not-supported-by-onnx"><span class="nav-number">5.0.3.</span> <span class="nav-text">03、 Some operator not
+supported by ONNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96onnx%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%93%E5%87%BA"><span class="nav-number">5.0.4.</span> <span class="nav-text">04、 获取onnx模型的输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#typeerror-descriptors-cannot-not-be-created-directly."><span class="nav-number">5.0.5.</span> <span class="nav-text">05、TypeError:
+Descriptors cannot not be created directly.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attributeerror-upsample-object-has-no-attribute-recompute_scale_factor"><span class="nav-number">5.0.6.</span> <span class="nav-text">06、AttributeError:
+&#39;Upsample&#39; object has no attribute &#39;recompute_scale_factor&#39;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runtimeerror-input-type-torch.cuda.floattensor-and-weight-type-torch.cuda.halftensor-should-be-the-same"><span class="nav-number">5.0.7.</span> <span class="nav-text">07、RuntimeError:
+Input type (torch.cuda.FloatTensor) and weight type
+(torch.cuda.HalfTensor) should be the same</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#error---in-node-23-parsegraph-invalid_node-invalid-node---pad_23"><span class="nav-number">5.0.8.</span> <span class="nav-text">08、ERROR
+- In node 23 (parseGraph): INVALID_NODE: Invalid Node - Pad_23</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/cwlseu" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202211/20221113-onnxruntime/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="OnnxRuntime | Deepindeed">
+      <meta itemprop="description" content="OnnxRuntime">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OnnxRuntime
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-13 19:39:39" itemprop="dateCreated datePublished" datetime="2022-11-13T19:39:39+08:00">2022-11-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-15 20:11:59" itemprop="dateModified" datetime="2022-11-15T20:11:59+08:00">2022-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202211/20221113-onnxruntime/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202211/20221113-onnxruntime/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">OnnxRuntime</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="一onnx简介">一、ONNX简介</h2>
+<ul>
+<li><p>什么是ONNX？</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/onnx/onnx">ONNX</a>全称为 Open Neural
+Network
+Exchange，是一种与框架无关的模型表达式。ONNX的规范及代码主要由微软，亚马逊
+，Facebook 和 IBM
+等公司共同开发，以开放源代码的方式托管在Github上。目前官方支持加载ONNX模型并进行推理的深度学习框架有：
+Caffe2, PyTorch, MXNet，ML.NET，TensorRT 和 Microsoft CNTK，并且
+TensorFlow 也非官方的支持ONNX。</p></li>
+<li><p>ONNX的数据格式是怎么样的？</p>
+<p>ONNX本质上一种文件格式，通过Protobuf数据结构存储了神经网络结构权重。其组织格式核心定义在于<a
+target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/master/onnx/onnx.proto">onnx.proto</a>，其中定义了Model/Graph/Node/ValueInfo/Tensor/Attribute层面的数据结构。整图通过各节点（Node）的input/output指向关系构建模型图的拓扑结构。</p></li>
+<li><p>ONNX支持的功能？</p>
+<p>基于ONNX模型，官方提供了一系列相关工具：模型转化/模型优化（<a
+target="_blank" rel="noopener" href="https://github.com/daquexian/onnx-simplifier">simplifier</a>等）/模型部署(<a
+target="_blank" rel="noopener" href="https://github.com/microsoft/onnxruntime">Runtime</a>)/模型可视化（<a
+target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/master/onnx/onnx.proto">Netron</a>等）等</p></li>
+</ul>
+<h2 id="二onnxruntime">二、OnnxRuntime</h2>
+<p>ONNX自带了Runtime库，能够将ONNX
+Model部署到不同的硬件设备上进行推理，支持各种后端（如TensorRT/OpenVINO）。</p>
+<p>基于ONNX Model的Runtime系统架构<a href="#fn1" class="footnote-ref"
+id="fnref1"
+role="doc-noteref"><sup>1</sup></a>如下，可以看到Runtime实现功能是将ONNX
+Model转换为In-Memory
+Graph格式，之后通过将其转化为各个可执行的子图，最后通过<code>GetCapability()</code>
+API将子图分配到不同的后端（execution provider, EP）执行。</p>
+<figure>
+<img src="../images/backends/onnxruntime_1.png" alt="onnxruntime_1" />
+<figcaption aria-hidden="true">onnxruntime_1</figcaption>
+</figure>
+<h3 id="已支持的execution-providers">已支持的Execution Providers</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>CPU</th>
+<th>GPU</th>
+<th>IoT/Edge/Mobile</th>
+<th>Other</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Default CPU</td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html">NVIDIA
+CUDA</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/OpenVINO-ExecutionProvider.html">Intel
+OpenVINO</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/RKNPU-ExecutionProvider.html">Rockchip
+NPU</a> (<em>preview</em>)</td>
+</tr>
+<tr class="even">
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/oneDNN-ExecutionProvider.html">Intel
+DNNL</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html">NVIDIA
+TensorRT</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/ACL-ExecutionProvider.html">ARM
+Compute Library</a> (<em>preview</em>)</td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Xilinx
+Vitis-AI</a> (<em>preview</em>)</td>
+</tr>
+<tr class="odd">
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/TVM-ExecutionProvider.html">TVM</a>
+(<em>preview</em>)</td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html">DirectML</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/NNAPI-ExecutionProvider.html">Android
+Neural Networks API</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/CANN-ExecutionProvider.html">Huawei
+CANN</a> (<em>preview</em>)</td>
+</tr>
+<tr class="even">
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/OpenVINO-ExecutionProvider.html">Intel
+OpenVINO</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/MIGraphX-ExecutionProvider.html">AMD
+MIGraphX</a> (<em>preview</em>)</td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/ArmNN-ExecutionProvider.html">ARM-NN</a>
+(<em>preview</em>)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/ROCm-ExecutionProvider.html">AMD
+ROCm</a> (<em>preview</em>)</td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/CoreML-ExecutionProvider.html">CoreML</a>
+(<em>preview</em>)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/TVM-ExecutionProvider.html">TVM</a>
+(<em>preview</em>)</td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/TVM-ExecutionProvider.html">TVM</a>
+(<em>preview</em>)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/OpenVINO-ExecutionProvider.html">Intel
+OpenVINO</a></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/SNPE-ExecutionProvider.html">Qualcomm
+SNPE</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/Xnnpack-ExecutionProvider.html">XNNPACK</a></td>
+<td></td>
+<td><a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/Xnnpack-ExecutionProvider.html">XNNPACK</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>我们最常用的是<code>CPUExecutionProvider</code>和<code>CUDAExecutionAProvider</code>,
+如果要自己实现一个EP，可以参考<a href="#fn2" class="footnote-ref"
+id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<h2 id="五参考链接">五、参考链接</h2>
+<h2 id="附-runtime源码剖析">附: Runtime源码剖析</h2>
+<h3
+id="onnx中如何绑定c与python接口的">onnx中如何绑定C与python接口的</h3>
+<ul>
+<li>onnx_runtime/onnxruntime/python/onnxruntime_pybind_state.h中声明了三个接口，这个三个接口实现C与python接口的绑定</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#include &quot;onnxruntime_pybind.h&quot;  // must use this for the include of &lt;pybind11/pybind11.h&gt;</span></span><br><span class="line"></span><br><span class="line">namespace onnxruntime &#123;</span><br><span class="line">namespace python &#123;</span><br><span class="line"></span><br><span class="line">void addGlobalMethods(py::module&amp; m, Environment&amp; env);</span><br><span class="line">void addObjectMethods(py::module&amp; m, Environment&amp; env);</span><br><span class="line">void addOrtValueMethods(pybind11::module&amp; m);</span><br><span class="line"></span><br><span class="line">&#125;  // namespace python</span><br><span class="line">&#125;  // namespace onnxruntime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// onnxruntime/onnxruntime/python/onnxruntime_pybind_module.cc中通过</span><br><span class="line"></span><br><span class="line"><span class="comment">#include &quot;onnxruntime_pybind.h&quot;  // must use this for the include of &lt;pybind11/pybind11.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;pybind11/stl.h&gt;</span></span><br><span class="line"><span class="comment">#include &quot;core/providers/get_execution_providers.h&quot;</span></span><br><span class="line"></span><br><span class="line">namespace onnxruntime &#123;</span><br><span class="line">namespace python &#123;</span><br><span class="line">namespace py = pybind11;</span><br><span class="line"></span><br><span class="line">void CreateInferencePybindStateModule(py::module&amp; m);</span><br><span class="line"></span><br><span class="line">PYBIND11_MODULE(onnxruntime_pybind11_state, m) &#123;</span><br><span class="line">  CreateInferencePybindStateModule(m);</span><br><span class="line">  // move it out of shared method since training build has a little different behavior.</span><br><span class="line">  m.<span class="keyword">def</span>(</span><br><span class="line">      <span class="string">&quot;get_available_providers&quot;</span>, []() -&gt; const std::vector&lt;std::string&gt;&amp; &#123; <span class="keyword">return</span> GetAvailableExecutionProviderNames(); &#125;,</span><br><span class="line">      <span class="string">&quot;Return list of available Execution Providers in this installed version of Onnxruntime. &quot;</span></span><br><span class="line">      <span class="string">&quot;The order of elements represents the default priority order of Execution Providers &quot;</span></span><br><span class="line">      <span class="string">&quot;from highest to lowest.&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;  // namespace python</span><br><span class="line">&#125;  // namespace onnxruntime</span><br></pre></td></tr></table></figure>
+<p>InferenceSession中调用构造函数，但是没有这个类型的构造函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> onnxruntime::<span class="built_in">make_unique</span>&lt;InferenceSession&gt;(so, arg, SessionObjectInitializer::<span class="built_in">Get</span>());</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">    Create a new InferenceSession</span></span><br><span class="line"><span class="comment">    @param session_options Session options.</span></span><br><span class="line"><span class="comment">    @param model_uri absolute path of the model file.</span></span><br><span class="line"><span class="comment">    @param logging_manager</span></span><br><span class="line"><span class="comment">    Optional logging manager instance that will enable per session logger output using</span></span><br><span class="line"><span class="comment">    session_options.session_logid as the logger id in messages.</span></span><br><span class="line"><span class="comment">    If nullptr, the default LoggingManager MUST have been created previously as it will be used</span></span><br><span class="line"><span class="comment">    for logging. This will use the default logger id in messages.</span></span><br><span class="line"><span class="comment">    See core/common/logging/logging.h for details, and how LoggingManager::DefaultLogger works.</span></span><br><span class="line"><span class="comment">    This ctor will throw on encountering model parsing issues.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">  <span class="built_in">InferenceSession</span>(<span class="type">const</span> SessionOptions&amp; session_options,</span><br><span class="line">                   <span class="type">const</span> std::string&amp; model_uri,</span><br><span class="line">                   logging::LoggingManager* logging_manager = <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+<p><code>SessionObjectInitializer::Get()</code>返回一个<code>SessionObjectInitializer</code>类型的对象，
+这个对象不得了，开发者给他订一了两个类型转换函数，</p>
+<ul>
+<li><p><code>SessionObjectInitializer -&gt; const SesssionOptions&amp; Args1</code></p></li>
+<li><p><code>SessionObjectInitializer-&gt;logging::LoggingManager*</code></p></li>
+</ul>
+<p>这样编译器就可以利用这两个类型转换函数来实现类型的隐式转换而没有报类型错误。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SessionObjectInitializer</span> &#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">typedef</span> <span class="type">const</span> SessionOptions&amp; Arg1;</span><br><span class="line">  <span class="keyword">typedef</span> logging::LoggingManager* Arg2;</span><br><span class="line">  <span class="function"><span class="keyword">operator</span> <span class="title">Arg1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">GetDefaultCPUSessionOptions</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">operator</span> <span class="title">Arg2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">static</span> std::string default_logger_id&#123;<span class="string">&quot;Default&quot;</span>&#125;;</span><br><span class="line">    <span class="type">static</span> LoggingManager default_logging_manager&#123;std::unique_ptr&lt;ISink&gt;&#123;<span class="keyword">new</span> CErrSink&#123;&#125;&#125;,</span><br><span class="line">                                                  Severity::kWARNING, <span class="literal">false</span>, LoggingManager::InstanceType::Default,</span><br><span class="line">                                                  &amp;default_logger_id&#125;;</span><br><span class="line">    <span class="keyword">return</span> &amp;default_logging_manager;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">static</span> SessionObjectInitializer <span class="title">Get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">SessionObjectInitializer</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>终于找到真身了‼️</p>
+<ul>
+<li>model_path初始化</li>
+<li>model_proto初始化</li>
+<li>构建session</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">InferenceSession::<span class="built_in">InferenceSession</span>(<span class="type">const</span> SessionOptions&amp; session_options,</span><br><span class="line">                                   <span class="type">const</span> std::string&amp; model_uri,</span><br><span class="line">                                   logging::LoggingManager* logging_manager)</span><br><span class="line">    : <span class="built_in">insert_cast_transformer_</span>(<span class="string">&quot;CastFloat16Transformer&quot;</span>) &#123;</span><br><span class="line">  model_location_ = <span class="built_in">ToWideString</span>(model_uri);</span><br><span class="line">  model_proto_ = onnxruntime::<span class="built_in">make_unique</span>&lt;ONNX_NAMESPACE::ModelProto&gt;();</span><br><span class="line">  <span class="keyword">auto</span> status = Model::<span class="built_in">Load</span>(model_location_, *model_proto_);</span><br><span class="line">  <span class="built_in">ORT_ENFORCE</span>(status.<span class="built_in">IsOK</span>(), <span class="string">&quot;Given model could not be parsed while creating inference session. Error message: &quot;</span>,</span><br><span class="line">              status.<span class="built_in">ErrorMessage</span>());</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Finalize session options and initialize assets of this session instance</span></span><br><span class="line">  <span class="built_in">ConstructorCommon</span>(session_options, logging_manager);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3
+id="modelload加载模型的流程"><code>Model::Load</code>加载模型的流程</h3>
+<ul>
+<li><p>不支持的算子如何处理？</p></li>
+<li><p>多个provider之间怎么分配运行图</p></li>
+</ul>
+<h3 id="如何注册一个execution-provider">如何注册一个Execution
+Provider</h3>
+<h2 id="faq">FAQ</h2>
+<h4
+id="clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument">01、<code>clang: error: argument unused during compilation: '-mfpu=neon' [-Werror,-Wunused-command-line-argument]</code></h4>
+<p>这个应该是由于onnxruntime对MAC
+M1机型的兼容性的一个bug，当前我先临时将<code>-mfpu=neon</code>从<code>CMAKE_CXX_FLAGS</code>中移除，然后重新编译。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[ 20%] Building CXX object CMakeFiles/onnxruntime_common.dir/Users/xxx/Documents/Framework/onnxruntime/onnxruntime/core/common/cpuid_info.cc.o</span><br><span class="line">clang: error: argument unused during compilation: <span class="string">&#x27;-mfpu=neon&#x27;</span> [-Werror,-Wunused-command-line-argument]</span><br><span class="line">make[2]: *** [CMakeFiles/onnxruntime_common.dir/Users/xxx/Documents/Framework/onnxruntime/onnxruntime/core/common/cpuid_info.cc.o] Error 1</span><br><span class="line">make[1]: *** [CMakeFiles/onnxruntime_common.dir/all] Error 2</span><br><span class="line">make: *** [all] Error 2</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 1065, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    sys.exit(main())</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 1002, <span class="keyword">in</span> main</span><br><span class="line">    build_targets(args, cmake_path, build_dir, configs, args.parallel)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 471, <span class="keyword">in</span> build_targets</span><br><span class="line">    run_subprocess(cmd_args, <span class="built_in">env</span>=<span class="built_in">env</span>)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 212, <span class="keyword">in</span> run_subprocess</span><br><span class="line">    completed_process = subprocess.run(args, cwd=cwd, check=True, stdout=stdout, stderr=stderr, <span class="built_in">env</span>=my_env, shell=shell)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/mambaforge/lib/python3.9/subprocess.py&quot;</span>, line 528, <span class="keyword">in</span> run</span><br><span class="line">    raise CalledProcessError(retcode, process.args,</span><br><span class="line">subprocess.CalledProcessError: Command <span class="string">&#x27;[&#x27;</span>/opt/homebrew/Cellar/cmake/3.23.2/bin/cmake<span class="string">&#x27;, &#x27;</span>--build<span class="string">&#x27;, &#x27;</span>/Users/xxx/Documents/Framework/onnxruntime/build/Linux/Debug<span class="string">&#x27;, &#x27;</span>--config<span class="string">&#x27;, &#x27;</span>Debug<span class="string">&#x27;]&#x27;</span> returned non-zero <span class="built_in">exit</span> status 2.</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="/Users/xxx/Library/Application%20Support/typora-user-images/image-20220712114712012.png"
+alt="image-20220712114712012" />
+<figcaption aria-hidden="true">image-20220712114712012</figcaption>
+</figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/lib/python3.8/dist-packages/torch/cuda/__init__.py:146: UserWarning:</span><br><span class="line">NVIDIA A100 80GB PCIe with CUDA capability sm_80 is not compatible with the current PyTorch installation.</span><br><span class="line">The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.</span><br><span class="line">If you want to use the NVIDIA A100 80GB PCIe GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/</span><br><span class="line"></span><br><span class="line">  warnings.warn(incompatible_device_warn.format(device_name, capability, <span class="string">&quot; &quot;</span>.<span class="built_in">join</span>(arch_list), device_name))</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;tools/export_onnx_models.py&quot;</span>, line 117, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    convert_onnx(args.model_name, args.model_path, args.batch_size, export_fp16=args.fp16, verbose=args.verbose)</span><br><span class="line">  File <span class="string">&quot;tools/export_onnx_models.py&quot;</span>, line 69, <span class="keyword">in</span> convert_onnx</span><br><span class="line">    inputs = torch.rand(batch_size, 3, 224, 224, dtype=dtype, device=0)</span><br><span class="line">RuntimeError: CUDA error: no kernel image is available <span class="keyword">for</span> execution on the device</span><br></pre></td></tr></table></figure>
+<h4 id="load-model-is-dataparallel-format-your-should-notice">02、load
+model is DataParallel format, your should notice:</h4>
+<ul>
+<li>the op name with 'module.' which will result some operator failed,
+such as <code>load_state_dict</code> will throw miss match</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># load model weight and use another model weight update the network weight</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line">model = EfficientNet.from_pretrained(<span class="string">&#x27;efficientnet-b4&#x27;</span>, num_classes=<span class="number">5</span>)</span><br><span class="line">model.set_swish(memory_efficient=<span class="literal">False</span>)</span><br><span class="line">dataparallel_model = torch.load(model_path, map_location=<span class="string">&quot;cpu&quot;</span>)</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> OrderedDict</span><br><span class="line">new_state_dict = OrderedDict()</span><br><span class="line"><span class="comment"># method 1: use module state_dict to update weight</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> dataparallel_model.module.state_dict():</span><br><span class="line">    new_state_dict[k] = dataparallel_model.module.state_dict()[k]</span><br><span class="line"></span><br><span class="line"><span class="comment"># method 2: current dataparallel_model weight is module._xxxname </span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> dataparallel_model.state_dict():</span><br><span class="line">    new_state_dict[k[<span class="number">7</span>:]] = dataparallel_model.state_dict()[k]</span><br><span class="line"></span><br><span class="line">model.load_state_dict(new_state_dict)</span><br><span class="line">model.cuda()</span><br><span class="line">torch.onnx.export(model, inputs, output_fn, verbose=verbose)</span><br></pre></td></tr></table></figure>
+<h4 id="some-operator-not-supported-by-onnx">03、 Some operator not
+supported by ONNX</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">WARNING: The shape inference of prim::PythonOp <span class="built_in">type</span> is missing, so it may result <span class="keyword">in</span> wrong shape inference <span class="keyword">for</span> the exported graph. Please consider adding it <span class="keyword">in</span> symbolic <span class="keyword">function</span>.</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;export_onnx_efficient_cls.py&quot;</span>, line 79, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    convert_onnx(<span class="string">&quot;efficient_b4_big_5cls&quot;</span>, args.model_path, args.batch_size)</span><br><span class="line">  File <span class="string">&quot;export_onnx_efficient_cls.py&quot;</span>, line 55, <span class="keyword">in</span> convert_onnx</span><br><span class="line">    torch.onnx.export(model.module, inputs, output_fn, verbose=verbose)</span><br><span class="line">  File <span class="string">&quot;/home/xxxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/onnx/__init__.py&quot;</span>, line 350, <span class="keyword">in</span> <span class="built_in">export</span></span><br><span class="line">    <span class="built_in">return</span> utils.export(</span><br><span class="line">  File <span class="string">&quot;/home/xxxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/onnx/utils.py&quot;</span>, line 163, <span class="keyword">in</span> <span class="built_in">export</span></span><br><span class="line">    _export(</span><br><span class="line">  File <span class="string">&quot;/home/xxxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/onnx/utils.py&quot;</span>, line 1110, <span class="keyword">in</span> _export</span><br><span class="line">    ) = graph._export_onnx(  <span class="comment"># type: ignore[attr-defined]</span></span><br><span class="line">RuntimeError: ONNX <span class="built_in">export</span> failed: Couldn<span class="string">&#x27;t export Python operator SwishImplementation</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+<h4 id="获取onnx模型的输出">04、 获取onnx模型的输出</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># get onnx output</span></span><br><span class="line">input_all = [node.name <span class="keyword">for</span> node <span class="keyword">in</span> onnx_model.graph.<span class="built_in">input</span>]</span><br><span class="line">input_initializer = [</span><br><span class="line">    node.name <span class="keyword">for</span> node <span class="keyword">in</span> onnx_model.graph.initializer</span><br><span class="line">]</span><br><span class="line">net_feed_input = <span class="built_in">list</span>(<span class="built_in">set</span>(input_all) - <span class="built_in">set</span>(input_initializer))</span><br><span class="line"><span class="keyword">assert</span> (<span class="built_in">len</span>(net_feed_input) == <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h4
+id="typeerror-descriptors-cannot-not-be-created-directly.">05、TypeError:
+Descriptors cannot not be created directly.</h4>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;export_onnx_models.py&quot;</span>, line 4, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    import onnx</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/onnx/__init__.py&quot;</span>, line 6, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from onnx.external_data_helper import load_external_data_for_model, write_external_data_tensors, convert_model_to_external_data</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/onnx/external_data_helper.py&quot;</span>, line 9, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from .onnx_pb import TensorProto, ModelProto, AttributeProto, GraphProto</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/onnx/onnx_pb.py&quot;</span>, line 4, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from .onnx_ml_pb2 import *  <span class="comment"># noqa</span></span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/onnx/onnx_ml_pb2.py&quot;</span>, line 33, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    _descriptor.EnumValueDescriptor(</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/google/protobuf/descriptor.py&quot;</span>, line 755, <span class="keyword">in</span> __new__</span><br><span class="line">    _message.Message._CheckCalledFromGeneratedFile()</span><br><span class="line">TypeError: Descriptors cannot not be created directly.</span><br><span class="line">If this call came from a _pb2.py file, your generated code is out of <span class="built_in">date</span> and must be regenerated with protoc &gt;= 3.19.0.</span><br><span class="line">If you cannot immediately regenerate your protos, some other possible workarounds are:</span><br><span class="line"> 1. Downgrade the protobuf package to 3.20.x or lower.</span><br><span class="line"> 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).</span><br><span class="line"></span><br><span class="line">More information: https://developers.google.com/protocol-buffers/docs/news/2022-05-06<span class="comment">#python-updates</span></span><br></pre></td></tr></table></figure>
+<p>protobuf版本太高与现有的onnxparser不兼容，根据错误提示降低protobuf的版本即可。
+python3 -m pip install protobuf==3.19.4</p>
+<h4
+id="attributeerror-upsample-object-has-no-attribute-recompute_scale_factor">06、AttributeError:
+'Upsample' object has no attribute 'recompute_scale_factor'</h4>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;export_onnx_models.py&quot;</span>, line 148, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    convert_onnx(args.model_name, args.model_path, batch_size=args.batch_size, image_size=args.img_size, export_fp16=args.fp16, simplify=args.simplify, verify=args.verify, verbose=args.verbose)</span><br><span class="line">  File <span class="string">&quot;export_onnx_models.py&quot;</span>, line 75, <span class="keyword">in</span> convert_onnx</span><br><span class="line">    test_infer_performance(model=model, model_name=model_name, batch_size=batch_size, input_shape=(3, image_size, image_size), num_data=10240)</span><br><span class="line">  File <span class="string">&quot;/home/xxx/Repo/infra_utilities/model_utils.py&quot;</span>, line 72, <span class="keyword">in</span> test_infer_performance</span><br><span class="line">    ret = model(data)</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1110, <span class="keyword">in</span> _call_impl</span><br><span class="line">    <span class="built_in">return</span> forward_call(*input, **kwargs)</span><br><span class="line">  File <span class="string">&quot;/home/xxx/Repo/infra_utilities/./models/yolox/models/yolox.py&quot;</span>, line 30, <span class="keyword">in</span> forward</span><br><span class="line">    fpn_outs = self.backbone(x)</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1110, <span class="keyword">in</span> _call_impl</span><br><span class="line">    <span class="built_in">return</span> forward_call(*input, **kwargs)</span><br><span class="line">  File <span class="string">&quot;/home/xxx/Repo/infra_utilities/./models/yolox/models/yolo_pafpn.py&quot;</span>, line 98, <span class="keyword">in</span> forward</span><br><span class="line">    f_out0 = self.upsample(fpn_out0)  <span class="comment"># 512/16</span></span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1110, <span class="keyword">in</span> _call_impl</span><br><span class="line">    <span class="built_in">return</span> forward_call(*input, **kwargs)</span><br><span class="line">  File <span class="string">&quot;/home/x x x/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/nn/modules/upsampling.py&quot;</span>, line 154, <span class="keyword">in</span> forward</span><br><span class="line">    recompute_scale_factor=self.recompute_scale_factor)</span><br><span class="line">  File <span class="string">&quot;/home/xxx/software/miniconda3/envs/inference/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1185, <span class="keyword">in</span> __getattr__</span><br><span class="line">    raise AttributeError(<span class="string">&quot;&#x27;&#123;&#125;&#x27; object has no attribute &#x27;&#123;&#125;&#x27;&quot;</span>.format(</span><br><span class="line">AttributeError: <span class="string">&#x27;Upsample&#x27;</span> object has no attribute <span class="string">&#x27;recompute_scale_factor&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>torch版本降低到版本1.9.1，torchvision版本降低到版本0.10.1。但是我是通过在torch代码里进行更改进行解决。</p>
+<p>https://github.com/pytorch/pytorch/pull/43535/files</p>
+<h4
+id="runtimeerror-input-type-torch.cuda.floattensor-and-weight-type-torch.cuda.halftensor-should-be-the-same">07、RuntimeError:
+Input type (torch.cuda.FloatTensor) and weight type
+(torch.cuda.HalfTensor) should be the same</h4>
+<p>转化数据格式类型即可</p>
+<h4
+id="error---in-node-23-parsegraph-invalid_node-invalid-node---pad_23">08、ERROR
+- In node 23 (parseGraph): INVALID_NODE: Invalid Node - Pad_23</h4>
+<p>[shuffleNode.cpp::symbolicExecute::392] Error Code 4: Internal Error
+(Reshape_12: IShuffleLayer applied to shape tensor must have 0 or 1
+reshape dimensions: dimensions were [-1,2])</p>
+<p>因为tensorrt
+截止到版本8.4.1为止，对动态输入的情况下，这种输入不支持导致的。遇到这种问题，当前只能先取消对动态输入的支持，采用固定shape的输入。</p>
+<figure>
+<img
+src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/image-20220909095831552.png"
+alt="image-20220909095831552" />
+<figcaption aria-hidden="true">image-20220909095831552</figcaption>
+</figure>
+<figure>
+<img
+src="../../../Library/Application%20Support/typora-user-images/image-20220909095846591.png"
+alt="image-20220909095846591" />
+<figcaption aria-hidden="true">image-20220909095846591</figcaption>
+</figure>
+<p>python3 -m pip install torch==1.12.0+cu115 -f
+https://download.pytorch.org/whl/torch_stable.html</p>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"
+role="doc-endnote"><p>https://onnxruntime.ai/docs/execution-providers/
+"onnxruntime execution"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"
+role="doc-endnote"><p>https://onnxruntime.ai/docs/execution-providers/add-execution-provider.html
+"add execution provider"<a href="#fnref2" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202211/20221113-onnxruntime/" title="OnnxRuntime">http://www.deepindeed.cn/202211/20221113-onnxruntime/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Backends/" rel="tag"># Backends</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202210/20221010-fastertransformer/" rel="prev" title="FasterTransformer">
+                  <i class="fa fa-chevron-left"></i> FasterTransformer
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">473k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:08</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":null}</script>
+<script src="/js/third-party/chat/gitter.js"></script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","locale":{"placeholder":"欢迎交流指正"},"emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail","nick","mail"],"login":"enable","el":"#waline","comment":true,"path":"/202211/20221113-onnxruntime/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

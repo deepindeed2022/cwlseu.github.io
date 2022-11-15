@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CTimes+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="FasterTransformer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FasterTransformer">
+<meta property="og:url" content="http://www.deepindeed.cn/202210/20221010-fastertransformer/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="FasterTransformer">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png">
+<meta property="og:image" content="http://www.deepindeed.cn/202210/images/fastertransformer/fastertransformer-cache.png">
+<meta property="article:published_time" content="2022-10-10T11:39:39.000Z">
+<meta property="article:modified_time" content="2022-11-15T12:03:18.824Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="Backends">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202210/20221010-fastertransformer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202210/20221010-fastertransformer/","path":"202210/20221010-fastertransformer/","title":"FasterTransformer"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FasterTransformer | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">心有猛虎，细嗅蔷薇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#fastertransformer"><span class="nav-number">1.</span> <span class="nav-text">FasterTransformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">一、框架简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorrt%E4%B8%8Efaster-transformer%E5%AF%B9%E6%AF%941"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、TensorRT与Faster
+Transformer对比1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#support-matrix"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、Support Matrix</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E6%A1%86%E6%9E%B6%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.</span> <span class="nav-text">二、框架优化策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、内核优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、内存优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E5%BA%94%E7%94%A8%E9%9B%86%E6%88%90fastertransformer"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、文本翻译应用集成FasterTransformer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-performance"><span class="nav-number">1.3.</span> <span class="nav-text">三、 Performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9Bfaq"><span class="nav-number">1.4.</span> <span class="nav-text">四、FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.5.</span> <span class="nav-text">五、参考文献</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/cwlseu" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202210/20221010-fastertransformer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FasterTransformer | Deepindeed">
+      <meta itemprop="description" content="FasterTransformer">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FasterTransformer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-10 19:39:39" itemprop="dateCreated datePublished" datetime="2022-10-10T19:39:39+08:00">2022-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-15 20:03:18" itemprop="dateModified" datetime="2022-11-15T20:03:18+08:00">2022-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202210/20221010-fastertransformer/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202210/20221010-fastertransformer/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">FasterTransformer</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="fastertransformer">FasterTransformer</h1>
+<ul>
+<li>code: https://github.com/NVIDIA/FasterTransformer.git</li>
+<li>NVIDIA 巨巨出品:
+https://raw.githubusercontent.com/NVIDIA/FasterTransformer/main/README.md</li>
+<li>https://developer.nvidia.com/zh-cn/blog/accelerated-inference-for-large-transformer-models-using-nvidia-fastertransformer-and-nvidia-triton-inference-server/</li>
+</ul>
+<h2 id="一框架简介">一、框架简介</h2>
+<p>在 NLP 中，编码器和解码器是两个重要的组件，transformer
+层成为这两个组件的流行架构。 FasterTransformer
+为编码器和解码器实现了高度优化的转换器层以进行推理。 在 Volta、Turing 和
+Ampere GPU 上，当数据和权重的精度为 FP16 时，会自动使用 Tensor Cores
+的计算能力。</p>
+<p>FasterTransformer 建立在 CUDA、cuBLAS、cuBLASLt 和 C++ 之上。
+我们提供以下框架的至少一个 API：TensorFlow、PyTorch 和 Triton 后端。
+用户可以直接将 FasterTransformer 集成到这些框架中。</p>
+<h3 id="tensorrt与faster-transformer对比1">1、TensorRT与Faster
+Transformer对比<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></h3>
+<ul>
+<li><p>使用原生 TensorRT
+可让您在不更改代码的情况下最大程度地灵活地微调网络结构或参数，而
+demoBERT 和 FasterTransformer 专注于<a
+href="#Support%20Matrix">特定网络</a>，可能需要手动更新配置文件甚至网络更改代码。</p></li>
+<li><p>FasterTransformer
+支持可变序列长度功能，该功能对连接的输入序列运行推理以避免填充部分的计算浪费，但这需要在应用程序中进行预处理以在准备输入数据时连接输入序列。此外，FasterTransformer
+为<code>GreedySearch</code>和<code>BeamSearch</code>算法提供了 CUDA
+内核，它还具有多 GPU/多节点支持，而 TensorRT 还没有这些。</p></li>
+</ul>
+<blockquote>
+<p>如果您的 Transformer
+模型不是基于任何常见架构，或者如果您调整了网络结构或参数，则应考虑直接使用
+TensorRT API
+运行网络。另一方面，如果你想获得最大可能的性能，并愿意在部署模型上花费更多的工程精力，那么你可以考虑使用
+demoBERT 或 FasterTransformer。</p>
+</blockquote>
+<blockquote>
+<p>业务算法同学表示：fastertransformer我们线上就在用，但是缺点也有，就是模型结构写的比较死，他的op都是通过cuda
+编程去实现的。如果要改模型结构，要改cuda
+代码。onnx或者tensorRT会灵活很多</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>TensorRT</th>
+<th><a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/FasterTransformer">FasterTransformer</a></th>
+<th><a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/tree/main/demo/BERT">TensorRT
+OSSdemoBERT sample</a></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model support</td>
+<td>Most ONNX models</td>
+<td>Only selected models</td>
+<td>Only BERT</td>
+</tr>
+<tr class="even">
+<td>Usability with tweaked network structure or parameters</td>
+<td>Simple, load from ONNX directly</td>
+<td>Need manual updates to the code and the config files.</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Uses TensorRT</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes, with plug-ins</td>
+</tr>
+<tr class="even">
+<td>Supports full MHA fusion</td>
+<td>No (will be improved in a future TensorRT version).</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Supports GEMM+GELU fusion</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Support variable sequence length without padding</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Support KV-cache for autoregressive transformers</td>
+<td>No (will be improved in a future TensorRT version).</td>
+<td>Yes</td>
+<td>Not Applicable for BERT</td>
+</tr>
+<tr class="even">
+<td>Supports greedy/beam search for autoregressive transformers</td>
+<td>Usually done outside of TensorRT, such as using HuggingFace
+APIs</td>
+<td>Yes, natively</td>
+<td>Not Applicable for BERT</td>
+</tr>
+<tr class="odd">
+<td>Supports multi-GPU/multi-node inference</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Supports INT8</td>
+<td>Yes, but only explicit quantization mode (implicit quantization mode
+is functional but the performance is not guaranteed).</td>
+<td>Yes, but only for some selected models</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="support-matrix">2、Support Matrix</h3>
+<p>FasterTransformer
+支持的模型包括额BERT/XLNet/Encoder/Decoder/GPU/T5/SwinTransformer/Vit等</p>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 12%" />
+<col style="width: 3%" />
+<col style="width: 17%" />
+<col style="width: 21%" />
+<col style="width: 13%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Models</th>
+<th>Framework</th>
+<th>FP16</th>
+<th>INT8 (after Turing)</th>
+<th>Sparsity (after Ampere)</th>
+<th>Tensor parallel</th>
+<th>Pipeline parallel</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BERT</td>
+<td>TensorFlow</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>BERT</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>BERT</td>
+<td>Triton backend</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>XLNet</td>
+<td>C++</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Encoder</td>
+<td>TensorFlow</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Encoder</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Decoder</td>
+<td>TensorFlow</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Decoder</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Decoding</td>
+<td>TensorFlow</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Decoding</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>GPT</td>
+<td>TensorFlow</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>GPT</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>GPT</td>
+<td>Triton backend</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>GPT-J</td>
+<td>Triton backend</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Longformer</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>T5</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>T5</td>
+<td>Triton backend</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>T5</td>
+<td>TensorRT</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Swin Transformer</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Swin Transformer</td>
+<td>TensorRT</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>ViT</td>
+<td>PyTorch</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>ViT</td>
+<td>TensorRT</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>GPT-NeoX</td>
+<td>Triton backend</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="二框架优化策略">二、框架优化策略</h2>
+<h3 id="内核优化">1、内核优化</h3>
+<p>首先，由于<code>SelfAttention</code>和<code>CrossAttention</code>中query的序列长度始终为1，我们使用自定义的融合多头注意力内核进行优化。</p>
+<p>其次，我们将许多小操作融合到一个内核中。例如，<code>AddBiasResidualLayerNorm</code>
+将添加偏差、添加前一个块的残差和层归一化的计算结合到 1 个内核中。</p>
+<p>第三，我们优化了top k操作和采样，以加速beam
+search和采样。最后，为了防止重新计算之前的键和值，我们在每一步分配一个缓冲区来存储它们。虽然需要一些额外的内存使用，但我们可以节省重新计算的成本，在每一步分配缓冲区，以及连接的成本。</p>
+<h3 id="内存优化">2、内存优化</h3>
+<p>与 BERT 等传统模型不同，GPT-3 有 1750
+亿个参数，即使我们以半精度存储模型也需要 350
+GB。因此，我们必须减少其他部分的内存使用量。在 FasterTransformer
+中，我们将复用不同解码器层的内存缓冲区。由于 GPT-3 的层数是
+96，我们只需要 1/96 的内存。</p>
+<p>对矩阵乘法进行算法选择，通过在“硬件”级别使用不同的低级算法以数十种不同的方式执行,
+可以选择不同的底层算法进行操作。</p>
+<p><img src="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png" alt="img" style="zoom: 33%;" /></p>
+<p>在 Effective Transformer
+中，我们仍然将输入批处理作为填充矩阵，但填充值将在不同的计算阶段动态删除和恢复。通过计算输入掩码矩阵的<strong>前缀和</strong>，我们可以在没有填充值的矩阵中访问每个序列中的真实输入。
+上图说明了如何访问有效输入并在计算期间动态删除和恢复填充值。
+所有有效输入都显示为绿色，而填充值显示为灰色。</p>
+<h3
+id="文本翻译应用集成fastertransformer">3、文本翻译应用集成FasterTransformer</h3>
+<p>1、模型初始化。包括<code>decoding_gemm</code>, MatMul
+内核自动调整GEMM策略</p>
+<p>矩阵乘法是基于Transformer的神经网络中主要和最繁重的操作。 FT 使用来自
+CuBLAS 和 CuTLASS 库的功能来执行这些类型的操作。 重要的是要知道 MatMul
+操作可以在“硬件”级别使用不同的低级算法以数十种不同的方式执行。</p>
+<p><a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-GemmBatchedEx"><code>GemmBatchedEx</code></a>
+函数实现 MatMul 操作，并以<code>cublasGemmAlgo_t</code>作为输入参数。
+使用此参数，您可以选择不同的底层算法进行操作。</p>
+<p>FasterTransformer
+库使用此参数对所有底层算法进行实时基准测试，并为模型的参数和您的输入数据（注意层的大小、注意头的数量、隐藏层的大小）选择最佳的一个。
+此外，FT
+对网络的某些部分使用硬件加速的底层函数，例如<code>__expf__</code>、<code>__shfl_xor_sync</code></p>
+<p>2、推理上的优化技术</p>
+<blockquote>
+<p>层融合——预处理阶段的一组技术，将多层神经网络组合成一个单一的神经网络，将使用一个单一的内核进行计算。
+这种技术减少了数据传输并增加了数学密度，从而加速了推理阶段的计算。
+例如， multi-head attention 块中的所有操作都可以合并到一个内核中。</p>
+</blockquote>
+<figure>
+<img
+src="https://img2020.cnblogs.com/blog/1251718/202005/1251718-20200528195459184-699522366.png"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<blockquote>
+<p>自回归模型/激活缓存</p>
+</blockquote>
+<p>防止通过Transformer重新计算每个新token 生成器的先前键和值，FT
+分配一个缓冲区来在每一步存储它们。虽然需要一些额外的内存使用，但 FT
+可以节省重新计算的成本、在每一步分配缓冲区以及连接的成本。相同的缓存机制用于
+NN 的多个部分。</p>
+<p><img src="../images/fastertransformer/fastertransformer-cache.png" alt="fastertransformer-cache" style="zoom: 33%;" /></p>
+<blockquote>
+<p>精度较低的推理</p>
+</blockquote>
+<p>FT 的内核支持使用 fp16 和 int8 中的低精度输入数据进行推理。
+由于较少的数据传输量和所需的内存，这两种机制都允许加速。 同时，int8 和
+fp16 计算可以在特殊硬件上执行，例如Tensor Core（适用于从 Volta
+开始的所有 GPU 架构），以及即将推出的 Hopper GPU
+中的Transformer引擎。</p>
+<h2 id="三-performance">三、 Performance</h2>
+<h2 id="四faq">四、FAQ</h2>
+<p>1、RuntimeError: CUDA error: no kernel image is available for
+execution on the device</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[INFO] Finish the decoding gemm <span class="built_in">test</span></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;../examples/pytorch/decoding/translate_example.py&quot;</span>, line 88, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    translated = translator.translate(lines, batch_size=args.batch_size)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 337, <span class="keyword">in</span> translate</span><br><span class="line">    batch_data = self.translate_batch_ftdecoding(batch, data.src_vocabs)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 473, <span class="keyword">in</span> translate_batch_ftdecoding</span><br><span class="line">    src, enc_states, memory_bank, src_lengths = self._run_encoder(batch)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 498, <span class="keyword">in</span> _run_encoder</span><br><span class="line">    enc_states, memory_bank, src_lengths = self.model.encoder(</span><br><span class="line">  File <span class="string">&quot;/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1111, <span class="keyword">in</span> _call_impl</span><br><span class="line">    <span class="built_in">return</span> forward_call(*input, **kwargs)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/../../../examples/pytorch/encoder/utils/ft_encoder.py&quot;</span>, line 119, <span class="keyword">in</span> forward</span><br><span class="line">    <span class="built_in">return</span> emb, hidden_states.transpose(0, 1).contiguous(), lengths</span><br><span class="line">RuntimeError: CUDA error: no kernel image is available <span class="keyword">for</span> execution on the device</span><br><span class="line">CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.</span><br><span class="line">For debugging consider passing CUDA_LAUNCH_BLOCKING=1.</span><br></pre></td></tr></table></figure>
+<p>解决过程：</p>
+<p>网上查询说是PyTorch与CUDA版本不匹配导致的，然后我就尝试更换了基础镜像，重新安装了新的版本的pytorch，报错仍然存在。然后我又回头去看官方文档，才发现可能是我编译的时候可能传错了参数。因为我用的是T4，compute
+capacity为75，结果我编译的时候用的是80.</p>
+<blockquote>
+<p>Note: the <code>xx</code> of <code>-DSM=xx</code> in following
+scripts means the compute capability of your GPU. The following table
+shows the compute capability of common GPUs.</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">GPU</th>
+<th style="text-align: center;">compute capacity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">P40</td>
+<td style="text-align: center;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">P4</td>
+<td style="text-align: center;">61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">V100</td>
+<td style="text-align: center;">70</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">T4</td>
+<td style="text-align: center;">75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">A100</td>
+<td style="text-align: center;">80</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">A30</td>
+<td style="text-align: center;">80</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">A10</td>
+<td style="text-align: center;">86</td>
+</tr>
+</tbody>
+</table>
+<h2 id="五参考文献">五、参考文献</h2>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"
+role="doc-endnote"><p>https://developer.nvidia.com/zh-cn/blog/accelerated-inference-for-large-transformer-models-using-nvidia-fastertransformer-and-nvidia-triton-inference-server/
+"使用 FasterTransformer 和 Triton 推理服务器加速大型 Transformer
+模型的推理"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202210/20221010-fastertransformer/" title="FasterTransformer">http://www.deepindeed.cn/202210/20221010-fastertransformer/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Backends/" rel="tag"># Backends</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202210/20221031-deploymentfaq/" rel="prev" title="部署AI算法服务常见FAQ">
+                  <i class="fa fa-chevron-left"></i> 部署AI算法服务常见FAQ
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/202211/20221113-onnxruntime/" rel="next" title="OnnxRuntime">
+                  OnnxRuntime <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">473k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:08</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":null}</script>
+<script src="/js/third-party/chat/gitter.js"></script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","locale":{"placeholder":"欢迎交流指正"},"emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail","nick","mail"],"login":"enable","el":"#waline","comment":true,"path":"/202210/20221010-fastertransformer/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
