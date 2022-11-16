@@ -29,7 +29,7 @@
 <meta property="og:description" content="中文文本纠错">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-07-23T13:05:18.000Z">
-<meta property="article:modified_time" content="2022-09-02T20:05:26.057Z">
+<meta property="article:modified_time" content="2022-11-16T16:13:17.729Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="NLP">
 <meta name="twitter:card" content="summary">
@@ -148,9 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">常见错误类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%9B%E4%BA%8B"><span class="nav-number">2.</span> <span class="nav-text">赛事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">3.0.1.</span> <span class="nav-text">构造方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB"><span class="nav-number">3.1.</span> <span class="nav-text">编辑距离</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2%E6%A6%82%E8%BF%B0"><span class="nav-number">4.</span> <span class="nav-text">发展历史概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E6%9D%A1%E4%BB%B6"><span class="nav-number">4.0.1.</span> <span class="nav-text">依赖条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">4.0.2.</span> <span class="nav-text">发展历程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E7%A0%94%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="nav-number">4.0.3.</span> <span class="nav-text">调研的必要性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94"><span class="nav-number">5.</span> <span class="nav-text">技术调研</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E8%AF%AD%E8%A8%80%E7%9F%A5%E8%AF%86-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%90%86%E8%A7%A3-%E7%9F%A5%E8%AF%86%E8%AE%A1%E7%AE%97"><span class="nav-number">5.1.</span> <span class="nav-text">核心技术（语言知识-&gt;上下文理解-&gt;知识计算）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E7%BF%BB%E8%AF%91%E6%8A%80%E6%9C%AF%E7%BA%A0%E9%94%99"><span class="nav-number">5.1.1.</span> <span class="nav-text">采用翻译技术纠错</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#soft-masked-bert"><span class="nav-number">5.2.</span> <span class="nav-text">Soft-Masked BERT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#confusionset-ptrnet---cscconfusionset-guided-pointer-networks-for-chinese-spelling-check"><span class="nav-number">5.3.</span> <span class="nav-text">ConfusionSet
-+PtrNet -&gt; CSC[^Confusionset-guided Pointer Networks for Chinese
-Spelling Check]</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">6.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gec"><span class="nav-number">7.</span> <span class="nav-text">GEC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E4%BC%81%E4%B8%9Apapers"><span class="nav-number">8.</span> <span class="nav-text">互联网企业Papers</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%B8%AD%E4%B8%BB%E8%A6%81%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">8.1.</span> <span class="nav-text">业务中主要存在的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.0.1.</span> <span class="nav-text">依赖条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">1.0.2.</span> <span class="nav-text">发展历程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E7%A0%94%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="nav-number">1.0.3.</span> <span class="nav-text">调研的必要性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">常见错误类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%9B%E4%BA%8B"><span class="nav-number">3.1.</span> <span class="nav-text">赛事</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE-%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">数据-构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0-%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB"><span class="nav-number">3.3.</span> <span class="nav-text">评估-编辑距离</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94"><span class="nav-number">4.</span> <span class="nav-text">技术调研</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E8%AF%AD%E8%A8%80%E7%9F%A5%E8%AF%86-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%90%86%E8%A7%A3-%E7%9F%A5%E8%AF%86%E8%AE%A1%E7%AE%97"><span class="nav-number">4.1.</span> <span class="nav-text">核心技术（语言知识-&gt;上下文理解-&gt;知识计算）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E8%AF%AD%E8%A8%80%E7%BB%9F%E8%AE%A1%E6%A8%A1%E5%9E%8B%E7%BA%A0%E9%94%99%E5%85%88%E9%AA%8C%E8%A7%84%E5%88%99"><span class="nav-number">4.1.1.</span> <span class="nav-text">采用语言统计模型纠错+先验规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E7%BF%BB%E8%AF%91%E6%8A%80%E6%9C%AF%E7%BA%A0%E9%94%99"><span class="nav-number">4.1.2.</span> <span class="nav-text">采用翻译技术纠错</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">经典算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%BB%9F%E8%AE%A1%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%96%87%E6%9C%AC%E7%BA%A0%E9%94%99%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">基于统计语言模型的文本纠错方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#soft-masked-bert"><span class="nav-number">5.2.</span> <span class="nav-text">Soft-Masked BERT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8Eptrnet%E7%9A%84%E9%94%99%E8%AF%AF%E6%96%87%E6%9C%AC%E6%A3%80%E6%B5%8B"><span class="nav-number">5.3.</span> <span class="nav-text">基于PtrNet的错误文本检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E8%AF%AD%E6%B3%95%E9%94%99%E8%AF%AF%E7%BA%A0%E9%94%99"><span class="nav-number">5.4.</span> <span class="nav-text">文本语法错误纠错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%B8%9A%E7%95%8C%E7%9A%84%E6%96%87%E6%9C%AC%E7%BA%A0%E9%94%99%E5%B7%A5%E4%BD%9C"><span class="nav-number">5.5.</span> <span class="nav-text">工业界的文本纠错工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%B8%AD%E4%B8%BB%E8%A6%81%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.6.</span> <span class="nav-text">业务中主要存在的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -278,7 +276,7 @@ Spelling Check]</span></a></li></ol></li><li class="nav-item nav-level-2"><a cla
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-03 04:05:26" itemprop="dateModified" datetime="2022-09-03T04:05:26+08:00">2022-09-03</time>
+      <time title="修改时间：2022-11-17 00:13:17" itemprop="dateModified" datetime="2022-11-17T00:13:17+08:00">2022-11-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -318,14 +316,14 @@ Spelling Check]</span></a></li></ol></li><li class="nav-item nav-level-2"><a cla
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>8.3k</span>
+      <span>6.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>14 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -337,7 +335,27 @@ Spelling Check]</span></a></li></ol></li><li class="nav-item nav-level-2"><a cla
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="常见错误类型">常见错误类型</h2>
+        <h2 id="背景介绍">背景介绍</h2>
+<h4 id="依赖条件">依赖条件</h4>
+<p>纠错技术相对于词法分析，句法分析等受到的关注一直较小，一方面是因为<strong>文本出错的比例比较小</strong>，在一些重要场合，也有专门人员进行校验；另一方面<strong>本身问题也相对较难</strong>，其要求计算机对语言规则以及文本语义有深刻的理解。</p>
+<p>我们把中文常见错误总结分为三类：</p>
+<ul>
+<li>用词错误，由于输入法等原因导致的选词错误，其主要表现为音近，形近等；</li>
+<li>文法/句法错误，该类错误主要是由于对语言不熟悉导致的如多字、少字、乱序等错误，其错误片段相对较大；</li>
+<li>知识类错误，该类错误可能由于对某些知识不熟悉导致的错误，要解决该类问题，通常得引入外部知识、常识等。</li>
+</ul>
+<h4 id="发展历程">发展历程</h4>
+<ul>
+<li>2000年以前，业界主要依靠长期积累的纠错规则和纠错词典来进行纠错，比如微软的文档编辑产品WORD即采用这种方法</li>
+<li>随着机器学习技术的发展，纠错问题受到了学术界和工业界越来越多的关注，其中有两大主流方法：
+<ul>
+<li>一种解决思路是将语言错误归类，然后采用Maxent（最大熵模型）、SVM等分类方法对这些类别进行重点识别；</li>
+<li>另外一种思路是借鉴统计机器翻译（SMT）的思想，将语言纠错等价为机器翻译的过程，即错误文本翻译为正确文本，并随之出现了一系列的优化方法。</li>
+</ul></li>
+</ul>
+<h4 id="调研的必要性">调研的必要性</h4>
+<p>近年来，随着新媒体行业的快速发展，中国自媒体从业人数逐年增长，至2017年有近260万。但是相对于传统媒体，其缺少人工校稿环节，编辑好的文章即刻发表，导致文章的错误比例较高。比如一些新媒体平台的正文错误率在2%以上，标题错误率在1%左右。同时，语音智能硬件产品的兴起，也暴露出语音识别技术的错误率高企问题，在某些场景语音识别中，错误率可能达到8%-10%，影响了后续的query理解及对话效果。因此研发优质的中文纠错技术，便成为了必须。</p>
+<h2 id="常见错误类型">常见错误类型</h2>
 <p>在中文中，常见的错误类型大概有如下几类：</p>
 <p>由于字音字形相似导致的错字形式：体脂称—&gt;体脂秤 多字错误：iphonee
 —&gt; iphone 少字错误：爱有天意 --&gt; 假如爱有天意 顺序错误: 表达难以
@@ -347,13 +365,9 @@ Spelling Check]</span></a></li></ol></li><li class="nav-item nav-level-2"><a cla
 <img
 src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335669.png"
 alt="Alt text" /></p>
-<h2 id="赛事">赛事</h2>
-<p>几届中文纠错评测，例如CGED与NLPCC - Chinese Spelling Check Evaluation
-at SIGHAN Bake-off 2013 [Wu et al., 2013]<a href="#fn1"
-class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> -
-CLP-2014 Chinese Spelling Check Evaluation (Yu et al., 2014) <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336162.png"
-alt="Alt text" /></p>
+<ul>
+<li></li>
+</ul>
 <h2 id="数据集">数据集</h2>
 <p>1、Academia Sinica Balanced Corpus (ASBC for short hereafter, cf.
 Chen et al., 1996). 2、混淆词数据集[^A Hybrid Approach to Automatic
@@ -373,7 +387,17 @@ http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html CLP 2014 Bake-off:
 http://ir.itc.ntnu.edu.tw/lre/clp14csc.html SIGHAN 2013 Bake-off:
 http://ir.itc.ntnu.edu.tw/lre/sighan7csc.html</p>
 <p>http://nlp.ee.ncu.edu.tw/resource/csc.html</p>
-<h4 id="构造方法">构造方法</h4>
+<h3 id="赛事">赛事</h3>
+<p>几届中文纠错评测，例如CGED与NLPCC</p>
+<ul>
+<li>Chinese Spelling Check Evaluation at SIGHAN Bake-off 2013 [Wu et
+al., 2013]<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></li>
+<li>CLP-2014 Chinese Spelling Check Evaluation (Yu et al., 2014) <img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336162.png"
+alt="Alt text" /></li>
+</ul>
+<h3 id="数据-构造方法">数据-构造方法</h3>
 <p>1、对字进行增删、交换位置、混淆词替换 2、常见混淆集整理 &gt;
 视觉上和语音上的相似字是造成汉语文本错误的主要因素。通过定义适当的相似性度量，考虑扩展仓颉代码，我们可以在几分之一秒内识别视觉上相似的字符。根据汉语词汇中单个汉字的发音信息，我们可以计算出一个与给定汉字在语音上相似的汉字列表。我们收集了网络上出现的621个错误的中文词汇，并分析了这些错误的原因。其中83%的错误与语音相似性有关，48%的错误与所涉及的字符之间的视觉相似性有关。生成语音和视觉上相似的字符列表，我们的程序能够包含报告错误中超过90%的错误字符。<a
 href="#fn2" class="footnote-ref" id="fnref2"
@@ -385,7 +409,7 @@ Study on Chinese Spelling Check Using Confusion Sets and N-gram
 Statistics[J]. International Journal of Computational Linguistics &amp;
 Chinese Language Processing, Volume 20, Number 1, June 2015-Special
 Issue on Chinese as a Foreign Language, 2015, 20(1).</p>
-<h3 id="编辑距离">编辑距离</h3>
+<h3 id="评估-编辑距离">评估-编辑距离</h3>
 <p>编辑距离的经典应用就是用于拼写检错，如果用户输入的词语不在词典中，自动从词典中找出编辑距离小于某个数<span
 class="math inline">\(n\)</span>的单词，让用户选择正确的那一个，<span
 class="math inline">\(n\)</span>通常取到2或者3。</p>
@@ -404,25 +428,7 @@ class="math inline">\(x=y\)</span> （Levenshtein距离为0 &lt;==&gt;
 class="math inline">\(d(x,y) + d(y,z) &gt;= d(x,z)\)</span>
 （从x变到z所需的步数不会超过x先变成y再变成z的步数）</p>
 <p>最后这一个性质叫做三角形不等式。就好像一个三角形一样，两边之和必然大于第三边。</p>
-<h2 id="发展历史概述">发展历史概述</h2>
-<h4 id="依赖条件">依赖条件</h4>
-<p>纠错技术相对于词法分析，句法分析等受到的关注一直较小，一方面是因为<strong>文本出错的比例比较小</strong>，在一些重要场合，也有专门人员进行校验；另一方面<strong>本身问题也相对较难</strong>，其要求计算机对语言规则以及文本语义有深刻的理解。</p>
-<p>我们把中文常见错误总结分为三类： -
-用词错误，由于输入法等原因导致的选词错误，其主要表现为音近，形近等； -
-文法/句法错误，该类错误主要是由于对语言不熟悉导致的如多字、少字、乱序等错误，其错误片段相对较大；
--
-知识类错误，该类错误可能由于对某些知识不熟悉导致的错误，要解决该类问题，通常得引入外部知识、常识等。</p>
-<h4 id="发展历程">发展历程</h4>
-<ul>
-<li>2000年以前，业界主要依靠长期积累的纠错规则和纠错词典来进行纠错，比如微软的文档编辑产品WORD即采用这种方法</li>
-<li>随着机器学习技术的发展，纠错问题受到了学术界和工业界越来越多的关注，其中有两大主流方法：
-<ul>
-<li>一种解决思路是将语言错误归类，然后采用Maxent（最大熵模型）、SVM等分类方法对这些类别进行重点识别；</li>
-<li>另外一种思路是借鉴统计机器翻译（SMT）的思想，将语言纠错等价为机器翻译的过程，即错误文本翻译为正确文本，并随之出现了一系列的优化方法。</li>
-</ul></li>
-</ul>
-<h4 id="调研的必要性">调研的必要性</h4>
-<p>近年来，随着新媒体行业的快速发展，中国自媒体从业人数逐年增长，至2017年有近260万。但是相对于传统媒体，其缺少人工校稿环节，编辑好的文章即刻发表，导致文章的错误比例较高。比如一些新媒体平台的正文错误率在2%以上，标题错误率在1%左右。同时，语音智能硬件产品的兴起，也暴露出语音识别技术的错误率高企问题，在某些场景语音识别中，错误率可能达到8%-10%，影响了后续的query理解及对话效果。因此研发优质的中文纠错技术，便成为了必须。</p>
+<p>[^]:</p>
 <h2 id="技术调研">技术调研</h2>
 <p>整体上，将纠错流程，分解为错误检测、候选召回、纠错排序三个关键步骤。通过引入语言知识、上下文理解和知识计算的核心技术，提升不同类型错误的解决能力。最后，支持SMT
 based和NMT based两套Framework，形成完整的系统架构。 ###
@@ -440,17 +446,26 @@ alt="Alt text" /></p>
 <p><strong>候选召回</strong>指的是，识别出具体的错误点之后，需要进行错误纠正，为了达到更好的效果以及性能，需要结合历史错误行为，以及音形等特征召回纠错候选。主要可分为两部分工作：离线的候选挖掘，在线的候选预排序。离线候选挖掘利用大规模多来源的错误对齐语料，通过对齐模型，得到不同粒度的错误混淆矩阵。在线候选预排序主要是针对当前的错误点，对离线召回的大量纠错候选，结合语言模型以及错误混淆矩阵的特征，控制进入纠错排序阶段的候选集数量与质量。</p>
 <h3
 id="核心技术语言知识-上下文理解-知识计算">核心技术（语言知识-&gt;上下文理解-&gt;知识计算）</h3>
+<h4 id="采用语言统计模型纠错先验规则">采用语言统计模型纠错+先验规则</h4>
+<ul>
+<li>优点：快，准</li>
+<li>缺点：数据依赖性强，可拓展性弱</li>
+</ul>
 <h4 id="采用翻译技术纠错">采用翻译技术纠错</h4>
-<blockquote>
-<p>优点</p>
-</blockquote>
-<p>将纠错当做翻译任务去做，可以对不同类型的错误形式：错词，少词，多词等进行纠错</p>
-<blockquote>
-<p>缺点</p>
-</blockquote>
-<p>模型没有对字音字形相似关系的学习，纠错后的结果不受约束，很容易出现过纠错和误纠问题</p>
+<ul>
+<li><p>优点：将纠错当做翻译任务去做，可以对不同类型的错误形式：错词，少词，多词等进行纠错</p></li>
+<li><p>缺点：模型没有对字音字形相似关系的学习，纠错后的结果不受约束，很容易出现过纠错和误纠问题。</p></li>
+</ul>
+<h2 id="经典算法">经典算法</h2>
+<h3
+id="基于统计语言模型的文本纠错方法">基于统计语言模型的文本纠错方法</h3>
+<ul>
+<li>构建清洁的领域知识库，并训练统计语言模型</li>
+<li>人工规则整理与混淆集收集</li>
+</ul>
+<p>https://www.cnblogs.com/baobaotql/p/13358035.html</p>
 <h3 id="soft-masked-bert">Soft-Masked BERT</h3>
-<p>Soft-Masked BERT：文本纠错与BERT的最新结合 - 头条 - ACL 2020</p>
+<p>Soft-Masked BERT：文本纠错与BERT的最新结合 - Bytedance - ACL 2020</p>
 <blockquote>
 <p>给定<span class="math inline">\(n\)</span>个字或词构成的序列<span
 class="math inline">\(X=(x_1, x_2,...,
@@ -468,37 +483,30 @@ e_{mask} + (1-p_i) \cdot e_i\)</span>
 <img
 src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336784.png"
 alt="Soft-Masked BERT纠错算法框架" /></p>
-<p>https://zhuanlan.zhihu.com/p/144995580 ### SpellGCN[^SpellGCN:
-Incorporating Phonological and Visual Similarities into Language Models
-for Chinese Spelling Check]</p>
-<p>3、https://zhuanlan.zhihu.com/p/145825024?from_voters_page=true
-[^SpellGCN: Incorporating Phonological and Visual Similarities into
-Language Models for Chinese Spelling Check]:
-https://aclanthology.org/2020.acl-main.81.pdf</p>
-<h3
-id="confusionset-ptrnet---cscconfusionset-guided-pointer-networks-for-chinese-spelling-check">ConfusionSet
-+PtrNet -&gt; CSC[^Confusionset-guided Pointer Networks for Chinese
-Spelling Check]</h3>
-<p>[^Confusionset-guided Pointer Networks for Chinese Spelling Check]:
-https://www.aclweb.org/anthology/P19-1578.pdf</p>
-<p>4、基于统计语言模型的文本纠错方法研究
-https://www.cnblogs.com/baobaotql/p/13358035.html</p>
-<p>规则类：哪些更适合规则类？ 语言模型 混淆集</p>
-<h2 id="todo">TODO</h2>
-<p>ACL2021 Global Attention Decoder for Chinese Spelling Error
-Correction Correcting Chinese Spelling Errors with Phonetic Pre-training
-Dynamic Connected Networks for Chinese Spelling Check
-https://github.com/gitabtion/SoftMaskedBert-PyTorch</p>
+<p>https://zhuanlan.zhihu.com/p/144995580</p>
+<p>https://github.com/gitabtion/SoftMaskedBert-PyTorch</p>
+<h3 id="基于ptrnet的错误文本检测">基于PtrNet的错误文本检测</h3>
+<p>[^ConfusionSet +PtrNet]:
+https://www.aclweb.org/anthology/P19-1578.pdf "Confusionset-guided
+Pointer Networks for Chinese Spelling Check"</p>
+<ul>
+<li>Correcting Chinese Spelling Errors with Phonetic Pre-training</li>
+<li>Dynamic Connected Networks for Chinese Spelling Check</li>
+</ul>
 <p>https://github.com/gitabtion/BertBasedCorrectionModels</p>
-<h2 id="gec">GEC</h2>
+<h3 id="文本语法错误纠错">文本语法错误纠错</h3>
 <p>Encoder-Decoder Models Can Benefit from Pre-trained Masked Language
 Models in Grammatical Error Correction
 https://aclanthology.org/2020.acl-main.391.pdf</p>
 <p>Do Grammatical Error Correction Models Realize Grammatical
 Generalization? https://arxiv.org/abs/2106.03031</p>
-<h2 id="互联网企业papers">互联网企业Papers</h2>
-<p>1、腾讯云:基于语言模型的拼写纠错：https://cloud.tencent.com/developer/article/1156792</p>
-<p>2、平安寿险AI https://zhuanlan.zhihu.com/p/159101860</p>
+<p>https://aclanthology.org/2021.findings-acl.122.pdf "Global Attention
+Decoder for Chinese Spelling Error Correction"</p>
+<h3 id="工业界的文本纠错工作">工业界的文本纠错工作</h3>
+<p>1、腾讯云:基于语言模型的拼写纠错：https://cloud.tencent.com/developer/article/1156792
+"基于语言模型的拼写纠错是关于通用汉语纠错方面的综述"</p>
+<p>2、平安寿险AI https://zhuanlan.zhihu.com/p/159101860
+是关于文本纠错技术在保险领域很好的综述性的博客</p>
 <p>3、爱奇艺:
 https://blog.csdn.net/BGoodHabit/article/details/114589007#21_FASPell_20</p>
 <table>
@@ -525,7 +533,9 @@ style="text-align: left;">融合字音字形相似度分数，拟合最佳分割
 <td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SpellGCN(阿里)</td>
+<td style="text-align: left;">SpellGCN(阿里)<a href="#fn5"
+class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a></td>
 <td style="text-align: left;"></td>
 <td
 style="text-align: left;">用GCN学习字音字形关系结构向量，让错词更倾向于纠错为混淆集中的字</td>
@@ -554,49 +564,12 @@ style="text-align: left;">treeLSTM模型学习字形向量，取代固定的混�
 </tbody>
 </table>
 <h3 id="业务中主要存在的问题">业务中主要存在的问题</h3>
-<p>1、多数方案通过将字音字形信息融入到模型学习中，解决纠错问题主要因为字音字形相似等带来的错误
-2、在输入连续出错等纠错问题上，还面临着很多的挑战</p>
+<ul>
+<li>多数方案通过将字音字形信息融入到模型学习中，解决纠错问题主要因为字音字形相似等带来的错误</li>
+<li>在输入连续出错等纠错问题上，还面临着很多的挑战</li>
+<li>当前基于transformer等decoder在实际线上业务中部署相对困难，主要集中在解码性能上。</li>
+</ul>
 <h2 id="参考文献">参考文献</h2>
-<p>[1]Lee L H, Yu L C, Chang L P. Guest Editoral: Special Issue on
-Chinese as a Foreign Language[J]. International Journal of Computational
-Linguistics &amp; Chinese Language Processing, Volume 20, Number 1, June
-2015-Special Issue on Chinese as a Foreign Language, 2015, 20(1).</p>
-<p>[2]Yu J, Li Z. Chinese spelling error detection and correction based
-on language model, pronunciation, and shape[C]//Proceedings of The Third
-CIPS-SIGHAN Joint Conference on Chinese Language Processing. 2014:
-220-223.</p>
-<p>[3] Lv, Y.Y.; Deng, Y.I.; Liu, M.L.; Lu, Q.Y. Automatic error
-checking and correction of electronic medical records. Front. Artif.
-Intell. Appl. 2016, 281, 32–40. 无法下载，需要钱</p>
-<p>[4] Liu X, Cheng K, Luo Y, et al. A hybrid Chinese spelling
-correction using language model and statistical machine translation with
-reranking[C]//Proceedings of the Seventh SIGHAN Workshop on Chinese
-Language Processing. 2013: 54-58.</p>
-<p>[5]Chen K Y, Lee H S, Lee C H, et al. A study of language modeling
-for Chinese spelling check[C]//Proceedings of the Seventh SIGHAN
-Workshop on Chinese Language Processing. 2013: 79-83.</p>
-<p>[6]Xie W, Huang P, Zhang X, et al. Chinese spelling check system
-based on n-gram model[C]//Proceedings of the Eighth SIGHAN Workshop on
-Chinese Language Processing. 2015: 128-136.</p>
-<p>[7] Zhao J, Liu H, Bao Z, et al. N-gram Model for Chinese Grammatical
-Error Diagnosis[C]//Proceedings of the 4th Workshop on Natural Language
-Processing Techniques for Educational Applications (NLPTEA 2017). 2017:
-39-44.</p>
-<p>[8] Jui-Feng Yeh, Sheng-Feng Li, Mei-Rong Wu, Wen-Yi Chen, and
-Mao-Chuan Su. 2013. Chinese word spelling correction based on N-gram
-ranked inverted index list. In Proceedings of the 7th SIGHAN Workshop on
-Chinese Language Processing. 43–48.</p>
-<p>[9] Zheng B, Che W, Guo J, et al. Chinese Grammatical Error Diagnosis
-with Long Short-Term Memory Networks[C]//Proceedings of the 3rd Workshop
-on Natural Language Processing Techniques for Educational Applications
-(NLPTEA2016). 2016: 49-56.</p>
-<p>[10] Xie P. Alibaba at IJCNLP-2017 Task 1: Embedding Grammatical
-Features into LSTMs for Chinese Grammatical Error Diagnosis Task[J].
-Proceedings of the IJCNLP 2017, Shared Tasks, 2017: 41-46.</p>
-<p>[11] Wang, D. , Song, Y. , Li, J. , Han, J. , &amp; Zhang, H. .
-(2018). A Hybrid Approach to Automatic Corpus Generation for Chinese
-Spelling Check. Proceedings of the 2018 Conference on Empirical Methods
-in Natural Language Processing.</p>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -617,6 +590,11 @@ href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"
 role="doc-endnote"><p>ttps://en.wikipedia.org/wiki/BK-tree<a
 href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"
+role="doc-endnote"><p>https://aclanthology.org/2020.acl-main.81.pdf
+SpellGCN: Incorporating Phonological and Visual Similarities into
+Language Models for Chinese Spelling Check<a href="#fnref5"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -709,13 +687,13 @@ href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">473k</span>
+    <span title="站点总字数">470k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:08</span>
+    <span title="站点阅读时长">13:04</span>
   </span>
 </div>
 <div class="busuanzi-count">

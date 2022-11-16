@@ -9907,6 +9907,13 @@ href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 inference框架层出不穷。从手机端上的ncnn到tf-lite，NVIDIA在cudnn之后，推出专用于神经网络推理的TensorRT.
 经过几轮迭代，支持的操作逐渐丰富，补充的插件已经基本满足落地的需求。笔者觉得，尤其是tensorrt
 5.0之后，无论是接口还是使用samples都变得非常方便集成。</p>
+<p>NVIDIA® TensorRT™ 是一款用于高性能深度学习推理的
+SDK，包括深度学习推理优化器和Runtime，可为推理应用程序提供低延迟和高吞吐量。TensorRT项目立项的时候名字叫做GPU
+Inference
+Engine（简称GIE），Tensor表示数据流动以张量的形式。所谓张量大家可以理解为更加复杂的高维数组，一般一维数组叫做Vector（即向量），二维数组叫做Matrix，再高纬度的就叫Tensor，Matrix其实是二维的Tensor。在TensoRT中，所有的数据都被组成最高四维的数组，如果对应到CNN中其实就是<code>&#123;N, C, H, W&#125;</code>，<code>N</code>表示batch
+size，即多少张图片或者多少个推断（Inference）的实例；<code>C</code>表示channel数目；<code>H</code>和<code>W</code>表示图像或feature
+maps的高度和宽度。RT表示的是Runtime.</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/tensorrt-optimizer.png" alt="tensorrt-optimizer" style="zoom:50%;" /></p>
 <h2 id="版本选型与基本概念">版本选型与基本概念</h2>
 <h3 id="fp16-int8">FP16 INT8</h3>
 <p>The easiest way to benefit from mixed precision in your application
@@ -9967,6 +9974,19 @@ reference document》</a></p>
 显卡至少为<code>GeForce 1060</code>,
 如果想支持Int8/DP4A等feature，还是需要<code>RTX 1080</code>或者<code>P40</code>。</p>
 <h2 id="tensorrt特性助力高性能算法">TensorRT特性助力高性能算法</h2>
+<p>优化技术包括：</p>
+<ul>
+<li>Weight &amp; Activation Precision Calibration:
+在保持精度的情况下能够量化模型到INT8，最大化吞吐</li>
+<li>Layer &amp; Tensor Fusion:
+通过融合多个Op到一个kernel，优化GPU显存和IO</li>
+<li>Kernel Auto-Tuning:
+基于目标GPU特点，选择最佳GEMM计算方式，优化Op的计算性能</li>
+<li>Dynamic Tensor Memory:
+最大限度地减少内存占用并有效地为张量重用内存</li>
+<li>Multi-Stream Execution: 可扩展设计以并行处理多个输入流</li>
+<li>Time Fusion: 使用动态生成的Kernel优化循环神经网络</li>
+</ul>
 <h3 id="优化原理">优化原理</h3>
 <figure>
 <img
@@ -9976,18 +9996,14 @@ alt="@优化原理" />
 data-cites="优化原理">@优化原理</span></figcaption>
 </figure>
 <h3 id="网络模型的裁剪与重构">网络模型的裁剪与重构</h3>
-<figure>
-<img src="https://miro.medium.com/max/965/1*PyNcjHKZ8rQ48QCPsdQ9wA.png"
-alt="@原始网络" />
-<figcaption aria-hidden="true"><span class="citation"
-data-cites="原始网络">@原始网络</span></figcaption>
-</figure>
-<p><img src="https://miro.medium.com/max/951/1*bJts223Qo55toZ9AY60Ruw.png" alt="@vertical fusion｜" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fusion_op_origin.png" alt="@原始网络" style="zoom: 50%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fusion_op_result.png" alt="@vertical fusion｜" style="zoom: 50%;" /></p>
 <p>The above figures explain the vertical fusion optimization that TRT
-does. The Convolution (C), Bias(B) and Activation(R, ReLU in this case)
-are all collapsed into one single node (implementation wise this would
-mean a single CUDA kernel launch for C, B and R).</p>
-<p><img src="https://miro.medium.com/max/2000/0*UKwCx_lq-oHcLYkI.png" alt="@horizontal fusion｜" style="zoom:67%;" /></p>
+does. The <code>Convolution (C)</code>, <code>Bias(B)</code> and
+<code>Activation</code>(R, ReLU in this case) are all collapsed into one
+single node (implementation wise this would mean a single CUDA kernel
+launch for C, B and R).</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/horizon_fusion_op.png" alt="@horizontal fusion｜" style="zoom: 33%;" /></p>
 <p>There is also a horizontal fusion where if multiple nodes with same
 operation are feeding to multiple nodes then it is converted to one
 single node feeding multiple nodes. The three 1x1 CBRs are fused to one
@@ -10038,7 +10054,7 @@ gie model</li>
 <ul class="task-list">
 <li><input type="checkbox" disabled="" checked="" />
 设计plugin的管理机制,更新初始化流程</li>
-<li><input type="checkbox" disabled="" />
+<li><input type="checkbox" disabled="" checked="" />
 <a href="https://github.com/hszhao/PSPNet">interp</a></li>
 <li><input type="checkbox" disabled="" checked="" />
 <a
@@ -10066,7 +10082,7 @@ href="https://github.com/rbgirshick/caffe-fast-rcnn/tree/0dcd397b29507b8314e252e
 最后更新inference模式</li>
 </ul></li>
 </ul>
-<h2 id="document-for-reference">Document for Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li><a href="http://nvdla.org/">NVDLA官网</a></li>
 <li><a
@@ -10430,13 +10446,7 @@ table，简称vtbl）。虚表中存放着一堆指针，这些指针指向该�
 - 另外，虚函数表的前面设置了一个指向type_info的指针，用以支持RTTI（Run
 Time Type
 Identification，运行时类型识别）。RTTI是为多态而生成的信息，包括对象继承关系，对象本身的描述等，只有具有虚函数的对象在会生成。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335247.png"
-alt="@vs2015下对象的内存结构" />
-<figcaption aria-hidden="true"><span class="citation"
-data-cites="vs2015下对象的内存结构">@vs2015下对象的内存结构</span></figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335247.png" alt="@vs2015下对象的内存结构" style="zoom: 50%;" /></p>
 <p>这个模型的优点在于它的空间和存取时间的效率；缺点如下：如果应用程序本身未改变，但当所使用的类的non
 static数据成员添加删除或修改时，需要重新编译。</p>
 <blockquote>
@@ -10508,7 +10518,27 @@ href="https://blog.csdn.net/heyuhang112/article/details/41982929">RTTI实现详�
   <entry>
     <title>中文文本纠错</title>
     <url>/202107/20210723-csc-survey/</url>
-    <content><![CDATA[<h2 id="常见错误类型">常见错误类型</h2>
+    <content><![CDATA[<h2 id="背景介绍">背景介绍</h2>
+<h4 id="依赖条件">依赖条件</h4>
+<p>纠错技术相对于词法分析，句法分析等受到的关注一直较小，一方面是因为<strong>文本出错的比例比较小</strong>，在一些重要场合，也有专门人员进行校验；另一方面<strong>本身问题也相对较难</strong>，其要求计算机对语言规则以及文本语义有深刻的理解。</p>
+<p>我们把中文常见错误总结分为三类：</p>
+<ul>
+<li>用词错误，由于输入法等原因导致的选词错误，其主要表现为音近，形近等；</li>
+<li>文法/句法错误，该类错误主要是由于对语言不熟悉导致的如多字、少字、乱序等错误，其错误片段相对较大；</li>
+<li>知识类错误，该类错误可能由于对某些知识不熟悉导致的错误，要解决该类问题，通常得引入外部知识、常识等。</li>
+</ul>
+<h4 id="发展历程">发展历程</h4>
+<ul>
+<li>2000年以前，业界主要依靠长期积累的纠错规则和纠错词典来进行纠错，比如微软的文档编辑产品WORD即采用这种方法</li>
+<li>随着机器学习技术的发展，纠错问题受到了学术界和工业界越来越多的关注，其中有两大主流方法：
+<ul>
+<li>一种解决思路是将语言错误归类，然后采用Maxent（最大熵模型）、SVM等分类方法对这些类别进行重点识别；</li>
+<li>另外一种思路是借鉴统计机器翻译（SMT）的思想，将语言纠错等价为机器翻译的过程，即错误文本翻译为正确文本，并随之出现了一系列的优化方法。</li>
+</ul></li>
+</ul>
+<h4 id="调研的必要性">调研的必要性</h4>
+<p>近年来，随着新媒体行业的快速发展，中国自媒体从业人数逐年增长，至2017年有近260万。但是相对于传统媒体，其缺少人工校稿环节，编辑好的文章即刻发表，导致文章的错误比例较高。比如一些新媒体平台的正文错误率在2%以上，标题错误率在1%左右。同时，语音智能硬件产品的兴起，也暴露出语音识别技术的错误率高企问题，在某些场景语音识别中，错误率可能达到8%-10%，影响了后续的query理解及对话效果。因此研发优质的中文纠错技术，便成为了必须。</p>
+<h2 id="常见错误类型">常见错误类型</h2>
 <p>在中文中，常见的错误类型大概有如下几类：</p>
 <p>由于字音字形相似导致的错字形式：体脂称—&gt;体脂秤 多字错误：iphonee
 —&gt; iphone 少字错误：爱有天意 --&gt; 假如爱有天意 顺序错误: 表达难以
@@ -10518,13 +10548,9 @@ href="https://blog.csdn.net/heyuhang112/article/details/41982929">RTTI实现详�
 <img
 src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335669.png"
 alt="Alt text" /></p>
-<h2 id="赛事">赛事</h2>
-<p>几届中文纠错评测，例如CGED与NLPCC - Chinese Spelling Check Evaluation
-at SIGHAN Bake-off 2013 [Wu et al., 2013]<a href="#fn1"
-class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> -
-CLP-2014 Chinese Spelling Check Evaluation (Yu et al., 2014) <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336162.png"
-alt="Alt text" /></p>
+<ul>
+<li></li>
+</ul>
 <h2 id="数据集">数据集</h2>
 <p>1、Academia Sinica Balanced Corpus (ASBC for short hereafter, cf.
 Chen et al., 1996). 2、混淆词数据集[^A Hybrid Approach to Automatic
@@ -10544,7 +10570,17 @@ http://ir.itc.ntnu.edu.tw/lre/sighan8csc.html CLP 2014 Bake-off:
 http://ir.itc.ntnu.edu.tw/lre/clp14csc.html SIGHAN 2013 Bake-off:
 http://ir.itc.ntnu.edu.tw/lre/sighan7csc.html</p>
 <p>http://nlp.ee.ncu.edu.tw/resource/csc.html</p>
-<h4 id="构造方法">构造方法</h4>
+<h3 id="赛事">赛事</h3>
+<p>几届中文纠错评测，例如CGED与NLPCC</p>
+<ul>
+<li>Chinese Spelling Check Evaluation at SIGHAN Bake-off 2013 [Wu et
+al., 2013]<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></li>
+<li>CLP-2014 Chinese Spelling Check Evaluation (Yu et al., 2014) <img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336162.png"
+alt="Alt text" /></li>
+</ul>
+<h3 id="数据-构造方法">数据-构造方法</h3>
 <p>1、对字进行增删、交换位置、混淆词替换 2、常见混淆集整理 &gt;
 视觉上和语音上的相似字是造成汉语文本错误的主要因素。通过定义适当的相似性度量，考虑扩展仓颉代码，我们可以在几分之一秒内识别视觉上相似的字符。根据汉语词汇中单个汉字的发音信息，我们可以计算出一个与给定汉字在语音上相似的汉字列表。我们收集了网络上出现的621个错误的中文词汇，并分析了这些错误的原因。其中83%的错误与语音相似性有关，48%的错误与所涉及的字符之间的视觉相似性有关。生成语音和视觉上相似的字符列表，我们的程序能够包含报告错误中超过90%的错误字符。<a
 href="#fn2" class="footnote-ref" id="fnref2"
@@ -10556,7 +10592,7 @@ Study on Chinese Spelling Check Using Confusion Sets and N-gram
 Statistics[J]. International Journal of Computational Linguistics &amp;
 Chinese Language Processing, Volume 20, Number 1, June 2015-Special
 Issue on Chinese as a Foreign Language, 2015, 20(1).</p>
-<h3 id="编辑距离">编辑距离</h3>
+<h3 id="评估-编辑距离">评估-编辑距离</h3>
 <p>编辑距离的经典应用就是用于拼写检错，如果用户输入的词语不在词典中，自动从词典中找出编辑距离小于某个数<span
 class="math inline">\(n\)</span>的单词，让用户选择正确的那一个，<span
 class="math inline">\(n\)</span>通常取到2或者3。</p>
@@ -10575,25 +10611,7 @@ class="math inline">\(x=y\)</span> （Levenshtein距离为0 &lt;==&gt;
 class="math inline">\(d(x,y) + d(y,z) &gt;= d(x,z)\)</span>
 （从x变到z所需的步数不会超过x先变成y再变成z的步数）</p>
 <p>最后这一个性质叫做三角形不等式。就好像一个三角形一样，两边之和必然大于第三边。</p>
-<h2 id="发展历史概述">发展历史概述</h2>
-<h4 id="依赖条件">依赖条件</h4>
-<p>纠错技术相对于词法分析，句法分析等受到的关注一直较小，一方面是因为<strong>文本出错的比例比较小</strong>，在一些重要场合，也有专门人员进行校验；另一方面<strong>本身问题也相对较难</strong>，其要求计算机对语言规则以及文本语义有深刻的理解。</p>
-<p>我们把中文常见错误总结分为三类： -
-用词错误，由于输入法等原因导致的选词错误，其主要表现为音近，形近等； -
-文法/句法错误，该类错误主要是由于对语言不熟悉导致的如多字、少字、乱序等错误，其错误片段相对较大；
--
-知识类错误，该类错误可能由于对某些知识不熟悉导致的错误，要解决该类问题，通常得引入外部知识、常识等。</p>
-<h4 id="发展历程">发展历程</h4>
-<ul>
-<li>2000年以前，业界主要依靠长期积累的纠错规则和纠错词典来进行纠错，比如微软的文档编辑产品WORD即采用这种方法</li>
-<li>随着机器学习技术的发展，纠错问题受到了学术界和工业界越来越多的关注，其中有两大主流方法：
-<ul>
-<li>一种解决思路是将语言错误归类，然后采用Maxent（最大熵模型）、SVM等分类方法对这些类别进行重点识别；</li>
-<li>另外一种思路是借鉴统计机器翻译（SMT）的思想，将语言纠错等价为机器翻译的过程，即错误文本翻译为正确文本，并随之出现了一系列的优化方法。</li>
-</ul></li>
-</ul>
-<h4 id="调研的必要性">调研的必要性</h4>
-<p>近年来，随着新媒体行业的快速发展，中国自媒体从业人数逐年增长，至2017年有近260万。但是相对于传统媒体，其缺少人工校稿环节，编辑好的文章即刻发表，导致文章的错误比例较高。比如一些新媒体平台的正文错误率在2%以上，标题错误率在1%左右。同时，语音智能硬件产品的兴起，也暴露出语音识别技术的错误率高企问题，在某些场景语音识别中，错误率可能达到8%-10%，影响了后续的query理解及对话效果。因此研发优质的中文纠错技术，便成为了必须。</p>
+<p>[^]:</p>
 <h2 id="技术调研">技术调研</h2>
 <p>整体上，将纠错流程，分解为错误检测、候选召回、纠错排序三个关键步骤。通过引入语言知识、上下文理解和知识计算的核心技术，提升不同类型错误的解决能力。最后，支持SMT
 based和NMT based两套Framework，形成完整的系统架构。 ###
@@ -10611,17 +10629,26 @@ alt="Alt text" /></p>
 <p><strong>候选召回</strong>指的是，识别出具体的错误点之后，需要进行错误纠正，为了达到更好的效果以及性能，需要结合历史错误行为，以及音形等特征召回纠错候选。主要可分为两部分工作：离线的候选挖掘，在线的候选预排序。离线候选挖掘利用大规模多来源的错误对齐语料，通过对齐模型，得到不同粒度的错误混淆矩阵。在线候选预排序主要是针对当前的错误点，对离线召回的大量纠错候选，结合语言模型以及错误混淆矩阵的特征，控制进入纠错排序阶段的候选集数量与质量。</p>
 <h3
 id="核心技术语言知识-上下文理解-知识计算">核心技术（语言知识-&gt;上下文理解-&gt;知识计算）</h3>
+<h4 id="采用语言统计模型纠错先验规则">采用语言统计模型纠错+先验规则</h4>
+<ul>
+<li>优点：快，准</li>
+<li>缺点：数据依赖性强，可拓展性弱</li>
+</ul>
 <h4 id="采用翻译技术纠错">采用翻译技术纠错</h4>
-<blockquote>
-<p>优点</p>
-</blockquote>
-<p>将纠错当做翻译任务去做，可以对不同类型的错误形式：错词，少词，多词等进行纠错</p>
-<blockquote>
-<p>缺点</p>
-</blockquote>
-<p>模型没有对字音字形相似关系的学习，纠错后的结果不受约束，很容易出现过纠错和误纠问题</p>
+<ul>
+<li><p>优点：将纠错当做翻译任务去做，可以对不同类型的错误形式：错词，少词，多词等进行纠错</p></li>
+<li><p>缺点：模型没有对字音字形相似关系的学习，纠错后的结果不受约束，很容易出现过纠错和误纠问题。</p></li>
+</ul>
+<h2 id="经典算法">经典算法</h2>
+<h3
+id="基于统计语言模型的文本纠错方法">基于统计语言模型的文本纠错方法</h3>
+<ul>
+<li>构建清洁的领域知识库，并训练统计语言模型</li>
+<li>人工规则整理与混淆集收集</li>
+</ul>
+<p>https://www.cnblogs.com/baobaotql/p/13358035.html</p>
 <h3 id="soft-masked-bert">Soft-Masked BERT</h3>
-<p>Soft-Masked BERT：文本纠错与BERT的最新结合 - 头条 - ACL 2020</p>
+<p>Soft-Masked BERT：文本纠错与BERT的最新结合 - Bytedance - ACL 2020</p>
 <blockquote>
 <p>给定<span class="math inline">\(n\)</span>个字或词构成的序列<span
 class="math inline">\(X=(x_1, x_2,...,
@@ -10639,37 +10666,30 @@ e_{mask} + (1-p_i) \cdot e_i\)</span>
 <img
 src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336784.png"
 alt="Soft-Masked BERT纠错算法框架" /></p>
-<p>https://zhuanlan.zhihu.com/p/144995580 ### SpellGCN[^SpellGCN:
-Incorporating Phonological and Visual Similarities into Language Models
-for Chinese Spelling Check]</p>
-<p>3、https://zhuanlan.zhihu.com/p/145825024?from_voters_page=true
-[^SpellGCN: Incorporating Phonological and Visual Similarities into
-Language Models for Chinese Spelling Check]:
-https://aclanthology.org/2020.acl-main.81.pdf</p>
-<h3
-id="confusionset-ptrnet---cscconfusionset-guided-pointer-networks-for-chinese-spelling-check">ConfusionSet
-+PtrNet -&gt; CSC[^Confusionset-guided Pointer Networks for Chinese
-Spelling Check]</h3>
-<p>[^Confusionset-guided Pointer Networks for Chinese Spelling Check]:
-https://www.aclweb.org/anthology/P19-1578.pdf</p>
-<p>4、基于统计语言模型的文本纠错方法研究
-https://www.cnblogs.com/baobaotql/p/13358035.html</p>
-<p>规则类：哪些更适合规则类？ 语言模型 混淆集</p>
-<h2 id="todo">TODO</h2>
-<p>ACL2021 Global Attention Decoder for Chinese Spelling Error
-Correction Correcting Chinese Spelling Errors with Phonetic Pre-training
-Dynamic Connected Networks for Chinese Spelling Check
-https://github.com/gitabtion/SoftMaskedBert-PyTorch</p>
+<p>https://zhuanlan.zhihu.com/p/144995580</p>
+<p>https://github.com/gitabtion/SoftMaskedBert-PyTorch</p>
+<h3 id="基于ptrnet的错误文本检测">基于PtrNet的错误文本检测</h3>
+<p>[^ConfusionSet +PtrNet]:
+https://www.aclweb.org/anthology/P19-1578.pdf "Confusionset-guided
+Pointer Networks for Chinese Spelling Check"</p>
+<ul>
+<li>Correcting Chinese Spelling Errors with Phonetic Pre-training</li>
+<li>Dynamic Connected Networks for Chinese Spelling Check</li>
+</ul>
 <p>https://github.com/gitabtion/BertBasedCorrectionModels</p>
-<h2 id="gec">GEC</h2>
+<h3 id="文本语法错误纠错">文本语法错误纠错</h3>
 <p>Encoder-Decoder Models Can Benefit from Pre-trained Masked Language
 Models in Grammatical Error Correction
 https://aclanthology.org/2020.acl-main.391.pdf</p>
 <p>Do Grammatical Error Correction Models Realize Grammatical
 Generalization? https://arxiv.org/abs/2106.03031</p>
-<h2 id="互联网企业papers">互联网企业Papers</h2>
-<p>1、腾讯云:基于语言模型的拼写纠错：https://cloud.tencent.com/developer/article/1156792</p>
-<p>2、平安寿险AI https://zhuanlan.zhihu.com/p/159101860</p>
+<p>https://aclanthology.org/2021.findings-acl.122.pdf "Global Attention
+Decoder for Chinese Spelling Error Correction"</p>
+<h3 id="工业界的文本纠错工作">工业界的文本纠错工作</h3>
+<p>1、腾讯云:基于语言模型的拼写纠错：https://cloud.tencent.com/developer/article/1156792
+"基于语言模型的拼写纠错是关于通用汉语纠错方面的综述"</p>
+<p>2、平安寿险AI https://zhuanlan.zhihu.com/p/159101860
+是关于文本纠错技术在保险领域很好的综述性的博客</p>
 <p>3、爱奇艺:
 https://blog.csdn.net/BGoodHabit/article/details/114589007#21_FASPell_20</p>
 <table>
@@ -10696,7 +10716,9 @@ style="text-align: left;">融合字音字形相似度分数，拟合最佳分割
 <td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SpellGCN(阿里)</td>
+<td style="text-align: left;">SpellGCN(阿里)<a href="#fn5"
+class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a></td>
 <td style="text-align: left;"></td>
 <td
 style="text-align: left;">用GCN学习字音字形关系结构向量，让错词更倾向于纠错为混淆集中的字</td>
@@ -10725,49 +10747,12 @@ style="text-align: left;">treeLSTM模型学习字形向量，取代固定的混�
 </tbody>
 </table>
 <h3 id="业务中主要存在的问题">业务中主要存在的问题</h3>
-<p>1、多数方案通过将字音字形信息融入到模型学习中，解决纠错问题主要因为字音字形相似等带来的错误
-2、在输入连续出错等纠错问题上，还面临着很多的挑战</p>
+<ul>
+<li>多数方案通过将字音字形信息融入到模型学习中，解决纠错问题主要因为字音字形相似等带来的错误</li>
+<li>在输入连续出错等纠错问题上，还面临着很多的挑战</li>
+<li>当前基于transformer等decoder在实际线上业务中部署相对困难，主要集中在解码性能上。</li>
+</ul>
 <h2 id="参考文献">参考文献</h2>
-<p>[1]Lee L H, Yu L C, Chang L P. Guest Editoral: Special Issue on
-Chinese as a Foreign Language[J]. International Journal of Computational
-Linguistics &amp; Chinese Language Processing, Volume 20, Number 1, June
-2015-Special Issue on Chinese as a Foreign Language, 2015, 20(1).</p>
-<p>[2]Yu J, Li Z. Chinese spelling error detection and correction based
-on language model, pronunciation, and shape[C]//Proceedings of The Third
-CIPS-SIGHAN Joint Conference on Chinese Language Processing. 2014:
-220-223.</p>
-<p>[3] Lv, Y.Y.; Deng, Y.I.; Liu, M.L.; Lu, Q.Y. Automatic error
-checking and correction of electronic medical records. Front. Artif.
-Intell. Appl. 2016, 281, 32–40. 无法下载，需要钱</p>
-<p>[4] Liu X, Cheng K, Luo Y, et al. A hybrid Chinese spelling
-correction using language model and statistical machine translation with
-reranking[C]//Proceedings of the Seventh SIGHAN Workshop on Chinese
-Language Processing. 2013: 54-58.</p>
-<p>[5]Chen K Y, Lee H S, Lee C H, et al. A study of language modeling
-for Chinese spelling check[C]//Proceedings of the Seventh SIGHAN
-Workshop on Chinese Language Processing. 2013: 79-83.</p>
-<p>[6]Xie W, Huang P, Zhang X, et al. Chinese spelling check system
-based on n-gram model[C]//Proceedings of the Eighth SIGHAN Workshop on
-Chinese Language Processing. 2015: 128-136.</p>
-<p>[7] Zhao J, Liu H, Bao Z, et al. N-gram Model for Chinese Grammatical
-Error Diagnosis[C]//Proceedings of the 4th Workshop on Natural Language
-Processing Techniques for Educational Applications (NLPTEA 2017). 2017:
-39-44.</p>
-<p>[8] Jui-Feng Yeh, Sheng-Feng Li, Mei-Rong Wu, Wen-Yi Chen, and
-Mao-Chuan Su. 2013. Chinese word spelling correction based on N-gram
-ranked inverted index list. In Proceedings of the 7th SIGHAN Workshop on
-Chinese Language Processing. 43–48.</p>
-<p>[9] Zheng B, Che W, Guo J, et al. Chinese Grammatical Error Diagnosis
-with Long Short-Term Memory Networks[C]//Proceedings of the 3rd Workshop
-on Natural Language Processing Techniques for Educational Applications
-(NLPTEA2016). 2016: 49-56.</p>
-<p>[10] Xie P. Alibaba at IJCNLP-2017 Task 1: Embedding Grammatical
-Features into LSTMs for Chinese Grammatical Error Diagnosis Task[J].
-Proceedings of the IJCNLP 2017, Shared Tasks, 2017: 41-46.</p>
-<p>[11] Wang, D. , Song, Y. , Li, J. , Han, J. , &amp; Zhang, H. .
-(2018). A Hybrid Approach to Automatic Corpus Generation for Chinese
-Spelling Check. Proceedings of the 2018 Conference on Empirical Methods
-in Natural Language Processing.</p>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -10788,6 +10773,11 @@ href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"
 role="doc-endnote"><p>ttps://en.wikipedia.org/wiki/BK-tree<a
 href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"
+role="doc-endnote"><p>https://aclanthology.org/2020.acl-main.81.pdf
+SpellGCN: Incorporating Phonological and Visual Similarities into
+Language Models for Chinese Spelling Check<a href="#fnref5"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 ]]></content>
@@ -10820,9 +10810,8 @@ label noise. 我们这里主要探究第二种。</p>
 <li>symmetric noise: 一个标签标错为其他类别的标签概率一样</li>
 <li>asymmetric noise: 一个标签标错为其他类别的标签概率不一样</li>
 <li>pair noise: 一个标签只会错标为对应的另外一种标签,
-标错的是在这些标签对形式存在(a, b) <img
-src="../../images/nlp/Label-Noise-Learning/1646207730120.png"
-alt="Alt text" /></li>
+标错的是在这些标签对形式存在(a, b)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646207730120.png" alt="Alt text" style="zoom:67%;" /></li>
 </ul>
 <ol start="2" type="1">
 <li><code>instance-dependent label noise</code> ### 2、困难
@@ -10836,46 +10825,25 @@ methods （3）减少错误标注: Label correction methods.
 噪声数据比重占比在8.0% ~38.5%范围内。</p>
 <h3 id="常用概念">4、常用概念</h3>
 <h4 id="label-transition"><strong>Label Transition</strong></h4>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/1646132202285.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336131.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/1646132202285.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336131.png" alt="Alt text" style="zoom:67%;" /></p>
 <h4 id="memorization-effect"><strong>Memorization Effect</strong></h4>
 <p><span class="math display">\[
 ||W_t - W_0||_F \lesssim (\sqrt K  + (K^2 \epsilon_0 / ||C||^2)t )
 \]</span></p>
 <p>结果表明，DNN的权值在训练开始时仍保持在初始权值附近，在对noise
 label过度拟合时开始偏离初始权值很远，这一现象也被称为DNN的记忆效应，即DNN倾向于首先学习简单和概括的模式，然后逐渐过度适应所有的噪声模式。因此，为了实现更好的泛化，通常采用提前停止和偏爱小损失训练实例来设计健壮的训练方法
-<strong>Risk Minimization</strong> <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346413.png"
-alt="Alt text" />
+<strong>Risk Minimization</strong>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346413.png" alt="Alt text" style="zoom: 67%;" />
 一般采用经验风险最小化的迭代优化如下，而在非clean的dataset上直接使用该优化方法，将在泛化数据集上测试结果退化。
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346546.png"
-alt="Alt text" />
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346546.png" alt="Alt text" style="zoom: 67%;" />
 一般情况下通过优化过程中降低或者屏蔽噪音sample影响以实现缓解退化的问题。
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346962.png"
-alt="Alt text" /> <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346843.png"
-alt="Alt text" /></p>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346962.png" alt="Alt text" style="zoom:67%;" />
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346843.png" alt="Alt text" style="zoom:67%;" /></p>
 <hr />
 <h2 id="文献调研">文献调研</h2>
 <h3 id="naf">1、NAF</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346935.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346935.png" alt="Alt text" style="zoom:67%;" /></p>
 <ul>
 <li>paper: Named Entity Recognition via Noise Aware Training Mechanism
 with Data Filter（ACL-IJCNLP 2021 Findings）</li>
@@ -10884,25 +10852,19 @@ with Data Filter（ACL-IJCNLP 2021 Findings）</li>
 <h4 id="问题定义">问题定义</h4>
 <p>区分难样本和噪声样本仍然是一个挑战，特别是在过拟合的情况下变得更具挑战性。
 存在歧义的hard sample与noise sample是比较难以分开的，因为hard
-sample在训练初期也是具有较大loss的。 <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346534.png"
-alt="Alt text|400x400" /></p>
+sample在训练初期也是具有较大loss的。
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346534.png" alt="Alt text|400x400" style="zoom: 67%;" /></p>
 <h4 id="logit-maximum-difference-lmd-mechanism">Logit-Maximum-Difference
 (LMD) mechanism</h4>
 <p>（0）一般我们是NN之后的logist矩阵加softmax和损失，由于softmax是归一化的指数函数，这就使得logist矩阵中的值的变化不是通过线性变化反映出来，这给我们识别noise
 sample带来了不公平。</p>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346293.png"
-alt="Alt text" /> （1)上图中需要注意的是，noise
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346293.png" alt="Alt text" style="zoom: 67%;" />
+（1)上图中需要注意的是，noise
 sample的情况下，相对差距比较其他两类：hard/easy sample 较小。</p>
 <p><span class="math display">\[LMD(x, y) =
 \frac{1}{T}\sum^T_{t=1}(min(Z_y^{(t)} -
 max_{i!=y}Z_i^{(t)}))\]</span></p>
-<figure>
-<img src="../../images/nlp/Label-Noise-Learning/1646035706110.png"
-alt="Alt text|center|400x300" />
-<figcaption aria-hidden="true">Alt text|center|400x300</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646035706110.png" alt="Alt text|center|400x300" style="zoom: 67%;" /></p>
 <p>（2）训练过程中，刚开始几个epoch，模型总是倾向于学习正确的样品。这意味着即使有些样本即使贴上了错误的标签，模型仍然可以预测正确的结果。随着训练epoch过长，会出现overfitting的问题。如上图所示，在hard和noise
 sample 中训练发现损失趋于一致。这就是在noise
 sample中overfitting的一种现象。</p>
@@ -10949,14 +10911,14 @@ label对模型优化的影响。</p>
 </blockquote>
 <hr />
 <h3 id="aum">2、AUM</h3>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347462.png"
-alt="Alt text" /> - paper: Identifying mislabeled data using the area
-under the margin ranking</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347462.png" alt="Alt text" style="zoom:67%;" /></p>
+<ul>
+<li>paper: Identifying mislabeled data using the area under the margin
+ranking</li>
+</ul>
 <p>首先通过经验角度分析提出的noise label与hard
-label之间的差异，得出经验判别条件。 <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347414.png"
-alt="Alt text" /></p>
+label之间的差异，得出经验判别条件。
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347414.png" alt="Alt text" style="zoom:67%;" /></p>
 <p>Margin的定义如下所示，其中t代表是第t个epoch，x代表是输入的数据，y代表annotation
 labe，z代表的是最终prediction的logits。由式子定义可知其可能会去到负数，当为负数的时候，代表模型预测的结果可能和真值结果存在不同，因此当前样本可能是噪声。
 <span class="math display">\[M^{t}(x,y) = z^{t}_{y}(x) - max_{i !=
@@ -10965,12 +10927,7 @@ margin值可能是不一样的，因此作者定义了如下所示的AUM值，�
 <span class="math display">\[AUM(x, y) =
 \frac{1}{T}\sum_{t=1}^T{M^t(x,y)}\]</span></p>
 <p>AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranking是没有办法得到一个绝对的划分。因此需要一个绝对的划分。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347132.png"
-alt="Alt text|center|500x400" />
-<figcaption aria-hidden="true">Alt text|center|500x400</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347132.png" alt="Alt text|center|500x400" style="zoom: 50%;" /></p>
 <p>作者提出使用threshold
 samples，作者从训练集合中抽样一部分数据出来作为threshold
 samples，这部分数据会人为的指定噪声标签，并且加入训练。最终这部分数据的AUM前从高到底排序的90分位值即可以作为AUM的阈值，用于划分噪声数据和非噪声数据。</p>
@@ -10978,13 +10935,8 @@ samples，这部分数据会人为的指定噪声标签，并且加入训练。�
 <p>该方法通过最大化margin的角度，减少噪声的影响。</p>
 </blockquote>
 <hr />
-<h3 id="早停">早停</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347824.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<h3 id="早停">3、早停</h3>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347824.png" alt="Alt text" style="zoom:67%;" /></p>
 <ul>
 <li>paper: Hwanjun Song, Minseok Kim, Dongmin Park, &amp; Jae-Gil Lee
 (2019). How does Early Stopping Help Generalization against Label Noise
@@ -10992,34 +10944,25 @@ arXiv: Learning.</li>
 <li>链接地址:
 https://ui.adsabs.harvard.edu/link_gateway/2019arXiv191108059S/arxiv:1911.08059</li>
 </ul>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347381.png"
-alt="Alt text" />
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347381.png" alt="Alt text" style="zoom:67%;" />
 探究了<code>Best point to early stop</code>与<code>Criterion of a maximal safe set</code></p>
-<p>1、Best point to early stop</p>
 <ul>
-<li>Validation Heuristic: 准备一个干净的验证集<span
-class="math inline">\(\mathcal{V}\)</span> <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347714.png"
-alt="Alt text" /></li>
-<li>Noise-Rate Heuristic: 需要知道数据集的噪声率<span
+<li><p>Best point to early stop</p>
+<ul>
+<li><p>Validation Heuristic: 准备一个干净的验证集<span
+class="math inline">\(\mathcal{V}\)</span>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347714.png" alt="Alt text" style="zoom:50%;" /></p></li>
+<li><p>Noise-Rate Heuristic: 需要知道数据集的噪声率<span
 class="math inline">\(\tau\)</span>， 但是在真实业务场景不容易获得。
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347442.png"
-alt="Alt text" /></li>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347442.png" alt="Alt text" style="zoom:50%;" /></p></li>
+</ul></li>
+<li><p>Criterion of a maximal safe set</p></li>
 </ul>
-<p>2、Criterion of a maximal safe set</p>
 <blockquote>
 <p>该方法挖掘cleandata进行训练，规避noise label数据对模型的影响</p>
 </blockquote>
-<hr />
 <h3 id="sop">4、SOP</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348149.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348149.png" alt="Alt text" style="zoom:50%;" /></p>
 <ul>
 <li>github: https://github.com/shengliu66/SOP</li>
 <li>paper: Robust Training under Label Noise by
@@ -11033,9 +10976,8 @@ alt="Alt text|center" />
 其中，由于这个noise是具有sparse性质的，因此作者们沿用了先前若干文章中的技巧，采用了一种特殊的参数化方式：
 <span class="math inline">\(s_i = u_i \odot u_i - v_i \odot v_i\)</span>
 ，当然其中还需要规定一下 <span class="math inline">\(u_i,
-v_i\)</span>的取值范围，最终的优化问题是： <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348727.png"
-alt="Alt text" /></p>
+v_i\)</span>的取值范围，最终的优化问题是：
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348727.png" alt="Alt text" style="zoom: 67%;" /></p>
 <hr />
 <h3 id="小结">5、小结</h3>
 <ul>
@@ -11063,12 +11005,7 @@ Learning from Noisy Labels with Deep Neural Networks: A Survey arXiv:
 Learning.</p>
 </blockquote>
 <p>通过有监督的学习使得模型对于有噪声的标签具有更好的鲁棒性。鲁棒损失函数和损失调整是为了修改损失函数或其损失值；鲁棒结构是为了更改体系结构以对噪声数据集的噪声转换矩阵进行建模；鲁棒正则化是为了使DNN减少对错误标记样本的过度拟合；样本选择是为了从带有噪声的训练数据中识别出带有真实标签的样本。除了监督学习之外，研究人员最近还尝试通过采用元学习和半监督学习来进一步提高噪声鲁棒性。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348656.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348656.png" alt="Alt text" style="zoom:67%;" /></p>
 <h3 id="其他资料">其他资料</h3>
 <ul>
 <li>https://github.com/songhwanjun/Awesome-Noisy-Labels</li>
@@ -11128,18 +11065,12 @@ Survey<a href="#fn3" class="footnote-ref" id="fnref3"
 role="doc-noteref"><sup>3</sup></a></p>
 </blockquote>
 <h3 id="paraphrasing">Paraphrasing</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348551.png"
-alt="Alt text|center|600x350" />
-<figcaption aria-hidden="true">Alt text|center|600x350</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348551.png" alt="Alt text|center|600x350" style="zoom:67%;" /></p>
 <p>小结:
 在尽可能保留句子整体语义的情况下，增加文本丰富度，包括让每个词拥有更加丰富的上下文context，让相似的语义表达有更多样的语法构成，词汇构成等等</p>
 <h3 id="noiseing">Noiseing</h3>
-<p>作者给出了以下5种增加噪声的方法： <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348404.png"
-alt="Alt text|center|600x600" /></p>
+<p>作者给出了以下5种增加噪声的方法：
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348404.png" alt="Alt text|center|600x600" style="zoom:67%;" /></p>
 <ul>
 <li><strong>Swapping</strong>：除了交换词之外，在分类任务中也可以交换instance或者sentence</li>
 <li><strong>Deletion</strong>：可以根据tf-idf等词的重要程度进行删除</li>
@@ -11157,9 +11088,7 @@ Cut-off</strong>：比如BERT的向量都是768维，可以随机把一些维度
 error的前提下，降低模型的复杂度从而降低generalization error,
 类比dropout，l2，random noise injection</p>
 <h3 id="sampling">Sampling</h3>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348885.png"
-alt="Alt text|center|750x500" />
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348885.png" alt="Alt text|center|750x500" style="zoom:67%;" />
 Sampling是指从数据分布中采样出新的样本，不同于较通用的paraphrasing，<strong>采样更依赖任务，需要在保证数据可靠性的同时增加更多多样性</strong>，比前两个数据增强方法更难。作者整理了4种方法：</p>
 <ul>
 <li>Rules：用规则定义新的样本和label，比如把句子中的主谓进行变换</li>
@@ -11169,20 +11098,9 @@ Models：根据输入和label生成新的句子，比如在NLI任务中，有研
 Models：给定label，利用语言模型生成样本，有点像前阵子看的谷歌UDG。有些研究会加个判别模型过滤</li>
 <li>Self-training：先有监督训练一个模型，再给无监督数据打一些标签，有点蒸馏的感觉</li>
 </ul>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349468.png"
-alt="Alt text|center|600x250" />
-<figcaption aria-hidden="true">Alt text|center|600x250</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349468.png" alt="Alt text|center|600x250" style="zoom:67%;" /></p>
 <h3 id="增强方法选择依据">增强方法选择依据</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349203.png"
-alt="三种类别的数据增强方法特点总结" />
-<figcaption
-aria-hidden="true">三种类别的数据增强方法特点总结</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349203.png" alt="三种类别的数据增强方法特点总结" style="zoom:50%;" /></p>
 <p>Method Stacking
 实际应用时可以应用多种方法、或者一种方法的不同粒度。</p>
 <p>作者推荐了两款工具eda<a href="#fn4" class="footnote-ref" id="fnref4"
@@ -11192,39 +11110,23 @@ eda_chinese<a href="#fn6" class="footnote-ref" id="fnref6"
 role="doc-noteref"><sup>6</sup></a>, nlpaug<a href="#fn7"
 class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <p>第一，在使用增强的数据时，如果数据质量不高，可以先让模型在增强后的数据上pre-train，之后再用有标注数据训练。如果要一起训练，在增强数据量过大的情况下，可以对原始训练数据过采样</p>
-<p>第二，在进行数据增强时注意这些超参数的调整： <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349147.png"
-alt="各种方法的超参数" />
+<p>第二，在进行数据增强时注意这些超参数的调整：
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349147.png" alt="各种方法的超参数" style="zoom:50%;" />
 第三，其实增强很多简单数据的提升有限，可以注重困难样本的生成。比如有研究加入对抗训练、强化学习、在loss上下文章等。如果用生成方法做数据增强，也可以在生成模型上做功夫，提升数据多样性。</p>
 <p>第四，如果生成错数据可能引入更多噪声，可以增加其他模型对准确性进行过滤。</p>
 <hr />
 <h2 id="分类任务">分类任务</h2>
 <p>1、Mixup: Mixup-Transformer: Dynamic Data Augmentation for NLP
 Tasks</p>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349722.png"
-alt="Alt text" /> <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349283.png"
-alt="Alt text|center|500x60" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349722.png" alt="Alt text" style="zoom:50%;" />
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349283.png" alt="Alt text|center|500x60" style="zoom: 50%;" /></p>
 <p>在数据不足的情况下，只用40%的数据就可以比不应用增强方案的全量数据好。应用Mixup增强方法可以提升2.46%</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349677.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030349677.png" alt="Alt text" style="zoom:50%;" /></p>
 <p>2、On Data Augmentation for Extreme Multi-label Classification</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350873.png"
-alt="Alt text|center|700x300" />
-<figcaption aria-hidden="true">Alt text|center|700x300</figcaption>
-</figure>
-<p>3、分类算法中的数据增强方法：综述 <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350998.png"
-alt="Alt text|center|600x400" /> <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350887.png"
-alt="Alt text" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350873.png" alt="Alt text|center|700x300" style="zoom:67%;" /></p>
+<p>3、分类算法中的数据增强方法：综述
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350998.png" alt="Alt text|center|600x400" style="zoom:50%;" />
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350887.png" alt="Alt text" style="zoom: 67%;" /></p>
 <p>这些在线blog或者paper<a href="#fn8" class="footnote-ref" id="fnref8"
 role="doc-noteref"><sup>8</sup></a><a href="#fn9" class="footnote-ref"
 id="fnref9" role="doc-noteref"><sup>9</sup></a><a href="#fn10"
@@ -11232,32 +11134,15 @@ class="footnote-ref" id="fnref10"
 role="doc-noteref"><sup>10</sup></a>中提到了很多增强方法，主要有如下特点
 - 多分类任务，为英文任务 -
 有针对不同应用场景进行分析的增强方法。虽然现在都用预训练模型，但是在数据增强方法中，通过额外的静态词embedding进行数据增强也是常见的方法。</p>
-<p>4、EDA <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350625.png"
-alt="Alt text" /></p>
+<p>4、EDA
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350625.png" alt="Alt text" style="zoom:67%;" /></p>
 <ul>
 <li>paper:EDA: Easy Data Augmentation Techniques for Boosting
 Performance on Text Classification Tasks</li>
 <li>github: http://github.com/jasonwei20/eda_nlp</li>
+<li><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030350431-20221117002001491.png" alt="Alt text" style="zoom: 67%;" />
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030350097.png" alt="Alt text" style="zoom: 67%;" /></li>
 </ul>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350431.png"
-alt="Alt text" /></th>
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350097.png"
-alt="Alt text" /></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
 <p>EDA主要采用表一中的同义词替换，随机插入，随机交换，随机删除，从可视化结果中来看，增强样本与原始样本分布基本是一致的。
 作者给出了在实际使用EDA方法的建议，表格的左边是数据的规模<span
 class="math inline">\(N_{train}\)</span>, 右边<span
@@ -11267,54 +11152,18 @@ l\)</span> , <span
 class="math inline">\(l\)</span>是句子长度。随机插入、随机替换类似.
 <span class="math inline">\(p=\alpha * n_{aug}\)</span>
 代表使用EDA方法从每一个句子拓展出的句子数量。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350995.png"
-alt="@作者的一些建议|center|400x250" />
-<figcaption aria-hidden="true"><span class="citation"
-data-cites="作者的一些建议">@作者的一些建议</span>|center|400x250</figcaption>
-</figure>
-<p>之后，又有新的AEDA <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350389.png"
-alt="Alt text" /></p>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350145.png"
-alt="Alt text" /> <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351859.png"
-alt="Alt text" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350995.png" alt="@作者的一些建议|center|400x250" style="zoom:67%;" /></p>
+<p>之后，又有新的AEDA
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350389.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030350145.png" alt="Alt text" style="zoom:67%;" />
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351859.png" alt="Alt text" style="zoom:67%;" /></p>
 <h3 id="text-smoothing">Text Smoothing</h3>
-<figure>
-<img src="../../images/nlp/NLP文本场景的数据优化/1646230538691.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351711.png"
-alt="Alt text" /></th>
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351853.png"
-alt="Alt text" /></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+<p><img src="../../images/nlp/NLP文本场景的数据优化/1646230538691.png" alt="Alt text" style="zoom:50%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030351711.png" alt="Alt text" style="zoom:67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030351853.png" alt="Alt text" style="zoom:67%;" /></p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sentence = <span class="string">&quot;My favorite fruit is pear .&quot;</span></span><br><span class="line">lambd = <span class="number">0.1</span> <span class="comment"># interpolation hyperparameter</span></span><br><span class="line">mlm.train() <span class="comment"># enable dropout, dynamically mask</span></span><br><span class="line">tensor_input = tokenizer(sentence, return_tensors=<span class="string">&quot;pt&quot;</span>)</span><br><span class="line">onehot_repr = convert_to_onehot(**tensor_input)</span><br><span class="line">smoothed_repr = softmax(mlm(**tensor_input).logits[<span class="number">0</span>])</span><br><span class="line">interpolated_repr = lambd * onehot_repr + (<span class="number">1</span> - lambd) * smoothed_repr</span><br></pre></td></tr></table></figure>
 <p>-code: https://github.com/1024er/cbert_aug</p>
 <h3 id="promda">PromDA</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351964.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351964.png" alt="Alt text" style="zoom:67%;" /></p>
 <ul>
 <li>paper:https://arxiv.org/pdf/2202.12230.pdf</li>
 <li>论文目的: low-resource Natural Language Understanding (NLU)
@@ -11325,104 +11174,42 @@ class="math inline">\(\mathcal{T}_{LM}\)</span>与已有的数据集<span
 class="math inline">\(\mathcal{T}\)</span>不同，能够从中学习到一些新的信息。
 冻结PLMs参数可能有助于在训练过程中进行泛化。然而，寻找合适的离散任务引入并不容易以端到端方式进行优化，而且需要额外的人力。</p>
 <p>引入<strong><span class="math inline">\(soft Prompt\)</span></strong>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351292.png"
-alt="Alt text" /></p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351728.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
-<table>
-<colgroup>
-<col style="width: 42%" />
-<col style="width: 57%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><img src="../../images/nlp/NLP文本场景的数据优化/1646293978880.png"
-alt="Alt text" /></th>
-<th><img src="../../images/nlp/NLP文本场景的数据优化/1646293992580.png"
-alt="Alt text" /></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351292.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030351728.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646293978880.png" alt="Alt text" style="zoom:67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646293992580.png" alt="Alt text" style="zoom:67%;" /></p>
 <h3 id="dualcl">DualCL</h3>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352998.png"
-alt="Alt text" /> - paper: Dual Contrastive Learning: Text
-Classification via Label-Aware Data Augmentation - github:
-https://github.com/hiyouga/Dual-Contrastive-Learning - 设计主要思想:
-将类别与文本表征map到同一个空间</p>
-<p>传统自监督对比学习损失函数定义如下左侧公式，但是没有利用标注信息。将标注信息考虑进去，
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352067.png"
-alt="Alt text" /> | <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352672.png"
-alt="Alt text" />
------------------------------------------------------------- |
-------------------------------------------------------------</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352998.png" alt="Alt text" style="zoom:67%;" /></p>
+<ul>
+<li>paper: Dual Contrastive Learning: Text Classification via
+Label-Aware Data Augmentation</li>
+<li>github: https://github.com/hiyouga/Dual-Contrastive-Learning</li>
+<li>设计主要思想: 将类别与文本表征map到同一个空间</li>
+</ul>
+<p>传统自监督对比学习损失函数定义如下左侧公式，但是没有利用标注信息。将标注信息考虑进去，</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030352067.png" alt="Alt text" style="zoom:67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030352672.png" alt="Alt text" style="zoom:67%;" /></p>
 <p>到目前为止发展起来的监督对比学习似乎是对分类问题的无监督对比学习的一种简单朴素的适配。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352328.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352671.png"
-alt="Alt text" /> - K+1+ 其他文本 -
-学习到多个表征，其中1个原来的[CLS],另外K个是用来判断分类的结果的。<span
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352328.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352671.png" alt="Alt text" style="zoom:67%;" /></p>
+<ul>
+<li><p>K+1+ 其他文本</p></li>
+<li><p>学习到多个表征，其中1个原来的[CLS],另外K个是用来判断分类的结果的。<span
 class="math display">\[ \hat{y}_i = \arg\max_k(\theta_i^k \cdot
 z_i)\]</span></p>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352326.png"
-alt="Alt text" /></th>
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352085.png"
-alt="Alt text" /></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-<p>算法对比结果，少样本与全样本的对比： <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352508.png"
-alt="Alt text" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030352326-20221117002647446.png" alt="Alt text" style="zoom:67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030352085.png" alt="Alt text" style="zoom:67%;" /></p></li>
+</ul>
+<p>算法对比结果，少样本与全样本的对比：
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030352508.png" alt="Alt text" style="zoom:67%;" /></p>
 <h3
 id="sample-efficiency-of-data-augmentation-consistency-regularization">Sample
 Efficiency of Data Augmentation Consistency Regularization</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353087.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353087.png" alt="Alt text" style="zoom:67%;" /></p>
 <p>DA-ERM（data augmentation empirical risk minimization）:
 DAC可以使用未标记的样本，因为可以在不知道真实标签的情况下增加训练样本并执行一致的预测。这绕过了传统算法只能增加标记样本并将其添加到训练集的限制
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353158.png"
-alt="Alt text" /></p>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353158.png" alt="Alt text" style="zoom:67%;" /></p>
 <p>少量数据+data augmentation 少量数据+unlabel data</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353466.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353005.png"
-alt="Alt text|center" /> 我们可以看到对标注样本<span
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353466.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353005.png" alt="Alt text|center" style="zoom:67%;" />
+我们可以看到对标注样本<span
 class="math inline">\(\phi(x_i)\)</span>和增强产生的样本<span
 class="math inline">\(\phi(x_{i,j})\)</span>之间的差异作为惩罚项。</p>
 <p>我们从经验和理论上论证了DAC与DA-ERM(用增强样本扩展训练集)相比的优点。理论上，线性回归和逻辑回归的泛化误差更小，两层神经网络的泛化上界更紧。另一个好处是，DAC可以更好地处理由强扩充数据引起的模型错误规范。在经验上，我们提供了关于增广ERM和一致性正则化的比较。这些共同证明了一致性规则化优于DA-ERM的有效性</p>
@@ -11447,18 +11234,8 @@ Changwon National University, Changwon, Republic of Korea</li>
 <h3
 id="an-analysis-of-simple-data-augmentation-for-named-entity-recognition">An
 Analysis of Simple Data Augmentation for Named Entity Recognition</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353604.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353756.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353604.png" alt="Alt text" style="zoom:67%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353756.png" alt="Alt text" style="zoom:67%;" /></p>
 <ul>
 <li><strong>Label-wise token replacement (LwTR)
 </strong>：即同标签token替换，对于每一token通过二项分布来选择是否被替换；如果被替换，则从训练集中选择相同的token进行替换。</li>
@@ -11473,11 +11250,7 @@ pain syndrome」，依次延展BIO标签。</li>
 symptoms], [.].
 。也是通过二项分布判断是否被shuffle（mention片段不会被shuffle），如果shuffle，则打乱片段中的token顺序。</li>
 </ul>
-<figure>
-<img src="../../images/nlp/NLP文本场景的数据优化/1646362972193.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646362972193.png" alt="Alt text" style="zoom:67%;" /></p>
 <p>由上图可以看出： -
 各种数据增强方法都超过不使用任何增强时的baseline效果。 -
 对于RNN网络，实体提及替换优于其他方法；对于Transformer网络，同义词替换最优。
@@ -11487,48 +11260,27 @@ alt="Alt text" />
 id="daga-data-augmentatino-with-a-generation-approach-for-low-resource-tagging-tasks">DAGA:
 Data Augmentatino with a Generation Approach for Low-resource Tagging
 Tasks</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353938.png"
-alt="Alt text" />
-<figcaption aria-hidden="true">Alt text</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353938.png" alt="Alt text" style="zoom:67%;" /></p>
 <p>DAGA的思想简单来讲就是标签线性化：即将原始的<strong>「序列标注标签」与「句子token」进行混合，也就是变成「Tag-Word」</strong>的形式，如下图：将「B-PER」放置在「Jose」之前，将「E-PER」放置在「Valentin」之前；对于标签「O」则不与句子混合。标签线性化后就可以生成一个句子了，文章基于此句子就可以进行「语言模型生成」了。
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353943.png"
-alt="Alt text" /></p>
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353943.png" alt="Alt text" style="zoom:67%;" /></p>
 <h3 id="seqmix">SeqMix</h3>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353921.png"
-alt="Alt text" /> - 标题: SeqMix: Augmenting Active Sequence Labeling
-via Sequence Mixup - 链接:
-https://rongzhizhang.org/pdf/emnlp20_SeqMix.pdf - 开源代码:
-https://github.com/rz-zhang/SeqMix - 备注: EMNLP 2020 <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353427.png"
-alt="Alt text" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353921.png" alt="Alt text" style="zoom:67%;" /></p>
+<ul>
+<li>标题: SeqMix: Augmenting Active Sequence Labeling via Sequence
+Mixup</li>
+<li>链接: https://rongzhizhang.org/pdf/emnlp20_SeqMix.pdf</li>
+<li>开源代码: https://github.com/rz-zhang/SeqMix</li>
+<li>备注: EMNLP 2020
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353427.png" alt="Alt text" style="zoom:67%;" /></li>
+</ul>
 <h3 id="boundary-smoothing-for-named-entity-recognition">Boundary
 Smoothing for Named Entity Recognition</h3>
-<p><img src="../../images/nlp/NLP文本场景的数据优化/1646817503789.png"
-alt="Alt text" /> - 标题: 针对命名实体识别的span类的算法的边界平滑 -
-code: https://github.com/syuoni/eznlp</p>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353619.png"
-alt="Alt text" /></th>
-<th><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030354558.png"
-alt="Alt text" /></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+<p><img src="../../images/nlp/NLP文本场景的数据优化/1646817503789.png" alt="Alt text" style="zoom:67%;" /></p>
+<ul>
+<li>标题: 针对命名实体识别的span类的算法的边界平滑</li>
+<li>code: https://github.com/syuoni/eznlp</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030353619-20221117002747265.png" alt="Alt text" style="zoom:50%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/202209030354558.png" alt="Alt text" style="zoom:50%;" /></p>
 <p>An example of hard and smoothed boundaries. The example sentence has
 ten tokens and two entities of spans (1, 2) and (3, 7), colored in red
 and blue, respectively. The first subfigure presents the entity
@@ -11541,9 +11293,9 @@ class="math inline">\(1 - \epsilon\)</span>，周边区域<span
 class="math inline">\(D\)</span>赋值<span class="math inline">\(\epsilon
 / D\)</span>,</p>
 <p>对NER标签位置的平滑处理，提升模型的泛化性。边界平滑可以防止模型对预测实体过于自信，从而获得更好的定标效果。D一般不用太大，1或者2即可，
-<span class="math inline">\(\epsilon\)</span>一般取[0.1, 0.2, 0.3] <img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353317.png"
-alt="Alt text" /></p>
+<span class="math inline">\(\epsilon\)</span>一般取[0.1, 0.2, 0.3]
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030353317.png" alt="Alt text" style="zoom:67%;" /></p>
+<h2 id="参考文献">参考文献</h2>
 <p>[^prompt
 base在NER中的应用]:https://zhuanlan.zhihu.com/p/462332297</p>
 <section class="footnotes footnotes-end-of-document"
@@ -11601,7 +11353,7 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
   <entry>
     <title>CUDA并行编程学习笔记</title>
     <url>/202208/20220831-basic-cuda-interface/</url>
-    <content><![CDATA[<h2 id="名词">名词</h2>
+    <content><![CDATA[<h2 id="技术名词">技术名词</h2>
 <ul>
 <li>SIMD： 单指令多数据，是基于一个处理器核的，128位</li>
 <li>MMX：多媒体拓展</li>
@@ -11617,33 +11369,15 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <p>采用4096个16核的CPU组装到一台机器上，也就是说64K个处理器来完成一个任务。连接机采用SIMD型并行处理，但是处理器之间的同步和通讯是很大的问题</p>
 <h3 id="cell处理器众核">Cell处理器(众核)</h3>
 <p>用一个常规处理器作为监管处理器(PowerPC)，该处理器与大量高速流处理(SPE)相连。
-* 每个流处理单元SPE调用执行一个程序 *
-通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯 * <img
-src="https://cwlseu.github.io/images/cuda/cell_arch.png"
-alt="国产申威 26010 处理器架构图" /></p>
+* 每个流处理单元SPE调用执行一个程序</p>
+<ul>
+<li><p>通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯</p>
+<p><img src="https://raw.githubusercontent.com/cwlseu/cwlseu.github.io/v1_2022/images/cuda/cell_arch.png" alt="img" style="zoom:67%;" /></p></li>
+</ul>
 <h3 id="多点计算">多点计算</h3>
 <p>集群，当前最流行的莫过于Hadoop和spark了，一个是分布式文件系统，一个是分布式计算框架，这两个工具使得多点计算的方法充分发挥。</p>
 <h3 id="gpu架构">GPU架构</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png"
-alt="nvidia device arch" />
-<figcaption aria-hidden="true">nvidia device arch</figcaption>
-</figure>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png"
-alt="nvidia-gpu-sm-arch" />
-<figcaption aria-hidden="true">nvidia-gpu-sm-arch</figcaption>
-</figure>
-<figure>
-<img src="../../../../Notebook/images/1.png" alt="1" />
-<figcaption aria-hidden="true">1</figcaption>
-</figure>
-<figure>
-<img src="../../images/cuda/2.png" alt="2" />
-<figcaption aria-hidden="true">2</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png" alt="nvidia device arch" style="zoom: 67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png" alt="nvidia-gpu-sm-arch" style="zoom:67%;" /><img src="../../images/cuda/2.png" alt="2" style="zoom: 67%;" /></p>
 <h2 id="cuda编程基础知识">CUDA编程基础知识</h2>
 <p>学习CUDA
 C，可以在异构计算平台中实现高性能的应用。CUD的编译原则--基于虚拟指令集的运行时编译。</p>
@@ -11669,12 +11403,7 @@ P2P</a></li>
 <p>首先我们简单看下NVIDIA对NVLink的介绍：NVLink能在多GPU之间和GPU与CPU之间实现非凡的连接带宽。带宽有多大?2016发布的P100是搭载NVLink的第一款产品，单个GPU具有160GB/s的带宽，相当于PCIe
 Gen3 * 16带宽的5倍。去年GTC 2017上发布的V100搭载的NVLink
 2.0更是将GPU带宽提升到了300G/s，差不多是PCIe的10倍了。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/NVLINK.png"
-alt="NVLINK网络拓扑结构" />
-<figcaption aria-hidden="true">NVLINK网络拓扑结构</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/NVLINK.png" alt="NVLINK网络拓扑结构" style="zoom:50%;" /></p>
 <ul>
 <li><a href="https://www.nvidia.com/zh-cn/data-center/nvlink/">NVIDIA
 NVLINK</a></li>
@@ -11684,13 +11413,10 @@ href="http://server.it168.com/a2018/0604/3206/000003206894.shtml">浅析GPU通�
 <h3 id="rdma原理介绍">RDMA原理介绍</h3>
 <p>前面介绍的GPUDirect
 P2P和NVLink技术可以大大提升GPU服务器单机的GPU通信性能，当前深度学习模型越来越复杂，计算数据量暴增，对于大规模深度学习训练任务，单机已经无法满足计算要求，多机多卡的分布式训练成为了必要的需求，这个时候多机间的通信成为了分布式训练性能的重要指标。</p>
-<p><img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png"
-alt="多机通讯RMDA架构图" />
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png" alt="多机通讯RMDA架构图" style="zoom: 67%;" />
 如上图所示，传统的TCP/IP协议，应用程序需要要经过多层复杂的协议栈解析，才能获取到网卡中的数据包，而使用RDMA协议，应用程序可以直接旁路内核获取到网卡中的数据包。RDMA可以简单理解为利用相关的硬件和网络技术，服务器1的网卡可以直接读写服务器2的内存，最终达到高带宽、低延迟和低资源利用率的效果。
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png"
-alt="应用RMDA技术的应用拓扑图" /> 所谓GPUDirect
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png" alt="应用RMDA技术的应用拓扑图" style="zoom: 33%;" />
+所谓GPUDirect
 RDMA，就是计算机1的GPU可以直接访问计算机2的GPU内存。而在没有这项技术之前，GPU需要先将数据从GPU内存搬移到系统内存，然后再利用RDMA传输到计算机2，计算机2的GPU还要做一次数据从系统内存到GPU内存的搬移动作。GPUDirect
 RDMA技术使得进一步减少了GPU通信的数据复制次数，通信延迟进一步降低。</p>
 <ul>
@@ -11754,24 +11480,20 @@ DIR没有配置，导致找不到头文件</p>
     <title>FasterTransformer</title>
     <url>/202210/20221010-fastertransformer/</url>
     <content><![CDATA[<h1 id="fastertransformer">FasterTransformer</h1>
-<ul>
-<li>code: https://github.com/NVIDIA/FasterTransformer.git</li>
-<li>NVIDIA 巨巨出品:
-https://raw.githubusercontent.com/NVIDIA/FasterTransformer/main/README.md</li>
-<li>https://developer.nvidia.com/zh-cn/blog/accelerated-inference-for-large-transformer-models-using-nvidia-fastertransformer-and-nvidia-triton-inference-server/</li>
-</ul>
-<h2 id="一框架简介">一、框架简介</h2>
+<h2 id="框架简介">框架简介</h2>
 <p>在 NLP 中，编码器和解码器是两个重要的组件，transformer
 层成为这两个组件的流行架构。 FasterTransformer
 为编码器和解码器实现了高度优化的转换器层以进行推理。 在 Volta、Turing 和
 Ampere GPU 上，当数据和权重的精度为 FP16 时，会自动使用 Tensor Cores
 的计算能力。</p>
 <p>FasterTransformer 建立在 CUDA、cuBLAS、cuBLASLt 和 C++ 之上。
-我们提供以下框架的至少一个 API：TensorFlow、PyTorch 和 Triton 后端。
-用户可以直接将 FasterTransformer 集成到这些框架中。</p>
+我们提供以下框架的至少一个 API：TensorFlow、PyTorch 和 Triton <a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>后端。 用户可以直接将
+FasterTransformer 集成到这些框架中。</p>
 <h3 id="tensorrt与faster-transformer对比1">1、TensorRT与Faster
-Transformer对比<a href="#fn1" class="footnote-ref" id="fnref1"
-role="doc-noteref"><sup>1</sup></a></h3>
+Transformer对比<a href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a></h3>
 <ul>
 <li><p>使用原生 TensorRT
 可让您在不更改代码的情况下最大程度地灵活地微调网络结构或参数，而
@@ -11788,11 +11510,6 @@ href="#Support%20Matrix">特定网络</a>，可能需要手动更新配置文件
 TensorRT API
 运行网络。另一方面，如果你想获得最大可能的性能，并愿意在部署模型上花费更多的工程精力，那么你可以考虑使用
 demoBERT 或 FasterTransformer。</p>
-</blockquote>
-<blockquote>
-<p>业务算法同学表示：fastertransformer我们线上就在用，但是缺点也有，就是模型结构写的比较死，他的op都是通过cuda
-编程去实现的。如果要改模型结构，要改cuda
-代码。onnx或者tensorRT会灵活很多</p>
 </blockquote>
 <table>
 <colgroup>
@@ -11877,7 +11594,9 @@ is functional but the performance is not guaranteed).</td>
 </tr>
 </tbody>
 </table>
-<h3 id="support-matrix">2、Support Matrix</h3>
+<h3 id="support-matrix4">2、Support Matrix<a href="#fn3"
+class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a></h3>
 <p>FasterTransformer
 支持的模型包括额BERT/XLNet/Encoder/Decoder/GPU/T5/SwinTransformer/Vit等</p>
 <table>
@@ -12111,7 +11830,7 @@ is functional but the performance is not guaranteed).</td>
 </tr>
 </tbody>
 </table>
-<h2 id="二框架优化策略">二、框架优化策略</h2>
+<h2 id="框架优化策略">框架优化策略</h2>
 <h3 id="内核优化">1、内核优化</h3>
 <p>首先，由于<code>SelfAttention</code>和<code>CrossAttention</code>中query的序列长度始终为1，我们使用自定义的融合多头注意力内核进行优化。</p>
 <p>其次，我们将许多小操作融合到一个内核中。例如，<code>AddBiasResidualLayerNorm</code>
@@ -12126,7 +11845,7 @@ GB。因此，我们必须减少其他部分的内存使用量。在 FasterTrans
 96，我们只需要 1/96 的内存。</p>
 <p>对矩阵乘法进行算法选择，通过在“硬件”级别使用不同的低级算法以数十种不同的方式执行,
 可以选择不同的底层算法进行操作。</p>
-<p><img src="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png" alt="img" style="zoom: 33%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1-20221116220850259.png" alt="img" style="zoom: 50%;" /></p>
 <p>在 Effective Transformer
 中，我们仍然将输入批处理作为填充矩阵，但填充值将在不同的计算阶段动态删除和恢复。通过计算输入掩码矩阵的<strong>前缀和</strong>，我们可以在没有填充值的矩阵中访问每个序列中的真实输入。
 上图说明了如何访问有效输入并在计算期间动态删除和恢复填充值。
@@ -12154,7 +11873,7 @@ href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-GemmBatchedEx"><code
 </blockquote>
 <figure>
 <img
-src="https://img2020.cnblogs.com/blog/1251718/202005/1251718-20200528195459184-699522366.png"
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1251718-20200528195459184-699522366-20221116220825773.png"
 alt="img" />
 <figcaption aria-hidden="true">img</figcaption>
 </figure>
@@ -12165,7 +11884,7 @@ alt="img" />
 分配一个缓冲区来在每一步存储它们。虽然需要一些额外的内存使用，但 FT
 可以节省重新计算的成本、在每一步分配缓冲区以及连接的成本。相同的缓存机制用于
 NN 的多个部分。</p>
-<p><img src="../images/fastertransformer/fastertransformer-cache.png" alt="fastertransformer-cache" style="zoom: 33%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fastertransformer-cache.png" alt="fastertransformer-cache" style="zoom:40%;" /></p>
 <blockquote>
 <p>精度较低的推理</p>
 </blockquote>
@@ -12174,8 +11893,7 @@ NN 的多个部分。</p>
 fp16 计算可以在特殊硬件上执行，例如Tensor Core（适用于从 Volta
 开始的所有 GPU 架构），以及即将推出的 Hopper GPU
 中的Transformer引擎。</p>
-<h2 id="三-performance">三、 Performance</h2>
-<h2 id="四faq">四、FAQ</h2>
+<h2 id="faq">FAQ</h2>
 <p>1、RuntimeError: CUDA error: no kernel image is available for
 execution on the device</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[INFO] Finish the decoding gemm <span class="built_in">test</span></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;../examples/pytorch/decoding/translate_example.py&quot;</span>, line 88, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    translated = translator.translate(lines, batch_size=args.batch_size)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 337, <span class="keyword">in</span> translate</span><br><span class="line">    batch_data = self.translate_batch_ftdecoding(batch, data.src_vocabs)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 473, <span class="keyword">in</span> translate_batch_ftdecoding</span><br><span class="line">    src, enc_states, memory_bank, src_lengths = self._run_encoder(batch)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 498, <span class="keyword">in</span> _run_encoder</span><br><span class="line">    enc_states, memory_bank, src_lengths = self.model.encoder(</span><br><span class="line">  File <span class="string">&quot;/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1111, <span class="keyword">in</span> _call_impl</span><br><span class="line">    <span class="built_in">return</span> forward_call(*input, **kwargs)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/../../../examples/pytorch/encoder/utils/ft_encoder.py&quot;</span>, line 119, <span class="keyword">in</span> forward</span><br><span class="line">    <span class="built_in">return</span> emb, hidden_states.transpose(0, 1).contiguous(), lengths</span><br><span class="line">RuntimeError: CUDA error: no kernel image is available <span class="keyword">for</span> execution on the device</span><br><span class="line">CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.</span><br><span class="line">For debugging consider passing CUDA_LAUNCH_BLOCKING=1.</span><br></pre></td></tr></table></figure>
@@ -12185,7 +11903,8 @@ capacity为75，结果我编译的时候用的是80.</p>
 <blockquote>
 <p>Note: the <code>xx</code> of <code>-DSM=xx</code> in following
 scripts means the compute capability of your GPU. The following table
-shows the compute capability of common GPUs.</p>
+shows the compute capability of common GPUs.<a href="#fn4"
+class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 </blockquote>
 <table>
 <thead>
@@ -12225,7 +11944,7 @@ shows the compute capability of common GPUs.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="五参考文献">五、参考文献</h2>
+<h2 id="参考文献">参考文献</h2>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -12234,6 +11953,18 @@ role="doc-endnotes">
 role="doc-endnote"><p>https://developer.nvidia.com/zh-cn/blog/accelerated-inference-for-large-transformer-models-using-nvidia-fastertransformer-and-nvidia-triton-inference-server/
 "使用 FasterTransformer 和 Triton 推理服务器加速大型 Transformer
 模型的推理"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"
+role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#transformers-performance
+"transformer inference tensorrt or fastertransformer"<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"
+role="doc-endnote"><p>https://raw.githubusercontent.com/NVIDIA/FasterTransformer/main/README.md
+"fastertransformer introduction"<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"
+role="doc-endnote"><p>https://github.com/NVIDIA/FasterTransformer.git
+"code"<a href="#fnref4" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
@@ -12276,10 +12007,7 @@ role="doc-noteref"><sup>1</sup></a>如下，可以看到Runtime实现功能是�
 Model转换为In-Memory
 Graph格式，之后通过将其转化为各个可执行的子图，最后通过<code>GetCapability()</code>
 API将子图分配到不同的后端（execution provider, EP）执行。</p>
-<figure>
-<img src="../images/backends/onnxruntime_1.png" alt="onnxruntime_1" />
-<figcaption aria-hidden="true">onnxruntime_1</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png" alt="onnxruntime_1" style="zoom:67%;" /></p>
 <h3 id="已支持的execution-providers">已支持的Execution Providers</h3>
 <table>
 <colgroup>
@@ -12391,8 +12119,7 @@ href="https://onnxruntime.ai/docs/execution-providers/Xnnpack-ExecutionProvider.
 <p>我们最常用的是<code>CPUExecutionProvider</code>和<code>CUDAExecutionAProvider</code>,
 如果要自己实现一个EP，可以参考<a href="#fn2" class="footnote-ref"
 id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<h2 id="五参考链接">五、参考链接</h2>
-<h2 id="附-runtime源码剖析">附: Runtime源码剖析</h2>
+<h2 id="runtime源码剖析">Runtime源码剖析</h2>
 <h3
 id="onnx中如何绑定c与python接口的">onnx中如何绑定C与python接口的</h3>
 <ul>
@@ -12430,12 +12157,7 @@ id="clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-com
 <p>这个应该是由于onnxruntime对MAC
 M1机型的兼容性的一个bug，当前我先临时将<code>-mfpu=neon</code>从<code>CMAKE_CXX_FLAGS</code>中移除，然后重新编译。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[ 20%] Building CXX object CMakeFiles/onnxruntime_common.dir/Users/xxx/Documents/Framework/onnxruntime/onnxruntime/core/common/cpuid_info.cc.o</span><br><span class="line">clang: error: argument unused during compilation: <span class="string">&#x27;-mfpu=neon&#x27;</span> [-Werror,-Wunused-command-line-argument]</span><br><span class="line">make[2]: *** [CMakeFiles/onnxruntime_common.dir/Users/xxx/Documents/Framework/onnxruntime/onnxruntime/core/common/cpuid_info.cc.o] Error 1</span><br><span class="line">make[1]: *** [CMakeFiles/onnxruntime_common.dir/all] Error 2</span><br><span class="line">make: *** [all] Error 2</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 1065, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    sys.exit(main())</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 1002, <span class="keyword">in</span> main</span><br><span class="line">    build_targets(args, cmake_path, build_dir, configs, args.parallel)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 471, <span class="keyword">in</span> build_targets</span><br><span class="line">    run_subprocess(cmd_args, <span class="built_in">env</span>=<span class="built_in">env</span>)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 212, <span class="keyword">in</span> run_subprocess</span><br><span class="line">    completed_process = subprocess.run(args, cwd=cwd, check=True, stdout=stdout, stderr=stderr, <span class="built_in">env</span>=my_env, shell=shell)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/mambaforge/lib/python3.9/subprocess.py&quot;</span>, line 528, <span class="keyword">in</span> run</span><br><span class="line">    raise CalledProcessError(retcode, process.args,</span><br><span class="line">subprocess.CalledProcessError: Command <span class="string">&#x27;[&#x27;</span>/opt/homebrew/Cellar/cmake/3.23.2/bin/cmake<span class="string">&#x27;, &#x27;</span>--build<span class="string">&#x27;, &#x27;</span>/Users/xxx/Documents/Framework/onnxruntime/build/Linux/Debug<span class="string">&#x27;, &#x27;</span>--config<span class="string">&#x27;, &#x27;</span>Debug<span class="string">&#x27;]&#x27;</span> returned non-zero <span class="built_in">exit</span> status 2.</span><br></pre></td></tr></table></figure>
-<figure>
-<img
-src="/Users/xxx/Library/Application%20Support/typora-user-images/image-20220712114712012.png"
-alt="image-20220712114712012" />
-<figcaption aria-hidden="true">image-20220712114712012</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/build_onnxruntime_osx.png" alt="image-20220712114712012" style="zoom: 67%;" /></p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/usr/local/lib/python3.8/dist-packages/torch/cuda/__init__.py:146: UserWarning:</span><br><span class="line">NVIDIA A100 80GB PCIe with CUDA capability sm_80 is not compatible with the current PyTorch installation.</span><br><span class="line">The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.</span><br><span class="line">If you want to use the NVIDIA A100 80GB PCIe GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/</span><br><span class="line"></span><br><span class="line">  warnings.warn(incompatible_device_warn.format(device_name, capability, <span class="string">&quot; &quot;</span>.<span class="built_in">join</span>(arch_list), device_name))</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;tools/export_onnx_models.py&quot;</span>, line 117, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    convert_onnx(args.model_name, args.model_path, args.batch_size, export_fp16=args.fp16, verbose=args.verbose)</span><br><span class="line">  File <span class="string">&quot;tools/export_onnx_models.py&quot;</span>, line 69, <span class="keyword">in</span> convert_onnx</span><br><span class="line">    inputs = torch.rand(batch_size, 3, 224, 224, dtype=dtype, device=0)</span><br><span class="line">RuntimeError: CUDA error: no kernel image is available <span class="keyword">for</span> execution on the device</span><br></pre></td></tr></table></figure>
 <h4 id="load-model-is-dataparallel-format-your-should-notice">02、load
 model is DataParallel format, your should notice:</h4>
@@ -12476,7 +12198,7 @@ reshape dimensions: dimensions were [-1,2])</p>
 截止到版本8.4.1为止，对动态输入的情况下，这种输入不支持导致的。遇到这种问题，当前只能先取消对动态输入的支持，采用固定shape的输入。</p>
 <figure>
 <img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/image-20220909095831552.png"
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/image-20220909095831552.png"
 alt="image-20220909095831552" />
 <figcaption aria-hidden="true">image-20220909095831552</figcaption>
 </figure>
@@ -12488,6 +12210,7 @@ alt="image-20220909095846591" />
 </figure>
 <p>python3 -m pip install torch==1.12.0+cu115 -f
 https://download.pytorch.org/whl/torch_stable.html</p>
+<h2 id="参考链接">参考链接</h2>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -12519,7 +12242,8 @@ id="什么场景下重视latencythroughout">什么场景下重视latency/through
 Center（云端数据中心），比如说大家常见的手机上的语音输入，目前都还是云端的，也就是说你的声音是传到云端的，云端处理好之后把数据再返回来，这种场景的服务吞吐量要高；</p>
 <p>还可能部署在嵌入端，比如说嵌入式的摄像头、无人机、机器人或车载的自动驾驶，当然车载的自动驾驶可能是嵌入式的设备，也可能是一台完整的主机，像这种嵌入式或自动驾驶，它的特点是对实时性要求很高，这种场景下的latency要低。</p>
 <figure>
-<img src="../images/backends/latency_vs_throughput.png"
+<img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/latency_vs_throughput.png"
 alt="latency_vs_throughput" />
 <figcaption aria-hidden="true">latency_vs_throughput</figcaption>
 </figure>
@@ -12551,7 +12275,9 @@ benchmark_app 和 accuracy_checker
 算法返回的受保护的 IR
 模型可以从那里独立使用。不需要改变网络的学习参数。</p>
 <figure>
-<img src="../images/backends/rangesupervision.png" alt="Schematic" />
+<img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/rangesupervision.png"
+alt="Schematic" />
 <figcaption aria-hidden="true">Schematic</figcaption>
 </figure>
 <p>The following activation layers are currently supported for range

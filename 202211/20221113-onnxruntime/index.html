@@ -28,13 +28,14 @@
 <meta property="og:site_name" content="Deepindeed">
 <meta property="og:description" content="OnnxRuntime">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://www.deepindeed.cn/202211/images/backends/onnxruntime_1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/build_onnxruntime_osx.png">
 <meta property="article:published_time" content="2022-11-13T11:39:39.000Z">
-<meta property="article:modified_time" content="2022-11-15T12:11:59.376Z">
+<meta property="article:modified_time" content="2022-11-16T15:37:04.343Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="Backends">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://www.deepindeed.cn/202211/images/backends/onnxruntime_1.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/202211/20221113-onnxruntime/">
@@ -150,15 +151,15 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80onnx%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、ONNX简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8Connxruntime"><span class="nav-number">2.</span> <span class="nav-text">二、OnnxRuntime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84execution-providers"><span class="nav-number">2.1.</span> <span class="nav-text">已支持的Execution Providers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">五、参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84-runtime%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">附: Runtime源码剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onnx%E4%B8%AD%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9Ac%E4%B8%8Epython%E6%8E%A5%E5%8F%A3%E7%9A%84"><span class="nav-number">4.1.</span> <span class="nav-text">onnx中如何绑定C与python接口的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#modelload%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">Model::Load加载模型的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AAexecution-provider"><span class="nav-number">4.3.</span> <span class="nav-text">如何注册一个Execution
-Provider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faq"><span class="nav-number">5.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument"><span class="nav-number">5.0.1.</span> <span class="nav-text">01、clang: error: argument unused during compilation: &#39;-mfpu&#x3D;neon&#39; [-Werror,-Wunused-command-line-argument]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#load-model-is-dataparallel-format-your-should-notice"><span class="nav-number">5.0.2.</span> <span class="nav-text">02、load
-model is DataParallel format, your should notice:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#some-operator-not-supported-by-onnx"><span class="nav-number">5.0.3.</span> <span class="nav-text">03、 Some operator not
-supported by ONNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96onnx%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%93%E5%87%BA"><span class="nav-number">5.0.4.</span> <span class="nav-text">04、 获取onnx模型的输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#typeerror-descriptors-cannot-not-be-created-directly."><span class="nav-number">5.0.5.</span> <span class="nav-text">05、TypeError:
-Descriptors cannot not be created directly.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attributeerror-upsample-object-has-no-attribute-recompute_scale_factor"><span class="nav-number">5.0.6.</span> <span class="nav-text">06、AttributeError:
-&#39;Upsample&#39; object has no attribute &#39;recompute_scale_factor&#39;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runtimeerror-input-type-torch.cuda.floattensor-and-weight-type-torch.cuda.halftensor-should-be-the-same"><span class="nav-number">5.0.7.</span> <span class="nav-text">07、RuntimeError:
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80onnx%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、ONNX简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8Connxruntime"><span class="nav-number">2.</span> <span class="nav-text">二、OnnxRuntime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84execution-providers"><span class="nav-number">2.1.</span> <span class="nav-text">已支持的Execution Providers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runtime%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">Runtime源码剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onnx%E4%B8%AD%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9Ac%E4%B8%8Epython%E6%8E%A5%E5%8F%A3%E7%9A%84"><span class="nav-number">3.1.</span> <span class="nav-text">onnx中如何绑定C与python接口的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#modelload%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">Model::Load加载模型的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AAexecution-provider"><span class="nav-number">3.3.</span> <span class="nav-text">如何注册一个Execution
+Provider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faq"><span class="nav-number">4.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument"><span class="nav-number">4.0.1.</span> <span class="nav-text">01、clang: error: argument unused during compilation: &#39;-mfpu&#x3D;neon&#39; [-Werror,-Wunused-command-line-argument]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#load-model-is-dataparallel-format-your-should-notice"><span class="nav-number">4.0.2.</span> <span class="nav-text">02、load
+model is DataParallel format, your should notice:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#some-operator-not-supported-by-onnx"><span class="nav-number">4.0.3.</span> <span class="nav-text">03、 Some operator not
+supported by ONNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96onnx%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%93%E5%87%BA"><span class="nav-number">4.0.4.</span> <span class="nav-text">04、 获取onnx模型的输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#typeerror-descriptors-cannot-not-be-created-directly."><span class="nav-number">4.0.5.</span> <span class="nav-text">05、TypeError:
+Descriptors cannot not be created directly.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attributeerror-upsample-object-has-no-attribute-recompute_scale_factor"><span class="nav-number">4.0.6.</span> <span class="nav-text">06、AttributeError:
+&#39;Upsample&#39; object has no attribute &#39;recompute_scale_factor&#39;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runtimeerror-input-type-torch.cuda.floattensor-and-weight-type-torch.cuda.halftensor-should-be-the-same"><span class="nav-number">4.0.7.</span> <span class="nav-text">07、RuntimeError:
 Input type (torch.cuda.FloatTensor) and weight type
-(torch.cuda.HalfTensor) should be the same</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#error---in-node-23-parsegraph-invalid_node-invalid-node---pad_23"><span class="nav-number">5.0.8.</span> <span class="nav-text">08、ERROR
-- In node 23 (parseGraph): INVALID_NODE: Invalid Node - Pad_23</span></a></li></ol></li></ol></li></ol></div>
+(torch.cuda.HalfTensor) should be the same</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#error---in-node-23-parsegraph-invalid_node-invalid-node---pad_23"><span class="nav-number">4.0.8.</span> <span class="nav-text">08、ERROR
+- In node 23 (parseGraph): INVALID_NODE: Invalid Node - Pad_23</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -286,7 +287,7 @@ Input type (torch.cuda.FloatTensor) and weight type
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-15 20:11:59" itemprop="dateModified" datetime="2022-11-15T20:11:59+08:00">2022-11-15</time>
+      <time title="修改时间：2022-11-16 23:37:04" itemprop="dateModified" datetime="2022-11-16T23:37:04+08:00">2022-11-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -373,10 +374,7 @@ role="doc-noteref"><sup>1</sup></a>如下，可以看到Runtime实现功能是�
 Model转换为In-Memory
 Graph格式，之后通过将其转化为各个可执行的子图，最后通过<code>GetCapability()</code>
 API将子图分配到不同的后端（execution provider, EP）执行。</p>
-<figure>
-<img src="../images/backends/onnxruntime_1.png" alt="onnxruntime_1" />
-<figcaption aria-hidden="true">onnxruntime_1</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png" alt="onnxruntime_1" style="zoom:67%;" /></p>
 <h3 id="已支持的execution-providers">已支持的Execution Providers</h3>
 <table>
 <colgroup>
@@ -488,8 +486,7 @@ target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-provi
 <p>我们最常用的是<code>CPUExecutionProvider</code>和<code>CUDAExecutionAProvider</code>,
 如果要自己实现一个EP，可以参考<a href="#fn2" class="footnote-ref"
 id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<h2 id="五参考链接">五、参考链接</h2>
-<h2 id="附-runtime源码剖析">附: Runtime源码剖析</h2>
+<h2 id="runtime源码剖析">Runtime源码剖析</h2>
 <h3
 id="onnx中如何绑定c与python接口的">onnx中如何绑定C与python接口的</h3>
 <ul>
@@ -527,12 +524,7 @@ id="clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-com
 <p>这个应该是由于onnxruntime对MAC
 M1机型的兼容性的一个bug，当前我先临时将<code>-mfpu=neon</code>从<code>CMAKE_CXX_FLAGS</code>中移除，然后重新编译。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[ 20%] Building CXX object CMakeFiles/onnxruntime_common.dir/Users/xxx/Documents/Framework/onnxruntime/onnxruntime/core/common/cpuid_info.cc.o</span><br><span class="line">clang: error: argument unused during compilation: <span class="string">&#x27;-mfpu=neon&#x27;</span> [-Werror,-Wunused-command-line-argument]</span><br><span class="line">make[2]: *** [CMakeFiles/onnxruntime_common.dir/Users/xxx/Documents/Framework/onnxruntime/onnxruntime/core/common/cpuid_info.cc.o] Error 1</span><br><span class="line">make[1]: *** [CMakeFiles/onnxruntime_common.dir/all] Error 2</span><br><span class="line">make: *** [all] Error 2</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 1065, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    sys.exit(main())</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 1002, <span class="keyword">in</span> main</span><br><span class="line">    build_targets(args, cmake_path, build_dir, configs, args.parallel)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 471, <span class="keyword">in</span> build_targets</span><br><span class="line">    run_subprocess(cmd_args, <span class="built_in">env</span>=<span class="built_in">env</span>)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/Documents/Framework/onnxruntime/tools/ci_build/build.py&quot;</span>, line 212, <span class="keyword">in</span> run_subprocess</span><br><span class="line">    completed_process = subprocess.run(args, cwd=cwd, check=True, stdout=stdout, stderr=stderr, <span class="built_in">env</span>=my_env, shell=shell)</span><br><span class="line">  File <span class="string">&quot;/Users/xxx/mambaforge/lib/python3.9/subprocess.py&quot;</span>, line 528, <span class="keyword">in</span> run</span><br><span class="line">    raise CalledProcessError(retcode, process.args,</span><br><span class="line">subprocess.CalledProcessError: Command <span class="string">&#x27;[&#x27;</span>/opt/homebrew/Cellar/cmake/3.23.2/bin/cmake<span class="string">&#x27;, &#x27;</span>--build<span class="string">&#x27;, &#x27;</span>/Users/xxx/Documents/Framework/onnxruntime/build/Linux/Debug<span class="string">&#x27;, &#x27;</span>--config<span class="string">&#x27;, &#x27;</span>Debug<span class="string">&#x27;]&#x27;</span> returned non-zero <span class="built_in">exit</span> status 2.</span><br></pre></td></tr></table></figure>
-<figure>
-<img
-src="/Users/xxx/Library/Application%20Support/typora-user-images/image-20220712114712012.png"
-alt="image-20220712114712012" />
-<figcaption aria-hidden="true">image-20220712114712012</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/build_onnxruntime_osx.png" alt="image-20220712114712012" style="zoom: 67%;" /></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/lib/python3.8/dist-packages/torch/cuda/__init__.py:146: UserWarning:</span><br><span class="line">NVIDIA A100 80GB PCIe with CUDA capability sm_80 is not compatible with the current PyTorch installation.</span><br><span class="line">The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.</span><br><span class="line">If you want to use the NVIDIA A100 80GB PCIe GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/</span><br><span class="line"></span><br><span class="line">  warnings.warn(incompatible_device_warn.format(device_name, capability, <span class="string">&quot; &quot;</span>.<span class="built_in">join</span>(arch_list), device_name))</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;tools/export_onnx_models.py&quot;</span>, line 117, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    convert_onnx(args.model_name, args.model_path, args.batch_size, export_fp16=args.fp16, verbose=args.verbose)</span><br><span class="line">  File <span class="string">&quot;tools/export_onnx_models.py&quot;</span>, line 69, <span class="keyword">in</span> convert_onnx</span><br><span class="line">    inputs = torch.rand(batch_size, 3, 224, 224, dtype=dtype, device=0)</span><br><span class="line">RuntimeError: CUDA error: no kernel image is available <span class="keyword">for</span> execution on the device</span><br></pre></td></tr></table></figure>
 <h4 id="load-model-is-dataparallel-format-your-should-notice">02、load
 model is DataParallel format, your should notice:</h4>
@@ -573,7 +565,7 @@ reshape dimensions: dimensions were [-1,2])</p>
 截止到版本8.4.1为止，对动态输入的情况下，这种输入不支持导致的。遇到这种问题，当前只能先取消对动态输入的支持，采用固定shape的输入。</p>
 <figure>
 <img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/image-20220909095831552.png"
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/image-20220909095831552.png"
 alt="image-20220909095831552" />
 <figcaption aria-hidden="true">image-20220909095831552</figcaption>
 </figure>
@@ -585,6 +577,7 @@ alt="image-20220909095846591" />
 </figure>
 <p>python3 -m pip install torch==1.12.0+cu115 -f
 https://download.pytorch.org/whl/torch_stable.html</p>
+<h2 id="参考链接">参考链接</h2>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -686,13 +679,13 @@ role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">473k</span>
+    <span title="站点总字数">470k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:08</span>
+    <span title="站点阅读时长">13:04</span>
   </span>
 </div>
 <div class="busuanzi-count">

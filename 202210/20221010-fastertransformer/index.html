@@ -28,14 +28,14 @@
 <meta property="og:site_name" content="Deepindeed">
 <meta property="og:description" content="FasterTransformer">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png">
-<meta property="og:image" content="http://www.deepindeed.cn/202210/images/fastertransformer/fastertransformer-cache.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1-20221116220850259.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fastertransformer-cache.png">
 <meta property="article:published_time" content="2022-10-10T11:39:39.000Z">
-<meta property="article:modified_time" content="2022-11-15T12:03:18.824Z">
+<meta property="article:modified_time" content="2022-11-16T15:37:55.653Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="Backends">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1-20221116220850259.png">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/202210/20221010-fastertransformer/">
@@ -151,8 +151,8 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#fastertransformer"><span class="nav-number">1.</span> <span class="nav-text">FasterTransformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">一、框架简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorrt%E4%B8%8Efaster-transformer%E5%AF%B9%E6%AF%941"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、TensorRT与Faster
-Transformer对比1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#support-matrix"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、Support Matrix</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E6%A1%86%E6%9E%B6%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.</span> <span class="nav-text">二、框架优化策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、内核优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、内存优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E5%BA%94%E7%94%A8%E9%9B%86%E6%88%90fastertransformer"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、文本翻译应用集成FasterTransformer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-performance"><span class="nav-number">1.3.</span> <span class="nav-text">三、 Performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9Bfaq"><span class="nav-number">1.4.</span> <span class="nav-text">四、FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.5.</span> <span class="nav-text">五、参考文献</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#fastertransformer"><span class="nav-number">1.</span> <span class="nav-text">FasterTransformer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">框架简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorrt%E4%B8%8Efaster-transformer%E5%AF%B9%E6%AF%941"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、TensorRT与Faster
+Transformer对比2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#support-matrix4"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、Support Matrix3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.</span> <span class="nav-text">框架优化策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、内核优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、内存优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E5%BA%94%E7%94%A8%E9%9B%86%E6%88%90fastertransformer"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、文本翻译应用集成FasterTransformer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faq"><span class="nav-number">1.3.</span> <span class="nav-text">FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.4.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -280,7 +280,7 @@ Transformer对比1</span></a></li><li class="nav-item nav-level-3"><a class="nav
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-15 20:03:18" itemprop="dateModified" datetime="2022-11-15T20:03:18+08:00">2022-11-15</time>
+      <time title="修改时间：2022-11-16 23:37:55" itemprop="dateModified" datetime="2022-11-16T23:37:55+08:00">2022-11-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -320,7 +320,7 @@ Transformer对比1</span></a></li><li class="nav-item nav-level-3"><a class="nav
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.2k</span>
+      <span>6.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -340,24 +340,20 @@ Transformer对比1</span></a></li><li class="nav-item nav-level-3"><a class="nav
     
     <div class="post-body" itemprop="articleBody">
         <h1 id="fastertransformer">FasterTransformer</h1>
-<ul>
-<li>code: https://github.com/NVIDIA/FasterTransformer.git</li>
-<li>NVIDIA 巨巨出品:
-https://raw.githubusercontent.com/NVIDIA/FasterTransformer/main/README.md</li>
-<li>https://developer.nvidia.com/zh-cn/blog/accelerated-inference-for-large-transformer-models-using-nvidia-fastertransformer-and-nvidia-triton-inference-server/</li>
-</ul>
-<h2 id="一框架简介">一、框架简介</h2>
+<h2 id="框架简介">框架简介</h2>
 <p>在 NLP 中，编码器和解码器是两个重要的组件，transformer
 层成为这两个组件的流行架构。 FasterTransformer
 为编码器和解码器实现了高度优化的转换器层以进行推理。 在 Volta、Turing 和
 Ampere GPU 上，当数据和权重的精度为 FP16 时，会自动使用 Tensor Cores
 的计算能力。</p>
 <p>FasterTransformer 建立在 CUDA、cuBLAS、cuBLASLt 和 C++ 之上。
-我们提供以下框架的至少一个 API：TensorFlow、PyTorch 和 Triton 后端。
-用户可以直接将 FasterTransformer 集成到这些框架中。</p>
+我们提供以下框架的至少一个 API：TensorFlow、PyTorch 和 Triton <a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>后端。 用户可以直接将
+FasterTransformer 集成到这些框架中。</p>
 <h3 id="tensorrt与faster-transformer对比1">1、TensorRT与Faster
-Transformer对比<a href="#fn1" class="footnote-ref" id="fnref1"
-role="doc-noteref"><sup>1</sup></a></h3>
+Transformer对比<a href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a></h3>
 <ul>
 <li><p>使用原生 TensorRT
 可让您在不更改代码的情况下最大程度地灵活地微调网络结构或参数，而
@@ -374,11 +370,6 @@ href="#Support%20Matrix">特定网络</a>，可能需要手动更新配置文件
 TensorRT API
 运行网络。另一方面，如果你想获得最大可能的性能，并愿意在部署模型上花费更多的工程精力，那么你可以考虑使用
 demoBERT 或 FasterTransformer。</p>
-</blockquote>
-<blockquote>
-<p>业务算法同学表示：fastertransformer我们线上就在用，但是缺点也有，就是模型结构写的比较死，他的op都是通过cuda
-编程去实现的。如果要改模型结构，要改cuda
-代码。onnx或者tensorRT会灵活很多</p>
 </blockquote>
 <table>
 <colgroup>
@@ -463,7 +454,9 @@ is functional but the performance is not guaranteed).</td>
 </tr>
 </tbody>
 </table>
-<h3 id="support-matrix">2、Support Matrix</h3>
+<h3 id="support-matrix4">2、Support Matrix<a href="#fn3"
+class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a></h3>
 <p>FasterTransformer
 支持的模型包括额BERT/XLNet/Encoder/Decoder/GPU/T5/SwinTransformer/Vit等</p>
 <table>
@@ -697,7 +690,7 @@ is functional but the performance is not guaranteed).</td>
 </tr>
 </tbody>
 </table>
-<h2 id="二框架优化策略">二、框架优化策略</h2>
+<h2 id="框架优化策略">框架优化策略</h2>
 <h3 id="内核优化">1、内核优化</h3>
 <p>首先，由于<code>SelfAttention</code>和<code>CrossAttention</code>中query的序列长度始终为1，我们使用自定义的融合多头注意力内核进行优化。</p>
 <p>其次，我们将许多小操作融合到一个内核中。例如，<code>AddBiasResidualLayerNorm</code>
@@ -712,7 +705,7 @@ GB。因此，我们必须减少其他部分的内存使用量。在 FasterTrans
 96，我们只需要 1/96 的内存。</p>
 <p>对矩阵乘法进行算法选择，通过在“硬件”级别使用不同的低级算法以数十种不同的方式执行,
 可以选择不同的底层算法进行操作。</p>
-<p><img src="https://raw.githubusercontent.com/bytedance/effective_transformer/master/images/1.png" alt="img" style="zoom: 33%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1-20221116220850259.png" alt="img" style="zoom: 50%;" /></p>
 <p>在 Effective Transformer
 中，我们仍然将输入批处理作为填充矩阵，但填充值将在不同的计算阶段动态删除和恢复。通过计算输入掩码矩阵的<strong>前缀和</strong>，我们可以在没有填充值的矩阵中访问每个序列中的真实输入。
 上图说明了如何访问有效输入并在计算期间动态删除和恢复填充值。
@@ -740,7 +733,7 @@ target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cublas/index.h
 </blockquote>
 <figure>
 <img
-src="https://img2020.cnblogs.com/blog/1251718/202005/1251718-20200528195459184-699522366.png"
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1251718-20200528195459184-699522366-20221116220825773.png"
 alt="img" />
 <figcaption aria-hidden="true">img</figcaption>
 </figure>
@@ -751,7 +744,7 @@ alt="img" />
 分配一个缓冲区来在每一步存储它们。虽然需要一些额外的内存使用，但 FT
 可以节省重新计算的成本、在每一步分配缓冲区以及连接的成本。相同的缓存机制用于
 NN 的多个部分。</p>
-<p><img src="../images/fastertransformer/fastertransformer-cache.png" alt="fastertransformer-cache" style="zoom: 33%;" /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fastertransformer-cache.png" alt="fastertransformer-cache" style="zoom:40%;" /></p>
 <blockquote>
 <p>精度较低的推理</p>
 </blockquote>
@@ -760,8 +753,7 @@ NN 的多个部分。</p>
 fp16 计算可以在特殊硬件上执行，例如Tensor Core（适用于从 Volta
 开始的所有 GPU 架构），以及即将推出的 Hopper GPU
 中的Transformer引擎。</p>
-<h2 id="三-performance">三、 Performance</h2>
-<h2 id="四faq">四、FAQ</h2>
+<h2 id="faq">FAQ</h2>
 <p>1、RuntimeError: CUDA error: no kernel image is available for
 execution on the device</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[INFO] Finish the decoding gemm <span class="built_in">test</span></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;../examples/pytorch/decoding/translate_example.py&quot;</span>, line 88, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    translated = translator.translate(lines, batch_size=args.batch_size)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 337, <span class="keyword">in</span> translate</span><br><span class="line">    batch_data = self.translate_batch_ftdecoding(batch, data.src_vocabs)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 473, <span class="keyword">in</span> translate_batch_ftdecoding</span><br><span class="line">    src, enc_states, memory_bank, src_lengths = self._run_encoder(batch)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/utils/translator.py&quot;</span>, line 498, <span class="keyword">in</span> _run_encoder</span><br><span class="line">    enc_states, memory_bank, src_lengths = self.model.encoder(</span><br><span class="line">  File <span class="string">&quot;/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line 1111, <span class="keyword">in</span> _call_impl</span><br><span class="line">    <span class="built_in">return</span> forward_call(*input, **kwargs)</span><br><span class="line">  File <span class="string">&quot;/workspace/FasterTransformer/examples/pytorch/decoding/../../../examples/pytorch/encoder/utils/ft_encoder.py&quot;</span>, line 119, <span class="keyword">in</span> forward</span><br><span class="line">    <span class="built_in">return</span> emb, hidden_states.transpose(0, 1).contiguous(), lengths</span><br><span class="line">RuntimeError: CUDA error: no kernel image is available <span class="keyword">for</span> execution on the device</span><br><span class="line">CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.</span><br><span class="line">For debugging consider passing CUDA_LAUNCH_BLOCKING=1.</span><br></pre></td></tr></table></figure>
@@ -771,7 +763,8 @@ capacity为75，结果我编译的时候用的是80.</p>
 <blockquote>
 <p>Note: the <code>xx</code> of <code>-DSM=xx</code> in following
 scripts means the compute capability of your GPU. The following table
-shows the compute capability of common GPUs.</p>
+shows the compute capability of common GPUs.<a href="#fn4"
+class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 </blockquote>
 <table>
 <thead>
@@ -811,7 +804,7 @@ shows the compute capability of common GPUs.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="五参考文献">五、参考文献</h2>
+<h2 id="参考文献">参考文献</h2>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
@@ -820,6 +813,18 @@ role="doc-endnotes">
 role="doc-endnote"><p>https://developer.nvidia.com/zh-cn/blog/accelerated-inference-for-large-transformer-models-using-nvidia-fastertransformer-and-nvidia-triton-inference-server/
 "使用 FasterTransformer 和 Triton 推理服务器加速大型 Transformer
 模型的推理"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"
+role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#transformers-performance
+"transformer inference tensorrt or fastertransformer"<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"
+role="doc-endnote"><p>https://raw.githubusercontent.com/NVIDIA/FasterTransformer/main/README.md
+"fastertransformer introduction"<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"
+role="doc-endnote"><p>https://github.com/NVIDIA/FasterTransformer.git
+"code"<a href="#fnref4" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
@@ -913,13 +918,13 @@ role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">473k</span>
+    <span title="站点总字数">470k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:08</span>
+    <span title="站点阅读时长">13:04</span>
   </span>
 </div>
 <div class="busuanzi-count">

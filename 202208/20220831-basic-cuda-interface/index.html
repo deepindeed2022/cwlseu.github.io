@@ -28,14 +28,19 @@
 <meta property="og:site_name" content="Deepindeed">
 <meta property="og:description" content="CUDA并行编程指南">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://www.deepindeed.cn/Notebook/images/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/cwlseu/cwlseu.github.io/v1_2022/images/cuda/cell_arch.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png">
 <meta property="og:image" content="http://www.deepindeed.cn/images/cuda/2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/NVLINK.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png">
 <meta property="article:published_time" content="2022-08-31T11:39:39.000Z">
-<meta property="article:modified_time" content="2022-09-04T06:48:46.029Z">
+<meta property="article:modified_time" content="2022-11-16T16:28:40.047Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="GPU编程">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://www.deepindeed.cn/Notebook/images/1.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/cwlseu/cwlseu.github.io/v1_2022/images/cuda/cell_arch.png">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/202208/20220831-basic-cuda-interface/">
@@ -151,7 +156,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8D%E8%AF%8D"><span class="nav-number">1.</span> <span class="nav-text">名词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">计算机架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">冯诺依曼计算机架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9C%BA"><span class="nav-number">2.2.</span> <span class="nav-text">连接机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cell%E5%A4%84%E7%90%86%E5%99%A8%E4%BC%97%E6%A0%B8"><span class="nav-number">2.3.</span> <span class="nav-text">Cell处理器(众核)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%82%B9%E8%AE%A1%E7%AE%97"><span class="nav-number">2.4.</span> <span class="nav-text">多点计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpu%E6%9E%B6%E6%9E%84"><span class="nav-number">2.5.</span> <span class="nav-text">GPU架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cuda%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">CUDA编程基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E8%83%BD%E5%8A%9B%E9%AB%98%E6%80%A7%E8%83%BD%E7%A1%AC%E4%BB%B6%E4%B8%8E%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">计算能力—高性能硬件与技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpudirect-p2p"><span class="nav-number">4.1.</span> <span class="nav-text">GPUDirect P2P</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nvlink-%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-number">4.2.</span> <span class="nav-text">NVLink 拓扑结构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdma%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.3.</span> <span class="nav-text">RDMA原理介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cuda%E7%9A%84%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8"><span class="nav-number">5.</span> <span class="nav-text">CUDA的基础入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.1.</span> <span class="nav-text">函数的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">变量类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda%E5%87%A0%E4%B8%AA%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">5.3.</span> <span class="nav-text">CUDA几个头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-routine"><span class="nav-number">5.4.</span> <span class="nav-text">CUDA routine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">常见问题</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E5%90%8D%E8%AF%8D"><span class="nav-number">1.</span> <span class="nav-text">技术名词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">计算机架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">冯诺依曼计算机架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9C%BA"><span class="nav-number">2.2.</span> <span class="nav-text">连接机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cell%E5%A4%84%E7%90%86%E5%99%A8%E4%BC%97%E6%A0%B8"><span class="nav-number">2.3.</span> <span class="nav-text">Cell处理器(众核)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%82%B9%E8%AE%A1%E7%AE%97"><span class="nav-number">2.4.</span> <span class="nav-text">多点计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpu%E6%9E%B6%E6%9E%84"><span class="nav-number">2.5.</span> <span class="nav-text">GPU架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cuda%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">CUDA编程基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E8%83%BD%E5%8A%9B%E9%AB%98%E6%80%A7%E8%83%BD%E7%A1%AC%E4%BB%B6%E4%B8%8E%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">计算能力—高性能硬件与技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpudirect-p2p"><span class="nav-number">4.1.</span> <span class="nav-text">GPUDirect P2P</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nvlink-%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-number">4.2.</span> <span class="nav-text">NVLink 拓扑结构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdma%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.3.</span> <span class="nav-text">RDMA原理介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cuda%E7%9A%84%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8"><span class="nav-number">5.</span> <span class="nav-text">CUDA的基础入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.1.</span> <span class="nav-text">函数的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">变量类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda%E5%87%A0%E4%B8%AA%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">5.3.</span> <span class="nav-text">CUDA几个头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-routine"><span class="nav-number">5.4.</span> <span class="nav-text">CUDA routine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">常见问题</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -279,7 +284,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-09-04 14:48:46" itemprop="dateModified" datetime="2022-09-04T14:48:46+08:00">2022-09-04</time>
+      <time title="修改时间：2022-11-17 00:28:40" itemprop="dateModified" datetime="2022-11-17T00:28:40+08:00">2022-11-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -338,7 +343,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="名词">名词</h2>
+        <h2 id="技术名词">技术名词</h2>
 <ul>
 <li>SIMD： 单指令多数据，是基于一个处理器核的，128位</li>
 <li>MMX：多媒体拓展</li>
@@ -354,33 +359,15 @@
 <p>采用4096个16核的CPU组装到一台机器上，也就是说64K个处理器来完成一个任务。连接机采用SIMD型并行处理，但是处理器之间的同步和通讯是很大的问题</p>
 <h3 id="cell处理器众核">Cell处理器(众核)</h3>
 <p>用一个常规处理器作为监管处理器(PowerPC)，该处理器与大量高速流处理(SPE)相连。
-* 每个流处理单元SPE调用执行一个程序 *
-通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯 * <img
-src="https://cwlseu.github.io/images/cuda/cell_arch.png"
-alt="国产申威 26010 处理器架构图" /></p>
+* 每个流处理单元SPE调用执行一个程序</p>
+<ul>
+<li><p>通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯</p>
+<p><img src="https://raw.githubusercontent.com/cwlseu/cwlseu.github.io/v1_2022/images/cuda/cell_arch.png" alt="img" style="zoom:67%;" /></p></li>
+</ul>
 <h3 id="多点计算">多点计算</h3>
 <p>集群，当前最流行的莫过于Hadoop和spark了，一个是分布式文件系统，一个是分布式计算框架，这两个工具使得多点计算的方法充分发挥。</p>
 <h3 id="gpu架构">GPU架构</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png"
-alt="nvidia device arch" />
-<figcaption aria-hidden="true">nvidia device arch</figcaption>
-</figure>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png"
-alt="nvidia-gpu-sm-arch" />
-<figcaption aria-hidden="true">nvidia-gpu-sm-arch</figcaption>
-</figure>
-<figure>
-<img src="../../../../Notebook/images/1.png" alt="1" />
-<figcaption aria-hidden="true">1</figcaption>
-</figure>
-<figure>
-<img src="../../images/cuda/2.png" alt="2" />
-<figcaption aria-hidden="true">2</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png" alt="nvidia device arch" style="zoom: 67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png" alt="nvidia-gpu-sm-arch" style="zoom:67%;" /><img src="../../images/cuda/2.png" alt="2" style="zoom: 67%;" /></p>
 <h2 id="cuda编程基础知识">CUDA编程基础知识</h2>
 <p>学习CUDA
 C，可以在异构计算平台中实现高性能的应用。CUD的编译原则--基于虚拟指令集的运行时编译。</p>
@@ -406,12 +393,7 @@ P2P</a></li>
 <p>首先我们简单看下NVIDIA对NVLink的介绍：NVLink能在多GPU之间和GPU与CPU之间实现非凡的连接带宽。带宽有多大?2016发布的P100是搭载NVLink的第一款产品，单个GPU具有160GB/s的带宽，相当于PCIe
 Gen3 * 16带宽的5倍。去年GTC 2017上发布的V100搭载的NVLink
 2.0更是将GPU带宽提升到了300G/s，差不多是PCIe的10倍了。</p>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/NVLINK.png"
-alt="NVLINK网络拓扑结构" />
-<figcaption aria-hidden="true">NVLINK网络拓扑结构</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/NVLINK.png" alt="NVLINK网络拓扑结构" style="zoom:50%;" /></p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.nvidia.com/zh-cn/data-center/nvlink/">NVIDIA
 NVLINK</a></li>
@@ -421,13 +403,10 @@ target="_blank" rel="noopener" href="http://server.it168.com/a2018/0604/3206/000
 <h3 id="rdma原理介绍">RDMA原理介绍</h3>
 <p>前面介绍的GPUDirect
 P2P和NVLink技术可以大大提升GPU服务器单机的GPU通信性能，当前深度学习模型越来越复杂，计算数据量暴增，对于大规模深度学习训练任务，单机已经无法满足计算要求，多机多卡的分布式训练成为了必要的需求，这个时候多机间的通信成为了分布式训练性能的重要指标。</p>
-<p><img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png"
-alt="多机通讯RMDA架构图" />
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png" alt="多机通讯RMDA架构图" style="zoom: 67%;" />
 如上图所示，传统的TCP/IP协议，应用程序需要要经过多层复杂的协议栈解析，才能获取到网卡中的数据包，而使用RDMA协议，应用程序可以直接旁路内核获取到网卡中的数据包。RDMA可以简单理解为利用相关的硬件和网络技术，服务器1的网卡可以直接读写服务器2的内存，最终达到高带宽、低延迟和低资源利用率的效果。
-<img
-src="https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png"
-alt="应用RMDA技术的应用拓扑图" /> 所谓GPUDirect
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png" alt="应用RMDA技术的应用拓扑图" style="zoom: 33%;" />
+所谓GPUDirect
 RDMA，就是计算机1的GPU可以直接访问计算机2的GPU内存。而在没有这项技术之前，GPU需要先将数据从GPU内存搬移到系统内存，然后再利用RDMA传输到计算机2，计算机2的GPU还要做一次数据从系统内存到GPU内存的搬移动作。GPUDirect
 RDMA技术使得进一步减少了GPU通信的数据复制次数，通信延迟进一步降低。</p>
 <ul>
@@ -569,13 +548,13 @@ DIR没有配置，导致找不到头文件</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">473k</span>
+    <span title="站点总字数">470k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:08</span>
+    <span title="站点阅读时长">13:04</span>
   </span>
 </div>
 <div class="busuanzi-count">
