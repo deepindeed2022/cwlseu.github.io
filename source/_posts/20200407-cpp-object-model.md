@@ -44,7 +44,7 @@ private:
 - 每个类对象都拥有一个虚表指针(vptr)，由编译器为其生成。虚表指针的设定与重置皆由类的复制控制（也即是构造函数、析构函数、赋值操作符）来完成。vptr的位置为编译器决定，传统上它被放在所有显示声明的成员之后，不过现在许多编译器把vptr放在一个类对象的最前端。关于数据成员布局的内容，在后面会详细分析。
 - 另外，虚函数表的前面设置了一个指向type_info的指针，用以支持RTTI（Run Time Type Identification，运行时类型识别）。RTTI是为多态而生成的信息，包括对象继承关系，对象本身的描述等，只有具有虚函数的对象在会生成。
 
-![@vs2015下对象的内存结构](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335247.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030335247.png" alt="@vs2015下对象的内存结构" style="zoom: 50%;" />
 
 这个模型的优点在于它的空间和存取时间的效率；缺点如下：如果应用程序本身未改变，但当所使用的类的non static数据成员添加删除或修改时，需要重新编译。
 

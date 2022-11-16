@@ -9,7 +9,7 @@ description: CUDA并行编程指南
 
 
 
-## 名词
+## 技术名词
 * SIMD： 单指令多数据，是基于一个处理器核的，128位
 * MMX：多媒体拓展
 * AVX 高级适量拓展， 256位
@@ -27,17 +27,16 @@ description: CUDA并行编程指南
 ### Cell处理器(众核)
 用一个常规处理器作为监管处理器(PowerPC)，该处理器与大量高速流处理(SPE)相连。
 * 每个流处理单元SPE调用执行一个程序
+
 * 通过共享的网络，SPE之间和SPE与PowerPC之间进行相互通讯
-* 
-![国产申威 26010 处理器架构图](https://cwlseu.github.io/images/cuda/cell_arch.png)
+
+  <img src="https://raw.githubusercontent.com/cwlseu/cwlseu.github.io/v1_2022/images/cuda/cell_arch.png" alt="img" style="zoom:67%;" />
 
 ### 多点计算
 集群，当前最流行的莫过于Hadoop和spark了，一个是分布式文件系统，一个是分布式计算框架，这两个工具使得多点计算的方法充分发挥。
 
 ### GPU架构
-![](https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png)
-
-![](https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-device-arch.png" alt="nvidia device arch" style="zoom: 67%;" /><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-gpu-stream-arch.png" alt="nvidia-gpu-sm-arch" style="zoom:67%;" /><img src="../../images/cuda/2.png" alt="2" style="zoom: 67%;" />
 
 ## CUDA编程基础知识
 学习CUDA C，可以在异构计算平台中实现高性能的应用。CUD的编译原则--基于虚拟指令集的运行时编译。
@@ -57,7 +56,7 @@ GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它�
 
 首先我们简单看下NVIDIA对NVLink的介绍：NVLink能在多GPU之间和GPU与CPU之间实现非凡的连接带宽。带宽有多大?2016发布的P100是搭载NVLink的第一款产品，单个GPU具有160GB/s的带宽，相当于PCIe Gen3 * 16带宽的5倍。去年GTC 2017上发布的V100搭载的NVLink 2.0更是将GPU带宽提升到了300G/s，差不多是PCIe的10倍了。
 
-![NVLINK网络拓扑结构](https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/NVLINK.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/NVLINK.png" alt="NVLINK网络拓扑结构" style="zoom:50%;" />
 
 - [NVIDIA NVLINK](https://www.nvidia.com/zh-cn/data-center/nvlink/)
 - [浅析GPU通信技术（中）-NVLink总线协议](http://server.it168.com/a2018/0604/3206/000003206894.shtml)
@@ -65,9 +64,9 @@ GPUDirect Peer-to-Peer(P2P) 技术主要用于单机GPU间的高速通信，它�
 ### RDMA原理介绍
 前面介绍的GPUDirect P2P和NVLink技术可以大大提升GPU服务器单机的GPU通信性能，当前深度学习模型越来越复杂，计算数据量暴增，对于大规模深度学习训练任务，单机已经无法满足计算要求，多机多卡的分布式训练成为了必要的需求，这个时候多机间的通信成为了分布式训练性能的重要指标。
 
-![多机通讯RMDA架构图](https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-arch.png" alt="多机通讯RMDA架构图" style="zoom: 67%;" />
 如上图所示，传统的TCP/IP协议，应用程序需要要经过多层复杂的协议栈解析，才能获取到网卡中的数据包，而使用RDMA协议，应用程序可以直接旁路内核获取到网卡中的数据包。RDMA可以简单理解为利用相关的硬件和网络技术，服务器1的网卡可以直接读写服务器2的内存，最终达到高带宽、低延迟和低资源利用率的效果。
-![应用RMDA技术的应用拓扑图](https://cdn.jsdelivr.net/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/nvidia-RMDA-All.png" alt="应用RMDA技术的应用拓扑图" style="zoom: 33%;" />
 所谓GPUDirect RDMA，就是计算机1的GPU可以直接访问计算机2的GPU内存。而在没有这项技术之前，GPU需要先将数据从GPU内存搬移到系统内存，然后再利用RDMA传输到计算机2，计算机2的GPU还要做一次数据从系统内存到GPU内存的搬移动作。GPUDirect RDMA技术使得进一步减少了GPU通信的数据复制次数，通信延迟进一步降低。
 
 - [浅析GPU通信技术（下）-GPUDirect RDMA](https://yq.aliyun.com/articles/603617)

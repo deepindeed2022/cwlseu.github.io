@@ -20,7 +20,7 @@ date: 2022-03-04 21:05:18
 -  symmetric noise: 一个标签标错为其他类别的标签概率一样
 -  asymmetric noise: 一个标签标错为其他类别的标签概率不一样
 -  pair noise: 一个标签只会错标为对应的另外一种标签, 标错的是在这些标签对形式存在(a, b)
-![Alt text](../../images/nlp/Label-Noise-Learning/1646207730120.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646207730120.png" alt="Alt text" style="zoom:67%;" />
 
 (2) `instance-dependent label noise`
 ### 2、困难
@@ -35,9 +35,9 @@ date: 2022-03-04 21:05:18
 
 #### **Label Transition**
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/1646132202285.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/1646132202285.png" alt="Alt text" style="zoom:67%;" />
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336131.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030336131.png" alt="Alt text" style="zoom:67%;" />
 
 #### **Memorization Effect**
 
@@ -47,12 +47,11 @@ $$
 
 结果表明，DNN的权值在训练开始时仍保持在初始权值附近，在对noise label过度拟合时开始偏离初始权值很远，这一现象也被称为DNN的记忆效应，即DNN倾向于首先学习简单和概括的模式，然后逐渐过度适应所有的噪声模式。因此，为了实现更好的泛化，通常采用提前停止和偏爱小损失训练实例来设计健壮的训练方法
 **Risk Minimization**
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346413.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346413.png" alt="Alt text" style="zoom: 67%;" />
 一般采用经验风险最小化的迭代优化如下，而在非clean的dataset上直接使用该优化方法，将在泛化数据集上测试结果退化。
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346546.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346546.png" alt="Alt text" style="zoom: 67%;" />
 一般情况下通过优化过程中降低或者屏蔽噪音sample影响以实现缓解退化的问题。
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346962.png)
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346843.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346962.png" alt="Alt text" style="zoom:67%;" />                      <img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346843.png" alt="Alt text" style="zoom:67%;" />
 
 ***
 
@@ -60,7 +59,7 @@ $$
 
 ### 1、NAF
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346935.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346935.png" alt="Alt text" style="zoom:67%;" />
 
 - paper: Named Entity Recognition via Noise Aware Training Mechanism with Data Filter（ACL-IJCNLP 2021 Findings）
 - 论文链接：https://aclanthology.org/2021.findings-acl.423.pdf
@@ -68,17 +67,17 @@ $$
 #### 问题定义
 区分难样本和噪声样本仍然是一个挑战，特别是在过拟合的情况下变得更具挑战性。
 存在歧义的hard sample与noise sample是比较难以分开的，因为hard sample在训练初期也是具有较大loss的。
-![Alt text|400x400](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346534.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346534.png" alt="Alt text|400x400" style="zoom: 67%;" />
 
 #### Logit-Maximum-Difference (LMD) mechanism
 （0）一般我们是NN之后的logist矩阵加softmax和损失，由于softmax是归一化的指数函数，这就使得logist矩阵中的值的变化不是通过线性变化反映出来，这给我们识别noise sample带来了不公平。
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346293.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030346293.png" alt="Alt text" style="zoom: 67%;" />
 （1)上图中需要注意的是，noise sample的情况下，相对差距比较其他两类：hard/easy sample 较小。
 
 $$LMD(x, y) = \frac{1}{T}\sum^T_{t=1}(min(Z_y^{(t)} - max_{i!=y}Z_i^{(t)}))$$
 
-![Alt text|center|400x300](../../images/nlp/Label-Noise-Learning/1646035706110.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1646035706110.png" alt="Alt text|center|400x300" style="zoom: 67%;" />
 
 （2）训练过程中，刚开始几个epoch，模型总是倾向于学习正确的样品。这意味着即使有些样本即使贴上了错误的标签，模型仍然可以预测正确的结果。随着训练epoch过长，会出现overfitting的问题。如上图所示，在hard和noise sample 中训练发现损失趋于一致。这就是在noise sample中overfitting的一种现象。
 
@@ -129,11 +128,12 @@ $$
 
 ### 2、AUM
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347462.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347462.png" alt="Alt text" style="zoom:67%;" />
+
 - paper: Identifying mislabeled data using the area under the margin ranking
 
 首先通过经验角度分析提出的noise label与hard label之间的差异，得出经验判别条件。
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347414.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347414.png" alt="Alt text" style="zoom:67%;" />
 
 Margin的定义如下所示，其中t代表是第t个epoch，x代表是输入的数据，y代表annotation labe，z代表的是最终prediction的logits。由式子定义可知其可能会去到负数，当为负数的时候，代表模型预测的结果可能和真值结果存在不同，因此当前样本可能是噪声。
 $$M^{t}(x,y) = z^{t}_{y}(x) - max_{i != y}z^{t}_{i}(x)$$
@@ -142,7 +142,7 @@ $$AUM(x, y) = \frac{1}{T}\sum_{t=1}^T{M^t(x,y)}$$
 
 AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranking是没有办法得到一个绝对的划分。因此需要一个绝对的划分。
 
-![Alt text|center|500x400](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347132.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347132.png" alt="Alt text|center|500x400" style="zoom: 50%;" />
 
 作者提出使用threshold samples，作者从训练集合中抽样一部分数据出来作为threshold samples，这部分数据会人为的指定噪声标签，并且加入训练。最终这部分数据的AUM前从高到底排序的90分位值即可以作为AUM的阈值，用于划分噪声数据和非噪声数据。
 
@@ -152,28 +152,28 @@ AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranki
 
 
 
-### 早停
+### 3、早停
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347824.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347824.png" alt="Alt text" style="zoom:67%;" />
 
 - paper: Hwanjun Song, Minseok Kim, Dongmin Park, & Jae-Gil Lee (2019). How does Early Stopping Help Generalization against Label Noise arXiv: Learning.
 - 链接地址: https://ui.adsabs.harvard.edu/link_gateway/2019arXiv191108059S/arxiv:1911.08059
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347381.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347381.png" alt="Alt text" style="zoom:67%;" />
 探究了`Best point to early stop`与`Criterion of a maximal safe set`
 
-1、Best point to early stop
+- Best point to early stop
 
-- Validation Heuristic: 准备一个干净的验证集$\mathcal{V}$
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347714.png)
-- Noise-Rate Heuristic: 需要知道数据集的噪声率$\tau$， 但是在真实业务场景不容易获得。
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347442.png)
+  - Validation Heuristic: 准备一个干净的验证集$\mathcal{V}$
+  <img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347714.png" alt="Alt text" style="zoom:50%;" />
 
-2、Criterion of a maximal safe set
+  - Noise-Rate Heuristic: 需要知道数据集的噪声率$\tau$， 但是在真实业务场景不容易获得。
+  <img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030347442.png" alt="Alt text" style="zoom:50%;" />
+
+
+- Criterion of a maximal safe set
 
 > 该方法挖掘cleandata进行训练，规避noise label数据对模型的影响
-
----
 
 
 
@@ -181,7 +181,7 @@ AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranki
 
 
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348149.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348149.png" alt="Alt text" style="zoom:50%;" />
 
 - github: https://github.com/shengliu66/SOP
 - paper: Robust Training under Label Noise by Over-parameterization
@@ -190,7 +190,7 @@ AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranki
 ![Alt text|center](../../images/nlp/Label-Noise-Learning/1646205879003.png)
 其中，由于这个noise是具有sparse性质的，因此作者们沿用了先前若干文章中的技巧，采用了一种特殊的参数化方式： $s_i = u_i \odot u_i - v_i \odot v_i$
 ，当然其中还需要规定一下 $u_i, v_i$的取值范围，最终的优化问题是：
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348727.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348727.png" alt="Alt text" style="zoom: 67%;" />
 
 ---
 
@@ -216,7 +216,7 @@ AUM值越小代表这个样本越有可能是噪声数据，但是只根据ranki
 
 通过有监督的学习使得模型对于有噪声的标签具有更好的鲁棒性。鲁棒损失函数和损失调整是为了修改损失函数或其损失值；鲁棒结构是为了更改体系结构以对噪声数据集的噪声转换矩阵进行建模；鲁棒正则化是为了使DNN减少对错误标记样本的过度拟合；样本选择是为了从带有噪声的训练数据中识别出带有真实标签的样本。除了监督学习之外，研究人员最近还尝试通过采用元学习和半监督学习来进一步提高噪声鲁棒性。
 
-![Alt text](https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348656.png)
+<img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030348656.png" alt="Alt text" style="zoom:67%;" />
 
 
 ### 其他资料
