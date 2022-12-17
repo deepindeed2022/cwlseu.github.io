@@ -21,17 +21,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="OnnxRuntime">
+    <meta name="description" content="关于OnnxRuntime推理框架的介绍到框架的源码剖析以及项目中使用onnxruntime部署遇到的问题总结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OnnxRuntime">
 <meta property="og:url" content="http://www.deepindeed.cn/202211/20221113-onnxruntime/index.html">
 <meta property="og:site_name" content="Deepindeed">
-<meta property="og:description" content="OnnxRuntime">
+<meta property="og:description" content="关于OnnxRuntime推理框架的介绍到框架的源码剖析以及项目中使用onnxruntime部署遇到的问题总结">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/build_onnxruntime_osx.png">
 <meta property="article:published_time" content="2022-11-13T11:39:39.000Z">
-<meta property="article:modified_time" content="2022-11-16T15:37:04.343Z">
+<meta property="article:modified_time" content="2022-12-16T11:58:36.178Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="Backends">
 <meta name="twitter:card" content="summary">
@@ -54,7 +54,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css"><link rel="dns-prefetch" href="https://waline.vercel.app">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -174,7 +174,7 @@ Input type (torch.cuda.FloatTensor) and weight type
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -265,7 +265,7 @@ Input type (torch.cuda.FloatTensor) and weight type
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="OnnxRuntime | Deepindeed">
-      <meta itemprop="description" content="OnnxRuntime">
+      <meta itemprop="description" content="关于OnnxRuntime推理框架的介绍到框架的源码剖析以及项目中使用onnxruntime部署遇到的问题总结">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -287,7 +287,7 @@ Input type (torch.cuda.FloatTensor) and weight type
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-16 23:37:04" itemprop="dateModified" datetime="2022-11-16T23:37:04+08:00">2022-11-16</time>
+      <time title="修改时间：2022-12-16 19:58:36" itemprop="dateModified" datetime="2022-12-16T19:58:36+08:00">2022-12-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -334,11 +334,11 @@ Input type (torch.cuda.FloatTensor) and weight type
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>24 分钟</span>
+      <span>23 分钟</span>
     </span>
 </div>
 
-            <div class="post-description">OnnxRuntime</div>
+            <div class="post-description">关于OnnxRuntime推理框架的介绍到框架的源码剖析以及项目中使用onnxruntime部署遇到的问题总结</div>
         </div>
       </header>
 
@@ -347,24 +347,6 @@ Input type (torch.cuda.FloatTensor) and weight type
     
     <div class="post-body" itemprop="articleBody">
         <h2 id="一onnx简介">一、ONNX简介</h2>
-<ul>
-<li><p>什么是ONNX？</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/onnx/onnx">ONNX</a>全称为 Open Neural
-Network
-Exchange，是一种与框架无关的模型表达式。ONNX的规范及代码主要由微软，亚马逊
-，Facebook 和 IBM
-等公司共同开发，以开放源代码的方式托管在Github上。目前官方支持加载ONNX模型并进行推理的深度学习框架有：
-Caffe2, PyTorch, MXNet，ML.NET，TensorRT 和 Microsoft CNTK，并且
-TensorFlow 也非官方的支持ONNX。</p></li>
-<li><p>ONNX的数据格式是怎么样的？</p>
-<p>ONNX本质上一种文件格式，通过Protobuf数据结构存储了神经网络结构权重。其组织格式核心定义在于<a
-target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/master/onnx/onnx.proto">onnx.proto</a>，其中定义了Model/Graph/Node/ValueInfo/Tensor/Attribute层面的数据结构。整图通过各节点（Node）的input/output指向关系构建模型图的拓扑结构。</p></li>
-<li><p>ONNX支持的功能？</p>
-<p>基于ONNX模型，官方提供了一系列相关工具：模型转化/模型优化（<a
-target="_blank" rel="noopener" href="https://github.com/daquexian/onnx-simplifier">simplifier</a>等）/模型部署(<a
-target="_blank" rel="noopener" href="https://github.com/microsoft/onnxruntime">Runtime</a>)/模型可视化（<a
-target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/master/onnx/onnx.proto">Netron</a>等）等</p></li>
-</ul>
 <h2 id="二onnxruntime">二、OnnxRuntime</h2>
 <p>ONNX自带了Runtime库，能够将ONNX
 Model部署到不同的硬件设备上进行推理，支持各种后端（如TensorRT/OpenVINO）。</p>
@@ -647,6 +629,9 @@ role="doc-backlink">↩︎</a></p></li>
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/202212/20221215-onnx/" rel="next" title="ONNX:最流行的模型 IR">
+                  ONNX:最流行的模型 IR <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -658,7 +643,20 @@ role="doc-backlink">↩︎</a></p></li>
 
 
 
-    <div class="comments" id="waline"></div>
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-waline">waline</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane waline" id="comment-waline">
+              <div class="comments" id="waline"></div>
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+        </div>
+      </div>
 </div>
   </main>
 
@@ -679,13 +677,13 @@ role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">470k</span>
+    <span title="站点总字数">492k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:04</span>
+    <span title="站点阅读时长">13:40</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -718,9 +716,6 @@ role="doc-backlink">↩︎</a></p></li>
   
 <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
 <script src="/js/third-party/search/local-search.js"></script>
-<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":null}</script>
-<script src="/js/third-party/chat/gitter.js"></script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
   <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
   <script src="/js/third-party/tags/pdf.js"></script>
@@ -753,6 +748,10 @@ document.addEventListener('page:loaded', () => {
   );
 });
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"af1853597e89f12948d45569cfebd026"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

@@ -21,17 +21,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="FasterTransformer">
+    <meta name="description" content="关于应用FasterTransformer部署Transformer模型的经验总结与原理解读">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FasterTransformer">
 <meta property="og:url" content="http://www.deepindeed.cn/202210/20221010-fastertransformer/index.html">
 <meta property="og:site_name" content="Deepindeed">
-<meta property="og:description" content="FasterTransformer">
+<meta property="og:description" content="关于应用FasterTransformer部署Transformer模型的经验总结与原理解读">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/1-20221116220850259.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fastertransformer-cache.png">
 <meta property="article:published_time" content="2022-10-10T11:39:39.000Z">
-<meta property="article:modified_time" content="2022-11-16T15:37:55.653Z">
+<meta property="article:modified_time" content="2022-11-16T16:46:42.075Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="Backends">
 <meta name="twitter:card" content="summary">
@@ -54,7 +54,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css"><link rel="dns-prefetch" href="https://waline.vercel.app">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -167,7 +167,7 @@ Transformer对比2</span></a></li><li class="nav-item nav-level-3"><a class="nav
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -258,7 +258,7 @@ Transformer对比2</span></a></li><li class="nav-item nav-level-3"><a class="nav
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="FasterTransformer | Deepindeed">
-      <meta itemprop="description" content="FasterTransformer">
+      <meta itemprop="description" content="关于应用FasterTransformer部署Transformer模型的经验总结与原理解读">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -280,7 +280,7 @@ Transformer对比2</span></a></li><li class="nav-item nav-level-3"><a class="nav
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-16 23:37:55" itemprop="dateModified" datetime="2022-11-16T23:37:55+08:00">2022-11-16</time>
+      <time title="修改时间：2022-11-17 00:46:42" itemprop="dateModified" datetime="2022-11-17T00:46:42+08:00">2022-11-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -331,7 +331,7 @@ Transformer对比2</span></a></li><li class="nav-item nav-level-3"><a class="nav
     </span>
 </div>
 
-            <div class="post-description">FasterTransformer</div>
+            <div class="post-description">关于应用FasterTransformer部署Transformer模型的经验总结与原理解读</div>
         </div>
       </header>
 
@@ -897,7 +897,20 @@ role="doc-backlink">↩︎</a></p></li>
 
 
 
-    <div class="comments" id="waline"></div>
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-waline">waline</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane waline" id="comment-waline">
+              <div class="comments" id="waline"></div>
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+        </div>
+      </div>
 </div>
   </main>
 
@@ -918,13 +931,13 @@ role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">470k</span>
+    <span title="站点总字数">492k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:04</span>
+    <span title="站点阅读时长">13:40</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -957,9 +970,6 @@ role="doc-backlink">↩︎</a></p></li>
   
 <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
 <script src="/js/third-party/search/local-search.js"></script>
-<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":null}</script>
-<script src="/js/third-party/chat/gitter.js"></script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
   <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
   <script src="/js/third-party/tags/pdf.js"></script>
@@ -992,6 +1002,10 @@ document.addEventListener('page:loaded', () => {
   );
 });
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"5edff999f58c2f5c737f3721856cde23"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

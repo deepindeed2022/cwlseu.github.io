@@ -21,19 +21,22 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="在大规模服务上的推理引擎tensorrt">
+    <meta name="description" content="应用推理引擎tensorrt部署ai算法的踩坑记录与相关技术原理学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Inference Framework based TensorRT">
 <meta property="og:url" content="http://www.deepindeed.cn/201911/20191120-TensorRT/index.html">
 <meta property="og:site_name" content="Deepindeed">
-<meta property="og:description" content="在大规模服务上的推理引擎tensorrt">
+<meta property="og:description" content="应用推理引擎tensorrt部署ai算法的踩坑记录与相关技术原理学习">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/tensorrt-optimizer.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030332591.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fusion_op_origin.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fusion_op_result.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/horizon_fusion_op.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030332475.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/cross-correlation-efficiency-p40-624x453.png">
 <meta property="article:published_time" content="2019-11-20T15:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-16T15:17:31.153Z">
+<meta property="article:modified_time" content="2022-12-17T14:13:51.989Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="inference">
 <meta property="article:tag" content="优化">
@@ -57,7 +60,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css"><link rel="dns-prefetch" href="https://waline.vercel.app">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -155,7 +158,7 @@
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
             <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E9%80%89%E5%9E%8B%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">版本选型与基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fp16-int8"><span class="nav-number">2.1.</span> <span class="nav-text">FP16 INT8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ptx"><span class="nav-number">2.2.</span> <span class="nav-text">PTX</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensorrt%E7%89%B9%E6%80%A7%E5%8A%A9%E5%8A%9B%E9%AB%98%E6%80%A7%E8%83%BD%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">TensorRT特性助力高性能算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">优化原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A3%81%E5%89%AA%E4%B8%8E%E9%87%8D%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">网络模型的裁剪与重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8E%E7%B2%BE%E5%BA%A6%E8%AE%A1%E7%AE%97%E7%9A%84%E6%94%AF%E6%8C%81"><span class="nav-number">3.3.</span> <span class="nav-text">低精度计算的支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E6%96%B9%E9%9D%A2tensor-core%E7%9A%84%E6%94%AF%E6%8C%81%E4%BC%98%E5%8C%96%E5%8D%B7%E7%A7%AF%E8%BF%90%E7%AE%97"><span class="nav-number">3.4.</span> <span class="nav-text">硬件方面Tensor
-Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#framework-todo-schedule"><span class="nav-number">4.</span> <span class="nav-text">Framework TODO SCHEDULE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init.caffemodel"><span class="nav-number">6.1.</span> <span class="nav-text">Init.CaffeModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init.giemodel"><span class="nav-number">6.2.</span> <span class="nav-text">Init.GIEModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iplugin%E6%8E%A5%E5%8F%A3%E4%B8%AD%E9%9C%80%E8%A6%81%E8%A2%AB%E9%87%8D%E8%BD%BD%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">6.3.</span> <span class="nav-text">IPlugin接口中需要被重载的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorrt-%E4%B8%AD%E5%B7%B2%E7%BB%8F%E5%AE%9E%E7%8E%B0%E7%9A%84plugin"><span class="nav-number">6.4.</span> <span class="nav-text">TensorRT 中已经实现的Plugin</span></a></li></ol></li></ol></div>
+Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#framework-todo-schedule"><span class="nav-number">4.</span> <span class="nav-text">Framework TODO SCHEDULE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B4%E6%9B%B4%E6%96%B0"><span class="nav-number">5.</span> <span class="nav-text">2022年更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#supported-onnx-operators"><span class="nav-number">5.1.</span> <span class="nav-text">Supported ONNX Operators</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">7.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init.caffemodel"><span class="nav-number">7.1.</span> <span class="nav-text">Init.CaffeModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init.giemodel"><span class="nav-number">7.2.</span> <span class="nav-text">Init.GIEModel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iplugin%E6%8E%A5%E5%8F%A3%E4%B8%AD%E9%9C%80%E8%A6%81%E8%A2%AB%E9%87%8D%E8%BD%BD%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">7.3.</span> <span class="nav-text">IPlugin接口中需要被重载的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorrt-%E4%B8%AD%E5%B7%B2%E7%BB%8F%E5%AE%9E%E7%8E%B0%E7%9A%84plugin"><span class="nav-number">7.4.</span> <span class="nav-text">TensorRT 中已经实现的Plugin</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -170,7 +173,7 @@ Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item 
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -261,7 +264,7 @@ Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item 
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="Inference Framework based TensorRT | Deepindeed">
-      <meta itemprop="description" content="在大规模服务上的推理引擎tensorrt">
+      <meta itemprop="description" content="应用推理引擎tensorrt部署ai算法的踩坑记录与相关技术原理学习">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -283,7 +286,7 @@ Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item 
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-11-16 23:17:31" itemprop="dateModified" datetime="2022-11-16T23:17:31+08:00">2022-11-16</time>
+      <time title="修改时间：2022-12-17 22:13:51" itemprop="dateModified" datetime="2022-12-17T22:13:51+08:00">2022-12-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -323,18 +326,18 @@ Core的支持，优化卷积运算</span></a></li></ol></li><li class="nav-item 
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>19k</span>
+      <span>24k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>32 分钟</span>
+      <span>40 分钟</span>
     </span>
 </div>
 
-            <div class="post-description">在大规模服务上的推理引擎tensorrt</div>
+            <div class="post-description">应用推理引擎tensorrt部署ai算法的踩坑记录与相关技术原理学习</div>
         </div>
       </header>
 
@@ -428,13 +431,7 @@ reference document》</a></p>
 <li>Time Fusion: 使用动态生成的Kernel优化循环神经网络</li>
 </ul>
 <h3 id="优化原理">优化原理</h3>
-<figure>
-<img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030332591.png"
-alt="@优化原理" />
-<figcaption aria-hidden="true"><span class="citation"
-data-cites="优化原理">@优化原理</span></figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030332591.png" alt="@优化原理" style="zoom: 40%;" /></p>
 <h3 id="网络模型的裁剪与重构">网络模型的裁剪与重构</h3>
 <p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fusion_op_origin.png" alt="@原始网络" style="zoom: 50%;" /></p>
 <p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/fusion_op_result.png" alt="@vertical fusion｜" style="zoom: 50%;" /></p>
@@ -459,24 +456,15 @@ network.</p>
 </ul>
 <p>TensorRT 进行优化的方式是 DP4A (Dot Product of 4 8-bits Accumulated
 to a 32-bit)，如下图：</p>
-<p><img
-src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030332475.png"
-alt="@DP4A原理过程" /> 这是PASCAL
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/img/202209030332475.png" alt="@DP4A原理过程" style="zoom: 67%;" />
+这是PASCAL
 系列GPU的硬件指令，INT8卷积就是使用这种方式进行的卷积计算。更多关于DP4A的信息可以参考<a
 target="_blank" rel="noopener" href="https://devblogs.nvidia.com/mixed-precision-programming-cuda-8/">Mixed-Precision
 Programming with CUDA 8</a></p>
 <p>INT8 vector dot products (DP4A) improve the efficiency of radio
 astronomy cross-correlation by a large factor compared to FP32
 computation.</p>
-<figure>
-<img
-src="https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/10/cross-correlation-efficiency-p40-624x453.png"
-alt="@INT8 vector dot products (DP4A) improve the efficiency of radio astronomy cross-correlation by a large factor compared to FP32 computation" />
-<figcaption aria-hidden="true"><span class="citation"
-data-cites="INT8">@INT8</span> vector dot products (DP4A) improve the
-efficiency of radio astronomy cross-correlation by a large factor
-compared to FP32 computation</figcaption>
-</figure>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/cross-correlation-efficiency-p40-624x453.png" alt="@INT8 vector dot products (DP4A) improve the efficiency of radio astronomy cross-correlation by a large factor compared to FP32 computation" style="zoom:67%;" /></p>
 <h3 id="硬件方面tensor-core的支持优化卷积运算">硬件方面Tensor
 Core的支持，优化卷积运算</h3>
 <p>这个需要硬件的支持，如果没有类似Volta架构的GPU就不要强求。</p>
@@ -522,6 +510,1317 @@ target="_blank" rel="noopener" href="https://github.com/rbgirshick/caffe-fast-rc
 最后更新inference模式</li>
 </ul></li>
 </ul>
+<h2 id="年更新">2022年更新</h2>
+<p>随着TensorRT的更新，当前已经支持到8.5版本，对Transformer类的支持已经获得了长足发展，尤其是对Onnx
+Parser的成熟与完善，使得我们在实际项目应用中能够用更少的成本来获得较大的推理性能收益。</p>
+<h3 id="supported-onnx-operators">Supported ONNX Operators</h3>
+<p>TensorRT 8.5 supports operators up to Opset 17. Latest information of
+ONNX operators can be found <a
+target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/master/docs/Operators.md">here</a></p>
+<p>TensorRT supports the following ONNX data types: DOUBLE, FLOAT32,
+FLOAT16, INT8, and BOOL</p>
+<blockquote>
+<p>Note: There is limited support for INT32, INT64, and DOUBLE types.
+TensorRT will attempt to cast down INT64 to INT32 and DOUBLE down to
+FLOAT, clamping values to <code>+-INT_MAX</code> or
+<code>+-FLT_MAX</code> if necessary.</p>
+</blockquote>
+<p>See below for the support matrix of ONNX operators in
+ONNX-TensorRT.</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 4%" />
+<col style="width: 15%" />
+<col style="width: 32%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Supported</th>
+<th>Supported Types</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Abs</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Acos</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Acosh</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Add</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>And</td>
+<td>Y</td>
+<td>BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ArgMax</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ArgMin</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Asin</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Asinh</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Atan</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Atanh</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>AveragePool</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32</td>
+<td>2D or 3D Pooling only</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>BatchNormalization</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Bernoulli</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>BitShift</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>BlackmanWindow</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Cast</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Ceil</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Celu</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Clip</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Compress</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Concat</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ConcatFromSequence</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Constant</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ConstantOfShape</td>
+<td>Y</td>
+<td>FP32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Conv</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ConvInteger</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ConvTranspose</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Cos</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Cosh</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>CumSum</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>axis</code> must be an initializer</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>DFT</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>DepthToSpace</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>DequantizeLinear</td>
+<td>Y</td>
+<td>INT8</td>
+<td><code>x_zero_point</code> must be zero</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Det</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Div</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Dropout</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>DynamicQuantizeLinear</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Einsum</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>Ellipsis and diagonal operations are not supported. Broadcasting
+between inputs is not supported</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Elu</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Equal</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Erf</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Exp</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Expand</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>EyeLike</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Flatten</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Floor</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Gather</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>GatherElements</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>GatherND</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Gemm</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>GlobalAveragePool</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td>使用输入张量<span class="math inline">\(X\)</span>
+并对同一通道中的值应用平均池化。
+这相当于内核大小等于输入张量的空间维度的 <code>AveragePool</code>。</td>
+</tr>
+<tr class="odd">
+<td>GlobalLpPool</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>GlobalMaxPool</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Greater</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>GreaterOrEqual</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>GridSample</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>GRU</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>For bidirectional GRUs, activation functions must be the same for
+both the forward and reverse pass</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>HammingWindow</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>HannWindow</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>HardSwish</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>HardSigmoid</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Hardmax</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Identity</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>If</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td>Output tensors of the two conditional branches must have
+broadcastable shapes, and must have different names</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ImageScaler</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>InstanceNormalization</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>Scales <code>scale</code> and biases <code>B</code> must be
+initializers. Input rank must be &gt;=3 &amp; &lt;=5</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>IsInf</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>IsNaN</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>LayerNormalization</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LeakyRelu</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Less</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LessOrEqual</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Log</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LogSoftmax</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Loop</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LRN</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>LSTM</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>For bidirectional LSTMs, activation functions must be the same for
+both the forward and reverse pass</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LpNormalization</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>LpPool</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MatMul</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MatMulInteger</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Max</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MaxPool</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td>2D or 3D pooling only. <code>Indices</code> output tensor
+unsupported</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MaxRoiPool</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MaxUnpool</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Mean</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MeanVarianceNormalization</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MelWeightMatrix</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Min</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Mod</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Mul</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Multinomial</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Neg</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NegativeLogLikelihoodLoss</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>NonMaxSuppression</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NonZero</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Not</td>
+<td>Y</td>
+<td>BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>OneHot</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Optional</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>OptionalGetElement</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>OptionalHasElement</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Or</td>
+<td>Y</td>
+<td>BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Pad</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ParametricSoftplus</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Pow</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>PRelu</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>QLinearConv</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>QLinearMatMul</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>QuantizeLinear</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>y_zero_point</code> must be 0</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>RandomNormal</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>seed</code> value is ignored by TensorRT</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>RandomNormalLike</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>seed</code> value is ignored by TensorRT</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>RandomUniform</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>seed</code> value is ignored by TensorRT</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>RandomUniformLike</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>seed</code> value is ignored by TensorRT</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Range</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Reciprocal</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ReduceL1</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ReduceL2</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ReduceLogSum</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ReduceLogSumExp</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ReduceMax</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ReduceMean</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ReduceMin</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ReduceProd</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ReduceSum</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ReduceSumSquare</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Relu</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Reshape</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Resize</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>Supported resize transformation modes: <code>half_pixel</code>,
+<code>pytorch_half_pixel</code>, <code>tf_half_pixel_for_nn</code>,
+<code>asymmetric</code>, and <code>align_corners</code>.<br />Supported
+resize modes: <code>nearest</code>, <code>linear</code>.<br />Supported
+nearest modes: <code>floor</code>, <code>ceil</code>,
+<code>round_prefer_floor</code>, <code>round_prefer_ceil</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ReverseSequence</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>Dynamic input shapes are unsupported</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>RNN</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td>For bidirectional RNNs, activation functions must be the same for
+both the forward and reverse pass</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>RoiAlign</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Round</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>STFT</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ScaledTanh</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Scan</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Scatter</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ScatterElements</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ScatterND</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Selu</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>SequenceAt</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>SequenceConstruct</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>SequenceEmpty</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>SequenceErase</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>SequenceInsert</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>SequenceLength</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>SequenceMap</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Shape</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Shrink</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Sigmoid</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Sign</td>
+<td>Y</td>
+<td>FP32, FP16, INT8, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Sin</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Sinh</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Size</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Slice</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td><code>axes</code> must be an initializer</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Softmax</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>SoftmaxCrossEntropyLoss</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Softplus</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Softsign</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>SpaceToDepth</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Split</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>SplitToSequence</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Sqrt</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Squeeze</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td><code>axes</code> must be an initializer</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>StringNormalizer</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Sub</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Sum</td>
+<td>Y</td>
+<td>FP32, FP16, INT32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Tan</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Tanh</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>TfIdfVectorizer</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ThresholdedRelu</td>
+<td>Y</td>
+<td>FP32, FP16, INT8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Tile</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>TopK</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td><code>K</code> input must be an initializer</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Transpose</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Trilu</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Unique</td>
+<td>N</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Unsqueeze</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, INT8, BOOL</td>
+<td><code>axes</code> must be a constant tensor</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Upsample</td>
+<td>Y</td>
+<td>FP32, FP16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Where</td>
+<td>Y</td>
+<td>FP32, FP16, INT32, BOOL</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Xor</td>
+<td>Y</td>
+<td>BOOL</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a target="_blank" rel="noopener" href="http://nvdla.org/">NVDLA官网</a></li>
@@ -649,7 +1948,20 @@ data-cites="r7vme/converting-neural-network-to-tensorrt-part-1-using-existing-pl
 
 
 
-    <div class="comments" id="waline"></div>
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-waline">waline</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane waline" id="comment-waline">
+              <div class="comments" id="waline"></div>
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+        </div>
+      </div>
 </div>
   </main>
 
@@ -670,13 +1982,13 @@ data-cites="r7vme/converting-neural-network-to-tensorrt-part-1-using-existing-pl
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">470k</span>
+    <span title="站点总字数">492k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:04</span>
+    <span title="站点阅读时长">13:40</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -709,9 +2021,6 @@ data-cites="r7vme/converting-neural-network-to-tensorrt-part-1-using-existing-pl
   
 <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
 <script src="/js/third-party/search/local-search.js"></script>
-<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":null}</script>
-<script src="/js/third-party/chat/gitter.js"></script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
   <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
   <script src="/js/third-party/tags/pdf.js"></script>
@@ -744,6 +2053,10 @@ document.addEventListener('page:loaded', () => {
   );
 });
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"068aeb461bf9bc210718f61744cb1457"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic%7CTimes+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ONNX 作为当下深度学习框架中最流行的中间表达方式，社区活跃。即使当下性能最佳的 TensorRT 早已支持 ONNX Parser，逐渐摒弃 CaffeParser，倒底这种 IR 有什么魔力？今天我们来一探究竟。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ONNX:最流行的模型 IR">
+<meta property="og:url" content="http://www.deepindeed.cn/202212/20221215-onnx/index.html">
+<meta property="og:site_name" content="Deepindeed">
+<meta property="og:description" content="ONNX 作为当下深度学习框架中最流行的中间表达方式，社区活跃。即使当下性能最佳的 TensorRT 早已支持 ONNX Parser，逐渐摒弃 CaffeParser，倒底这种 IR 有什么魔力？今天我们来一探究竟。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnx-graphsurgeon-sample.png">
+<meta property="article:published_time" content="2022-12-15T11:39:39.000Z">
+<meta property="article:modified_time" content="2022-12-17T14:50:13.906Z">
+<meta property="article:author" content="CharlesCao">
+<meta property="article:tag" content="Backends">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnx-graphsurgeon-sample.png">
+
+
+<link rel="canonical" href="http://www.deepindeed.cn/202212/20221215-onnx/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/202212/20221215-onnx/","path":"202212/20221215-onnx/","title":"ONNX:最流行的模型 IR"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ONNX:最流行的模型 IR | Deepindeed</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-86501439-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css"><link rel="dns-prefetch" href="https://waline.vercel.app">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Deepindeed</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">心有猛虎，细嗅蔷薇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tools"><a href="/tools/" rel="section"><i class="fa fa-globe fa-fw"></i>tools</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#onnx-%E7%9A%84%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">ONNX 的数据格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E7%BB%93%E6%9E%9C%E4%B8%8A%E7%9C%8B"><span class="nav-number">2.2.</span> <span class="nav-text">从结果上看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proto-%E5%AE%9A%E4%B9%89%E4%B8%AD%E7%9C%8B"><span class="nav-number">2.3.</span> <span class="nav-text">Proto 定义中看</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#graphs"><span class="nav-number">2.3.1.</span> <span class="nav-text">Graphs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#node"><span class="nav-number">2.3.2.</span> <span class="nav-text">Node</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#onnx%E6%94%AF%E6%8C%81%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">ONNX支持的功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E7%9A%84%E7%AE%97%E5%AD%90"><span class="nav-number">4.</span> <span class="nav-text">支持的算子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">相关链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CharlesCao"
+      src="/images/bird.png">
+  <p class="site-author-name" itemprop="name">CharlesCao</p>
+  <div class="site-description" itemprop="description">In me the tiger sniffs the rose.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="mailto:caowenlong92@gmail.com" title="E-Mail → mailto:caowenlong92@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/5221628" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;5221628" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/cwlseu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cwlseu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://pytorch.org/" title="https:&#x2F;&#x2F;pytorch.org" rel="noopener" target="_blank">Pytorch</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://cplusplus.com/reference" title="https:&#x2F;&#x2F;cplusplus.com&#x2F;reference" rel="noopener" target="_blank">CppReference</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://docs.nvidia.com/cuda/index.html" title="https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;index.html" rel="noopener" target="_blank">NVIDIA CUDA</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/cwlseu" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.deepindeed.cn/202212/20221215-onnx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bird.png">
+      <meta itemprop="name" content="CharlesCao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Deepindeed">
+      <meta itemprop="description" content="In me the tiger sniffs the rose.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ONNX:最流行的模型 IR | Deepindeed">
+      <meta itemprop="description" content="ONNX 作为当下深度学习框架中最流行的中间表达方式，社区活跃。即使当下性能最佳的 TensorRT 早已支持 ONNX Parser，逐渐摒弃 CaffeParser，倒底这种 IR 有什么魔力？今天我们来一探究竟。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ONNX:最流行的模型 IR
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-15 19:39:39" itemprop="dateCreated datePublished" datetime="2022-12-15T19:39:39+08:00">2022-12-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-17 22:50:13" itemprop="dateModified" datetime="2022-12-17T22:50:13+08:00">2022-12-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/202212/20221215-onnx/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/202212/20221215-onnx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>17k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>28 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">ONNX 作为当下深度学习框架中最流行的中间表达方式，社区活跃。即使当下性能最佳的 TensorRT 早已支持 ONNX Parser，逐渐摒弃 CaffeParser，倒底这种 IR 有什么魔力？今天我们来一探究竟。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="概述">概述</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/onnx/onnx">ONNX</a>全称为 Open Neural
+Network
+Exchange，是一种与框架无关的中间表达（IR）。ONNX的规范及代码主要由微软，亚马逊
+，Facebook 和 IBM
+等公司共同开发，以开放源代码的方式托管在Github上。目前官方支持加载ONNX模型并进行推理的深度学习框架有：
+Caffe2, PyTorch, MXNet，ML.NET，TensorRT 和 Microsoft CNTK，并且
+TensorFlow 也非官方的支持 ONNX。随着项目的推进，该 IR
+已经被主流的推理框架所支持，逐渐发展成为最为通用的 IR。</p>
+<figure>
+<img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/image-20221216225359323.png"
+alt="image-20221216225359323" />
+<figcaption aria-hidden="true">image-20221216225359323</figcaption>
+</figure>
+<h2 id="onnx-的数据格式">ONNX 的数据格式</h2>
+<h3 id="简介">简介</h3>
+<p>ONNX本质上一种文件格式，通过Protobuf数据结构存储了神经网络结构权重。其组织格式核心定义在
+<a target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/main/docs/IR.md">Open Neural
+Network Exchange Intermediate Representation (ONNX IR)
+Specification</a>，其中定义了<code>Model</code>/<code>Graph</code>/<code>Node</code>/<code>ValueInfo</code>/<code>Tensor</code>/<code>Attribute</code>
+层面的数据结构。整图通过各节点（Node）的input/output指向关系构建模型图的拓扑结构。</p>
+<h3 id="从结果上看">从结果上看</h3>
+<figure>
+<img
+src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/image-20221216225056734.png"
+alt="image-20221216225056734" />
+<figcaption aria-hidden="true">image-20221216225056734</figcaption>
+</figure>
+<p>1、左图</p>
+<p>例如下面代码中应用 ONNX 表示的 mnist 模型。该模型包含一个输入 Tensor
+（Input3） 和一个输出 Tensor （Plus214_Output_0），而节点 Node 0
+的输入正是 Tensor Input3， 此外，该节点是 Conv
+算子，该算子的属性值可以在 Attribute
+中找到，而训练好的权重值（weight）<code>Parameter5</code> 可以在
+Initializer 中找到，而每个 Node 中 <code>-&gt;</code>
+表示拓扑关系，通过指向关系可以构建出计算图。</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">[W] --mode is deprecated and will be removed in Polygraphy 0.40.0. Use --show instead.</span><br><span class="line">[I] Loading model: mnist-12.onnx</span><br><span class="line">[I] ==== ONNX Model ====</span><br><span class="line">    Name: CNTKGraph | ONNX Opset: 12</span><br><span class="line">    </span><br><span class="line">    ---- 1 Graph Input(s) ----</span><br><span class="line">    &#123;Input3 [dtype=float32, shape=(1, 1, 28, 28)]&#125;</span><br><span class="line">    </span><br><span class="line">    ---- 1 Graph Output(s) ----</span><br><span class="line">    &#123;Plus214_Output_0 [dtype=float32, shape=(1, 10)]&#125;</span><br><span class="line">    </span><br><span class="line">    ---- 8 Initializer(s) ----</span><br><span class="line">    Initializer | Parameter5 [dtype=float32, shape=[8, 1, 5, 5]] | Values:</span><br><span class="line">        [[[[-0.00890567 -0.23690744 -0.50882167 -0.06456178  0.14181185]</span><br><span class="line">           [-0.59197617 -0.47528538 -0.04934815  0.7682156   0.2634652 ]</span><br><span class="line">           [-0.49176344  0.05561765  1.0189645   0.5547042  -0.4416644 ]</span><br><span class="line">     ...</span><br><span class="line">    </span><br><span class="line">    Initializer | Parameter194 [dtype=float32, shape=[1, 10]] | Values:</span><br><span class="line">        [[-0.04485603  0.00779166  0.06810082  0.02999374 -0.12640963  0.14021875</span><br><span class="line">          -0.0552849  -0.04938382  0.08432205 -0.05454041]]</span><br><span class="line">    </span><br><span class="line">    ---- 12 Node(s) ----</span><br><span class="line">    Node 0    | Convolution28 [Op: Conv]</span><br><span class="line">        &#123;Input3 [dtype=float32, shape=(1, 1, 28, 28)],</span><br><span class="line">         Initializer | Parameter5 [dtype=float32, shape=(8, 1, 5, 5)]&#125;</span><br><span class="line">         -&gt; &#123;Convolution28_Output_0 [dtype=float32, shape=(1, 8, 28, 28)]&#125;</span><br><span class="line">        ---- Attributes ----</span><br><span class="line">        Convolution28.kernel_shape = [5, 5]</span><br><span class="line">        Convolution28.strides = [1, 1]</span><br><span class="line">        Convolution28.auto_pad = SAME_UPPER</span><br><span class="line">        Convolution28.group = 1</span><br><span class="line">        Convolution28.dilations = [1, 1]</span><br><span class="line">    </span><br><span class="line">...</span><br><span class="line">    </span><br><span class="line">    Node 11   | Plus214 [Op: Add]</span><br><span class="line">        &#123;Times212_Output_0 [dtype=float32, shape=(1, 10)],</span><br><span class="line">         Initializer | Parameter194 [dtype=float32, shape=(1, 10)]&#125;</span><br><span class="line">         -&gt; &#123;Plus214_Output_0 [dtype=float32, shape=(1, 10)]&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>此外，每个节点对应的 Op 可能包含一些先验参数的设置可以在 Attributes
+中找到，例如 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Node 0    | Convolution28 [Op: Conv]</span><br><span class="line">    &#123;Input3 [dtype=float32, shape=(1, 1, 28, 28)],</span><br><span class="line">     Initializer | Parameter5 [dtype=float32, shape=(8, 1, 5, 5)]&#125;</span><br><span class="line">     -&gt; &#123;Convolution28_Output_0 [dtype=float32, shape=(1, 8, 28, 28)]&#125;</span><br><span class="line">    ---- Attributes ----</span><br><span class="line">    Convolution28.kernel_shape = [5, 5]</span><br><span class="line">    Convolution28.strides = [1, 1]</span><br><span class="line">    Convolution28.auto_pad = SAME_UPPER</span><br><span class="line">    Convolution28.group = 1</span><br><span class="line">    Convolution28.dilations = [1, 1]</span><br></pre></td></tr></table></figure> Initializer 中就可以找到已经训练好的模型参数
+Values， 例如 Parameter 5。</p>
+<p>2、右图</p>
+<p>ONNX 不仅能表示正常训练的模型，它也包括对量化 INT8 模型表示的，例如
+mnit-12-int8模型，相比较 mnit-12 模型最突出的特点是 Initializer
+个数明显增多，不仅要有权重(从浮点 -&gt; int8), 还需要额外的 scale +
+zero_point 参数，不仅原来的权重需要 Initializer ， 相关的 Op
+也需要额外的量化参数。所以 Initializer 数量增加几倍。</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">$ polygraphy inspect model mnist-12-int8.onnx --model-type onnx --mode basic</span><br><span class="line">[W] --mode is deprecated and will be removed in Polygraphy 0.40.0. Use --show instead.</span><br><span class="line">[I] Loading model: mnist-12-int8.onnx</span><br><span class="line">[I] ==== ONNX Model ====</span><br><span class="line">    Name: CNTKGraph | ONNX Opset: 12 | Other Opsets: &#123;&#x27;ai.onnx.preview.training&#x27;: 1, &#x27;ai.onnx.training&#x27;: 1, &#x27;com.ms.internal.nhwc&#x27;: 1, &#x27;org.pytorch.aten&#x27;: 1, &#x27;com.microsoft&#x27;: 1, &#x27;ai.onnx.contrib&#x27;: 1000, &#x27;com.microsoft.nchwc&#x27;: 1, &#x27;com.microsoft.experimental&#x27;: 1, &#x27;ai.onnx.ml&#x27;: 3&#125;</span><br><span class="line">    </span><br><span class="line">    ---- 1 Graph Input(s) ----</span><br><span class="line">    &#123;Input3 [dtype=float32, shape=(1, 1, 28, 28)]&#125;</span><br><span class="line">    </span><br><span class="line">    ---- 1 Graph Output(s) ----</span><br><span class="line">    &#123;Plus214_Output_0 [dtype=float32, shape=(1, 10)]&#125;</span><br><span class="line">    </span><br><span class="line">    ---- 29 Initializer(s) ----</span><br><span class="line">    &#123;Initializer | Input3_zero_point [dtype=uint8, shape=[]] | Values:</span><br><span class="line">        0</span><br><span class="line">    Initializer | Input3_scale [dtype=float32, shape=[]] | Values:</span><br><span class="line">        1.0</span><br><span class="line">    Initializer | Parameter5_quantized [dtype=int8, shape=[8, 1, 5, 5]] | Values:</span><br><span class="line">        [[[[  -1  -30  -63   -8   18]</span><br><span class="line">           [ -74  -59   -6   96   33]</span><br><span class="line">           [ -61    7  127   69  -55]</span><br><span class="line">           [ -20   69   74  -37  -76]</span><br><span class="line">           [   5   28  -27  -59  -36]]]</span><br><span class="line">       ...</span><br><span class="line">           [  -8  -43  -96  -64  -43]]]]</span><br><span class="line">    Initializer | Parameter5_scale [dtype=float32, shape=[8]] | Values:</span><br><span class="line">        [0.00802334 0.00446989 0.00765891 0.00375404 0.00538003 0.00577387</span><br><span class="line">         0.00440539 0.00446567]</span><br><span class="line">    Initializer | Parameter5_zero_point [dtype=int8, shape=[8]] | Values:</span><br><span class="line">        [0 0 0 0 0 0 0 0]</span><br><span class="line">    Initializer | Convolution28_zero_point [dtype=uint8, shape=[]] | Values:</span><br><span class="line">        0</span><br><span class="line">    Initializer | Convolution28_scale [dtype=float32, shape=[]] | Values:</span><br><span class="line">        3.6796057</span><br><span class="line">    Initializer | ConvAddFusion_Add_B_Parameter6_quantized [dtype=int32, shape=[8]] | Values:</span><br><span class="line">        [-20 -97  12  -4 -12 -23   5 -27]</span><br><span class="line">    ...</span><br><span class="line">    ---- 11 Node(s) ----</span><br><span class="line">    Node 0    | Input3_Convolution28_QuantizeLinear [Op: QuantizeLinear]</span><br><span class="line">        &#123;Input3 [dtype=float32, shape=(1, 1, 28, 28)],</span><br><span class="line">         Initializer | Input3_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Input3_zero_point [dtype=uint8, shape=()]&#125;</span><br><span class="line">         -&gt; &#123;Input3_Convolution28_QuantizeLinear&#125;</span><br><span class="line">    </span><br><span class="line">    Node 1    | Convolution28_quant [Op: QLinearConv]</span><br><span class="line">        &#123;Input3_Convolution28_QuantizeLinear,</span><br><span class="line">         Initializer | Input3_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Input3_zero_point [dtype=uint8, shape=()],</span><br><span class="line">         Initializer | Parameter5_quantized [dtype=int8, shape=(8, 1, 5, 5)],</span><br><span class="line">         Initializer | Parameter5_scale [dtype=float32, shape=(8,)],</span><br><span class="line">         Initializer | Parameter5_zero_point [dtype=int8, shape=(8,)],</span><br><span class="line">         Initializer | Convolution28_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Convolution28_zero_point [dtype=uint8, shape=()],</span><br><span class="line">         Initializer | ConvAddFusion_Add_B_Parameter6_quantized [dtype=int32, shape=(8,)]&#125;</span><br><span class="line">         -&gt; &#123;Convolution28_QuantizeLinear_0&#125;</span><br><span class="line">         ---- Attributes ----</span><br><span class="line">        Convolution28_quant.auto_pad = SAME_UPPER</span><br><span class="line">        Convolution28_quant.dilations = [1, 1]</span><br><span class="line">        Convolution28_quant.group = 1</span><br><span class="line">        Convolution28_quant.kernel_shape = [5, 5]</span><br><span class="line">        Convolution28_quant.strides = [1, 1]</span><br><span class="line">   ...</span><br><span class="line">    </span><br><span class="line">    Node 8    | gemm_MatMul_quant [Op: QLinearMatMul]</span><br><span class="line">        &#123;Pooling160_Output_0_reshape0_gemm_MatMul_QuantizeLinear,</span><br><span class="line">         Initializer | Pooling160_Output_0_reshape0_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Pooling160_Output_0_reshape0_zero_point [dtype=uint8, shape=()],</span><br><span class="line">         Initializer | Parameter193_reshape1_quantized [dtype=int8, shape=(256, 10)],</span><br><span class="line">         Initializer | Parameter193_reshape1_scale [dtype=float32, shape=(10,)],</span><br><span class="line">         Initializer | Parameter193_reshape1_zero_point [dtype=int8, shape=(10,)],</span><br><span class="line">         Initializer | Plus214_Output_0_MatMul_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Plus214_Output_0_MatMul_zero_point [dtype=uint8, shape=()]&#125;</span><br><span class="line">         -&gt; &#123;Plus214_Output_0_MatMul_QuantizeLinear_0&#125;</span><br><span class="line">    </span><br><span class="line">    Node 9    | gemm_Add_quant [Op: QLinearAdd]</span><br><span class="line">        &#123;Plus214_Output_0_MatMul_QuantizeLinear_0,</span><br><span class="line">         Initializer | Plus214_Output_0_MatMul_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Plus214_Output_0_MatMul_zero_point [dtype=uint8, shape=()],</span><br><span class="line">         Initializer | Parameter194_quantized [dtype=uint8, shape=(1, 10)],</span><br><span class="line">         Initializer | Parameter194_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Parameter194_zero_point [dtype=uint8, shape=()],</span><br><span class="line">         Initializer | Plus214_Output_0_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Plus214_Output_0_zero_point [dtype=uint8, shape=()]&#125;</span><br><span class="line">         -&gt; &#123;Plus214_Output_0_QuantizeLinear_0&#125;</span><br><span class="line">    </span><br><span class="line">    Node 10   | Plus214_Output_0_DequantizeLinear_0 [Op: DequantizeLinear]</span><br><span class="line">        &#123;Plus214_Output_0_QuantizeLinear_0,</span><br><span class="line">         Initializer | Plus214_Output_0_scale [dtype=float32, shape=()],</span><br><span class="line">         Initializer | Plus214_Output_0_zero_point [dtype=uint8, shape=()]&#125;</span><br><span class="line">         -&gt; &#123;Plus214_Output_0 [dtype=float32, shape=(1, 10)]&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="proto-定义中看">Proto 定义中看</h3>
+<h4 id="graphs">Graphs</h4>
+<p>从模型 Model 定义中可以看到，一个模型中有一个 Graph 的属性。而这个
+Graph的定义如下：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>name</td>
+<td>string</td>
+<td>计算图的名字</td>
+</tr>
+<tr class="even">
+<td>node</td>
+<td>Node[]</td>
+<td>节点列表，根据输入/输出数据依赖关系形成部分有序的计算图。它是按拓扑顺序的。</td>
+</tr>
+<tr class="odd">
+<td>initializer</td>
+<td>Tensor[]</td>
+<td>张量的列表。当初始化式与图形输入具有相同的名称时，它将为该输入指定一个默认值。当初始化式的名称与所有图形输入不同时，它指定一个常量值。列表的顺序未指定。</td>
+</tr>
+<tr class="even">
+<td>doc_string</td>
+<td>string</td>
+<td>该模型的文档。</td>
+</tr>
+<tr class="odd">
+<td>input</td>
+<td>ValueInfo[]</td>
+<td>计算图的输入参数，可能由' initializer '中的默认值初始化。</td>
+</tr>
+<tr class="even">
+<td>output</td>
+<td>ValueInfo[]</td>
+<td>计算图的输出参数。一旦执行写入了所有输出参数，计算图的执行就完成了。</td>
+</tr>
+<tr class="odd">
+<td>value_info</td>
+<td>ValueInfo[]</td>
+<td>用于存储不是输入或输出的值的类型和形状信息。</td>
+</tr>
+</tbody>
+</table>
+<p>原来 ValueInfo 和 Tensor 是需要从其内容信息上区分的， ValueInfo
+是躯壳的话， Tensor 是具体的模型参数值。</p>
+<h4 id="node">Node</h4>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>name</td>
+<td>string</td>
+<td>节点的可选名称，仅用于调试目的。</td>
+</tr>
+<tr class="even">
+<td>input</td>
+<td>string[]</td>
+<td>节点用来将输入值传播到节点运算符的值的名称。
+它必须引用图形输入、Initializer 或其他节点输出。</td>
+</tr>
+<tr class="odd">
+<td>output</td>
+<td>string[]</td>
+<td>节点用于从节点调用的运算符捕获数据的输出的名称。它要么在图中引入一个值，要么引用一个图输出。</td>
+</tr>
+<tr class="even">
+<td>op_type</td>
+<td>string</td>
+<td>要调用的算子的符号标识符。</td>
+</tr>
+<tr class="odd">
+<td>domain</td>
+<td>string</td>
+<td>算子集的命名空间，其中包含以op_type命名的操作符。</td>
+</tr>
+<tr class="even">
+<td>attribute</td>
+<td>Attribute[]</td>
+<td>命名属性，算子参数化的一种形式，用于常量值而不是传播值。</td>
+</tr>
+<tr class="odd">
+<td>doc_string</td>
+<td>string</td>
+<td>该Node的文档。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>计算图中的边（Edge）由一个节点的输出在后续节点的输入中按名称引用来建立。</li>
+<li>给定节点的输出将新名称引入图中。节点输出的值由节点算子计算所得，节点输入可以指其他节点输出、图输入和图初始化器（Initializer）。当节点输出的名称与图输出的名称重合时，图输出的值就是该节点计算出的对应输出值。嵌套子图中的节点输入可以引用外部图中的名称（作为节点输出、图输入或图初始值设定项）。</li>
+<li>该图必须对所有节点输出使用单一静态分配，这意味着所有节点输出名称在一个图中必须是唯一的。
+在嵌套子图的情况下，节点输出名称必须不同于嵌套子图中可见的外部范围的名称。</li>
+<li>节点间依赖性使得不能在计算图中创建循环。</li>
+<li>节点中输入和输出的数量、它们的类型、节点中指定的属性集及其类型必须满足节点操作员签名施加的约束。</li>
+<li>定义顶层计算图的节点列表必须按拓扑排序； 也就是说，如果节点 K
+在图中跟随节点 N，则 N 的任何数据输入都不能引用 K 的输出。</li>
+<li>节点属性用于将静态值传递给运算符。</li>
+</ul>
+<p>更多关于数据结构的信息可以参考 <a
+target="_blank" rel="noopener" href="https://github.com/onnx/onnx/blob/main/docs/IR.md#standard-data-types">standard-data-types</a>。</p>
+<h2 id="onnx支持的功能">ONNX支持的功能</h2>
+<p>基于ONNX模型，官方提供了一系列相关工具：模型转化/模型优化（<a
+target="_blank" rel="noopener" href="https://github.com/daquexian/onnx-simplifier">simplifier</a>等）/模型部署(<a
+target="_blank" rel="noopener" href="https://github.com/microsoft/onnxruntime">Runtime</a>)/模型可视化（<a
+href="">Netron</a>等）等</p>
+<p>更多工具可以参考<a target="_blank" rel="noopener" href="https://onnx.ai/supported-tools.html">ONNX
+支持的工具</a></p>
+<p>1、Netron</p>
+<p>上述图即为Netron打开</p>
+<p>2、模型导出</p>
+<p><code>torch.onnx.export</code> 导出模型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">import onnx</span><br><span class="line"></span><br><span class="line">model_torch = torch.hub.load(&#x27;pytorch/vision:v0.10.0&#x27;, &#x27;resnet50&#x27;, pretrained=True)</span><br><span class="line">model_torch.eval()</span><br><span class="line">dummy_input = torch.randn(1, 3, 224, 224)</span><br><span class="line">torch.onnx.export(model, dummy_input, output_fn=&quot;resnet50.onnx&quot;,</span><br><span class="line">                        do_constant_folding=True,</span><br><span class="line">                        opset_version=14,</span><br><span class="line">                        input_names=[&#x27;input&#x27;],</span><br><span class="line">                        output_names=[&#x27;output&#x27;],</span><br><span class="line">                        keep_initializers_as_inputs=True,</span><br><span class="line">                        export_params=True,</span><br><span class="line">                        dynamic_axes = &#123;</span><br><span class="line">                            &#x27;input&#x27;:&#123;0: &#x27;batch_size&#x27;&#125;,</span><br><span class="line">                            &#x27;output&#x27;:&#123;0: &#x27;batch_size&#x27;&#125;</span><br><span class="line">                        &#125;,</span><br><span class="line">                        verbose=True)</span><br><span class="line"># Load the ONNX model</span><br><span class="line">model_onnx = onnx.load(&quot;resnet50_torch.onnx&quot;)</span><br><span class="line"># Check that the model is well formed</span><br><span class="line">onnx.checker.check_model(model_onnx)</span><br><span class="line"># Print a human readable representation of the graph</span><br><span class="line"># print(onnx.helper.printable_graph(model_onnx.graph))</span><br></pre></td></tr></table></figure>
+<p>Scikit-learn 模型导出 onnx 模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"><span class="comment"># Convert into ONNX format</span></span><br><span class="line"><span class="keyword">from</span> skl2onnx <span class="keyword">import</span> convert_sklearn</span><br><span class="line"><span class="keyword">from</span> skl2onnx.common.data_types <span class="keyword">import</span> FloatTensorType</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">iris = load_iris()</span><br><span class="line">X, y = iris.data, iris.target</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y)</span><br><span class="line">clr = RandomForestClassifier()</span><br><span class="line">clr.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line">initial_type = [(<span class="string">&#x27;float_input&#x27;</span>, FloatTensorType([<span class="literal">None</span>, <span class="number">4</span>]))]</span><br><span class="line">onx = convert_sklearn(clr, initial_types=initial_type)</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;rf_iris.onnx&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(onx.SerializeToString())</span><br></pre></td></tr></table></figure>
+<p>3、onnx simplifier</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnx</span><br><span class="line"><span class="keyword">import</span> onnxsim</span><br><span class="line"></span><br><span class="line">model_onnxdo = onnx.load(<span class="string">&quot;model_name.onnx&quot;</span>)</span><br><span class="line"><span class="comment"># useless output, we can cutoff when simplify</span></span><br><span class="line">unused_output = [<span class="string">&quot;onnx::Sigmoid_467&quot;</span>, <span class="string">&quot;onnx::Sigmoid_753&quot;</span>, <span class="string">&quot;onnx::Sigmoid_1039&quot;</span>]</span><br><span class="line">model_onnx, check = onnxsim.simplify(model_onnx, </span><br><span class="line">                                     dynamic_input_shape=<span class="literal">True</span>, </span><br><span class="line">                                     input_shapes=&#123;<span class="string">&#x27;input&#x27;</span>: [<span class="number">1</span>, <span class="number">3</span>, image_size, image_size]&#125;,</span><br><span class="line">                                     unused_output=unused_output)</span><br><span class="line"><span class="keyword">assert</span> check, <span class="string">&#x27;assert simplification check failed&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>simplify的基本流程如下：</p>
+<p>step 1. 利用onnxruntime推理计算图，得到各个节点的输入输出的 infer
+shape step 2.
+基于ONNX支持的优化方法进行ONNX模型的优化（如<code>fuse_bn_into_conv</code>）
+step 3. 对ONNX模型的常量OP进行折叠：
+1.基于<code>get_constant_nodes</code>获取常量 OP
+2.基于<code>add_features_to_output</code>将所有静态节点的输出扩展到 ONNX
+图的输出节点列表中（主要为了后续步骤方便获取常量节点输出）
+3.将1.中得到的常量OP从图中移除（断开连线），同时将其节点参数构建为其他节点的输入参数
+4.清理图中的孤立节点（3.中断开连线的节点）</p>
+<p>其中 v0.3.10 onnxsim/onnx_simplifier.py <code>simplify</code>
+函数实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">simplify</span>(<span class="params">model: <span class="type">Union</span>[<span class="built_in">str</span>, onnx.ModelProto],    <span class="comment"># onnx ModelProto object or file path</span></span></span><br><span class="line"><span class="params">             check_n: <span class="built_in">int</span> = <span class="number">0</span>,                      <span class="comment"># The simplified model will be checked for `check_n` times by random inputs</span></span></span><br><span class="line"><span class="params">             perform_optimization: <span class="built_in">bool</span> = <span class="literal">True</span>,     <span class="comment"># Whether to run onnx optimizer on the model</span></span></span><br><span class="line"><span class="params">             skip_fuse_bn: <span class="built_in">bool</span> = <span class="literal">False</span>,            <span class="comment"># Skip fuse_bn_into_conv onnx optimizer</span></span></span><br><span class="line"><span class="params">             input_shapes: <span class="type">Optional</span>[TensorShapesWithOptionalKey] = <span class="literal">None</span>, <span class="comment">#  </span></span></span><br><span class="line"><span class="params">             skipped_optimizers: <span class="type">Optional</span>[<span class="type">Sequence</span>[<span class="built_in">str</span>]] = <span class="literal">None</span>,  <span class="comment"># Skip some specific onnx optimizers</span></span></span><br><span class="line"><span class="params">             skip_shape_inference=<span class="literal">False</span>,            <span class="comment"># Skip shape inference (sometimes shape inference will crash)</span></span></span><br><span class="line"><span class="params">             input_data: <span class="type">Optional</span>[Tensors] = <span class="literal">None</span>,  <span class="comment"># Feed custom input data for checking if needed</span></span></span><br><span class="line"><span class="params">             dynamic_input_shape: <span class="built_in">bool</span> = <span class="literal">False</span>,     <span class="comment"># Indicates whether the input shape should be dynamic.</span></span></span><br><span class="line"><span class="params">             custom_lib: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span>,      <span class="comment"># onnxruntime custom ops&#x27;s shared library</span></span></span><br><span class="line"><span class="params">             include_subgraph: <span class="built_in">bool</span> = <span class="literal">False</span>,        <span class="comment"># Simplify subgraph (e.g. true graph and false graph of &quot;If&quot; operator) instead of only the main graph</span></span></span><br><span class="line"><span class="params">             unused_output: <span class="type">Optional</span>[<span class="type">Sequence</span>[<span class="built_in">str</span>]] = <span class="literal">None</span></span>) -&gt; <span class="type">Tuple</span>[onnx.ModelProto, <span class="built_in">bool</span>]:  <span class="comment"># name of unused outputs that will be eliminated from the model</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :param input_shapes: If the model has dynamic input shape, user must pass a fixed input shape for generating random inputs and checking equality.</span></span><br><span class="line"><span class="string">                         (Also see &quot;dynamic_input_shape&quot; param)</span></span><br><span class="line"><span class="string">    :param dynamic_input_shape: input_shapes is also needed even if dynamic_input_shape is True,</span></span><br><span class="line"><span class="string">            the value of input_shapes will be used when generating random inputs for checking equality.</span></span><br><span class="line"><span class="string">            If &#x27;dynamic_input_shape&#x27; is False, the input shape in simplified model will be overwritten</span></span><br><span class="line"><span class="string">            by the value of &#x27;input_shapes&#x27; param.</span></span><br><span class="line"><span class="string">    :return: A tuple (simplified model, success(True) or failed(False))</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> input_shapes <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        input_shapes = &#123;&#125;</span><br><span class="line">    <span class="keyword">if</span> input_data <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        input_data = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(model, <span class="built_in">str</span>):</span><br><span class="line">        model = onnx.load(model)</span><br><span class="line">    <span class="keyword">assert</span>(<span class="built_in">isinstance</span>(model, onnx.ModelProto))</span><br><span class="line">    onnx.checker.check_model(model)</span><br><span class="line">    model_ori = model</span><br><span class="line">    model = copy.deepcopy(model)</span><br><span class="line"></span><br><span class="line">    input_names = get_input_names(model)</span><br><span class="line">    <span class="keyword">for</span> input_name, data <span class="keyword">in</span> input_data.items():</span><br><span class="line">        <span class="keyword">if</span> input_name <span class="keyword">not</span> <span class="keyword">in</span> input_names:</span><br><span class="line">            <span class="keyword">raise</span> RuntimeError(</span><br><span class="line">                <span class="string">&#x27;The model doesn\&#x27;t have input named &quot;&#123;&#125;&quot;&#x27;</span>.<span class="built_in">format</span>(input_name))</span><br><span class="line"></span><br><span class="line">        shape = <span class="built_in">list</span>(input_data[input_name].shape)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># special case for single constant variables (with shape [])</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(shape) == <span class="number">0</span>:</span><br><span class="line">            shape = [input_data[input_name].size]</span><br><span class="line">        <span class="keyword">if</span> input_name <span class="keyword">in</span> input_shapes <span class="keyword">and</span> shape != input_shapes[input_name]:</span><br><span class="line">            <span class="keyword">raise</span> RuntimeError(<span class="string">&#x27;The shape of input_data[&#123;&#125;] is not the same with input_shape[&#123;&#125;]&#x27;</span>.<span class="built_in">format</span>(</span><br><span class="line">                input_name, input_name))</span><br><span class="line">        <span class="keyword">elif</span> input_name <span class="keyword">not</span> <span class="keyword">in</span> input_shapes:</span><br><span class="line">            input_shapes[input_name] = shape</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> unused_output <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        model = remove_unused_output(model, unused_output)</span><br><span class="line"></span><br><span class="line">    updated_input_shapes = check_and_update_input_shapes(</span><br><span class="line">        model, input_shapes, dynamic_input_shape)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">infer_shapes_and_optimize</span>(<span class="params">model: onnx.ModelProto</span>) -&gt; onnx.ModelProto:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">infer_shapes_if_applicable</span>(<span class="params">model: onnx.ModelProto</span>) -&gt; onnx.ModelProto:</span><br><span class="line">            <span class="string">&quot;&quot;&quot;将Inference Shape信息添加到模型的ValeInfo中&quot;&quot;&quot;</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> skip_shape_inference:</span><br><span class="line">                model = infer_shapes(model)</span><br><span class="line">            <span class="keyword">return</span> model</span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">optimize_if_applicable</span>(<span class="params">model: onnx.ModelProto</span>) -&gt; onnx.ModelProto:</span><br><span class="line">            <span class="keyword">if</span> perform_optimization:</span><br><span class="line">                model = optimize(model, skip_fuse_bn, skipped_optimizers)</span><br><span class="line">            <span class="keyword">return</span> model</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> fixed_point(model, infer_shapes_if_applicable, optimize_if_applicable)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">constant_folding</span>(<span class="params">model: onnx.ModelProto</span>) -&gt; onnx.ModelProto:</span><br><span class="line">        const_nodes = get_constant_nodes(</span><br><span class="line">            model, dynamic_input_shape=dynamic_input_shape)</span><br><span class="line">        res = forward_for_node_outputs(model,</span><br><span class="line">                                       const_nodes,</span><br><span class="line">                                       input_shapes=updated_input_shapes,</span><br><span class="line">                                       input_data=input_data,</span><br><span class="line">                                       custom_lib=custom_lib)</span><br><span class="line">        const_nodes = clean_constant_nodes(const_nodes, res)</span><br><span class="line">        model = eliminate_const_nodes(model, const_nodes, res)</span><br><span class="line">        onnx.checker.check_model(model)</span><br><span class="line">        <span class="keyword">return</span> model</span><br><span class="line"></span><br><span class="line">    model = fixed_point(model, constant_folding, infer_shapes_and_optimize)</span><br><span class="line"></span><br><span class="line">    check_ok = check(model_ori, model, check_n,</span><br><span class="line">                     input_shapes=updated_input_shapes, custom_lib=custom_lib)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> model, check_ok</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">optimize</span>(<span class="params">model: onnx.ModelProto, skip_fuse_bn: <span class="built_in">bool</span>, skipped_optimizers: <span class="type">Optional</span>[<span class="type">Sequence</span>[<span class="built_in">str</span>]]</span>) -&gt; onnx.ModelProto:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    :param model: The onnx model.</span></span><br><span class="line"><span class="string">    :return: The optimized onnx model.</span></span><br><span class="line"><span class="string">    Before simplifying, use this method to generate value_info, which is used in `forward_all`</span></span><br><span class="line"><span class="string">    After simplifying, use this method to fold constants generated in previous step into initializer,</span></span><br><span class="line"><span class="string">    and eliminate unused constants.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    onnx.checker.check_model(model)</span><br><span class="line">    onnx.helper.strip_doc_string(model)</span><br><span class="line">    optimizers_list = onnxoptimizer.get_fuse_and_elimination_passes()</span><br><span class="line">    <span class="keyword">if</span> skip_fuse_bn:</span><br><span class="line">        optimizers_list.remove(<span class="string">&#x27;fuse_bn_into_conv&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> skipped_optimizers <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">for</span> opt <span class="keyword">in</span> skipped_optimizers:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                optimizers_list.remove(opt)</span><br><span class="line">            <span class="keyword">except</span> ValueError:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    model = onnxoptimizer.optimize(model, optimizers_list,</span><br><span class="line">                                   fixed_point=<span class="literal">True</span>)</span><br><span class="line">    onnx.checker.check_model(model)</span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<p>4、onnx 模型编辑 onnx-graphsurgeon</p>
+<p>TensorRT 官方提供了关于 onnx-graphsurgeon 操作 ONNX 模型的 example
+，例如<a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/blob/main/tools/onnx-graphsurgeon/examples/03_isolating_a_subgraph/isolate.py">剥离子图</a>，<a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/blob/main/tools/onnx-graphsurgeon/examples/06_removing_nodes/remove.py">移除Node</a>，<a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/blob/main/tools/onnx-graphsurgeon/examples/08_replacing_a_subgraph/replace.py">子图替换</a>等等。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnx-graphsurgeon-sample.png" alt="onnx-graphsurgeon-sample" style="zoom: 25%;" /></p>
+<p>例如我们将原来的 <code>step</code>
+这个节点进行修改，修改成直接传入已经构造好的 <code>postion_ids</code>
+的方式：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnx</span><br><span class="line"><span class="keyword">import</span> onnx_graphsurgeon <span class="keyword">as</span> gs</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit_onnx_sample</span>(<span class="params">onnx_path</span>):</span><br><span class="line">    graph = gs.import_onnx(onnx.load(onnx_path))</span><br><span class="line">    tensors = graph.tensors()</span><br><span class="line">    <span class="comment"># replace subgraph</span></span><br><span class="line">    shape_node = [node <span class="keyword">for</span> node <span class="keyword">in</span> graph.nodes <span class="keyword">if</span> node.name == <span class="string">&quot;Mul_101&quot;</span>][<span class="number">0</span>]</span><br><span class="line">    inputs_mask = tensors[<span class="string">&quot;step&quot;</span>]</span><br><span class="line">    inputs_mask.name = <span class="string">&quot;position_ids&quot;</span></span><br><span class="line">    step_matrix = inputs_mask.to_variable(dtype=np.float32, shape= [<span class="number">1</span>, <span class="number">1</span>, <span class="number">512</span>])</span><br><span class="line">    add_node = [node <span class="keyword">for</span> node <span class="keyword">in</span> graph.nodes <span class="keyword">if</span> node.name == <span class="string">&quot;Add_114&quot;</span>][<span class="number">0</span>]</span><br><span class="line">    add_node.inputs = [shape_node.outputs[<span class="number">0</span>], step_matrix]</span><br><span class="line">    graph.cleanup()</span><br><span class="line">    onnx.save(gs.export_onnx(graph), onnx_path.replace(<span class="string">&quot;.onnx&quot;</span>, <span class="string">&quot;-replace.onnx&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    edit_onnx_sample(path=<span class="string">&quot;decoder.onnx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="支持的算子">支持的算子</h2>
+<p><a target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/">ONNX 官网 Operators
+文档</a>中列出所有 ONNX 算子。
+对于每个算子，列出使用指南、参数、示例和逐行版本历史记录。 例如
+<code>Abs</code> 是 Opset version 1 开始支持的，其中在版本号为 6 和 13
+的时候进行过相关内容的变更, 要查看相信变更情况，可以进入到具体的 diff
+页面进行查看；同样，<code>Acos</code> 是从版本 7 开始支持的。</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">operator</th>
+<th style="text-align: left;">versions</th>
+<th style="text-align: left;">differences</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Abs.html#l-onnx-doc-abs">Abs</a></td>
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Abs.html#l-onnx-op-abs-13">13</a>,
+<a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Abs.html#l-onnx-op-abs-6">6</a>,
+<a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Abs.html#l-onnx-op-abs-1">1</a></td>
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/text_diff_Abs_6_13.html#l-onnx-op-abs-d6-13">13/6</a>,
+<a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/text_diff_Abs_1_13.html#l-onnx-op-abs-d1-13">13/1</a>,
+<a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/text_diff_Abs_1_6.html#l-onnx-op-abs-d1-6">6/1</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Acos.html#l-onnx-doc-acos">Acos</a></td>
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Acos.html#l-onnx-op-acos-7">7</a></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Acosh.html#l-onnx-doc-acosh">Acosh</a></td>
+<td style="text-align: left;"><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/onnx__Acosh.html#l-onnx-op-acosh-9">9</a></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="相关链接">相关链接</h2>
+<ul>
+<li>https://onnx.ai/</li>
+<li>https://github.com/onnx/onnx/blob/main/docs/IR.md</li>
+<li><a
+target="_blank" rel="noopener" href="https://onnx.ai/onnx/operators/index.html">https://onnx.ai/onnx/operators/index.html</a></li>
+<li>https://onnx.ai/supported-tools.html</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer"><div class="post-widgets">
+    <div
+      class="social-share"
+      
+        data-sites="weibo,qq,wechat,tencent,douban,qzone,linkedin,diandian,facebook,twitter,google"
+      
+      
+        data-wechat-qrcode-title="share.title"
+      
+      
+        data-wechat-qrcode-helper="share.prompt"
+      
+    >
+    </div>
+  </div>
+  <script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>CharlesCao
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://www.deepindeed.cn/202212/20221215-onnx/" title="ONNX:最流行的模型 IR">http://www.deepindeed.cn/202212/20221215-onnx/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Backends/" rel="tag"># Backends</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/202211/20221113-onnxruntime/" rel="prev" title="OnnxRuntime">
+                  <i class="fa fa-chevron-left"></i> OnnxRuntime
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-waline">waline</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane waline" id="comment-waline">
+              <div class="comments" id="waline"></div>
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CharlesCao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">492k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:40</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.0.1/dist/mermaid.min.js","integrity":"sha256-CemUs9ITT7liCZpVMktcEw0BpAOZ1+mujlMB3UyuImU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","locale":{"placeholder":"欢迎交流指正"},"emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["mail","nick","mail"],"login":"enable","el":"#waline","comment":true,"path":"/202212/20221215-onnx/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"49358203801c0f0b2cbac30fa8c83ec0"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

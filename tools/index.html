@@ -21,15 +21,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.deepindeed.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":28},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":true,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Document  Pytorch CppReference NVIDIA CUDA gcc onnxruntime  部署  nvidia-docker-container ngc-pytorch pytorch model zoo timm modelzoo          名称 功能简介 其他     netron1 可视化模型， 如果要临时修改模型，可以使用onnx-modifier2">
+    <meta name="description" content="对开发中常用的一些工具、链接进行整理、记录。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="工具">
+<meta property="og:title" content="啊哈, 颤抖吧工具">
 <meta property="og:url" content="http://www.deepindeed.cn/tools/index.html">
 <meta property="og:site_name" content="Deepindeed">
-<meta property="og:description" content="Document  Pytorch CppReference NVIDIA CUDA gcc onnxruntime  部署  nvidia-docker-container ngc-pytorch pytorch model zoo timm modelzoo          名称 功能简介 其他     netron1 可视化模型， 如果要临时修改模型，可以使用onnx-modifier2">
+<meta property="og:description" content="对开发中常用的一些工具、链接进行整理、记录。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.deepindeed.cn/assets/images/backends/trt-polygraph-demo.jpg">
 <meta property="article:published_time" content="2022-08-28T14:20:50.000Z">
-<meta property="article:modified_time" content="2022-11-16T16:37:09.790Z">
+<meta property="article:modified_time" content="2022-12-17T14:52:59.211Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="Deepindeed">
 <meta property="article:tag" content="落地">
@@ -37,16 +38,17 @@
 <meta property="article:tag" content="开发">
 <meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.deepindeed.cn/assets/images/backends/trt-polygraph-demo.jpg">
 
 
 <link rel="canonical" href="http://www.deepindeed.cn/tools/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/tools/index.html","path":"tools/index.html","title":"工具"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"http://www.deepindeed.cn/tools/index.html","path":"tools/index.html","title":"啊哈, 颤抖吧工具"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>工具 | Deepindeed
+<title>啊哈, 颤抖吧工具 | Deepindeed
 </title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86501439-1"></script>
@@ -56,7 +58,7 @@
 
 
 
-<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css"><link rel="dns-prefetch" href="https://waline.vercel.app">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -153,7 +155,9 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#document"><span class="nav-number">1.</span> <span class="nav-text">Document</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">可视化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text">测试工具</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#document"><span class="nav-number">1.</span> <span class="nav-text">Document</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%8E%8B%E6%B5%8B%E5%B7%A5%E5%85%B7"><span class="nav-number">3.1.</span> <span class="nav-text">服务压测工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">自动负载均衡</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8-tensorrt-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B%E5%B8%B8%E7%94%A8%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text">应用 TensorRT
+部署模型常用开发工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B"><span class="nav-number">4.1.</span> <span class="nav-text">常用工具使用案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#onnx-graphsurgeon"><span class="nav-number">4.1.1.</span> <span class="nav-text">onnx-graphsurgeon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#trtexec"><span class="nav-number">4.1.2.</span> <span class="nav-text">trtexec</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#polygraphy"><span class="nav-number">4.1.3.</span> <span class="nav-text">polygraphy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nvtx-tracingnsight-system-%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88%E5%88%86%E6%9E%90"><span class="nav-number">4.1.4.</span> <span class="nav-text">NVTX tracing+Nsight
+System 性能瓶颈分析</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -168,7 +172,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -242,10 +246,11 @@
     
     <div class="post-block" lang="zh-CN"><header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">工具
+<h1 class="post-title" itemprop="name headline">啊哈, 颤抖吧工具
 </h1>
 
 <div class="post-meta-container">
+    <div class="post-description">对开发中常用的一些工具、链接进行整理、记录。</div>
 </div>
 
 </header>
@@ -266,13 +271,15 @@ target="_blank" rel="noopener" href="https://onnxruntime.ai/about.html">onnxrunt
 </ul>
 <h2 id="部署">部署</h2>
 <ul>
-<li><a
-target="_blank" rel="noopener" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html">nvidia-docker-container</a></li>
-<li><a
-target="_blank" rel="noopener" href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags">ngc-pytorch</a></li>
-<li><a target="_blank" rel="noopener" href="https://pytorch.org/hub/">pytorch model zoo</a></li>
-<li><a target="_blank" rel="noopener" href="https://rwightman.github.io/pytorch-image-models/">timm
-modelzoo</a></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html">nvidia-docker-container</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags">ngc-pytorch</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://pytorch.org/hub/">pytorch model zoo</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://rwightman.github.io/pytorch-image-models/">timm
+modelzoo</a></p></li>
+<li><p>tensorrt 常见问题<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></p></li>
 </ul>
 <table>
 <colgroup>
@@ -289,34 +296,34 @@ modelzoo</a></li>
 </thead>
 <tbody>
 <tr class="odd">
-<td>netron<a href="#fn1" class="footnote-ref" id="fnref1"
-role="doc-noteref"><sup>1</sup></a></td>
-<td>可视化模型， 如果要临时修改模型，可以使用onnx-modifier<a href="#fn2"
-class="footnote-ref" id="fnref2"
+<td>netron<a href="#fn2" class="footnote-ref" id="fnref2"
 role="doc-noteref"><sup>2</sup></a></td>
+<td>可视化模型， 如果要临时修改模型，可以使用onnx-modifier<a href="#fn3"
+class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a></td>
 <td>经<code>onnx.shape_inference</code>推理优化后的模型，可以将结果显示在netron中</td>
 </tr>
 <tr class="even">
-<td>onnxsim<a href="#fn3" class="footnote-ref" id="fnref3"
-role="doc-noteref"><sup>3</sup></a></td>
+<td>onnxsim<a href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a></td>
 <td>对onnx模型进行op融合，常量折叠等操作</td>
 <td>部分功能也能在onnx.optim模块中找到，常用的版本为v0.3.10</td>
 </tr>
 <tr class="odd">
-<td>ploygraphy<a href="#fn4" class="footnote-ref" id="fnref4"
-role="doc-noteref"><sup>4</sup></a></td>
+<td>ploygraphy<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a></td>
 <td>包括多种模式，实现对onnx模型的运行、优化等</td>
 <td></td>
 </tr>
 <tr class="even">
-<td>trtexec<a href="#fn5" class="footnote-ref" id="fnref5"
-role="doc-noteref"><sup>5</sup></a></td>
+<td>trtexec<a href="#fn6" class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a></td>
 <td>tensorrt官方提供的用于能够快速使用tensorrt推理模型的工具，主要功能包括对模型benchmark，构建GIE模型等</td>
 <td></td>
 </tr>
 <tr class="odd">
-<td>onnx_graphsurgeon<a href="#fn6" class="footnote-ref" id="fnref6"
-role="doc-noteref"><sup>6</sup></a></td>
+<td>onnx_graphsurgeon<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a></td>
 <td>常用于onnx模型裁剪、修改</td>
 <td></td>
 </tr>
@@ -338,41 +345,177 @@ target="_blank" rel="noopener" href="https://www.zhihu.com/question/40698990?sor
 target="_blank" rel="noopener" href="https://app.diagrams.net/">diagrams：专门用来绘制软件工程相关插件软件的，支持google
 cloud/macro driver直接存储</a></li>
 </ul>
-<h2 id="测试工具">测试工具</h2>
-<blockquote>
-<p>nsys + nsight测试GPU kernel的性能</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/opt/nvidia/nsight-systems/2020.4.1/bin:<span class="variable">$PATH</span></span><br><span class="line">/opt/nvidia/nsight-systems/2020.4.1/bin/nsys profile --stats=<span class="literal">true</span> -t cuda python xx.py</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>服务压测工具</p>
-</blockquote>
+<h3 id="服务压测工具">服务压测工具</h3>
 <p><code>locust -f locust_file.py --host="" --headless -u 12 -r 20 -t 10m</code></p>
-<p>其中locust_file.py需要如下定义： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> locust <span class="keyword">import</span> HttpUser, task</span><br><span class="line"></span><br><span class="line">fnames = <span class="built_in">list</span>(glob.glob(<span class="string">&quot;./images/*&quot;</span>))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_request</span>():</span><br><span class="line">    fname = random.choice(fnames)</span><br><span class="line">    buffer = <span class="built_in">open</span>(fname, <span class="string">&quot;rb&quot;</span>).read()</span><br><span class="line">    req = json.dumps(&#123;</span><br><span class="line">        <span class="string">&quot;image&quot;</span>: base64.b64encode(buffer).decode(<span class="string">&quot;utf-8&quot;</span>),</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> req</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyUser</span>(<span class="title class_ inherited__">HttpUser</span>):</span><br><span class="line"><span class="meta">    @task</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">process</span>(<span class="params">self</span>):</span><br><span class="line">        req_data = build_request()</span><br><span class="line">        <span class="keyword">with</span> self.client.post(<span class="string">&quot;/api_name&quot;</span>, data=req_data) <span class="keyword">as</span> res:</span><br><span class="line">            <span class="keyword">if</span> res.status_code != <span class="number">200</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;Didn&#x27;t get response, got: &quot;</span> + <span class="built_in">str</span>(res.status_code))</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>自动负载均衡 gunicorn</p>
-</blockquote>
+<p>其中locust_file.py需要如下定义： <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> locust <span class="keyword">import</span> HttpUser, task</span><br><span class="line"></span><br><span class="line">fnames = <span class="built_in">list</span>(glob.glob(<span class="string">&quot;./images/*&quot;</span>))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_request</span>():</span><br><span class="line">    fname = random.choice(fnames)</span><br><span class="line">    buffer = <span class="built_in">open</span>(fname, <span class="string">&quot;rb&quot;</span>).read()</span><br><span class="line">    req = json.dumps(&#123;</span><br><span class="line">        <span class="string">&quot;image&quot;</span>: base64.b64encode(buffer).decode(<span class="string">&quot;utf-8&quot;</span>),</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> req</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyUser</span>(<span class="title class_ inherited__">HttpUser</span>):</span><br><span class="line"><span class="meta">    @task</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">process</span>(<span class="params">self</span>):</span><br><span class="line">        req_data = build_request()</span><br><span class="line">        <span class="keyword">with</span> self.client.post(<span class="string">&quot;/api_name&quot;</span>, data=req_data) <span class="keyword">as</span> res:</span><br><span class="line">            <span class="keyword">if</span> res.status_code != <span class="number">200</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;Didn&#x27;t get response, got: &quot;</span> + <span class="built_in">str</span>(res.status_code))</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h3 id="自动负载均衡">自动负载均衡</h3>
+<p>gunicorn</p>
+<h2 id="应用-tensorrt-部署模型常用开发工具">应用 TensorRT
+部署模型常用开发工具</h2>
+<p>我们总结了在使用 TensorRT 部署AI算法模型过程中常用到的几个工具:</p>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 42%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>名称</th>
+<th>功能简介</th>
+<th>其他</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://netron.app/">netron</a></td>
+<td>可视化模型， 如果要临时修改模型，可以使用 <a
+target="_blank" rel="noopener" href="https://github.com/ZhangGe6/onnx-modifier">onnx-modifier</a></td>
+<td>经<code>onnx.shape_inference</code>推理后的模型，可以将结果显示在
+netron 中</td>
+</tr>
+<tr class="even">
+<td>onnxsim</td>
+<td>对 ONNX 模型算子融合，常量折叠等操作</td>
+<td>部分功能也能在 onnx.optim 模块中找到</td>
+</tr>
+<tr class="odd">
+<td><a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/tensorrt/polygraphy/docs/index.html">polygraphy</a></td>
+<td>包括多种模式，实现对 ONNX 模型的运行、优化、转换到 TensorRT
+以及精度对比等功能</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#trtexec">trtexec</a></td>
+<td>TensorRT 官方提供的用于能够快速使用 TensorRT
+推理模型的工具，主要功能包括对模型 benchmark ，构建 TensorRT 模型等</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/tensorrt/onnx-graphsurgeon/docs/index.html">onnx_graphsurgeon</a></td>
+<td>常用于 ONNX 模型裁剪、修改</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a
+target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#performance">NVTX+Nsight
+Systems</a></td>
+<td>NVIDIA 官方提供的针对开发过程中，CPU/GPU
+时间占用等信息进行收集和分析的功能。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="常用工具使用案例">常用工具使用案例</h3>
+<h4 id="onnx-graphsurgeon">onnx-graphsurgeon</h4>
+<p>TensorRT 官方提供了关于 onnx-graphsurgeon 操作 ONNX 模型的 example
+，例如<a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/blob/main/tools/onnx-graphsurgeon/examples/03_isolating_a_subgraph/isolate.py">剥离子图</a>，<a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/blob/main/tools/onnx-graphsurgeon/examples/06_removing_nodes/remove.py">移除Node</a>，<a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/blob/main/tools/onnx-graphsurgeon/examples/08_replacing_a_subgraph/replace.py">子图替换</a>等等。</p>
+<p><img
+src="../assets/images/backends/onnx-graphsurgeon-sample.jpg" /></p>
+<p>例如我们将原来的 <code>decoder_step</code>
+这个节点进行修改，修改成直接传入已经构造好的 <code>postion_ids</code>
+的方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnx</span><br><span class="line"><span class="keyword">import</span> onnx_graphsurgeon <span class="keyword">as</span> gs</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">replace_onnx</span>(<span class="params">onnx_path = <span class="string">&quot;decoder.onnx&quot;</span></span>):</span><br><span class="line">    graph = gs.import_onnx(onnx.load(onnx_path))</span><br><span class="line">    tensors = graph.tensors()</span><br><span class="line">    <span class="comment"># replace subgraph</span></span><br><span class="line">    shape_node = [node <span class="keyword">for</span> node <span class="keyword">in</span> graph.nodes <span class="keyword">if</span> node.name == <span class="string">&quot;Mul_101&quot;</span>][<span class="number">0</span>]</span><br><span class="line">    inputs_mask = tensors[<span class="string">&quot;decode_step&quot;</span>]</span><br><span class="line">    inputs_mask.name = <span class="string">&quot;position_ids&quot;</span></span><br><span class="line">    step_matrix = inputs_mask.to_variable(dtype=np.float32, shape= [<span class="string">&#x27;batch&#x27;</span>, <span class="number">1</span>, <span class="number">512</span>])</span><br><span class="line">    add_node = [node <span class="keyword">for</span> node <span class="keyword">in</span> graph.nodes <span class="keyword">if</span> node.name == <span class="string">&quot;Add_114&quot;</span>][<span class="number">0</span>]</span><br><span class="line">    add_node.inputs = [shape_node.outputs[<span class="number">0</span>], step_matrix]</span><br><span class="line">    graph.cleanup()</span><br><span class="line">    onnx.save(gs.export_onnx(graph), onnx_path.replace(<span class="string">&quot;.onnx&quot;</span>, <span class="string">&quot;-replace.onnx&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    replace_onnx(path=<span class="string">&quot;output/decoder.onnx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="trtexec">trtexec</h4>
+<p>trtexec 工具有<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/zh-cn/blog/tensorrt-trtexec-cn">三个主要用途</a>：</p>
+<ul>
+<li>用随机或用户提供的输入数据对模型进行基准测试</li>
+<li>用于生成 TensorRT 模型，例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">trtexec --onnx=output/transformer-decoder-input_mask.onnx   \</span><br><span class="line">    --minShapes=input_ids:1x2x1,memory_bank:1x2x512,memory_lengths:2x1,position_ids:1x1x512 \</span><br><span class="line">    --optShapes=input_ids:1x16x1,memory_bank:64x16x512,memory_lengths:16x64,position_ids:64x1x512 \</span><br><span class="line">    --maxShapes=input_ids:1x128x1,memory_bank:256x128x512,memory_lengths:128x256,position_ids:256x1x512 \</span><br><span class="line">    --saveEngine=output/output/transformer-decoder-input_mask_T4_fp16_8.5.1.7.engine --fp16 --verbose</span><br></pre></td></tr></table></figure>
+<ul>
+<li>基于构建器生成序列化时序缓存</li>
+</ul>
+<h4 id="polygraphy"><a
+target="_blank" rel="noopener" href="https://github.com/NVIDIA/TensorRT/tree/main/tools/Polygraphy/examples/cli">polygraphy</a></h4>
+<ul>
+<li>inspect模式下，可以查看模型结构，输入/输入信息等，例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polygraphy inspect model identity.onnx --show layers</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[I] ==== ONNX Model ====</span><br><span class="line">Name: test_identity | ONNX Opset: 8</span><br><span class="line"></span><br><span class="line">---- 1 Graph Input(s) ----</span><br><span class="line">&#123;x [dtype=float32, shape=(1, 1, 2, 2)]&#125;</span><br><span class="line"></span><br><span class="line">---- 1 Graph Output(s) ----</span><br><span class="line">&#123;y [dtype=float32, shape=(1, 1, 2, 2)]&#125;</span><br><span class="line"></span><br><span class="line">---- 0 Initializer(s) ----</span><br><span class="line">&#123;&#125;</span><br><span class="line"></span><br><span class="line">---- 1 Node(s) ----</span><br><span class="line">Node 0    |  [Op: Identity]</span><br><span class="line">&#123;x [dtype=float32, shape=(1, 1, 2, 2)]&#125;</span><br><span class="line">-&gt; &#123;y [dtype=float32, shape=(1, 1, 2, 2)]&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>polygraphy run 模式下，查看一个 ONNX 模型是否被 TensorRT/OnnxRuntime
+支持，相比较 trtexec
+可以采用默认的输入，该模式下也集成了逐层对比输出结果的功能（<code>--validate</code>），例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polygraphy run transformer-init-decoder.onnx --trt</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[I] RUNNING | Command: polygraphy run transformer-init-decoder.onnx --trt</span><br><span class="line">[I] trt-runner-N0-11/08/22-09:39:14     | Activating and starting inference</span><br><span class="line">[W] CUDA lazy loading is not enabled. Enabling it can significantly reduce device memory usage. See `CUDA_MODULE_LOADING` in https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#env-vars</span><br><span class="line">[W] onnx2trt_utils.cpp:377: Your ONNX model has been generated with INT64 weights, while TensorRT does not natively support INT64. Attempting to cast down to INT32.</span><br><span class="line">[E] ModelImporter.cpp:726: While parsing node number 144 [Slice -&gt; &quot;onnx::Add_184&quot;]:</span><br><span class="line">[E] ModelImporter.cpp:727: --- Begin node ---</span><br><span class="line">[E] ModelImporter.cpp:728: input: &quot;decoder.embeddings.make_embedding.pe.pe&quot;</span><br><span class="line">input: &quot;onnx::Slice_1420&quot;</span><br><span class="line">input: &quot;onnx::Slice_180&quot;</span><br><span class="line">input: &quot;onnx::Slice_1421&quot;</span><br><span class="line">input: &quot;onnx::Slice_183&quot;</span><br><span class="line">output: &quot;onnx::Add_184&quot;</span><br><span class="line">name: &quot;Slice_144&quot;</span><br><span class="line">op_type: &quot;Slice&quot;</span><br><span class="line">[E] ModelImporter.cpp:729: --- End node ---</span><br><span class="line">[E] ModelImporter.cpp:732: ERROR: builtin_op_importers.cpp:4513 In function importSlice:</span><br><span class="line">[8] Assertion failed: (axes.allValuesKnown()) &amp;&amp; &quot;This version of TensorRT does not support dynamic axes.&quot;</span><br><span class="line">[E] In node 144 (importSlice): UNSUPPORTED_NODE: Assertion failed: (axes.allValuesKnown()) &amp;&amp; &quot;This version of TensorRT does not support dynamic axes.&quot;</span><br><span class="line">[!] Could not parse ONNX correctly</span><br><span class="line">[E] FAILED | Runtime: 2.821s | Command: polygraphy run transformer-init-decoder.onnx --trt</span><br></pre></td></tr></table></figure>
+<p>从提示信息可以看出，对于模型中的 Slice 操作，不支持动态输入的 axes
+值。如果换成 ONNXRuntime 作后端，则会输出 Input/Output
+等基本信息以及推理时间，最后输出 PASSED。</p>
+<p><img src="../assets/images/backends/trt-polygraph-demo.jpg" /></p>
+<ul>
+<li>convert 模式实现 ONNX 模型转为 TensorRT 模型，这个与 trtexec
+功能优点类似。例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">polygraphy convert dynamic_identity.onnx -o dynamic_identity.engine \</span><br><span class="line">    --trt-min-shapes X:[1,3,28,28] --trt-opt-shapes X:[1,3,28,28] --trt-max-shapes X:[1,3,28,28] \</span><br><span class="line">    --trt-min-shapes X:[1,3,28,28] --trt-opt-shapes X:[4,3,28,28] --trt-max-shapes X:[32,3,28,28] \</span><br><span class="line">    --trt-min-shapes X:[128,3,28,28] --trt-opt-shapes X:[128,3,28,28] --trt-max-shapes X:[128,3,28,28]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>surgeon 模式下可以对模型进行常量折叠等优化。例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polygraphy surgeon sanitize --fold-constants transformer-decoder.onnx  -o transformer-decoder-fold.onnx</span><br></pre></td></tr></table></figure>
+<h4 id="nvtx-tracingnsight-system-性能瓶颈分析">NVTX tracing+Nsight
+System 性能瓶颈分析</h4>
+<ul>
+<li>首先使用 trtexec 推理的时候添加
+<code>--profilingVerbosity=detailed</code> 选项</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trtexec --onnx=foo.onnx --profilingVerbosity=detailed --saveEngine=foo.plan</span><br></pre></td></tr></table></figure>
+<p>或者在应用代码中通过<code>IBuilderConfig</code>进行设置，如下</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorrt <span class="keyword">as</span> trt</span><br><span class="line"></span><br><span class="line">TRT_LOGGER = trt.Logger(trt.Logger.WARNING)</span><br><span class="line">builder = trt.Builder(TRT_LOGGER)</span><br><span class="line">config = builder.create_builder_config()</span><br><span class="line"><span class="comment"># to disable NVTX tracing, set the ProfilingVerbosity to kNONE</span></span><br><span class="line"><span class="comment"># config.profilling_verbosity = trt.ProfilingVerbosity.NONE</span></span><br><span class="line"><span class="comment"># allow TensorRT to print more detailed layer information in the NVTX markers, including input and output dimensions, operations, parameters, tactic numbers, and so on, by setting the ProfilingVerbosity to kDETAILED</span></span><br><span class="line">config.profilling_verbosity = trt.ProfilingVerbosity.DETAILED</span><br><span class="line"></span><br><span class="line">EXPLICIT_BATCH = <span class="number">1</span> &lt;&lt; (<span class="built_in">int</span>)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)</span><br><span class="line">network = builder.create_network(EXPLICIT_BATCH)</span><br><span class="line">plan = builder.build_serialized_network(network, config)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>然后再利用 nsys 执行模型推理过程
+<code>nsys profile -o $&#123;nsys_output_name&#125; --capture-range $&#123;api_name&#125; $&#123;command_for_run_tensorrt_inference&#125;</code>，例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nsys profile -o foo_profile --capture-range cudaProfilerApi trtexec --loadEngine=foo.plan --warmUp=0 --duration=0 --iterations=50</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 Nsight System 打开输出的结果文件， 结果中包括多种 level
+多种设备上的时间占用情况，如下图所示：</li>
+</ul>
+<figure>
+<img
+src="https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/graphics/timeline-view.png"
+alt="runtimeline view" />
+<figcaption aria-hidden="true">runtimeline view</figcaption>
+</figure>
+<figure>
+<img
+src="https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/graphics/kernels-gpu.png"
+alt="kernel time" />
+<figcaption aria-hidden="true">kernel time</figcaption>
+</figure>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>https://netron.app/<a href="#fnref1"
+<li id="fn1"
+role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#troubleshooting
+"tensorrt常见问题"<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>https://netron.app/<a href="#fnref2"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"
-role="doc-endnote"><p>https://github.com/ZhangGe6/onnx-modifier<a
-href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"
-role="doc-endnote"><p>https://github.com/daquexian/onnx-simplifier<a
+role="doc-endnote"><p>https://github.com/ZhangGe6/onnx-modifier<a
 href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"
-role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/polygraphy/docs/index.html
-↩︎<a href="#fnref4" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
+role="doc-endnote"><p>https://github.com/daquexian/onnx-simplifier<a
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"
-role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#trtexec<a
-href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/polygraphy/docs/index.html
+↩︎<a href="#fnref5" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"
+role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#trtexec<a
+href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"
 role="doc-endnote"><p>https://docs.nvidia.com/deeplearning/tensorrt/onnx-graphsurgeon/docs/index.html
-"ONNX GraphSurgeon"<a href="#fnref6" class="footnote-back"
+"ONNX GraphSurgeon"<a href="#fnref7" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
@@ -387,7 +530,20 @@ role="doc-backlink">↩︎</a></p></li>
     
 
 
-    <div class="comments" id="waline"></div>
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-waline">waline</a></li>
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane waline" id="comment-waline">
+              <div class="comments" id="waline"></div>
+            </div>
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+        </div>
+      </div>
 </div>
   </main>
 
@@ -408,13 +564,13 @@ role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">470k</span>
+    <span title="站点总字数">492k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:04</span>
+    <span title="站点阅读时长">13:40</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -447,9 +603,6 @@ role="doc-backlink">↩︎</a></p></li>
   
 <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
 <script src="/js/third-party/search/local-search.js"></script>
-<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":null}</script>
-<script src="/js/third-party/chat/gitter.js"></script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
   <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
   <script src="/js/third-party/tags/pdf.js"></script>
@@ -482,6 +635,10 @@ document.addEventListener('page:loaded', () => {
   );
 });
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"cwlseu","repo":"blog-comment","client_id":"a3c364d3dade81cbba30","client_secret":"e1093c6387bfa715f2cb4b6aee010c94deb253ee","admin_user":"cwlseu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"e22709d4091945f8c3da040f0fc34a57"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

@@ -909,6 +909,11 @@ pre code {
 .post-body .note.danger h6 {
   color: #d9534f;
 }
+.pdfobject-container iframe,
+.pdfobject-container embed {
+  height: 500px;
+  width: 100%;
+}
 .post-body .tabs {
   margin-bottom: 20px;
 }
@@ -2562,6 +2567,14 @@ ul.breadcrumb li:last-child {
     border-bottom-color: #eee;
     color: #eee;
   }
+}
+.gt-header a,
+.gt-comments a,
+.gt-popup a {
+  border-bottom: 0;
+}
+.gt-container .gt-popup .gt-action.is--active::before {
+  top: 0.7em;
 }
 .search-active {
   overflow: hidden;
