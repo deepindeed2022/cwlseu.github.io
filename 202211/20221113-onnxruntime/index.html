@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/build_onnxruntime_osx.png">
 <meta property="article:published_time" content="2022-11-13T11:39:39.000Z">
-<meta property="article:modified_time" content="2022-12-16T11:58:36.178Z">
+<meta property="article:modified_time" content="2022-12-18T02:56:04.236Z">
 <meta property="article:author" content="CharlesCao">
 <meta property="article:tag" content="Backends">
 <meta name="twitter:card" content="summary">
@@ -54,7 +54,7 @@
 
 
 
-<link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css"><link rel="dns-prefetch" href="https://waline.vercel.app">
+<link rel="dns-prefetch" href="https://waline.vercel.app"><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css">
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -151,8 +151,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80onnx%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、ONNX简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8Connxruntime"><span class="nav-number">2.</span> <span class="nav-text">二、OnnxRuntime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84execution-providers"><span class="nav-number">2.1.</span> <span class="nav-text">已支持的Execution Providers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runtime%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">Runtime源码剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onnx%E4%B8%AD%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9Ac%E4%B8%8Epython%E6%8E%A5%E5%8F%A3%E7%9A%84"><span class="nav-number">3.1.</span> <span class="nav-text">onnx中如何绑定C与python接口的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#modelload%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">Model::Load加载模型的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AAexecution-provider"><span class="nav-number">3.3.</span> <span class="nav-text">如何注册一个Execution
-Provider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#faq"><span class="nav-number">4.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument"><span class="nav-number">4.0.1.</span> <span class="nav-text">01、clang: error: argument unused during compilation: &#39;-mfpu&#x3D;neon&#39; [-Werror,-Wunused-command-line-argument]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#load-model-is-dataparallel-format-your-should-notice"><span class="nav-number">4.0.2.</span> <span class="nav-text">02、load
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#onnxruntime-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">OnnxRuntime 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%B2%E6%94%AF%E6%8C%81%E7%9A%84execution-providers"><span class="nav-number">1.1.</span> <span class="nav-text">已支持的Execution Providers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#runtime%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">Runtime源码剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onnx%E4%B8%AD%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9Ac%E4%B8%8Epython%E6%8E%A5%E5%8F%A3%E7%9A%84"><span class="nav-number">2.1.</span> <span class="nav-text">onnx中如何绑定C与python接口的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#modelload%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">Model::Load加载模型的流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E4%BC%98%E5%8C%96%E6%8A%80%E6%9C%AF"><span class="nav-number">3.1.</span> <span class="nav-text">图优化技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">性能瓶颈优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E8%B0%83%E4%BC%98"><span class="nav-number">3.3.</span> <span class="nav-text">模型部署调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BE%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number">3.4.</span> <span class="nav-text">举一个例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument"><span class="nav-number">4.0.1.</span> <span class="nav-text">01、clang: error: argument unused during compilation: &#39;-mfpu&#x3D;neon&#39; [-Werror,-Wunused-command-line-argument]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#load-model-is-dataparallel-format-your-should-notice"><span class="nav-number">4.0.2.</span> <span class="nav-text">02、load
 model is DataParallel format, your should notice:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#some-operator-not-supported-by-onnx"><span class="nav-number">4.0.3.</span> <span class="nav-text">03、 Some operator not
 supported by ONNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96onnx%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%93%E5%87%BA"><span class="nav-number">4.0.4.</span> <span class="nav-text">04、 获取onnx模型的输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#typeerror-descriptors-cannot-not-be-created-directly."><span class="nav-number">4.0.5.</span> <span class="nav-text">05、TypeError:
 Descriptors cannot not be created directly.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attributeerror-upsample-object-has-no-attribute-recompute_scale_factor"><span class="nav-number">4.0.6.</span> <span class="nav-text">06、AttributeError:
@@ -174,7 +173,7 @@ Input type (torch.cuda.FloatTensor) and weight type
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -287,7 +286,7 @@ Input type (torch.cuda.FloatTensor) and weight type
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-12-16 19:58:36" itemprop="dateModified" datetime="2022-12-16T19:58:36+08:00">2022-12-16</time>
+      <time title="修改时间：2022-12-18 10:56:04" itemprop="dateModified" datetime="2022-12-18T10:56:04+08:00">2022-12-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -327,14 +326,14 @@ Input type (torch.cuda.FloatTensor) and weight type
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>14k</span>
+      <span>20k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>23 分钟</span>
+      <span>33 分钟</span>
     </span>
 </div>
 
@@ -346,18 +345,25 @@ Input type (torch.cuda.FloatTensor) and weight type
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="一onnx简介">一、ONNX简介</h2>
-<h2 id="二onnxruntime">二、OnnxRuntime</h2>
-<p>ONNX自带了Runtime库，能够将ONNX
-Model部署到不同的硬件设备上进行推理，支持各种后端（如TensorRT/OpenVINO）。</p>
-<p>基于ONNX Model的Runtime系统架构<a href="#fn1" class="footnote-ref"
-id="fnref1"
-role="doc-noteref"><sup>1</sup></a>如下，可以看到Runtime实现功能是将ONNX
-Model转换为In-Memory
-Graph格式，之后通过将其转化为各个可执行的子图，最后通过<code>GetCapability()</code>
-API将子图分配到不同的后端（execution provider, EP）执行。</p>
+        <h2 id="onnxruntime-简介">OnnxRuntime 简介</h2>
+<p>ONNX自带了 Runtime 库，能够将 ONNX IR
+部署到不同的硬件设备上进行推理，支持各种后端（如
+CUDAExecutionProvider/CPUExecutionProdiver/TvmExecutionProvider）。</p>
+<p>基于 ONNX Model的 Runtime 系统架构<a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a>如下，可以看到 Runtime
+实现功能是将 ONNX Model
+转换为计算图，之后通过将其转化为各个可执行的子图，最后通过
+<code>GetCapability()</code> API将子图分配到不同的后端（execution
+provider, EP）执行。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/cwlseu/deepindeed_repo@main/images/onnxruntime_1.png" alt="onnxruntime_1" style="zoom:67%;" /></p>
 <h3 id="已支持的execution-providers">已支持的Execution Providers</h3>
+<p>ONNXRuntime 现在已经支持多种不同的 EP（Execution Provider）。 一些 EP
+已经在上线并应用到实际生产中，还有一些 EP
+则以预览形式发布。开发人员可以通过配置选项选择不同的 EP 进行推理。</p>
+<p>例如，我们可以选择用 <code>CUDAExecutionProvider</code>
+推理，实现如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnxruntime <span class="keyword">as</span> ort</span><br><span class="line">providers = [</span><br><span class="line">    (<span class="string">&#x27;CUDAExecutionProvider&#x27;</span>, &#123;</span><br><span class="line">        <span class="string">&#x27;device_id&#x27;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">&#x27;arena_extend_strategy&#x27;</span>: <span class="string">&#x27;kNextPowerOfTwo&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;gpu_mem_limit&#x27;</span>: <span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>,</span><br><span class="line">        <span class="string">&#x27;cudnn_conv_algo_search&#x27;</span>: <span class="string">&#x27;EXHAUSTIVE&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;do_copy_in_default_stream&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">]</span><br><span class="line">session = ort.InferenceSession(model_path, providers=providers)</span><br></pre></td></tr></table></figure>
+<p>当前已经支持/正在支持的 EP 总结如下：</p>
 <table>
 <colgroup>
 <col style="width: 25%" />
@@ -465,9 +471,10 @@ target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-provi
 </tr>
 </tbody>
 </table>
-<p>我们最常用的是<code>CPUExecutionProvider</code>和<code>CUDAExecutionAProvider</code>,
-如果要自己实现一个EP，可以参考<a href="#fn2" class="footnote-ref"
-id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>我们实际项目中常用的是 <code>CPUExecutionProvider</code> 和
+<code>CUDAExecutionProvider</code>。当然，ONNXRuntime 也是支持自定义
+EP的，如果项目需要自定义 EP，可以参考<a
+target="_blank" rel="noopener" href="https://onnxruntime.ai/docs/execution-providers/add-execution-provider.html">如何添加一个EP</a>。</p>
 <h2 id="runtime源码剖析">Runtime源码剖析</h2>
 <h3
 id="onnx中如何绑定c与python接口的">onnx中如何绑定C与python接口的</h3>
@@ -495,12 +502,172 @@ id="onnx中如何绑定c与python接口的">onnx中如何绑定C与python接口�
 <h3
 id="modelload加载模型的流程"><code>Model::Load</code>加载模型的流程</h3>
 <ul>
-<li><p>不支持的算子如何处理？</p></li>
+<li><p>不支持的算子如何处理</p></li>
 <li><p>多个provider之间怎么分配运行图</p></li>
 </ul>
-<h3 id="如何注册一个execution-provider">如何注册一个Execution
-Provider</h3>
-<h2 id="faq">FAQ</h2>
+<h2 id="性能优化">性能优化</h2>
+<h3 id="图优化技术">图优化技术</h3>
+<p>随着 ONNX 技术逐渐成为通用
+IR，相关的优化工具层出不穷。其中为了部署性能，转换工具或者其他优化工具基本集成基本的图优化策略<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>，包括:
+冗余节点消除，常量折叠和算子融合等等，本小节将针对这些相关优化策略进行总结。</p>
+<ul>
+<li><p>常量折叠（Constant
+Folding）：静态计算，对仅依赖常量初始值的图结构进行预计算并优化</p></li>
+<li><p>冗余节点消除（Redundant node
+eliminations）：在不改变图结构的情况下移除所有冗余节点</p>
+<ul>
+<li>Identity Elimination</li>
+<li>Slice Elimination</li>
+<li>Unsqueeze Elimination</li>
+<li>Dropout Elimination</li>
+</ul></li>
+<li><p>算子融合（Semantics-preserving node
+fusions）：对相邻的的算子进行融合，减少 Kernel
+加载的性能开销。主要针对常见的一些模式进行算子替换</p>
+<ul>
+<li>Conv Add Fusion</li>
+<li>Conv Mul Fusion</li>
+<li>Conv BatchNorm Fusion</li>
+<li>Relu Clip Fusion</li>
+<li>Reshape Fusion</li>
+</ul></li>
+<li><p>布局优化（Layout
+Optimization）：改变适用节点的数据布局，以实现更高的性能改进。它们在图形分区之后运行，并且仅支持
+CPUExecutionProvider</p>
+<ul>
+<li>NCHWc 优化器：通过使用 NCHWc 布局而不是 NCHW 布局来优化图形</li>
+</ul></li>
+<li><p>拓展操作（Extended Graph
+Optimizations）：这类优化主要针对复杂、但常用的操作进行单独算子拓展实现，尤其是针对当下最流行的
+Backbone/Embedding 等，这类算子对提升行业应用收效显著。</p>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 16%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Optimization</th>
+<th>Execution Provider</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GEMM Activation Fusion</td>
+<td>CPU</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Matmul Add Fusion</td>
+<td>CPU</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Conv Activation Fusion</td>
+<td>CPU</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>GELU Fusion</td>
+<td>CPU, CUDA, ROCm</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Layer Normalization Fusion</td>
+<td>CPU, CUDA, ROCm</td>
+<td>主要在 BERT 类序列任务中应用</td>
+</tr>
+<tr class="even">
+<td>BERT Embedding Layer Fusion</td>
+<td>CPU, CUDA, ROCm</td>
+<td>融合BERT embedding layer，layer normalization 和 attention mask
+length</td>
+</tr>
+<tr class="odd">
+<td>Attention Fusion*</td>
+<td>CPU, CUDA, ROCm</td>
+<td>为了优化 BERT 的性能，在 CUDA 和 ROCm 执行提供程序的 GELU
+近似和注意融合中使用了近似。</td>
+</tr>
+<tr class="even">
+<td>Skip Layer Normalization Fusion</td>
+<td>CPU, CUDA, ROCm</td>
+<td>融合带偏置的全连接层、skip connection和layer normalization</td>
+</tr>
+<tr class="odd">
+<td>Bias GELU Fusion</td>
+<td>CPU, CUDA, ROCm</td>
+<td>融合带偏置的全连接和GELU激活层</td>
+</tr>
+<tr class="even">
+<td>GELU Approximation*</td>
+<td>CUDA, ROCm</td>
+<td>为了优化 BERT 的性能，在 CUDA 和 ROCm 执行提供程序的 GELU
+近似和注意融合中使用了近似。Disabled by default. Enable with <a
+target="_blank" rel="noopener" href="https://cs.github.com/microsoft/onnxruntime/blob/175acf08f470db0bb2e4b8eefe55cdeb87c8b132/include/onnxruntime/core/session/onnxruntime_session_options_config_keys.h?q=kOrtSessionOptionsEnableGeluApproximation#L52">kOrtSessionOptionsEnableGeluApproximation</a></td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<p>ONNXRuntime 定义了 <code>GraphOptimizationLevel</code>
+枚举类型以确定将启用上述哪些优化级别。
+选择一个级别可以启用该级别的优化，以及所有先前级别的优化。
+例如，启用扩展优化，也会启用基本优化。 这些级别到枚举的映射如下：</p>
+<ul>
+<li>GraphOptimizationLevel::ORT_DISABLE_ALL: 关掉所有的图优化策略</li>
+<li>GraphOptimizationLevel::ORT_ENABLE_BASIC: 打开基本优化</li>
+<li>GraphOptimizationLevel::ORT_ENABLE_EXTENDED:
+打开基本优化和拓展优化</li>
+<li>GraphOptimizationLevel::ORT_ENABLE_ALL:
+打开所有优化，包括基本优化/拓展优化/Layout优化</li>
+</ul>
+<h3 id="性能瓶颈优化">性能瓶颈优化</h3>
+<p>使用 <code>CUDAExecutionProvider</code> 时，在进行模型推理（调用
+<code>InferenceSession.Run()</code>）之前，如果输入/输出直接在目标设备（Device）上进行构造能达到性能更佳。当输入未拷贝到目标设备时，ORT
+会将其从 CPU 复制到 Device，这也是在 <code>InferenceSession.Run()</code>
+中执行。 类似地，如果输出未在设备上预先构造分配，默认情况下，ORT
+直接结果输出到 CPU。尤其是当业务 Pipeline
+中是多个模型时候，大部分时间花在这些数据传输上时，很明显这会占用大量的执行时间，让人以为是
+ORT 性能很糟糕。例如：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnxruntime <span class="keyword">as</span> ort</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">providers = [<span class="string">&quot;CUDAExecutionProvider&quot;</span>]</span><br><span class="line">session = ort.InferenceSession(<span class="string">&quot;model.onnx&quot;</span>, providers=providers)</span><br><span class="line"><span class="comment">#  X is from other model output which is pytorch.Tensor</span></span><br><span class="line">X = torch.empty(shape=(<span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>), dtype=torch.float32, device=torch.device(<span class="string">&quot;cuda:0&quot;</span>))</span><br><span class="line">io = &#123;</span><br><span class="line">    <span class="string">&quot;X&quot;</span>: X.detach().numpy().astype(np.float32)</span><br><span class="line">&#125;</span><br><span class="line">Y = session.run(io)[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>为了解决这个问题，ONNXRuntime 中使用 IOBinding
+技术来提升性能。该技术主要思想是实现在调用
+<code>InferenceSession.Run()</code>
+之前将输入/输出在目标设备上进行分配构造，减少不必要的 IO
+开销。以下是将在 GPU 上的 Tensor 直接绑定到 ORT 后的<a
+target="_blank" rel="noopener" href="https://fs-eire.github.io/onnxruntime/docs/api/python/api_summary.html#data-on-device">代码实现</a>。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnxruntime <span class="keyword">as</span> ort</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">providers = [<span class="string">&quot;CUDAExecutionProvider&quot;</span>]</span><br><span class="line">session = ort.InferenceSession(<span class="string">&quot;model.onnx&quot;</span>, providers=providers)</span><br><span class="line">device_id = torch.cuda.current_device()</span><br><span class="line">X = torch.empty(shape=(<span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>), dtype=torch.float32, device=torch.device(<span class="string">&quot;cuda&quot;</span>, device_id))</span><br><span class="line">torch_y = torch.empty(</span><br><span class="line">    shape=(<span class="number">5</span>, <span class="number">1</span>),</span><br><span class="line">    dtype=torch.float32,</span><br><span class="line">    device=torch.device(<span class="string">&quot;cuda&quot;</span>, device_id),</span><br><span class="line">)</span><br><span class="line">binding = session.io_binding()</span><br><span class="line"><span class="comment"># io = &#123; &quot;X&quot;: X.detach().numpy().astype(np.float32)&#125;</span></span><br><span class="line">binding.bind_input(</span><br><span class="line">    name=<span class="string">&#x27;X&#x27;</span>,</span><br><span class="line">    device_type=<span class="string">&#x27;cuda&#x27;</span>,</span><br><span class="line">    device_id=device_id,</span><br><span class="line">    element_type=np.int64,</span><br><span class="line">    shape=<span class="built_in">tuple</span>(X.shape),</span><br><span class="line">    buffer_ptr=X.data_ptr(),</span><br><span class="line">)</span><br><span class="line">binding.bind_output(</span><br><span class="line">    name=<span class="string">&#x27;Y&#x27;</span>,</span><br><span class="line">    device_type=<span class="string">&#x27;cuda&#x27;</span>,</span><br><span class="line">    device_id=device_id,</span><br><span class="line">    element_type=np.int64,</span><br><span class="line">    shape=<span class="built_in">tuple</span>(torch_y.shape),</span><br><span class="line">    buffer_ptr=torch_y.data_ptr(),</span><br><span class="line">)</span><br><span class="line"><span class="comment"># Y = session.run(io)[0]</span></span><br><span class="line"><span class="comment"># Y = torch.from_numpy(Y).to(dtype=torch.float).cuda()</span></span><br><span class="line">session.run_with_iobinding(binding)</span><br></pre></td></tr></table></figure>
+<h3 id="模型部署调优">模型部署调优</h3>
+<p>自带的转换和性能调优工具 <a
+target="_blank" rel="noopener" href="https://github.com/microsoft/OLive">OLive</a>，采用启发式规则对搜索空间内参数进行搜索，获得特定硬件场景下的最佳性能组合，可以输出最少延迟或者最大吞吐性能的参数配置组合。</p>
+<ul>
+<li>Execution Providers
+<ul>
+<li>MLAS(default CPU EP), Intel DNNL and OpenVino for CPU</li>
+<li>NVIDIA CUDA and TensorRT for GPU</li>
+</ul></li>
+<li>Environment Variables
+<ul>
+<li>OMP_WAIT_POLICY</li>
+<li>OMP_NUM_THREADS</li>
+<li>KMP_AFFINITY</li>
+<li>OMP_MAX_ACTIVE_LEVELS</li>
+</ul></li>
+<li>Session Options
+<ul>
+<li>inter_op_num_threads</li>
+<li>intra_op_num_threads</li>
+<li>execution_mode</li>
+<li>graph_optimization_level</li>
+</ul></li>
+</ul>
+<h3 id="举一个例子">举一个例子</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> onnxruntime</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">model_path = <span class="string">&quot;efficientnet_b3.onnx&quot;</span></span><br><span class="line">output_names = [<span class="string">&#x27;output&#x27;</span>]</span><br><span class="line">dtype = np.float32</span><br><span class="line">inputs = np.random.rand(<span class="number">1</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).astype(dtype)</span><br><span class="line">providers = [</span><br><span class="line">    (<span class="string">&#x27;TensorrtExecutionProvider&#x27;</span>, &#123;</span><br><span class="line">        <span class="string">&#x27;device_id&#x27;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">&#x27;trt_max_workspace_size&#x27;</span>: <span class="number">2147483648</span>,</span><br><span class="line">        <span class="string">&#x27;trt_fp16_enable&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">    (<span class="string">&#x27;CUDAExecutionProvider&#x27;</span>, &#123;</span><br><span class="line">        <span class="string">&#x27;device_id&#x27;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">&#x27;arena_extend_strategy&#x27;</span>: <span class="string">&#x27;kNextPowerOfTwo&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;gpu_mem_limit&#x27;</span>: <span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>,</span><br><span class="line">        <span class="string">&#x27;cudnn_conv_algo_search&#x27;</span>: <span class="string">&#x27;EXHAUSTIVE&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;do_copy_in_default_stream&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">]</span><br><span class="line">options = onnxruntime.SessionOptions()</span><br><span class="line">options.log_severity_level = <span class="number">3</span> <span class="comment"># Applies to session load, initialization, etc. 0:Verbose, 1:Info, 2:Warning. 3:Error, 4:Fatal. Default is 2.</span></span><br><span class="line"><span class="comment"># options.log_verbosity_level =0 # VLOG level if DEBUG build and session_log_severity_level is 0. Applies to session load, initialization, etc. Default is 0.</span></span><br><span class="line"><span class="comment"># options.enable_cpu_mem_arena = True</span></span><br><span class="line"><span class="comment"># options.enable_mem_pattern = True</span></span><br><span class="line"><span class="comment"># options.graph_optimization_level = onnxruntime.GraphOptimizationLevel.ORT_ENABLE_EXTENDED   # Graph optimization level for this session.</span></span><br><span class="line">options.inter_op_num_threads = <span class="number">1</span> <span class="comment"># Sets the number of threads used to parallelize the execution of the graph (across nodes). Default is 0 to let onnxruntime choose.</span></span><br><span class="line">options.intra_op_num_threads = <span class="number">1</span> <span class="comment"># Sets the number of threads used to parallelize the execution within nodes. Default is 0 to let onnxruntime choose.</span></span><br><span class="line">model = onnxruntime.InferenceSession(model_path, providers=providers, sess_options=options)</span><br><span class="line">ort_inputs = &#123;<span class="string">&quot;input&quot;</span>: inputs&#125;</span><br><span class="line">ort_outputs = [out.name <span class="keyword">for</span> out <span class="keyword">in</span> model.get_outputs()]</span><br><span class="line">results = model.run(ort_outputs, ort_inputs)[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="常见问题">常见问题</h2>
 <h4
 id="clang-error-argument-unused-during-compilation--mfpuneon--werror-wunused-command-line-argument">01、<code>clang: error: argument unused during compilation: '-mfpu=neon' [-Werror,-Wunused-command-line-argument]</code></h4>
 <p>这个应该是由于onnxruntime对MAC
@@ -569,9 +736,8 @@ role="doc-endnote"><p>https://onnxruntime.ai/docs/execution-providers/
 "onnxruntime execution"<a href="#fnref1" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"
-role="doc-endnote"><p>https://onnxruntime.ai/docs/execution-providers/add-execution-provider.html
-"add execution provider"<a href="#fnref2" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
+role="doc-endnote"><p>https://onnxruntime.ai/docs/performance/<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -624,8 +790,8 @@ role="doc-backlink">↩︎</a></p></li>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/202210/20221010-fastertransformer/" rel="prev" title="FasterTransformer">
-                  <i class="fa fa-chevron-left"></i> FasterTransformer
+                <a href="/202210/20221031-deploymentfaq/" rel="prev" title="部署AI算法服务常见FAQ">
+                  <i class="fa fa-chevron-left"></i> 部署AI算法服务常见FAQ
                 </a>
             </div>
             <div class="post-nav-item">
@@ -677,13 +843,13 @@ role="doc-backlink">↩︎</a></p></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">492k</span>
+    <span title="站点总字数">510k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:40</span>
+    <span title="站点阅读时长">14:10</span>
   </span>
 </div>
 <div class="busuanzi-count">
